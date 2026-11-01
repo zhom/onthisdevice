@@ -423,8 +423,16 @@ const SCENARIOS = {
       if (await page.getByRole('button', { name: /^Redact 1 area/ }).count()) return
       throw new Error('a touch drag on the page drew no redaction box')
     }
-    await page.getByLabel('Text to find').fill('invoice')
-    await click(page, 'Add boxes')
+    await page.getByLabel('Word or phrase').fill('invoice')
+    await page.getByRole('button', { name: 'Add boxes for every match' }).click()
+    await page.getByRole('button', { name: /^Redact \d+ box/ }).click({ timeout: 20_000 })
+  },
+  // The scan comes first; export is a second step after the review.
+  'blur-faces-in-video': async (page) => {
+    await page.getByRole('button', { name: /^Find faces/ }).click()
+    const exportBtn = page.getByRole('button', { name: /^Export video/ })
+    await exportBtn.waitFor({ timeout: 140_000 })
+    await exportBtn.click()
   },
   'blur-face-in-photo': centreBox,
   'blur-license-plate': centreBox,

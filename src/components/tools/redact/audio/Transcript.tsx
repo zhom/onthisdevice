@@ -53,7 +53,7 @@ export const Transcript = memo(function Transcript({ words, marked, reasons, pla
   return (
     <div role="group" aria-label="Transcript. Press a word to bleep it or keep it." className="space-y-4">
       {paragraphs.map((para) => (
-        <p key={para[0]} className="leading-[2]">
+        <p key={para[0]} className="leading-[2] [overflow-wrap:anywhere]">
           <span className="num mr-2 text-[0.8125rem] text-muted-foreground" aria-hidden="true">
             {formatTimecode(words[para[0]].start, 0)}
           </span>
@@ -81,7 +81,7 @@ export const Transcript = memo(function Transcript({ words, marked, reasons, pla
                   }}
                   onKeyDown={(e) => onKeyDown(e, i)}
                   className={cn(
-                    'rounded-[4px] px-0.5 py-px text-left leading-[1.5] outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    'max-w-full rounded-[4px] px-0.5 py-px text-left leading-[1.5] [overflow-wrap:anywhere] outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     on ? 'bg-foreground text-background' : 'hover:bg-background',
                     joinPrev && 'rounded-l-none',
                     joinNext && 'rounded-r-none',
