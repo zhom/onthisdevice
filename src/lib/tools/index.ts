@@ -19,6 +19,9 @@ import { tools as securityTools } from './security'
 import { tools as generatorTools } from './generators'
 import { tools as everydayTools } from './everyday'
 import { tools as redactTools } from './redact'
+import { tools as calcMoneyBodyTools } from './calc-money-body'
+import { tools as calcMathScienceHomeTools } from './calc-math-science-home'
+import { tools as referenceDataTools } from './reference-data'
 
 // Round-2 batch modules. Each batch was built by its own agent and registers
 // here rather than in the round-1 category modules above, so that the two
@@ -57,6 +60,9 @@ export const TOOLS: Tool[] = [
   ...generatorTools,
   ...everydayTools,
   ...redactTools,
+  ...calcMoneyBodyTools,
+  ...calcMathScienceHomeTools,
+  ...referenceDataTools,
   ...pdfEditTools,
   ...pdfPagesTools,
   ...pdfSecureTools,

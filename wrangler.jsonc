@@ -1,7 +1,8 @@
 // onthisdevice.com on Cloudflare Workers, static assets only (no Worker code).
 // Headers come from public/_headers, path redirects from public/_redirects.
 // www.onthisdevice.com is redirected to the apex by a Cloudflare redirect rule.
-// Deploy: npm run deploy  (builds, then `npx wrangler@latest deploy`).
+// Deploys: Cloudflare Workers Builds runs `npm run build:ci` and `npx wrangler deploy` on each push
+// to main. By hand: npm run deploy.
 {
   "name": "onthisdevice",
   "compatibility_date": "2026-10-01",
@@ -17,5 +18,7 @@
     "not_found_handling": "404-page"
   },
   // No logs, traces or analytics are collected for this site.
-  "observability": { "enabled": false }
+  "observability": { "enabled": false },
+  // Wrangler usage metrics off (also WRANGLER_SEND_METRICS=false in the environment).
+  "send_metrics": false
 }

@@ -27,6 +27,9 @@ export type CategoryId =
   | 'generators'
   | 'everyday'
   | 'redact'
+  | 'science'
+  | 'home'
+  | 'reference'
 
 /** Top-level nav grouping shown in the header mega-menu. */
 export type GroupId = 'redact' | 'files' | 'media' | 'calculators' | 'text-code' | 'generators'
@@ -275,6 +278,39 @@ export const CATEGORIES: Category[] = [
     icon: 'Calculator',
     group: 'calculators',
     accent: 'chart-3',
+  },
+  {
+    id: 'science',
+    title: 'Science Calculators',
+    slug: 'science-calculators',
+    tagline: 'Physics, chemistry and electronics',
+    description:
+      'Physics, chemistry and electronics calculators with animated diagrams: motion, energy, circuits, gases and decay, with every formula shown.',
+    icon: 'Atom',
+    group: 'calculators',
+    accent: 'chart-2',
+  },
+  {
+    id: 'home',
+    title: 'Home & Construction',
+    slug: 'construction-calculators',
+    tagline: 'Materials, energy and DIY projects',
+    description:
+      'Work out materials and costs for home projects: concrete, paint, tiles, roofing, gravel, drywall, stairs, heating and electricity.',
+    icon: 'House',
+    group: 'calculators',
+    accent: 'chart-3',
+  },
+  {
+    id: 'reference',
+    title: 'Reference Data',
+    slug: 'reference-data',
+    tagline: 'Rates, codes and lookups, updated on a schedule',
+    description:
+      'Exchange rates, mortgage rates, IP and MAC lookups, airport codes and other public data, refreshed on a schedule and searched in your browser.',
+    icon: 'Database',
+    group: 'text-code',
+    accent: 'chart-4',
   },
 ]
 
