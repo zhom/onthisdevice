@@ -417,7 +417,7 @@ function check(name, cond, detail = '') {
 {
   const { parseChat } = await import(new URL('chat.ts', root).href)
   const { readFileSync } = await import('node:fs')
-  const fx = (f) => readFileSync(new URL(`./.tmp/fixtures/text/${f}`, import.meta.url), 'utf8')
+  const fx = (f) => readFileSync(new URL(`./fixtures/text/${f}`, import.meta.url), 'utf8')
   const expectChat = (file, format, senders, mentionMin) => {
     const text = fx(file)
     const r = parseChat(text)
@@ -442,7 +442,7 @@ function check(name, cond, detail = '') {
   const { classifyColumn, maskValue, headerKind } = await import(new URL('columns.ts', root).href)
   const Papa = (await import('papaparse')).default
   const { readFileSync } = await import('node:fs')
-  const csv = Papa.parse(readFileSync(new URL('./.tmp/fixtures/text/customers.csv', import.meta.url), 'utf8'), { header: true, skipEmptyLines: true })
+  const csv = Papa.parse(readFileSync(new URL('./fixtures/text/customers.csv', import.meta.url), 'utf8'), { header: true, skipEmptyLines: true })
   const want = {
     customer_id: 'id', first_name: 'first-name', last_name: 'last-name', email: 'email', phone: 'phone', dob: 'birth-date',
     street: 'address', city: 'city', zip: 'postcode', country: 'country', card_number: 'card', signup_date: 'date',
@@ -474,8 +474,10 @@ function check(name, cond, detail = '') {
   const { stripJpeg, stripPng, stripWebp, webpBlocks } = await import(new URL('meta-image.ts', docs).href)
   const { stripHeif, stripVideo, readVideoMeta } = await import(new URL('meta-isobmff.ts', docs).href)
   const { stripPdf, readPdfMeta, stripOffice, readOfficeMeta } = await import(new URL('meta-docs.ts', docs).href)
-  const fx = (f) => new Uint8Array(readFileSync(new URL(`./.tmp/fixtures/text/meta/${f}`, import.meta.url)))
-  const save = (f, b) => writeFileSync(new URL(`./.tmp/fixtures/text/meta/out-${f}`, import.meta.url), b)
+  const fx = (f) => new Uint8Array(readFileSync(new URL(`./fixtures/text/meta/${f}`, import.meta.url)))
+  const { join } = await import('node:path')
+  const { tmpdir } = await import('node:os')
+  const save = (f, b) => writeFileSync(join(tmpdir(), `otd-meta-out-${f}`), b)
   const opts = { keepIcc: true, keepOrientation: true }
   const parse = (b) => exifr.parse(b, { tiff: true, xmp: true, iptc: true, gps: true, mergeOutput: false }).catch(() => null)
   for (const [f, fn] of [['photo.jpg', stripJpeg], ['photo.png', stripPng]]) {
@@ -510,8 +512,8 @@ function check(name, cond, detail = '') {
     check(`meta ${f} same size`, r.bytes.length === fx(f).length)
   }
   {
-    const before = await readPdfMeta(new Uint8Array(readFileSync(new URL('./.tmp/fixtures/text/bad-redaction.pdf', import.meta.url))))
-    const out = await stripPdf(new Uint8Array(readFileSync(new URL('./.tmp/fixtures/text/bad-redaction.pdf', import.meta.url))))
+    const before = await readPdfMeta(new Uint8Array(readFileSync(new URL('./fixtures/text/bad-redaction.pdf', import.meta.url))))
+    const out = await stripPdf(new Uint8Array(readFileSync(new URL('./fixtures/text/bad-redaction.pdf', import.meta.url))))
     save('bad-redaction.pdf', out)
     const after = await readPdfMeta(out)
     check('meta pdf had author', before.some((f) => f.label === 'Author'), JSON.stringify(before))

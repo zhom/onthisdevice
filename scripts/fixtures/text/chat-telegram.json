@@ -1,0 +1,10 @@
+{
+ "name": "Project chat",
+ "type": "private_group",
+ "id": 4433221100,
+ "messages": [
+  {"id": 1, "type": "message", "date": "2025-03-12T09:14:02", "from": "Anna Berg", "from_id": "user111222333", "text": "Morning! Did Marco get the contract?"},
+  {"id": 2, "type": "message", "date": "2025-03-12T09:15:40", "from": "Marco Rossi", "from_id": "user444555666", "text": ["Yes, mail me at ", {"type": "email", "text": "marco.rossi@example.com"}]},
+  {"id": 3, "type": "message", "date": "2025-03-12T09:16:05", "from": "Anna Berg", "from_id": "user111222333", "text": "Thanks Marco"}
+ ]
+}

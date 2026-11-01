@@ -1,0 +1,4 @@
+[
+ {"type": "message", "user": "U012AB3CD", "text": "Hi <@U045EF6GH>, can you review the deck?", "ts": "1710234842.000100", "user_profile": {"real_name": "Anna Berg", "display_name": "anna", "name": "anna.berg"}},
+ {"type": "message", "user": "U045EF6GH", "text": "Sure Anna, sending notes to anna.berg@example.com", "ts": "1710234900.000200", "user_profile": {"real_name": "Marco Rossi", "display_name": "marco", "name": "marco.rossi"}}
+]

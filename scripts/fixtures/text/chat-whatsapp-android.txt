@@ -1,0 +1,6 @@
+12/03/2025, 09:14 - Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
+12/03/2025, 09:14 - Anna Berg: Morning! Did Marco get the contract?
+12/03/2025, 09:15 - Marco Rossi: Yes, I sent it to anna.berg@example.com
+12/03/2025, 09:16 - +44 7700 900123: Hi all, this is Julia, new number
+12/03/2025, 09:17 - Anna Berg: Welcome Julia! Marco, the office is at 221B Baker Street, London NW1 6XE
+12/03/2025, 09:18 - Marco Rossi: Thanks Anna. See you at 10.
