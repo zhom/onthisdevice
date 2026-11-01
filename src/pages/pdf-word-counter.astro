@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfWordCounter from '@/components/tools/pdf/PdfWordCounter.tsx'
+---
+
+<ToolLayout slug="pdf-word-counter">
+  <PdfWordCounter client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why counting words in a PDF is harder than it sounds</h2>
+      <p>
+        A word processor knows what a word is, because you typed it. A PDF does not. It stores
+        positioned runs of glyphs (&ldquo;draw these three characters at x=112.4, y=703.8 in this
+        font at this size&rdquo;), and one visual word is often split across several runs
+        because of kerning, ligatures or a change of font.
+      </p>
+      <p>
+        Recovering words means reading every glyph run on a page, measuring the horizontal gap
+        between consecutive runs, and deciding whether that gap is a space or just kerning. This
+        tool uses the run height as the yardstick: a gap wider than about 16% of the line height
+        becomes a space, and a vertical jump of more than half a line height becomes a line break.
+        It is the same heuristic a PDF reader uses when you select text with the mouse.
+      </p>
+    </section>
+
+    <section>
+      <h2>Expect a small disagreement with Word</h2>
+      <p>
+        Counts from a PDF and counts from the source document will differ by a percent or two, in
+        both directions, for reasons that are inherent rather than fixable:
+      </p>
+      <ul>
+        <li>Headers, footers and page numbers are text on the page and get counted.</li>
+        <li>A word hyphenated across a line break may be counted as two.</li>
+        <li>Text inside images (a chart label, a scanned stamp) is not counted.</li>
+        <li>Footnote markers, table cells and captions all count as words here.</li>
+        <li>Soft hyphens, ligatures and non-breaking spaces are normalised differently by different writers.</li>
+      </ul>
+      <p>
+        Use the figure for quoting, planning and pricing. For a legally binding count (a thesis
+        limit, a court filing), count in the source document.
+      </p>
+    </section>
+
+    <section>
+      <h2>Counting CJK</h2>
+      <p>
+        Chinese, Japanese and Korean do not separate words with spaces, so whitespace counting
+        returns near-zero for a document that plainly has thousands of words in it. The convention
+        in those languages, and in translation pricing for them, is to count characters.
+      </p>
+      <p>
+        Every kana, CJK ideograph, compatibility ideograph, half-width katakana and Hangul syllable
+        is counted as one unit. Latin text in the same document is still counted by whitespace, so a
+        bilingual document totals sensibly rather than being wrong in one direction or the other.
+      </p>
+    </section>
+
+    <section>
+      <h2>Standard pages and per-word rates</h2>
+      <p>
+        Translation and editing are priced by the word almost everywhere, but the unit of a
+        &ldquo;page&rdquo; varies by market:
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Market</th>
+            <th scope="col">Standard page</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>UK / US / general</td><td>250 words</td></tr>
+          <tr><td>Germany (Normzeile)</td><td>55 characters per line, 30 lines: 1,650 characters</td></tr>
+          <tr><td>Poland (strona rozliczeniowa)</td><td>1,800 characters including spaces</td></tr>
+          <tr><td>Italy (cartella)</td><td>1,500 characters including spaces</td></tr>
+          <tr><td>Russia</td><td>1,800 characters including spaces</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The rate tab shows both the 250-word and the 1,800-character page counts alongside the fee
+        at your own per-word rate, with the arithmetic written out so you can paste it straight into
+        a quote.
+      </p>
+    </section>
+
+    <section>
+      <h2>Reading and speaking time</h2>
+      <p>
+        The default of 238 words per minute is the mean silent reading rate for adults reading
+        English non-fiction, from Brysbaert&rsquo;s 2019 meta-analysis of 190 studies covering
+        nearly eighteen thousand participants. It is a mean, not a target: the same analysis puts
+        the range for ordinary adults roughly between 175 and 300.
+      </p>
+      <p>
+        Reading aloud is much slower. The 130 words per minute used for the spoken estimate is a
+        comfortable presentation pace. Audiobook narration is about 150, and anything above 180
+        starts to sound rushed. If you are timing a conference talk, use the spoken figure and add
+        time for slides.
+      </p>
+    </section>
+
+    <section>
+      <h2>Scanned PDFs, honestly</h2>
+      <p>
+        If the tool reports almost no words, the document has no text layer: it is a photograph of a
+        page. To read it needs optical character recognition, which needs a trained model of several
+        megabytes from a server. This site does not fetch such models, so it has no OCR. The tool
+        tells you so, and does not return zero and let you think the file is empty.
+      </p>
+      <p>
+        The quickest way to confirm it yourself: open the PDF in any reader and try to select a word
+        with the mouse. If nothing highlights, there is no text there to count.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

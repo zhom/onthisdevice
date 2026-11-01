@@ -1,0 +1,131 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfToWord from '@/components/tools/pdf-convert/PdfToWord.tsx'
+---
+
+<ToolLayout slug="pdf-to-word">
+  <PdfToWord client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a PDF to Word</h2>
+    <ol>
+      <li>Drop the PDF onto the box above. pdf.js reads it locally, and nothing is uploaded.</li>
+      <li>Let the text extraction finish. You will see the word, paragraph and heading counts as soon as it is done.</li>
+      <li>Decide whether to detect headings and whether to keep one page break per PDF page.</li>
+      <li>Check the preview. It shows the exact structure the document will have in Word.</li>
+      <li>Press <strong>Create .docx</strong> and download the file.</li>
+    </ol>
+
+    <h2>What is preserved, and what is not</h2>
+    <p>
+      Being straight about this matters more than the conversion itself. A PDF is a
+      description of marks on a page; a Word document is a flowing structure of
+      paragraphs and styles. Turning one into the other is a reconstruction, not a
+      translation, and every converter that promises perfect fidelity is
+      overselling.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Result</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Body text</td>
+            <td>Preserved, in reading order</td>
+            <td>Extracted directly from the PDF's text layer</td>
+          </tr>
+          <tr>
+            <td>Paragraph breaks</td>
+            <td>Preserved</td>
+            <td>Inferred from line spacing and indentation</td>
+          </tr>
+          <tr>
+            <td>Headings</td>
+            <td>Detected heuristically, styled as Heading 1 / 2</td>
+            <td>PDFs carry no structure, so line shape is the only signal</td>
+          </tr>
+          <tr>
+            <td>Page breaks</td>
+            <td>Optional, one per PDF page</td>
+            <td>Page boundaries are known exactly</td>
+          </tr>
+          <tr>
+            <td>Bold, italic, colour, font sizes</td>
+            <td>Not preserved</td>
+            <td>Requires mapping every embedded font back to a style</td>
+          </tr>
+          <tr>
+            <td>Tables</td>
+            <td>Flattened to text</td>
+            <td>PDFs draw table borders as lines, with no cell structure</td>
+          </tr>
+          <tr>
+            <td>Images and charts</td>
+            <td>Not included</td>
+            <td>The text layer is extracted; graphics are separate objects</td>
+          </tr>
+          <tr>
+            <td>Columns, headers, footers</td>
+            <td>Flow into the body text</td>
+            <td>They are just text at particular coordinates</td>
+          </tr>
+          <tr>
+            <td>Scanned pages</td>
+            <td>Not convertible</td>
+            <td>There are no characters to extract. OCR is required</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      So this PDF to Word tool is excellent when you want the words in an editable
+      form: a report to revise, a letter to reuse, a policy to quote from.
+      It is the wrong tool if you need a Word file that looks exactly like the PDF.
+      For that, find the original document.
+    </p>
+
+    <h2>How heading detection works</h2>
+    <p>
+      Since the PDF carries no outline, the converter judges each extracted
+      paragraph by its shape. A line becomes a heading when it is short (under
+      about ninety characters and twelve words), does not end in a full stop,
+      comma, semicolon or colon, and matches one of these patterns:
+    </p>
+    <ul>
+      <li>a numbered section prefix such as <code>3.</code> or <code>3.2</code> (the deeper the numbering, the lower the heading level);</li>
+      <li>a run of capitals, as in <code>TERMS AND CONDITIONS</code>;</li>
+      <li>an opening word like <em>Chapter</em>, <em>Section</em>, <em>Part</em> or <em>Appendix</em>.</li>
+    </ul>
+    <p>
+      The result is a document whose navigation pane and automatic table of
+      contents actually work. If the heuristic misfires on your document, turn it
+      off and style the headings yourself. It is one click in Word.
+    </p>
+
+    <h2>Is the .docx a genuine Word file?</h2>
+    <p>
+      Yes. A <code>.docx</code> is a ZIP archive containing an Open Packaging
+      Conventions structure, and this tool writes the whole thing: the content-type
+      manifest, the package relationships, the main document part, a stylesheet
+      defining Normal, Body Text and the three heading styles, the document's own
+      relationships, and both sets of document properties. It is not a renamed
+      HTML file or an RTF, so Word, LibreOffice Writer, Apple Pages and Google Docs
+      all open it natively and let you edit and re-save normally.
+    </p>
+
+    <h2>Why doing this locally matters</h2>
+    <p>
+      The documents people convert to Word are contracts, invoices, medical
+      letters, tax returns and legal filings. An online converter uploads them to a
+      server and promises to delete them later. Here, pdf.js extracts the text and
+      JSZip builds the ZIP, both in this browser tab. There is no page limit, and
+      the tool works with your network disconnected, which is the easiest way to
+      verify that nothing is uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

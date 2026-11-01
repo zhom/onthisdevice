@@ -1,0 +1,113 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CronExpressionParser from '@/components/tools/dev/CronExpressionParser.tsx'
+---
+
+<ToolLayout slug="cron-expression-parser">
+  <CronExpressionParser client:load />
+  <Fragment slot="explainer">
+    <h2>How to read and build a cron expression</h2>
+    <ol>
+      <li>Type an expression, or start from a preset and adjust it.</li>
+      <li>Each field also has its own box, so you can change only the hour without counting positions.</li>
+      <li>The plain-English sentence updates as you type, and each error names the wrong field and the reason.</li>
+      <li>Check the next ten run times before you deploy the schedule. The description and the real behaviour can differ in ways that are easy to miss.</li>
+    </ol>
+
+    <h2>The fields</h2>
+    <p>
+      Standard crontab uses five fields. Quartz, the Spring scheduler and node-cron accept six, with
+      seconds first. This cron expression parser detects the format from the number of fields.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Position (5-field)</th><th>Field</th><th>Range</th><th>Names accepted</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>n/a</td><td>Second (6-field only)</td><td>0-59</td><td>None</td></tr>
+        <tr><td>1</td><td>Minute</td><td>0-59</td><td>None</td></tr>
+        <tr><td>2</td><td>Hour</td><td>0-23</td><td>None</td></tr>
+        <tr><td>3</td><td>Day of month</td><td>1-31</td><td>None</td></tr>
+        <tr><td>4</td><td>Month</td><td>1-12</td><td>JAN-DEC</td></tr>
+        <tr><td>5</td><td>Day of week</td><td>0-7</td><td>SUN-SAT; both 0 and 7 mean Sunday</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Syntax within a field</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Syntax</th><th>Meaning</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>*</code></td><td>Every value</td><td><code>* * * * *</code>: every minute</td></tr>
+        <tr><td><code>5</code></td><td>One value</td><td><code>5 * * * *</code>: five past every hour</td></tr>
+        <tr><td><code>1,15,30</code></td><td>A list</td><td><code>0 1,13 * * *</code>: 01:00 and 13:00</td></tr>
+        <tr><td><code>1-5</code></td><td>An inclusive range</td><td><code>0 9 * * 1-5</code>: 09:00 on weekdays</td></tr>
+        <tr><td><code>*/15</code></td><td>A step from the lowest value</td><td><code>*/15 * * * *</code>: :00, :15, :30, :45</td></tr>
+        <tr><td><code>10-40/5</code></td><td>A step inside a range</td><td>10, 15, 20 … 40</td></tr>
+        <tr><td><code>?</code></td><td>Treated as <code>*</code> in the two day fields</td><td>Quartz convention</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>The day-of-month and day-of-week trap</h2>
+    <p>
+      Almost everyone gets this rule wrong once. When both the day-of-month and the day-of-week field are
+      restricted, classic Vixie cron runs the job when <strong>either</strong> matches, not when both
+      match. So <code>0 0 1 * MON</code> runs on the first of each month and also on each Monday: about
+      five times a month, not once.
+    </p>
+    <p>
+      For an "and", restrict only one field in cron and check the other in your job:
+      <code>0 0 1-7 * *</code> plus an "is it Monday?" test at the top of the script gives "the first
+      Monday of the month".
+    </p>
+
+    <h2>Shortcut keywords</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Shortcut</th><th>Equivalent</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>@yearly</code>, <code>@annually</code></td><td><code>0 0 1 1 *</code></td></tr>
+        <tr><td><code>@monthly</code></td><td><code>0 0 1 * *</code></td></tr>
+        <tr><td><code>@weekly</code></td><td><code>0 0 * * 0</code></td></tr>
+        <tr><td><code>@daily</code>, <code>@midnight</code></td><td><code>0 0 * * *</code></td></tr>
+        <tr><td><code>@hourly</code></td><td><code>0 * * * *</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Steps do not mean "every N from now"</h2>
+    <p>
+      <code>*/20</code> in the hour field means hours 0 and 20, then it stops, because 40 is out of
+      range. It does not mean "every 20 hours". A step that does not divide the field range evenly gives
+      an uneven gap at the wrap-around: <code>*/45</code> in the minute field runs at :00 and :45, then
+      15 minutes later at :00. For a regular interval that does not divide 60, use a scheduler with
+      interval support.
+    </p>
+
+    <h2>Timezones and DST</h2>
+    <p>
+      The run times here are calculated in the timezone of your device, shown above the table. A cron
+      daemon uses the system timezone, or the value of <code>CRON_TZ</code> if the crontab sets one.
+      Container images are often UTC, which usually explains a job that runs "an hour early".
+    </p>
+    <p>
+      Take care with jobs scheduled between 01:00 and 03:00 local time: on the spring-forward day that
+      hour does not exist, and on the autumn day it happens twice. Cron implementations handle this in
+      different ways. Schedule such jobs in UTC to avoid the problem.
+    </p>
+
+    <h2>What this parser does not support</h2>
+    <p>
+      The Quartz extensions <code>L</code> (last), <code>W</code> (nearest weekday) and <code>#</code>
+      (nth weekday of the month) are rejected with a clear message, because their meaning differs
+      between implementations. The full POSIX and Vixie grammar is supported.
+    </p>
+  </Fragment>
+</ToolLayout>

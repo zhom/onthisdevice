@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WebpToJpg from '@/components/tools/image-convert/WebpToJpg.tsx'
+---
+
+<ToolLayout slug="webp-to-jpg">
+  <WebpToJpg client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert WebP to JPG</h2>
+    <ol>
+      <li>Drop your .webp files onto the box above. Batches of any size work.</li>
+      <li>Choose a background colour. WebP can be transparent and JPEG cannot, so transparent pixels are blended onto the colour you pick (white by default).</li>
+      <li>Set the quality. The default of 85 is higher than usual because the source has already been through one lossy codec.</li>
+      <li>Save each JPG, or download all of them as a single ZIP.</li>
+    </ol>
+
+    <h2>Why convert WebP to JPG</h2>
+    <p>
+      JPEG is the most widely readable image format. Every operating system, camera, printer, photo kiosk,
+      email client and web form since the mid-nineties accepts it. WebP has full browser support, but many
+      desktop applications and upload forms still refuse it. If a program or form rejects your file, convert it
+      to JPG.
+    </p>
+    <p>
+      The cost is size. The same photo as a JPEG is normally 25–35% larger than the WebP, because WebP's coder
+      is more efficient.
+    </p>
+
+    <h2>Transparency: what your background choice does</h2>
+    <p>
+      A baseline JPEG stores only three colour channels, so it cannot mark a pixel as see-through. The tool
+      blends each transparent or semi-transparent pixel in the WebP with your chosen colour by its alpha value,
+      so a shadow that fades from 60% to 0% opacity fades smoothly into the background colour.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Where the image will be used</th>
+            <th align="left">Suggested background</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Word document, printed page, most web pages</td><td>White (#ffffff)</td></tr>
+          <tr><td>Dark-themed slide deck or app screenshot</td><td>Near-black (#1e293b or #000000)</td></tr>
+          <tr><td>Product listing on a marketplace</td><td>White; most platforms require it</td></tr>
+          <tr><td>Overlaying a coloured panel</td><td>Sample that exact colour and paste the hex value</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If the image will appear on more than one background colour, do not use JPEG. Use
+      <a href="/webp-to-png">WebP to PNG</a> and keep the alpha channel.
+    </p>
+
+    <h2>Quality guidance for a second-generation encode</h2>
+    <ul>
+      <li>85–90: the recommended range. The second lossy pass adds no visible artefacts to the first.</li>
+      <li>80: fine for casual sharing and messaging, where the image is re-compressed anyway.</li>
+      <li>Below 70: the two generations of artefacts add up, most visibly as blocks in flat areas and halos around text.</li>
+      <li>95 and above: use only if the JPG is an intermediate step before more editing.</li>
+    </ul>
+    <p>
+      For lossless output, use <a href="/webp-to-png">WebP to PNG</a>. To convert a folder of WebP, AVIF and PNG
+      files in one pass, use the <a href="/image-converter">universal image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SleepCalculator from '@/components/tools/datetime/SleepCalculator.tsx'
+---
+
+<ToolLayout slug="sleep-calculator">
+  <SleepCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the sleep calculator</h2>
+    <ol>
+      <li>
+        If you have a fixed alarm, use <strong>I must wake up at…</strong> and pick one of the suggested bedtimes.
+      </li>
+      <li>
+        If your bedtime is fixed, use <strong>I go to bed at…</strong> and set your alarm to one of the suggested
+        wake times.
+      </li>
+      <li>
+        To go to sleep now, use the third tab. It counts from the current time on your device.
+      </li>
+      <li>
+        If you know your own numbers, change the two settings: how long you take to fall asleep, and how long
+        your cycles last.
+      </li>
+    </ol>
+
+    <h2>What a sleep cycle is</h2>
+    <p>
+      During the night you move again and again through light sleep (stages N1 and N2), deep slow-wave sleep
+      (N3) and REM sleep, then briefly come close to waking before the next cycle. One full cycle averages
+      about 90 minutes in adults, which is the default in this calculator.
+    </p>
+    <p>
+      Waking at the end of a cycle, in light sleep, usually feels easy. Waking from deep sleep causes sleep
+      inertia: a heavy, confused grogginess that can last twenty to thirty minutes, however much sleep you got
+      in total. The suggested times put your alarm between cycles.
+    </p>
+
+    <h2>How accurate is 90 minutes?</h2>
+    <p>
+      It is an average, and individual variation is large. Real cycles last from about 70 to 120 minutes, and
+      they change through the night: early cycles have more deep sleep and tend to be shorter, and later ones
+      have more REM and are longer. Age, alcohol, caffeine, stress, screens and sleep debt all change the
+      pattern.
+    </p>
+    <p>
+      Use the suggestions as starting points. If you often wake groggy at the 90-minute suggestions, set the
+      cycle length to 85 or 100 minutes and compare. The setting exists because one number cannot fit
+      everyone.
+    </p>
+
+    <h2>The fall-asleep allowance</h2>
+    <p>
+      Sleep latency, the time from lights out to sleep, averages 10 to 20 minutes in healthy adults, so the
+      default here is 15. An error in this figure shifts every cycle boundary, so it matters.
+    </p>
+    <p>
+      Falling asleep in under five minutes every night usually means significant sleep deprivation. Regularly
+      taking more than 30 minutes is one of the diagnostic markers for insomnia.
+    </p>
+
+    <h2>How much sleep is enough?</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Age group</th>
+            <th>Recommended sleep</th>
+            <th>Roughly, in 90-minute cycles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Newborn (0–3 months)</td><td>14–17 hours</td><td>cycles are 50–60 min at this age</td></tr>
+          <tr><td>Infant (4–11 months)</td><td>12–15 hours</td><td>Not applicable</td></tr>
+          <tr><td>Toddler (1–2 years)</td><td>11–14 hours</td><td>Not applicable</td></tr>
+          <tr><td>Preschool (3–5 years)</td><td>10–13 hours</td><td>Not applicable</td></tr>
+          <tr><td>School age (6–13 years)</td><td>9–11 hours</td><td>6–7 cycles</td></tr>
+          <tr><td>Teenager (14–17 years)</td><td>8–10 hours</td><td>5.5–6.5 cycles</td></tr>
+          <tr><td>Adult (18–64 years)</td><td>7–9 hours</td><td>5–6 cycles</td></tr>
+          <tr><td>Older adult (65+)</td><td>7–8 hours</td><td>5–5.5 cycles</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The figures follow the National Sleep Foundation consensus ranges. Five or six full cycles (7.5 to 9
+      hours) is the target for most adults, so those options are marked as recommended above.
+    </p>
+
+    <h2>Getting more out of the suggested times</h2>
+    <ul>
+      <li>
+        Keep the schedule constant. A regular wake time, also at weekends, improves sleep quality more than the
+        timing of any single night.
+      </li>
+      <li>
+        Do not lose an hour to reach a cycle boundary. Six hours of sleep is better than staying up another 90
+        minutes for a "perfect" wake time.
+      </li>
+      <li>
+        Naps work in cycles too. A 20-minute nap stays in light sleep and refreshes; a 90-minute nap completes a
+        cycle. A 45-minute nap tends to end in deep sleep and feels bad.
+      </li>
+      <li>
+        Light is the strongest signal. Bright light in the morning and dim light in the hour before bed shift
+        your body clock more reliably than timing alone.
+      </li>
+      <li>
+        Caffeine lasts. Its half-life is about five to six hours, so an afternoon coffee is still measurable at
+        bedtime.
+      </li>
+    </ul>
+
+    <p>
+      This page is a scheduling aid, not medical advice. See a doctor about persistent trouble sleeping, loud
+      snoring with daytime exhaustion, or falling asleep involuntarily during the day.
+    </p>
+  </Fragment>
+</ToolLayout>

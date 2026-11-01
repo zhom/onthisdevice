@@ -1,0 +1,166 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import OneRepMaxCalculator from '@/components/tools/health/OneRepMaxCalculator.tsx'
+---
+
+<ToolLayout slug="one-rep-max-calculator">
+  <OneRepMaxCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the 1RM calculator</h2>
+    <ol>
+      <li>Switch to kilograms or pounds. The page remembers your choice for next time.</li>
+      <li>Enter the weight you lifted, including the bar.</li>
+      <li>
+        Enter how many clean reps you completed. Two to five reps taken close to failure gives the most
+        accurate estimate.
+      </li>
+      <li>
+        Set the rounding increment to match your smallest pair of plates, so you can load each number
+        in the percentage table.
+      </li>
+      <li>Read your estimated max, then work from the percentage table for programming.</li>
+    </ol>
+
+    <h2>The four formulas</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Formula</th>
+            <th scope="col">Equation</th>
+            <th scope="col">Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Epley (1985)</td>
+            <td>1RM = w × (1 + r ÷ 30)</td>
+            <td>The most widely used. Linear, and reads high above about 8 reps</td>
+          </tr>
+          <tr>
+            <td>Brzycki (1993)</td>
+            <td>1RM = w × 36 ÷ (37 − r)</td>
+            <td>Conservative at higher reps. The basis of most printed percentage charts</td>
+          </tr>
+          <tr>
+            <td>Lombardi (1989)</td>
+            <td>1RM = w × r^0.10</td>
+            <td>A power curve, not a line. The flattest of the four</td>
+          </tr>
+          <tr>
+            <td>O'Conner (1989)</td>
+            <td>1RM = w × (1 + 0.025 × r)</td>
+            <td>A simple 2.5% per rep rule. Almost identical to Epley at low reps</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At three reps the four models are usually within 2 percent of each other. At ten reps the spread
+      can reach 8 percent. So this one rep max calculator shows all four and averages them.
+    </p>
+    <p>
+      At a single rep, Epley and O'Conner do not return the input weight exactly (Epley gives 103.3
+      percent of it). A single is a one rep max, so for one rep the calculator returns your entered
+      weight for all four models.
+    </p>
+
+    <h2>Reps to percentage of 1RM</h2>
+    <p>
+      Most programmes are built on this table. The reps column is Brzycki's equation rearranged:
+      reps ≈ 37 − 36 × (fraction of 1RM).
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">% of 1RM</th>
+            <th scope="col">Approx. reps</th>
+            <th scope="col">What it is used for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>100%</td><td>1</td><td>Testing only</td></tr>
+          <tr><td>95%</td><td>2</td><td>Heavy singles and doubles, peaking work</td></tr>
+          <tr><td>90%</td><td>4</td><td>Strength triples</td></tr>
+          <tr><td>85%</td><td>6</td><td>The classic 5×5 zone</td></tr>
+          <tr><td>80%</td><td>8</td><td>Strength and hypertrophy overlap</td></tr>
+          <tr><td>75%</td><td>10</td><td>Hypertrophy, sets of 8–10</td></tr>
+          <tr><td>70%</td><td>12</td><td>Volume work</td></tr>
+          <tr><td>65%</td><td>14</td><td>Technique and back-off sets</td></tr>
+          <tr><td>60%</td><td>16</td><td>Speed work and warm-ups</td></tr>
+          <tr><td>50%</td><td>19</td><td>Warm-up and rehab loading</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Use the rep column as an average, not a rule. Rep capacity at a given percentage varies a lot
+      between people and between lifts. Leg press and squat allow many more reps at 80 percent than a
+      bench press, and beginners usually do fewer reps at a given percentage than experienced lifters.
+    </p>
+
+    <h2>Getting an accurate estimate</h2>
+    <ul>
+      <li>
+        Use a set taken close to failure. A set of 5 with 3 reps left gives a much too low estimate.
+        Aim for 0 to 1 reps in reserve.
+      </li>
+      <li>
+        Stay in the 2–5 rep range where you can. There, all four models agree and the physiology is
+        closest to a true max.
+      </li>
+      <li>
+        Count only clean reps. Grinding, bouncing or changed technique increases the rep count and so
+        the estimate.
+      </li>
+      <li>
+        Keep conditions consistent: same equipment, similar time of day, similar warm-up, similar
+        fatigue. A fresh Monday set and a Friday set after squats are not comparable.
+      </li>
+      <li>
+        Estimate per lift. You cannot calculate your bench 1RM from your deadlift, and the formulas
+        behave differently across lifts.
+      </li>
+    </ul>
+
+    <h2>How the estimate behaves across lifts</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Lift</th>
+            <th scope="col">How well rep-based estimates work</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Back squat</td><td>Good. Large muscle mass, high rep capacity at a given percentage</td></tr>
+          <tr><td>Deadlift</td><td>Good at low reps. Grip and lower-back fatigue make high-rep sets predict too low</td></tr>
+          <tr><td>Bench press</td><td>Usually predicts slightly too high. Most people do fewer reps at 85% than the chart says</td></tr>
+          <tr><td>Overhead press</td><td>Over-predicts. Small muscle mass and a short range of usable percentages</td></tr>
+          <tr><td>Olympic lifts</td><td>Unreliable. Snatch and clean and jerk are technique-limited, and multi-rep sets are rarely maximal</td></tr>
+          <tr><td>Machines and isolation</td><td>Rough at best. Rep capacity is very high and varies with the machine's strength curve</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Should you ever test a true max?</h2>
+    <p>
+      Competitive lifters do, because competition requires it. Most other people should not. A true
+      single needs a long warm-up and a spotter or safety pins, costs days of recovery, and has the
+      highest injury risk in the gym. A hard set of three through these formulas gives a number
+      accurate enough to programme from, and you get it from a normal session.
+    </p>
+    <p>
+      Estimate again every four to six weeks. Strength does not change fast enough to check more often,
+      and constant testing takes time from the training that makes progress.
+    </p>
+
+    <h2>Using the number safely</h2>
+    <p>
+      An estimated max is a planning tool. On a given day your actual capacity changes by 5 to 10
+      percent with sleep, food, stress and your position in a training block. Autoregulate: if the
+      planned weight moves badly, take some off. Warm up fully, use collars, set the safety pins, and
+      stop the set when form breaks, not when the rep count says so.
+    </p>
+  </Fragment>
+</ToolLayout>

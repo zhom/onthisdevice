@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="hex-to-text">
+  <DevEncodeRadixText client:load radix="hex" direction="decode" />
+  <Fragment slot="explainer">
+    <h2>Reading hexadecimal</h2>
+    <p>
+      Hex is base 16: the digits 0–9, then A–F for ten to fifteen. One hex digit carries exactly four
+      bits, so two digits describe one byte. That is why hex is the default way to look at binary data.
+      A byte in decimal runs 0–255 with no fixed width. In hex it is always two characters, 00 to FF.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Character</th><th>Hex</th><th>Decimal</th><th>Binary</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>H</code></td><td>48</td><td>72</td><td>01001000</td></tr>
+          <tr><td><code>e</code></td><td>65</td><td>101</td><td>01100101</td></tr>
+          <tr><td><code>l</code></td><td>6C</td><td>108</td><td>01101100</td></tr>
+          <tr><td>space</td><td>20</td><td>32</td><td>00100000</td></tr>
+          <tr><td>line feed</td><td>0A</td><td>10</td><td>00001010</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>UTF-8 versus single-byte decoding</h2>
+    <p>
+      Most hex to text decoders go wrong here. Modern text is almost always UTF-8, where each character
+      outside plain ASCII spans several bytes:
+    </p>
+    <ul>
+      <li><code>é</code> is <code>C3 A9</code> (two bytes).</li>
+      <li><code>€</code> is <code>E2 82 AC</code> (three bytes).</li>
+      <li><code>😀</code> is <code>F0 9F 98 80</code> (four bytes).</li>
+    </ul>
+    <p>
+      A single-byte reader turns those into mojibake: <code>Ã©</code> in place of <code>é</code>. If you
+      see that, switch the character set to UTF-8. If you get replacement characters in UTF-8 mode, the
+      data is probably Latin-1, or not text.
+    </p>
+
+    <h2>Input formats this accepts</h2>
+    <p>All of the following decode to <code>Hi</code>:</p>
+    <pre><code>4869
+48 69
+48,69
+48:69
+0x48 0x69
+\x48\x69</code></pre>
+    <p>
+      Any character that is not a hex digit is a separator, so you can paste from a spec, a config file
+      or a chat message. A full hex dump with offsets and an ASCII column does not work, because the
+      parser reads those columns as data. Remove them first.
+    </p>
+
+    <h2>Common things you will find in a hex blob</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Bytes</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>EF BB BF</code> at the start</td><td>UTF-8 byte-order mark. It is invisible and causes many parser errors</td></tr>
+          <tr><td><code>0D 0A</code></td><td>Windows line ending (CRLF). <code>0A</code> alone is Unix</td></tr>
+          <tr><td><code>C2 A0</code></td><td>Non-breaking space. It looks like a space but is a different character</td></tr>
+          <tr><td><code>00</code> padding at the end</td><td>A fixed-length field, not part of the string</td></tr>
+          <tr><td><code>FF FE</code> at the start</td><td>UTF-16 little-endian BOM. The data is not UTF-8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where hex shows up</h2>
+    <p>
+      Colour values in CSS, MAC addresses, hashes and checksums, memory addresses in a stack trace,
+      packet captures, embedded-device protocol traces, Unicode codepoints, and the raw view in each hex
+      editor.
+    </p>
+  </Fragment>
+</ToolLayout>

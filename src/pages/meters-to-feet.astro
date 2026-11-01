@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="meters-to-feet">
+  <UnitsLifePairConverter client:load spec="meters-to-feet" />
+  <Fragment slot="explainer">
+    <h2>Decimal feet is rarely the answer you need</h2>
+    <p>
+      Meters to feet gives a number like 5.7415. That is correct but rarely useful. Nobody describes a
+      person as five point seven four feet tall, and no builder marks out 0.74 of a foot. You want
+      <strong>5 ft 8.9 in</strong>, and for that you convert the fractional part separately.
+    </p>
+    <p>
+      This page shows both. Use decimal feet for spreadsheets and CAD, and feet and inches for the
+      rest. The remainder carries correctly, so a value that rounds up to twelve inches goes into the
+      next foot, and you never see "5 ft 12 in".
+    </p>
+
+    <h2>The arithmetic</h2>
+    <p>
+      A foot is exactly 0.3048 m, so metres to feet is a division by 0.3048, or a multiplication by
+      3.280839895. To split the result:
+    </p>
+    <ol>
+      <li>Take the whole number of feet. For 1.75 m, 5.7415 ft gives 5 ft.</li>
+      <li>Take what is left, 0.7415 ft, and multiply by 12 to get inches: 8.898 in.</li>
+      <li>Round the inches to the precision you need: 8.9 in, or 9 in to the nearest whole inch.</li>
+    </ol>
+
+    <h2>Human heights in both systems</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Metres</th><th scope="col">Centimetres</th><th scope="col">Feet and inches</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1.524</td><td>152.4</td><td>5 ft 0 in</td></tr>
+        <tr><td>1.60</td><td>160</td><td>5 ft 3 in</td></tr>
+        <tr><td>1.65</td><td>165</td><td>5 ft 5 in</td></tr>
+        <tr><td>1.70</td><td>170</td><td>5 ft 6.9 in</td></tr>
+        <tr><td>1.75</td><td>175</td><td>5 ft 8.9 in</td></tr>
+        <tr><td>1.80</td><td>180</td><td>5 ft 10.9 in</td></tr>
+        <tr><td>1.83</td><td>183</td><td>6 ft 0 in</td></tr>
+        <tr><td>1.90</td><td>190</td><td>6 ft 2.8 in</td></tr>
+        <tr><td>2.00</td><td>200</td><td>6 ft 6.7 in</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Six foot is 1.8288 m. So "1.83 m" is the standard way to write it, and 1.80 m is five eleven, not
+      six foot.
+    </p>
+
+    <h2>Building dimensions worth knowing</h2>
+    <p>
+      A standard UK or European ceiling at 2.4 m is 7 ft 10.5 in. The American 8 ft equivalent is
+      2.44 m. A 2.1 m internal door is 6 ft 10.7 in, and the US standard is 6 ft 8 in (2.032 m), so
+      imported doors rarely fit an existing frame. Scaffold boards, worktops and plasterboard come in
+      metric lengths that are close to, but never equal to, the old imperial lengths.
+    </p>
+
+    <h2>The survey foot footnote</h2>
+    <p>
+      Until 2023, US land surveying used a slightly different foot: 1200/3937 m, about two parts per
+      million longer than the international foot. Over a metre that is 0.002 mm and does not matter.
+      Over a state plane coordinate of several hundred thousand feet, it is metres. The survey foot is
+      now officially retired, and this page uses the international foot throughout.
+    </p>
+  </Fragment>
+</ToolLayout>

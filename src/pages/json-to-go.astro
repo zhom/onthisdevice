@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-go">
+  <DevFormatJsonCode client:load target="go" />
+  <Fragment slot="explainer">
+    <h2>Go-specific decisions the generator makes</h2>
+    <h3>Initialisms</h3>
+    <p>
+      Go&rsquo;s naming convention capitalises initialisms in full, and <code>go vet</code> and the
+      linters after golint enforce it. The JSON to Go generator turns <code>user_id</code> into
+      <code>UserID</code>, not
+      <code>UserId</code>; <code>api_url</code> becomes <code>APIURL</code>; <code>html_body</code>
+      becomes <code>HTMLBody</code>. The recognised set covers ID, URL, URI, API, HTTP, HTTPS, JSON,
+      XML, HTML, SQL, UUID, IP, TLS, SSH, CPU, RAM, UTC, EOF, DB, OS and TTL.
+    </p>
+    <h3>Numeric types</h3>
+    <p>
+      Whole numbers become <code>int64</code>, not <code>int</code>, because <code>int</code> is 32-bit
+      on some platforms and JSON integers often exceed that. A millisecond timestamp does. Fractional
+      numbers become <code>float64</code>, which is what a JSON number is. Narrow them by hand where you
+      know the range, and use <code>string</code> plus a decimal library for money.
+    </p>
+    <h3>Pointers</h3>
+    <p>
+      A field that was sometimes null becomes a pointer, so you can tell &ldquo;absent or null&rdquo;
+      from the zero value. This matters more in Go than in most languages: without it, <code>0</code>,
+      <code>""</code> and <code>false</code> look the same as a missing field. Slices and maps can
+      already be nil and are never wrapped.
+    </p>
+    <h3>Struct tags</h3>
+    <p>
+      Each field has a <code>json:"…"</code> tag with the original key. Go&rsquo;s case-insensitive
+      fallback matching fails when two keys differ only in case, and it hides the wire format in the
+      source.
+    </p>
+
+    <h2>omitempty, and when to remove it</h2>
+    <p>
+      Fields missing from some records get <code>,omitempty</code>, so marshalling back to JSON leaves
+      them out and does not write a zero value. Decide carefully if you keep it: omitempty also drops
+      <code>0</code>, <code>""</code>, <code>false</code> and empty slices, so a field where zero has a
+      meaning disappears from your output without a warning. To send an explicit zero and also leave out
+      an absent value, use a pointer and remove omitempty.
+    </p>
+
+    <h2>Decoding safely</h2>
+    <p>
+      Two useful habits with the generated structs:
+    </p>
+    <ul>
+      <li>
+        <code>decoder.DisallowUnknownFields()</code> turns an unexpected key into an error, so you
+        learn when the API changes.
+      </li>
+      <li>
+        <code>decoder.UseNumber()</code> keeps numbers as strings until you convert them. This avoids
+        the float64 rounding that damages large integer IDs.
+      </li>
+    </ul>
+
+    <h2>Struct field ordering and memory</h2>
+    <p>
+      Fields are in the order they appear in your JSON, so the struct is easy to compare with the
+      payload. Go pads struct fields for alignment, so on a hot path with millions of instances you can
+      reduce memory by putting the largest fields first. Do this only where needed. In almost all cases,
+      readability is worth more.
+    </p>
+
+    <h2>The output is a package main starter</h2>
+    <p>
+      The file declares <code>package main</code>, so it compiles as it is for a quick check. Change it
+      to your real package name before you add it to a project. Split large outputs into one file per
+      logical group, not forty structs in one file.
+    </p>
+  </Fragment>
+</ToolLayout>

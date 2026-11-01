@@ -1,0 +1,125 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyArea from '@/components/tools/everyday/CalcMoneyArea.tsx'
+---
+
+<ToolLayout slug="square-footage-calculator">
+  <CalcMoneyArea client:load variant="area" />
+
+  <Fragment slot="explainer">
+    <h2>Square footage for several rooms</h2>
+    <p>
+      A real job is often a lounge, a hallway and a landing, or four rooms of flooring in one order. Add a
+      row for each space, mix shapes, and the square footage calculator adds up the total. Export the whole
+      list as CSV, Excel or PDF to take to a merchant.
+    </p>
+
+    <h2>Area formulas</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Shape</th>
+            <th>Area</th>
+            <th>Measure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Rectangle</td><td><code>length × width</code></td><td>the two longest perpendicular walls</td></tr>
+          <tr><td>Square</td><td><code>side²</code></td><td>one side</td></tr>
+          <tr><td>L-shape</td><td><code>(long × width) − (cut-out length × cut-out width)</code></td><td>the full rectangle, then the missing corner</td></tr>
+          <tr><td>Triangle</td><td><code>(base × height) ÷ 2</code></td><td>height is perpendicular to the base, not a sloping side</td></tr>
+          <tr><td>Circle</td><td><code>π × (diameter ÷ 2)²</code></td><td>widest point across</td></tr>
+          <tr><td>Trapezoid</td><td><code>((a + b) ÷ 2) × height</code></td><td>the two parallel sides and the distance between them</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Split an awkward shape into two rectangles and add a second row. This is faster and easier to check,
+      with less risk of error.
+    </p>
+
+    <h2>Feet, inches, metres and feet-and-inches</h2>
+    <p>
+      The unit you pick applies to every field. Each field also reads feet-and-inches notation, whatever the
+      selector says: <code>12' 6"</code>, <code>12ft 6in</code> and <code>12'6</code> all mean 12.5 feet, as
+      on a tape measure.
+    </p>
+    <p>
+      Each result appears in square feet, square metres and square yards. The conversion uses the
+      international foot of exactly 0.3048 m, so one square foot is exactly 0.09290304 m², with no rounding
+      error between the two systems.
+    </p>
+
+    <h2>Area conversions</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[360px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>From</th>
+            <th style="text-align:right">To</th>
+            <th style="text-align:right">Multiply by</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Square feet</td><td style="text-align:right">Square metres</td><td style="text-align:right">0.092903</td></tr>
+          <tr><td>Square metres</td><td style="text-align:right">Square feet</td><td style="text-align:right">10.7639</td></tr>
+          <tr><td>Square feet</td><td style="text-align:right">Square yards</td><td style="text-align:right">÷ 9</td></tr>
+          <tr><td>Square feet</td><td style="text-align:right">Acres</td><td style="text-align:right">÷ 43,560</td></tr>
+          <tr><td>Square metres</td><td style="text-align:right">Hectares</td><td style="text-align:right">÷ 10,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How to measure a room</h2>
+    <ol>
+      <li>
+        Measure at the widest and longest points, wall face to wall face, not along the skirting.
+      </li>
+      <li>
+        Measure each dimension twice, at opposite ends of the room. Older buildings are seldom square, and
+        a 3-inch difference over 14 feet is normal.
+      </li>
+      <li>
+        Include alcoves and bay windows as their own rows if you are buying material to cover them.
+      </li>
+      <li>
+        Decide whether doorways and thresholds are in or out, and do the same in every room.
+      </li>
+      <li>
+        Write the measurements down before you type them. A second measurement costs little; a wrong order
+        costs much more.
+      </li>
+    </ol>
+
+    <h2>Waste allowance</h2>
+    <p>
+      The area you measure is less than the quantity you buy. Off-cuts, breakages, pattern matching and
+      cutting mistakes all use material. Five to ten per cent covers most jobs; use fifteen for diagonal
+      layouts, long narrow rooms, or rooms with many doorways and angles. The calculator adds the allowance
+      to the net area before it calculates any cost.
+    </p>
+
+    <h2>Cost per square foot</h2>
+    <p>
+      The cost field multiplies the area with waste by the rate you enter: flooring, turf, insulation, rent,
+      cleaning or a build estimate. The arithmetic is the same for all of them. For material quantities, the
+      paint, tile, flooring and concrete calculators on this site apply their own rules.
+    </p>
+
+    <h2>Property square footage is a different question</h2>
+    <p>
+      For a listing or a valuation, "gross internal area" definitions vary by country and by professional
+      standard. Some include stairwells, some exclude garages and unheated space, and some measure to the
+      internal wall face and others to the external one. This page calculates geometry; the standard you
+      work to decides which surfaces to include.
+    </p>
+
+    <h2>Measure a whole house offline</h2>
+    <p>
+      The page needs no server, so it works in a basement with no signal. Your measurement list is stored only
+      if you turn saving on, and then only in this browser, with a delete button next to the switch. Your
+      device makes the CSV, Excel and PDF exports.
+    </p>
+  </Fragment>
+</ToolLayout>

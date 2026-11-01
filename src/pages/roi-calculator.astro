@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RoiCalculator from '@/components/tools/finance/RoiCalculator.tsx'
+---
+
+<ToolLayout slug="roi-calculator">
+  <RoiCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the ROI calculator</h2>
+    <ol>
+      <li>
+        Enter the <strong>amount invested</strong> and any <strong>additional costs</strong>: commission,
+        stamp duty, legal fees, renovation, ad spend. Costs belong in the denominator, or the ROI is too high.
+      </li>
+      <li>
+        Enter the <strong>final value</strong> and any <strong>income received</strong> during the period,
+        such as dividends, rent or interest.
+      </li>
+      <li>
+        Set the <strong>holding period</strong>, as a duration or as the actual buy and sell dates.
+      </li>
+      <li>
+        Set a <strong>benchmark return</strong>: what the same money would probably have earned elsewhere. An
+        investment is good if it beats the benchmark; a profit alone does not show that.
+      </li>
+    </ol>
+
+    <h2>ROI and annualised ROI</h2>
+    <p>
+      <strong>ROI</strong> is total gain over total cost:
+      <code>ROI = (final value + income − invested − costs) / (invested + costs)</code>. It ignores how long
+      you held the investment.
+    </p>
+    <p>
+      <strong>Annualised ROI</strong>, the compound annual growth rate, is the constant yearly rate that gives
+      the same result: <code>CAGR = (end / start)^(1/t) − 1</code>. It is the only figure you can compare
+      across investments of different lengths.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[480px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Total ROI</th>
+            <th style="text-align:right">over 1 year</th>
+            <th style="text-align:right">2 years</th>
+            <th style="text-align:right">3 years</th>
+            <th style="text-align:right">5 years</th>
+            <th style="text-align:right">10 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>10%</td><td style="text-align:right">10.00%</td><td style="text-align:right">4.88%</td><td style="text-align:right">3.23%</td><td style="text-align:right">1.92%</td><td style="text-align:right">0.96%</td></tr>
+          <tr><td>25%</td><td style="text-align:right">25.00%</td><td style="text-align:right">11.80%</td><td style="text-align:right">7.72%</td><td style="text-align:right">4.56%</td><td style="text-align:right">2.26%</td></tr>
+          <tr><td>50%</td><td style="text-align:right">50.00%</td><td style="text-align:right">22.47%</td><td style="text-align:right">14.47%</td><td style="text-align:right">8.45%</td><td style="text-align:right">4.14%</td></tr>
+          <tr><td>100%</td><td style="text-align:right">100.00%</td><td style="text-align:right">41.42%</td><td style="text-align:right">25.99%</td><td style="text-align:right">14.87%</td><td style="text-align:right">7.18%</td></tr>
+          <tr><td>200%</td><td style="text-align:right">200.00%</td><td style="text-align:right">73.21%</td><td style="text-align:right">44.22%</td><td style="text-align:right">24.57%</td><td style="text-align:right">11.61%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A "100% return" over one year is excellent. Over ten years it is 7.18% a year, below the long-run
+      average of a broad equity index. For this reason, headline ROI figures in marketing material seldom
+      give the holding period.
+    </p>
+
+    <h2>Getting the inputs right</h2>
+    <ul>
+      <li>
+        Count every cost: purchase commission, exchange fees, spread, legal costs, survey fees, renovation,
+        storage, insurance. For a marketing campaign, count agency fees and staff time as well as media spend.
+      </li>
+      <li>
+        Enter income separately from the final value. Rent and dividends are real returns, even though they
+        never show as a price rise.
+      </li>
+      <li>
+        Use the net sale proceeds. Selling costs come out of the final value, not the starting one.
+      </li>
+      <li>
+        Enter the real holding period. Date mode uses a 365.2425-day year, so leap years do not distort short
+        holds.
+      </li>
+    </ul>
+
+    <h2>When ROI is the wrong measure</h2>
+    <p>
+      ROI assumes one amount in at the start and one amount out at the end. If you added or withdrew money
+      during the period, such as monthly contributions to a fund, staged payments on a property development
+      or a second ad budget halfway through, the timing of those flows changes the true return. Only an
+      internal rate of return (IRR) or money-weighted return handles that correctly. ROI overstates the
+      result when money went in late and understates it when money came out early.
+    </p>
+    <p>
+      ROI also ignores risk. A 12% annualised return from a diversified index and a 12% annualised return
+      from a single speculative holding are different results, and the arithmetic does not show it.
+    </p>
+
+    <h2>Inflation and tax</h2>
+    <p>
+      The figures here are nominal and before tax. For the real return, divide by cumulative inflation over
+      the same period; the inflation calculator gives the factor. For the after-tax return, apply your
+      capital gains and dividend or rental income tax rates to the relevant parts of the profit before you
+      compute ROI.
+    </p>
+  </Fragment>
+</ToolLayout>

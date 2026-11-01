@@ -1,0 +1,108 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfToText from '@/components/tools/pdf-convert/PdfToText.tsx'
+---
+
+<ToolLayout slug="pdf-to-text">
+  <PdfToText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to extract text from a PDF</h2>
+    <ol>
+      <li>Drop the PDF onto the box above. It is parsed by pdf.js in this tab; nothing is uploaded.</li>
+      <li>Wait for the progress bar. Extraction runs page by page and stays responsive on long documents.</li>
+      <li>Review the per-page output. Each page has its own copy button so you can take just one section.</li>
+      <li>Toggle the page separators on or off depending on whether you want <code>--- Page 3 ---</code> markers in the file.</li>
+      <li>Copy everything, or download a UTF-8 <code>.txt</code> file.</li>
+    </ol>
+
+    <h2>Two kinds of PDF, and why it matters</h2>
+    <p>
+      Every PDF falls into one of two categories, and the difference decides
+      whether text extraction is possible at all.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Text-based PDF</th>
+            <th>Scanned / image-only PDF</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Made by</td>
+            <td>Word, LaTeX, browsers, InDesign, "Save as PDF"</td>
+            <td>Scanners, phone camera apps, fax gateways</td>
+          </tr>
+          <tr>
+            <td>Contains</td>
+            <td>Real characters plus font and position data</td>
+            <td>One photograph per page</td>
+          </tr>
+          <tr>
+            <td>Can you select text in a reader?</td>
+            <td>Yes</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Works with this tool?</td>
+            <td>Yes, exactly</td>
+            <td>No. The tool warns you and does not return an empty file</td>
+          </tr>
+          <tr>
+            <td>What you need instead</td>
+            <td>Nothing</td>
+            <td>OCR software, for example your scanner's own OCR</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A quick check before you start: open the PDF in any reader and try to select
+      a word with the mouse. If the selection highlights letters, this tool will
+      give you clean text. If it draws a rectangle over the whole page, the page is
+      an image.
+    </p>
+
+    <h2>How the reading order is reconstructed</h2>
+    <p>
+      This is the part most extractors get wrong, so it is worth explaining. A PDF
+      does not store paragraphs, sentences or even lines. It stores instructions
+      like "draw these glyphs at this position with this font". pdf.js hands back
+      those positioned runs in whatever order the generator wrote them, which is
+      frequently not reading order.
+    </p>
+    <p>To turn that back into prose, the tool:</p>
+    <ul>
+      <li>groups glyph runs into lines by comparing their baselines, with a tolerance scaled to the font size;</li>
+      <li>sorts the lines from the top of the page downwards, and each line's fragments from left to right;</li>
+      <li>inserts a space where two fragments are further apart than the font's natural letter spacing, which recovers word gaps that the PDF stored as positioning rather than space characters;</li>
+      <li>measures the typical gap between lines, then starts a new paragraph whenever the gap is noticeably larger, the line is indented, or it begins with a bullet or a number;</li>
+      <li>re-joins words split across a line break by a hyphen.</li>
+    </ul>
+    <p>
+      The honest caveat: sorting by vertical position is correct for single-column
+      pages and wrong for magazines, newspapers and academic two-column layouts,
+      where it interleaves the columns. Tables come out as rows of words without
+      their column structure. No purely geometric approach avoids this, and any
+      tool that claims otherwise is guessing too.
+    </p>
+
+    <h2>Useful things to do with the output</h2>
+    <ul>
+      <li><strong>Search and quote</strong> a long report without scrolling through a viewer.</li>
+      <li><strong>Count words</strong> in a manuscript or a submission with a defined limit.</li>
+      <li><strong>Feed a language model or script</strong> that expects plain text rather than a binary format.</li>
+      <li><strong>Diff two versions</strong> of a contract by extracting both and comparing the text.</li>
+      <li><strong>Rescue content</strong> from a PDF whose source document has been lost.</li>
+    </ul>
+    <p>
+      If you want an editable document rather than plain text, the
+      <a href="/pdf-to-word">PDF to Word converter</a> wraps this same extraction in
+      a real <code>.docx</code>. To go the other way, see
+      <a href="/text-to-pdf">Text to PDF</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

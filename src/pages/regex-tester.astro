@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RegexTester from '@/components/tools/dev/RegexTester.tsx'
+---
+
+<ToolLayout slug="regex-tester">
+  <RegexTester client:load />
+  <Fragment slot="explainer">
+    <h2>How to test a regular expression</h2>
+    <ol>
+      <li>Type the pattern without slashes around it. The regex tester passes it directly to <code>new RegExp()</code>.</li>
+      <li>Tick the flags you need. <code>g</code> is on by default, because without it only the first match is found.</li>
+      <li>Paste the text to match against. Matches are highlighted as you type, in alternating colours so adjacent matches stay separate.</li>
+      <li>Read the match table for exact positions and each captured group, numbered and named.</li>
+      <li>Turn on the replace preview to see the result of <code>String.replace</code> with your replacement string.</li>
+    </ol>
+
+    <h2>Which regex flavour this is</h2>
+    <p>
+      The tester uses the JavaScript (ECMAScript) engine in your browser. The behaviour you see is the
+      behaviour of your front-end code, your Node service and your JSON schema validator, including where
+      JavaScript differs from PCRE. JavaScript has no atomic groups, no possessive quantifiers, no recursion
+      and no <code>\A</code> or <code>\z</code> anchors. Its lookbehind can have variable length, which most
+      other engines do not allow.
+    </p>
+
+    <h2>Catastrophic backtracking, and why this page cannot freeze</h2>
+    <p>
+      When a regular expression engine hits a dead end, it backtracks and tries another path. With nested
+      quantifiers such as <code>(a+)+$</code>, the number of paths grows exponentially with the input length:
+      25 characters of <code>a</code> followed by a <code>!</code> can take longer than the age of the
+      universe. This is the mechanism behind ReDoS, a denial-of-service class that has taken down production
+      services.
+    </p>
+    <p>
+      A running regular expression cannot be interrupted on the main thread, so this tool runs each pattern
+      in a Web Worker with a two-second budget. When the budget runs out, the tool stops the worker and
+      explains why, and the tab does not lock up. If a pattern trips this guard, do not ship it anywhere user
+      input can reach.
+    </p>
+    <h3>How to fix a backtracking pattern</h3>
+    <ul>
+      <li>Make sure two parts of the pattern cannot match the same text. <code>(\s*\w+)*</code> is ambiguous; <code>[\s\w]*</code> is not.</li>
+      <li>Replace <code>.*</code> between delimiters with a negated class: <code>"[^"]*"</code> in place of <code>".*"</code>.</li>
+      <li>Anchor the pattern with <code>^</code> and <code>$</code> so the engine cannot retry from every position.</li>
+      <li>For deeply structured input, write a parser in place of a regular expression.</li>
+    </ul>
+
+    <h2>Regex flags at a glance</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Flag</th><th>Name</th><th>Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>g</code></td><td>global</td><td>Keep searching after the first match; required for replace-all and for the match list</td></tr>
+        <tr><td><code>i</code></td><td>ignoreCase</td><td>Case-insensitive matching</td></tr>
+        <tr><td><code>m</code></td><td>multiline</td><td><code>^</code> and <code>$</code> match at each line break, not only at the ends of the string</td></tr>
+        <tr><td><code>s</code></td><td>dotAll</td><td><code>.</code> also matches newlines</td></tr>
+        <tr><td><code>u</code></td><td>unicode</td><td>Treat the pattern as code points; required for <code>\p&#123;…&#125;</code> property escapes and correct handling of astral characters</td></tr>
+        <tr><td><code>y</code></td><td>sticky</td><td>Match only at <code>lastIndex</code>; useful for tokenisers, and finds far fewer matches than <code>g</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Named capture groups</h2>
+    <p>
+      Write <code>(?&lt;year&gt;\d&#123;4&#125;)</code> and the match table gets a column for
+      <code>year</code>. In code you read it as <code>match.groups.year</code>, and in a replacement string as
+      <code>$&lt;year&gt;</code>. Named groups make a pattern easier to edit: a new group in the middle
+      renumbers all groups after it, and names stay the same.
+    </p>
+
+    <h2>A note on parsing HTML and email</h2>
+    <p>
+      The preset patterns are practical and not complete. The full grammar for an email address (RFC 5322)
+      allows quoted strings, comments and nested parentheses. The "correct" regular expression for it is
+      several thousand characters long and still does not prove the address exists. Match loosely, then
+      verify by sending mail. HTML is not a regular language: a tag matcher is fine for a quick grep over a
+      log file and wrong for anything that must be correct.
+    </p>
+
+    <h2>Your test data stays here</h2>
+    <p>
+      Your browser's own engine runs the patterns on the subject text inside a worker. Nothing is sent, so
+      you can paste production log samples, customer records and unreleased content.
+    </p>
+  </Fragment>
+</ToolLayout>

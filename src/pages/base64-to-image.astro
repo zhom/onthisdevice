@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFileBase64 from '@/components/tools/dev/DevEncodeFileBase64.tsx'
+---
+
+<ToolLayout slug="base64-to-image">
+  <DevEncodeFileBase64 client:load mode="decode-image" />
+  <Fragment slot="explainer">
+    <h2>Decoding a Base64 image</h2>
+    <p>
+      Paste the string into the panel above. It can be raw Base64, a complete
+      <code>data:image/png;base64,…</code> URI, a URL-safe variant with <code>-</code> and
+      <code>_</code>, or a value with line breaks in it. The tool normalises all of these before
+      decoding, so you seldom need to clean anything first.
+    </p>
+
+    <h2>The type is read from the bytes, not the label</h2>
+    <p>
+      A <code>data:</code> URI declares its own MIME type, and the declaration is often wrong: a JPEG
+      saved with a <code>.png</code> extension, a header copied from a different example, or a generic
+      <code>application/octet-stream</code> from an API. This decoder checks the file signature:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Format</th><th>First bytes (hex)</th><th>How the Base64 usually starts</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PNG</td><td>89 50 4E 47</td><td><code>iVBORw0KGgo</code></td></tr>
+          <tr><td>JPEG</td><td>FF D8 FF</td><td><code>/9j/</code></td></tr>
+          <tr><td>GIF</td><td>47 49 46 38</td><td><code>R0lGODlh</code></td></tr>
+          <tr><td>WebP</td><td>52 49 46 46 … 57 45</td><td><code>UklGR</code></td></tr>
+          <tr><td>SVG</td><td><code>&lt;svg</code> or <code>&lt;?xml</code></td><td><code>PHN2Zy</code> or <code>PD94bWw</code></td></tr>
+          <tr><td>ICO</td><td>00 00 01 00</td><td><code>AAABAA</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      With these leading characters, you can identify a Base64 blob in a log file without decoding it.
+    </p>
+
+    <h2>Why a paste sometimes fails</h2>
+    <ul>
+      <li>
+        Truncated copy: Base64 must be a multiple of four characters after padding. A selection that
+        stopped short loses the last bytes, and the image will not parse.
+      </li>
+      <li>
+        Percent-encoding: if the string has many <code>%2F</code> and <code>%2B</code>, it was
+        URL-encoded after Base64 encoding. Decode that layer first.
+      </li>
+      <li>
+        Double encoding: if the decoded bytes look like more Base64, the value was encoded twice.
+        Decode again.
+      </li>
+      <li>
+        Not an image: a PDF, a ZIP or a font decodes correctly but has no preview. The download still
+        gives you the correct file with the correct extension.
+      </li>
+    </ul>
+
+    <h2>Where these strings come from</h2>
+    <p>
+      These values usually come from places that people do not read: a database column, an API
+      response, a Chrome DevTools copy of an <code>&lt;img&gt;</code> element, a webhook payload, a CSS
+      file from another team, or a canvas export from an application that only offers
+      <code>toDataURL()</code>. A real file is usually the fastest way to see what the value contains.
+    </p>
+
+    <h2>Saving the result</h2>
+    <p>
+      The download is built as a <code>Blob</code> in this tab and passed to the download manager of
+      the browser. There is no request and no temporary file on a server, which matters when the
+      string came from a production database.
+    </p>
+  </Fragment>
+</ToolLayout>

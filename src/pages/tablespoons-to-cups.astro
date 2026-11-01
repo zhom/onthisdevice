@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="tablespoons-to-cups">
+  <UnitsLifeKitchenConverter client:load mode="tablespoons-to-cups" />
+  <Fragment slot="explainer">
+    <h2>Tablespoons in a cup: 16, except in Australia</h2>
+    <p>
+      Sixteen US tablespoons make one US customary cup. Almost every American recipe uses this number, and it
+      is exact: a US tablespoon is half a fluid ounce, and a cup is eight fluid ounces.
+    </p>
+    <p>
+      The tablespoon is not standardised either. Three sizes are in use:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Tablespoon</th><th scope="col">Volume</th><th scope="col">Teaspoons</th><th scope="col">Per US cup</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>US customary</td><td>14.787 mL</td><td>3</td><td>16</td></tr>
+        <tr><td>Metric (UK, EU, Canada)</td><td>15 mL</td><td>3</td><td>15.8</td></tr>
+        <tr><td>Australian</td><td>20 mL</td><td>4</td><td>11.8</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The Australian spoon causes the most errors, in two ways: it is a third larger, and it holds four
+      teaspoons, not three. A tablespoon of baking powder in an Australian recipe is a third more raising
+      agent than the same words in an American one.
+    </p>
+
+    <h2>Cup fractions in tablespoons</h2>
+    <ul>
+      <li>1 cup = 16 tbsp</li>
+      <li>3/4 cup = 12 tbsp</li>
+      <li>2/3 cup = 10 tbsp + 2 tsp</li>
+      <li>1/2 cup = 8 tbsp</li>
+      <li>1/3 cup = 5 tbsp + 1 tsp</li>
+      <li>1/4 cup = 4 tbsp</li>
+      <li>1/8 cup = 2 tbsp = 1 fl oz</li>
+    </ul>
+    <p>
+      The thirds are difficult, because 16 does not divide by 3. Five tablespoons plus a teaspoon is exactly a
+      third of a cup. Remember it, because people often guess this one.
+    </p>
+
+    <h2>Measuring with spoons when you have no cup</h2>
+    <p>
+      For dry ingredients, fill the spoon heaped and level it with the back of a knife, unless the recipe says
+      "heaped" or "rounded". A level tablespoon of flour is about 8 g and a heaped one can be 15 g, so the
+      instruction matters.
+    </p>
+    <p>
+      For sticky ingredients such as honey, syrup and peanut butter, oil the spoon first or weigh the
+      ingredient. Honey that stays in the spoon does not go into the bowl.
+    </p>
+
+    <h2>Cutlery is not a measure</h2>
+    <p>
+      The tablespoon in your cutlery drawer holds 7 to 14 mL depending on the pattern, and the teaspoon 2.5 to
+      6 mL. Eating spoons were never standardised, which is why measuring spoons exist. For salt, raising
+      agents and spices, the ingredients most often measured in spoons, that difference can make food
+      inedible.
+    </p>
+
+    <h2>Grams as well as cups</h2>
+    <p>
+      Pick an ingredient in the tool and each spoon measure also gets a weight, from the same density table as
+      the grams-to-cups converter on this site. A tablespoon of butter is 14 g, of granulated sugar 12.3 g, of
+      cocoa 5 g and of honey 21 g. So "a spoonful" is an unreliable way to compare quantities of different
+      ingredients.
+    </p>
+  </Fragment>
+</ToolLayout>

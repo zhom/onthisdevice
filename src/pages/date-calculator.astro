@@ -1,0 +1,142 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DateCalculator from '@/components/tools/datetime/DateCalculator.tsx'
+---
+
+<ToolLayout slug="date-calculator">
+  <DateCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to add or subtract time from a date</h2>
+    <ol>
+      <li>Set the start date. The default is today.</li>
+      <li>Choose <strong>Add to date</strong> or <strong>Subtract from date</strong>.</li>
+      <li>
+        Fill in any mix of years, months, weeks and days, or tap a preset such as 30 days or 6 months.
+      </li>
+      <li>
+        Turn on <strong>Business days mode</strong> when the offset must skip weekends, for example for
+        "10 working days from receipt" deadlines.
+      </li>
+    </ol>
+    <p>
+      The step-by-step panel shows each intermediate date, so you can see where a month-end clamp or a weekend
+      skip changed the result.
+    </p>
+
+    <h2>The order of operations matters</h2>
+    <p>
+      Units are applied largest first: years, then months, then weeks, then days. This is the standard convention,
+      and it matters at month boundaries. From 31 January:
+    </p>
+    <ul>
+      <li>Plus 1 month, then plus 1 day, gives 1 March (28 February, then one day).</li>
+      <li>Plus 1 day, then plus 1 month, also gives 1 March, but only by coincidence.</li>
+      <li>
+        From 30 January the two orders give different results: plus 1 month gives 28 February, and one more day
+        gives 1 March; plus 1 day gives 31 January, and one more month gives 28 February.
+      </li>
+    </ul>
+    <p>
+      Date arithmetic is not associative around month ends, so always state the order. This date calculator applies
+      the standard order and shows it.
+    </p>
+
+    <h2>Month-end clamping</h2>
+    <p>
+      When the target month is too short for the day number, the result is clamped to the last day of that month.
+      Almost all date libraries, spreadsheets and contract drafting conventions do this.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Start date</th>
+            <th>Operation</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>31 January 2027</td>
+            <td>+ 1 month</td>
+            <td>28 February 2027</td>
+          </tr>
+          <tr>
+            <td>31 January 2028</td>
+            <td>+ 1 month</td>
+            <td>29 February 2028 (leap year)</td>
+          </tr>
+          <tr>
+            <td>31 March 2026</td>
+            <td>− 1 month</td>
+            <td>28 February 2026</td>
+          </tr>
+          <tr>
+            <td>29 February 2028</td>
+            <td>+ 1 year</td>
+            <td>28 February 2029</td>
+          </tr>
+          <tr>
+            <td>31 May 2026</td>
+            <td>+ 3 months</td>
+            <td>31 August 2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The operation is not symmetric: 31 January plus one month is 28 February, but 28 February minus one month is
+      28 January, not 31 January. Clamping cannot be reversed, so calculate long chains of month arithmetic from the
+      original start date, not step by step.
+    </p>
+
+    <h2>Business days mode</h2>
+    <p>
+      In business-days mode, only Monday to Friday count. The start day itself never counts, so "3 business days
+      from Monday" is Thursday. If the start date is on a weekend, the count starts from the next Monday. Public
+      holidays are not applied here; the business days calculator handles them, with a holiday list you can edit.
+    </p>
+
+    <h2>Frequently needed offsets</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Offset</th>
+            <th>Where it shows up</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>14 days</td>
+            <td>EU consumer right to cancel an online order</td>
+          </tr>
+          <tr>
+            <td>30 days</td>
+            <td>Standard invoice payment terms, notice periods</td>
+          </tr>
+          <tr>
+            <td>45 and 180 days</td>
+            <td>US 1031 exchange identification and closing windows</td>
+          </tr>
+          <tr>
+            <td>90 days</td>
+            <td>Schengen and many visa-free stay limits, probation periods</td>
+          </tr>
+          <tr>
+            <td>180 days</td>
+            <td>Passport validity commonly required for entry</td>
+          </tr>
+          <tr>
+            <td>280 days</td>
+            <td>Estimated due date from the last menstrual period</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Rules given in days almost always exclude the start date. When a rule says "within X days of", read the
+      source carefully: some count clear days, some count business days.
+    </p>
+  </Fragment>
+</ToolLayout>

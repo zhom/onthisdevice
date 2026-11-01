@@ -1,0 +1,90 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JsonFormatter from '@/components/tools/dev/JsonFormatter.tsx'
+---
+
+<ToolLayout slug="json-formatter">
+  <JsonFormatter client:load />
+  <Fragment slot="explainer">
+    <h2>How to format JSON</h2>
+    <ol>
+      <li>Paste your JSON into the input pane, or use <strong>Load file</strong> to open a <code>.json</code> file from disk.</li>
+      <li>Choose <strong>Beautify</strong> and pick 2 spaces, 4 spaces or a tab. The output pane updates as you type.</li>
+      <li>If the document is invalid, the error panel shows the line, column and character offset of the first problem, and the bad line with a caret under it.</li>
+      <li>Switch to <strong>Minify</strong> to remove all optional bytes, or <strong>TypeScript</strong> to generate interfaces from the shape of the data.</li>
+      <li>Copy the result, download it, or open the same document in the tree viewer for large payloads.</li>
+    </ol>
+
+    <h2>Reading the error message</h2>
+    <p>
+      JSON is a small grammar, so almost all parse failures have one of a few causes. The validator shows
+      the raw engine message, plus a plain-English hint when it recognises the pattern.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>What you wrote</th><th>Why it fails</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>&#123;"a": 1,&#125;</code></td><td>Trailing comma before <code>&#125;</code></td><td>Delete the comma</td></tr>
+        <tr><td><code>&#123;'a': 1&#125;</code></td><td>Single quotes are not JSON strings</td><td>Use double quotes</td></tr>
+        <tr><td><code>&#123;a: 1&#125;</code></td><td>Unquoted key</td><td>Quote every key</td></tr>
+        <tr><td><code>&#123;"a": 01&#125;</code></td><td>Leading zeros are not valid numbers</td><td>Write <code>1</code></td></tr>
+        <tr><td><code>&#123;"a": NaN&#125;</code></td><td><code>NaN</code> and <code>Infinity</code> are not JSON values</td><td>Use <code>null</code> or a string</td></tr>
+        <tr><td><code>// comment</code></td><td>JSON has no comments</td><td>Strip them, or use JSON5 in your own tooling</td></tr>
+        <tr><td>Smart quotes <code>“a”</code></td><td>Pasted from a word processor</td><td>Retype with straight quotes</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Beautify or minify?</h2>
+    <p>
+      Whitespace has no meaning in JSON, so both forms parse to the same value. Beautified JSON is for people:
+      code review, debugging an API response, or a config file in version control where a line-based diff must
+      be readable. Minified JSON is for machines: it removes all spaces and newlines, usually 15–30% of a
+      formatted document before compression.
+    </p>
+    <p>
+      Minifying changes the bytes your users download much less than you expect, because gzip and brotli
+      already compress repeated indentation very well. Minify for storage limits and payload caps, not to make
+      a compressed transport faster.
+    </p>
+
+    <h2>Sorting keys for comparison</h2>
+    <p>
+      Object member order has no meaning in JSON, but a text diff does not know that. Two API responses with
+      identical content can show many false changes because the server wrote the keys in a different order.
+      Turn on <strong>Sort keys A→Z</strong> on both documents before you diff them. Array order has meaning,
+      and the tool never changes it.
+    </p>
+
+    <h2>Generating TypeScript interfaces</h2>
+    <p>
+      TypeScript mode reads the parsed value and writes one exported interface per distinct nested object,
+      named after the key that contains it. For arrays it merges the shapes of all elements: a field in all
+      elements is required, a field in only some is optional with <code>?</code>, and a field with more than
+      one type becomes a union. Empty arrays give <code>unknown[]</code>, because an empty sample says nothing
+      about the element type.
+    </p>
+    <p>
+      Use the output as a first draft. Generated types describe the sample you pasted, not the contract of the
+      API. A field that is non-null in your sample can be nullable in production. Compare the interfaces with
+      the API documentation before you commit them.
+    </p>
+
+    <h2>Escaping and unescaping</h2>
+    <p>
+      <strong>Escape</strong> turns the whole input into one JSON string literal, with quotes. Use it to put a
+      JSON document inside another JSON document, as webhook payloads and log fields often require.
+      <strong>Unescape</strong> reverses it and turns <code>"&#123;\"a\":1&#125;"</code> back into a document
+      you can format.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      The JSON formatter runs as JavaScript in your browser tab and sends nothing, so you can paste API
+      responses with customer records, internal identifiers or bearer tokens. After the first load, it also
+      works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

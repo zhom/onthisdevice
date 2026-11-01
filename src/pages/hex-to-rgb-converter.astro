@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatColor from '@/components/tools/dev/DevFormatColor.tsx'
+---
+
+<ToolLayout slug="hex-to-rgb-converter">
+  <DevFormatColor client:load from="hex" to="rgb" />
+  <Fragment slot="explainer">
+    <h2>The conversion, worked through</h2>
+    <p>
+      To convert HEX to RGB, read the hex colour as three bytes written in base 16, one per channel, in
+      the order red, green, blue.
+      Each pair of digits is a number from <code>00</code> to <code>ff</code>, which is 0 to 255 in
+      decimal.
+    </p>
+    <pre><code>#2563eb
+  25 → 2×16 + 5  = 37    (red)
+  63 → 6×16 + 3  = 99    (green)
+  eb → 14×16 + 11 = 235  (blue)
+
+  rgb(37, 99, 235)</code></pre>
+    <p>
+      Three-digit shorthand doubles each digit: <code>#2ce</code> is <code>#22ccee</code>, not
+      <code>#0200ce</code>. So you can write a colour short only if each channel pair has two identical
+      digits.
+    </p>
+
+    <h2>Reference values</h2>
+    <table>
+      <thead><tr><th>Hex</th><th>RGB</th><th>Name or use</th></tr></thead>
+      <tbody>
+        <tr><td><code>#000000</code></td><td>rgb(0, 0, 0)</td><td>Black</td></tr>
+        <tr><td><code>#ffffff</code></td><td>rgb(255, 255, 255)</td><td>White</td></tr>
+        <tr><td><code>#808080</code></td><td>rgb(128, 128, 128)</td><td>Mid grey (128, not 127.5)</td></tr>
+        <tr><td><code>#ff0000</code></td><td>rgb(255, 0, 0)</td><td>Pure red</td></tr>
+        <tr><td><code>#2563eb</code></td><td>rgb(37, 99, 235)</td><td>A typical UI primary blue</td></tr>
+        <tr><td><code>#663399</code></td><td>rgb(102, 51, 153)</td><td>rebeccapurple, the only CSS colour added by community request</td></tr>
+        <tr><td><code>#0f172a</code></td><td>rgb(15, 23, 42)</td><td>A dark-mode surface</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Eight-digit hex and alpha</h2>
+    <p>
+      A fourth pair encodes opacity: <code>00</code> is fully transparent and <code>ff</code> is fully
+      opaque. <code>#2563eb80</code> is that blue at about 50%. Alpha is a byte, so the common
+      percentages are: 25% is <code>40</code>, 50% is <code>80</code>, 75% is <code>bf</code>, 90% is
+      <code>e6</code>.
+    </p>
+    <p>
+      All current browsers support it. <code>rgba()</code> gives the same colour with a 0–1 alpha and has
+      had support for longer, so use it for very old browsers.
+    </p>
+
+    <h2>Why the contrast ratios are on this page</h2>
+    <p>
+      After you convert a colour, you usually need to know if text is legible on it. WCAG 2.1 asks for
+      4.5:1 for normal body text and 3:1 for text at 18.66px bold or 24px regular and above. The two
+      figures show if white or black text passes.
+    </p>
+    <p>
+      Contrast is computed on the composited colour, so flatten a semi-transparent background against
+      what is behind it first. The ratio also does not tell you if a person with a colour-vision
+      deficiency can tell colours apart. For that, never use hue alone to show meaning.
+    </p>
+
+    <h2>What this page accepts</h2>
+    <p>
+      The input can be three, four, six or eight hex digits with or without the <code>#</code>; any of
+      the 148 CSS named colours; <code>rgb()</code> and <code>rgba()</code> in comma and space syntax;
+      <code>hsl()</code>; <code>hsv()</code>; <code>cmyk()</code>; or a bare triple such as
+      <code>37 99 235</code>. The table shows all notations, each with its own copy button.
+    </p>
+  </Fragment>
+</ToolLayout>

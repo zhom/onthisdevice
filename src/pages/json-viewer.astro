@@ -1,0 +1,110 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JsonViewer from '@/components/tools/data/JsonViewer.tsx'
+---
+
+<ToolLayout slug="json-viewer">
+  <JsonViewer client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the JSON viewer</h2>
+    <ol>
+      <li>Paste your JSON or drop a <code>.json</code> file onto the left pane. Validation runs as you type.</li>
+      <li>Explore the tree. Expand and collapse nodes, or set a default depth so large documents open at a readable level.</li>
+      <li>Click a row to see its full path in the breadcrumb above the tree, then copy it for your code.</li>
+      <li>Search for a key or value. Matching branches stay visible, with their parents expanded.</li>
+      <li>Switch tabs to beautify or minify the document, or to read the size and shape statistics.</li>
+    </ol>
+
+    <h2>Reading the error messages</h2>
+    <p>
+      When JSON is invalid, the JSON viewer shows the line, the column, and the bad line with a caret under
+      the exact character. Almost all failures have one of these causes:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Mistake</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Example</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">Trailing comma</td>
+            <td class="border-b px-3 py-2"><code>&#123;"a": 1,&#125;</code></td>
+            <td class="border-b px-3 py-2">Remove the comma after the last member</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Single quotes</td>
+            <td class="border-b px-3 py-2"><code>&#123;'a': 1&#125;</code></td>
+            <td class="border-b px-3 py-2">JSON strings must use double quotes</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Unquoted key</td>
+            <td class="border-b px-3 py-2"><code>&#123;a: 1&#125;</code></td>
+            <td class="border-b px-3 py-2">Quote each key. Unquoted keys are JavaScript, not JSON</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Comment</td>
+            <td class="border-b px-3 py-2"><code>// note</code></td>
+            <td class="border-b px-3 py-2">JSON has no comments. Delete them or use <a href="/yaml-to-json">YAML</a></td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">NaN or Infinity</td>
+            <td class="border-b px-3 py-2"><code>&#123;"x": NaN&#125;</code></td>
+            <td class="border-b px-3 py-2">Not valid JSON. Use <code>null</code> or a string</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Unescaped control character</td>
+            <td class="border-b px-3 py-2">A literal newline inside a string</td>
+            <td class="border-b px-3 py-2">Escape it as <code>\n</code></td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Truncated response</td>
+            <td class="border-b px-3 py-2">Ends mid-object</td>
+            <td class="border-b px-3 py-2">Copy the payload again. The error points at the last line</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Paths you can paste into code</h2>
+    <p>
+      Selecting a node builds a JSONPath-style expression such as
+      <code>$.store.books[2].title</code>. Identifier-safe keys use dot notation. Other keys (with a space, a
+      dash or a dot) use bracket notation with quotes, for example <code>$["order-id"]</code>. Array elements
+      always use numeric brackets. You can use the result directly with <code>jq</code>, JSONPath libraries and
+      most API testing tools, and it reads almost the same as JavaScript property access.
+    </p>
+
+    <h2>What the statistics tell you</h2>
+    <ul>
+      <li>Total keys and max depth: a quick check that a payload matches the schema you expected.</li>
+      <li>Type counts: a large null count often means an optional field is never filled upstream.</li>
+      <li>Beautified and minified size: how much whitespace costs on the wire. Minifying usually saves 15-30% before compression. Gzip makes the gap smaller but does not remove it.</li>
+    </ul>
+
+    <h2>Beautify, minify, validate</h2>
+    <p>
+      Beautify writes the document with two, four or eight-space indentation, to read a response or to make
+      diffs that a reviewer can follow. Minify removes all optional bytes, for a request body or an embedded
+      config. Sorted keys let you compare two documents from different sources directly, because JSON object
+      member order has no meaning.
+    </p>
+
+    <h2>Handling big documents</h2>
+    <p>
+      The browser’s native JSON engine parses the document, so a few megabytes is fine. To keep the interface
+      responsive, a node with more than 300 children shows the first 300 and the number left out. The tool still
+      validates, formats and downloads the full document.
+    </p>
+
+    <h2>Nothing is uploaded</h2>
+    <p>
+      API responses often contain access tokens, personal data and internal hostnames. Parsing, formatting and
+      search happen in this tab, and the page also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

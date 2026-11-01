@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="cursed-text-generator">
+  <DevEncodeFancyText
+    client:load
+    sample="cursed"
+    featured={['cursed-light', 'cursed-medium', 'cursed-heavy']}
+  />
+  <Fragment slot="explainer">
+    <h2>What makes text look cursed</h2>
+    <p>
+      Unicode allows any number of combining diacritical marks on one base character. This is
+      deliberate: scripts with stacked vowel and tone marks need it. Layout engines draw all marks they
+      get, so thirty stacked marks climb out of the line.
+    </p>
+    <p>
+      Cursed text, also called zalgo after the internet horror meme it came from around 2009, is only
+      that: your letters with randomly chosen marks stacked above and below.
+    </p>
+
+    <h2>Three intensities</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Level</th><th>Marks per character</th><th>Behaviour</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Light</td><td>1 above, 1 below</td><td>Stays inside its own line; usually tolerated anywhere</td></tr>
+          <tr><td>Medium</td><td>3 above, 3 below</td><td>Touches the lines above and below</td></tr>
+          <tr><td>Heavy</td><td>6 above, 6 below</td><td>Goes far beyond the line box; the classic look</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The output is deterministic: the marks are chosen from the position of each character, not from a
+      random number generator, so the same input always gives exactly the same cursed text, today or
+      tomorrow.
+    </p>
+
+    <h2>Why it overflows the line</h2>
+    <p>
+      Text layout reserves space for a line from the declared ascent and descent of the font. Combining
+      marks are drawn relative to the base character and can extend any distance, and no engine makes
+      the line box larger to fit them. That overlap is the effect. It is also why moderators dislike it:
+      one heavy message can make several lines of a chat log unreadable.
+    </p>
+
+    <h2>Where it will get you in trouble</h2>
+    <ul>
+      <li>
+        Discord: many servers have automod rules against zalgo, and heavy stacking can measurably slow
+        the rendering of the client.
+      </li>
+      <li>
+        Usernames: most platforms remove or reject combining marks in handles, and some treat the
+        attempt as an impersonation risk.
+      </li>
+      <li>
+        Anywhere it covers other people's text. Most communities enforce this rule: decorating your own
+        message is fine, making the channel unreadable is not.
+      </li>
+    </ul>
+    <p>Light intensity is the safe default if you want the effect without problems.</p>
+
+    <h2>It is unreadable to assistive technology</h2>
+    <p>
+      Screen readers handle stacked combining marks unpredictably: some read each mark by name, which
+      gives a minute of speech for one word, and others skip the word. Never use cursed text for
+      information a reader needs.
+    </p>
+
+    <h2>Cleaning it up</h2>
+    <p>
+      To remove the marks in a text editor with regex support, delete all characters in the Unicode
+      ranges U+0300–U+036F, U+1AB0–U+1AFF and U+20D0–U+20F0, and the base letters remain. In JavaScript,
+      <code>text.normalize('NFD').replace(/\p&#123;M&#125;/gu, '')</code> does it in one line. It also
+      removes real accents, so use it only on cursed text.
+    </p>
+
+    <h2>Generated in your browser</h2>
+    <p>
+      The cursed text generator stacks the marks with string operations as you type. Nothing is
+      uploaded, no request is made, and the page works with the network disconnected.
+    </p>
+  </Fragment>
+</ToolLayout>

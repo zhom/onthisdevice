@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SplitPdf from '@/components/tools/pdf/SplitPdf.tsx'
+---
+
+<ToolLayout slug="split-pdf">
+  <SplitPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to split a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above. The page count appears when the file is read.</li>
+        <li>
+          Pick a split mode: custom ranges for chosen sections, every N pages for equal parts, or one file
+          per page.
+        </li>
+        <li>Check the preview list. It shows which pages go into each output file.</li>
+        <li>
+          Press <strong>Split</strong>. One output downloads as a PDF; several outputs download as a ZIP, and
+          the results table also has a download button for each file.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Which split mode to use</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[560px]">
+          <thead>
+            <tr>
+              <th scope="col">Mode</th>
+              <th scope="col">Example input</th>
+              <th scope="col">Result for a 12-page file</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Custom ranges</td>
+              <td class="font-mono">1-3, 7, 10-</td>
+              <td>3 files: pages 1-3, page 7, pages 10-12</td>
+            </tr>
+            <tr>
+              <td>Every N pages</td>
+              <td class="font-mono">4</td>
+              <td>3 files of 4 pages each</td>
+            </tr>
+            <tr>
+              <td>One file per page</td>
+              <td>No input</td>
+              <td>12 single-page PDFs in a ZIP</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Ranges can overlap or repeat pages: <code class="font-mono">1-5, 4-8</code> gives two files that both
+        contain pages 4 and 5. An open range such as <code class="font-mono">10-</code> always runs to the
+        last page, so it still works when the document grows.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why the parts can add up to more than the whole</h2>
+      <p>
+        A PDF stores shared resources once: an embedded font, a logo used on every page, an ICC colour
+        profile. When you split a document, each output file needs its own copy of everything its pages use.
+        A 2 MB, 40-page report split into 40 single-page files can total 8 MB, although no page changed.
+      </p>
+      <p>
+        This is normal and causes no quality loss, because the pages are copied byte for byte. If size
+        matters, split into fewer, larger parts, or compress the outputs afterwards.
+      </p>
+    </section>
+
+    <section>
+      <h2>Runs on your device</h2>
+      <p>
+        The split runs in JavaScript and WebAssembly inside this tab, with no copy on a server. This matters
+        for a signed contract, a payslip or a medical record. After the page loads, the tool also works
+        offline.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

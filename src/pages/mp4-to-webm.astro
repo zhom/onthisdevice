@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="mp4-to-webm">
+  <VideoRemux
+    client:load
+    from="mp4"
+    target="webm"
+    hint="VP9 + Opus for the web, encoded on your CPU, so there is no daily conversion limit"
+  />
+  <Fragment slot="explainer">
+    <h2>What WebM buys you</h2>
+    <p>
+      WebM is a Matroska-derived container made for the web, with VP9 video and Opus audio. To convert
+      MP4 to WebM at matched perceived quality usually gives <strong>25-35% smaller</strong> files than
+      H.264, and Opus is clearly better than AAC at low bitrates. For a hero video, a looping background
+      or an autoplaying product clip, you pay for less bandwidth and visitors wait less.
+    </p>
+    <p>
+      The cost is encoding time. VP9 takes five to ten times longer to compress than H.264, and
+      WebAssembly has no hardware encoder. This page suits a 30-second loop, not a feature film.
+    </p>
+
+    <h2>Serve both, let the browser choose</h2>
+    <p>
+      The standard pattern is WebM first and MP4 as a fallback. Browsers pick the first source they can
+      play, so modern browsers take the small file and others take the safe one:
+    </p>
+    <pre><code>&lt;video controls playsinline poster="poster.jpg"&gt;
+  &lt;source src="clip.webm" type="video/webm"&gt;
+  &lt;source src="clip.mp4"  type="video/mp4"&gt;
+  Your browser cannot play this video.
+&lt;/video&gt;</code></pre>
+    <p>
+      For a silent background loop, add <code>muted</code>, <code>loop</code>, <code>autoplay</code>
+      and <code>playsinline</code>. All mobile browsers autoplay only muted video.
+    </p>
+
+    <h2>Browser support in practice</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Browser</th>
+            <th>VP9 in WebM</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chrome, Edge, Opera</td>
+            <td>Yes, for years</td>
+            <td>Hardware decoding on most recent machines</td>
+          </tr>
+          <tr>
+            <td>Firefox</td>
+            <td>Yes, for years</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Safari on macOS</td>
+            <td>Yes, from Safari 14</td>
+            <td>Big Sur and later</td>
+          </tr>
+          <tr>
+            <td>Safari on iOS</td>
+            <td>Yes on modern iOS, patchy before</td>
+            <td>Always keep the MP4 fallback</td>
+          </tr>
+          <tr>
+            <td>Smart TVs, consoles, older Android</td>
+            <td>Unreliable</td>
+            <td>MP4 remains the safe format</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Quality settings, and why there is no size box</h2>
+    <p>
+      This page encodes at a constant quality (CRF), not a fixed bitrate. CRF gives each frame the bits
+      it needs: a static talking head uses few, a handheld action shot uses many, and the perceived
+      quality stays even. But you cannot know the final size before the encode finishes.
+    </p>
+    <p>
+      The three presets map to VP9 CRF 26 (high), 33 (balanced) and 40 (small). If you need to hit a
+      specific number of megabytes, <a href="/compress-video">compress video</a> works to a target
+      bitrate. <a href="/resize-video">Resize video</a> usually has a bigger effect: half the dimensions
+      removes about three quarters of the pixels.
+    </p>
+
+    <h2>What about AV1?</h2>
+    <p>
+      AV1 is better again, about 30% smaller than VP9, and this build can read it. But AV1 encoding in
+      WebAssembly is too slow for more than a few seconds of footage, and it would time out on real
+      files. So this page does not offer AV1 output.
+    </p>
+  </Fragment>
+</ToolLayout>

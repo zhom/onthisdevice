@@ -1,0 +1,139 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditRecolorPdf from '@/components/tools/pdf/PdfEditRecolorPdf.tsx'
+---
+
+<ToolLayout slug="invert-pdf-colors">
+  <PdfEditRecolorPdf client:load mode="invert" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>A dark copy that stays dark everywhere</h2>
+      <p>
+        Many PDF readers have a night mode, but it works only in that reader. Send the file to a
+        colleague, open it on an e-reader or a phone, or project it in a dark lecture theatre, and the
+        page is white again.
+      </p>
+      <p>
+        To invert the PDF colors in the file makes the change permanent and portable. The document is
+        dark in all viewers, on all devices, with no setting to find.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dark mode versus a true negative</h2>
+      <p>
+        These give very different results.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-[640px]">
+          <thead>
+            <tr>
+              <th scope="col">Input colour</th>
+              <th scope="col">Dark mode (lightness flip)</th>
+              <th scope="col">True negative (channel inversion)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>White paper</td>
+              <td>Black</td>
+              <td>Black</td>
+            </tr>
+            <tr>
+              <td>Black text</td>
+              <td>White</td>
+              <td>White</td>
+            </tr>
+            <tr>
+              <td>Red stamp</td>
+              <td>Red</td>
+              <td>Cyan</td>
+            </tr>
+            <tr>
+              <td>Blue heading</td>
+              <td>Blue</td>
+              <td>Orange</td>
+            </tr>
+            <tr>
+              <td>Mid grey</td>
+              <td>Mid grey</td>
+              <td>Mid grey</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Dark mode changes each pixel's lightness and keeps hue and saturation. For a channel value
+        <code>c</code>, with the pixel's brightest and darkest channels <code>max</code> and
+        <code>min</code>, the new value is <code>255 − max − min + c</code>. The order of the three
+        channels, which your eye reads as hue, stays the same, and the lightest becomes the darkest. A
+        true negative computes <code>255 − c</code> per channel, which also changes the hue to its
+        complement.
+      </p>
+      <p>
+        Use dark mode for reading. Use the true negative when you want a negative: to read a scanned
+        film strip, recover a photograph of a chalkboard, or inspect a lithography mask.
+      </p>
+    </section>
+
+    <section>
+      <h2>Battery and eye comfort</h2>
+      <p>
+        On an OLED or AMOLED screen (most modern phones, many tablets, some laptops), black pixels are
+        off. A page of text is mostly background, so an inverted document cuts panel power, often by a
+        lot at high brightness.
+      </p>
+      <p>
+        On an LCD the backlight stays on, so there is no power saving. The benefit there is comfort:
+        less light in a dark room, which most people find easier over a long reading session. Neither
+        effect is a health claim. In normal daylight, the evidence on reading speed and eye strain
+        favours dark text on a light background. Invert for night reading, not as a default.
+      </p>
+    </section>
+
+    <section>
+      <h2>What inversion costs</h2>
+      <ul>
+        <li>
+          The text layer: to recolour, the tool renders each page, so the output is images. Nothing
+          is selectable, searchable or screen-reader accessible, and links stop working. Keep the
+          original.
+        </li>
+        <li>
+          Photographs: inverting a page inverts the pictures on it. Dark mode keeps hues, so it looks
+          better than a true negative, but a page that is mostly photographs is usually better as it
+          is.
+        </li>
+        <li>
+          File size: rendered pages are often larger than a compact vector original. The result panel
+          shows how much changed.
+        </li>
+        <li>
+          Printing: do not print it. A fully inverted page uses a very large amount of toner and looks
+          bad. This is a format for screen reading.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Practical settings</h2>
+      <p>
+        For reading on a phone or tablet, 110 or 150 DPI at 82% quality gives a compact file that
+        looks sharp on a high-density display. For a large-format technical drawing that you will zoom
+        into, use 200 or 300 DPI and accept the size. Hold the compare button to show the original.
+        Switch between the two to see if dark mode or a true negative suits the document.
+      </p>
+    </section>
+
+    <section>
+      <h2>Related</h2>
+      <p>
+        <a href="/grayscale-pdf">PDF to Grayscale</a> uses the same rendering pipeline and is for cheap
+        mono printing, with a true 1-bit mode. <a href="/pdf-to-png">PDF to PNG</a> exports pages as
+        image files, to invert them in an image editor. <a href="/compress-pdf">Compress PDF</a> gives
+        a smaller file and keeps its text.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

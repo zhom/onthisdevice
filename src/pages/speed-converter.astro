@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="speed-converter">
+  <UnitConverter client:load dimension="speed" from="kmh" to="mph" />
+  <Fragment slot="explainer">
+    <h2>How to convert a speed</h2>
+    <ol>
+      <li>Type the speed into either field. The other field updates at once, so km/h to mph and mph to km/h use the same speed converter.</li>
+      <li>Pick the units. The list has metric units, imperial units, nautical and aviation units, and the speed of light for physics questions.</li>
+      <li>The chart below gives a full column of values, which is easier to scan than speed limits converted one at a time.</li>
+    </ol>
+
+    <h2>Speed conversion factors and mental shortcuts</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Conversion</th><th>Exact factor</th><th>Mental shortcut</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>km/h to mph</td><td>× 0.6213711922</td><td>Halve it, add 10 %</td></tr>
+          <tr><td>mph to km/h</td><td>× 1.609344</td><td>Add 60 %</td></tr>
+          <tr><td>m/s to km/h</td><td>× 3.6</td><td>Multiply by 3.6 exactly</td></tr>
+          <tr><td>km/h to m/s</td><td>× 5/18</td><td>Divide by 3.6</td></tr>
+          <tr><td>knots to km/h</td><td>× 1.852</td><td>Add 85 %</td></tr>
+          <tr><td>knots to mph</td><td>× 1.150779448</td><td>Add 15 %</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The mile is exactly 1,609.344 m and the nautical mile is exactly 1,852 m, so each factor in the table
+      is exact, and the converter uses the full value.
+    </p>
+
+    <h2>Speed limits at a glance</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>km/h</th><th>mph</th><th>Where you see it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>30</td><td>18.6</td><td>Urban limits across Europe</td></tr>
+          <tr><td>50</td><td>31.1</td><td>Standard built-up limit</td></tr>
+          <tr><td>60</td><td>37.3</td><td>US residential and school zones (35–40 mph)</td></tr>
+          <tr><td>80</td><td>49.7</td><td>Rural single carriageway</td></tr>
+          <tr><td>100</td><td>62.1</td><td>Motorway in much of Europe</td></tr>
+          <tr><td>112.7</td><td>70</td><td>UK motorway limit</td></tr>
+          <tr><td>120</td><td>74.6</td><td>Spanish and French autoroute</td></tr>
+          <tr><td>130</td><td>80.8</td><td>French motorway in dry weather</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why Mach is not a fixed speed</h2>
+    <p>
+      Mach number is the ratio of an object's speed to the local speed of sound, and sound travels faster in
+      warmer air. At sea level in the international standard atmosphere (15 °C), sound travels at
+      340.29 m/s, the figure this converter uses. At 11 km, a typical airliner cruising altitude where the
+      air is about −56 °C, it drops to about 295 m/s.
+    </p>
+    <p>
+      The difference is large. An airliner cruising at Mach 0.85 is doing about 903 km/h at altitude, but
+      the same Mach number at sea level is about 1,041 km/h. A Mach figure from this converter is a
+      sea-level reference value, not an aviation calculation. Real flight planning uses the air
+      temperature at altitude.
+    </p>
+
+    <h2>Knots, and why sailors and pilots use them</h2>
+    <p>
+      A knot is one nautical mile per hour, and a nautical mile is one minute of latitude. This makes
+      navigation arithmetic on a chart easy: an aircraft that covers 300 nautical miles in an hour is doing
+      300 knots and has crossed five degrees of latitude. The name comes from the knotted rope that sailors
+      let out behind a ship to measure its speed against a sand timer.
+    </p>
+  </Fragment>
+</ToolLayout>

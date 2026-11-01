@@ -1,0 +1,125 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RandomPicker from '@/components/tools/everyday/RandomPicker.tsx'
+---
+
+<ToolLayout slug="random-picker">
+  <RandomPicker client:load />
+  <Fragment slot="explainer">
+    <h2>How to pick a random winner</h2>
+    <ol>
+      <li>
+        Paste your list into the box, one entry per line. The random picker ignores blank lines and
+        removes duplicate lines unless you turn that off.
+      </li>
+      <li>Choose how many winners you want. Winners are always distinct: nobody is drawn twice.</li>
+      <li>
+        Press <strong>Pick</strong>. Winners appear one at a time, and you can copy the full result as a
+        numbered list.
+      </li>
+      <li>
+        Switch to <strong>Shuffle</strong> to put the entire list in a random order, for example for a
+        running order, seating, review rotas or random task assignment.
+      </li>
+    </ol>
+
+    <h2>Weighted draws</h2>
+    <p>
+      Turn on weights and add a number after a vertical bar to change an entrant's odds:
+    </p>
+    <pre><code>Alice | 3
+Bob | 1
+Charlie | 2</code></pre>
+    <p>
+      Alice has three chances in six, Charlie two and Bob one. The odds table lists each entrant's exact
+      probability of being drawn first. Use weights for raffle tickets bought in different quantities,
+      entries earned by activity, or a rota where one person is due a larger share.
+    </p>
+    <p>
+      When you draw several winners with weights, each pick removes that entrant from the pool and the
+      remaining probabilities are recalculated. This is the standard weighted sampling-without-replacement
+      procedure.
+    </p>
+
+    <h2>How the randomness works</h2>
+    <p>
+      A fair draw needs a good source of randomness and a correct algorithm.
+    </p>
+    <p>
+      The source is <code>crypto.getRandomValues</code>, the browser's cryptographically secure
+      generator, with rejection sampling so that each index is exactly equally likely. There is no modulo
+      bias.
+    </p>
+    <p>
+      The algorithm is a Fisher–Yates shuffle. It walks the list from the end and swaps each item with a
+      uniformly chosen earlier one, which gives every possible order with equal probability in linear
+      time. The common shortcut <code>array.sort(() =&gt; Math.random() - 0.5)</code> is measurably
+      biased: comparison sorts expect a consistent order, and a random comparator does not give one. Some
+      orders come up several times more often than others.
+    </p>
+
+    <h2>Running a giveaway people will accept</h2>
+    <ul>
+      <li>
+        Freeze the entry list first. Export it, note how many entries there are, and do not edit it after
+        the deadline.
+      </li>
+      <li>
+        Decide the rules before you draw: how many winners, what happens if a winner does not respond,
+        and whether duplicate entries are allowed.
+      </li>
+      <li>
+        Draw substitutes at the same time. Pick five winners when you need three, and publish the order.
+      </li>
+      <li>
+        Record the draw. A screen recording with the entry count visible is a practical substitute for an
+        auditor.
+      </li>
+      <li>
+        The draw runs only in your browser, so there is no third-party log to use as an audit trail. A
+        legally regulated prize draw may need a verifiable service.
+      </li>
+    </ul>
+
+    <h2>Odds at a glance</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Entries</th>
+            <th scope="col">1 winner</th>
+            <th scope="col">3 winners</th>
+            <th scope="col">10 winners</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10</td><td>10%</td><td>30%</td><td>100%</td></tr>
+          <tr><td>50</td><td>2%</td><td>6%</td><td>20%</td></tr>
+          <tr><td>100</td><td>1%</td><td>3%</td><td>10%</td></tr>
+          <tr><td>500</td><td>0.2%</td><td>0.6%</td><td>2%</td></tr>
+          <tr><td>1,000</td><td>0.1%</td><td>0.3%</td><td>1%</td></tr>
+          <tr><td>10,000</td><td>0.01%</td><td>0.03%</td><td>0.1%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      With equal weights and a draw without replacement, each entrant's chance of being among the winners
+      is winners ÷ entries.
+    </p>
+
+    <h2>Other uses</h2>
+    <ul>
+      <li>Picking who presents first, or the order of a stand-up</li>
+      <li>Making secret-santa pairings by shuffling twice</li>
+      <li>Choosing a random sample of records for a spot check</li>
+      <li>Splitting a class into random groups: shuffle, then deal off the top</li>
+      <li>Making a decision with more than two options</li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      Entrant names, emails and handles stay in this browser tab, which matters when the list holds
+      customer data or colleagues' names.
+    </p>
+  </Fragment>
+</ToolLayout>

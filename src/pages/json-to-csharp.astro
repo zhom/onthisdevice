@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-csharp">
+  <DevFormatJsonCode client:load target="csharp" />
+  <Fragment slot="explainer">
+    <h2>What the generator produces</h2>
+    <p>
+      The JSON to C# generator writes one <code>public class</code> per distinct nested object, with
+      PascalCase auto-properties and a <code>[JsonPropertyName("…")]</code> attribute that keeps the
+      original JSON key. Collections become <code>List&lt;T&gt;</code>. The two required using directives
+      are included, so the file compiles when you add it to a project.
+    </p>
+
+    <h2>System.Text.Json or Newtonsoft?</h2>
+    <p>
+      The attributes target System.Text.Json, which is the in-box serialiser from .NET Core 3.0 onward
+      and the default in ASP.NET Core. If your project uses Newtonsoft.Json, the conversion is two
+      find-and-replaces: <code>[JsonPropertyName("x")]</code> becomes <code>[JsonProperty("x")]</code>,
+      and the using directive becomes <code>Newtonsoft.Json</code>.
+    </p>
+    <p>
+      System.Text.Json is case-insensitive only if you set
+      (<code>PropertyNameCaseInsensitive = true</code>). Newtonsoft is case-insensitive by default. The
+      explicit attributes make the difference irrelevant, so the generator always writes them.
+    </p>
+
+    <h2>Numeric type choices</h2>
+    <p>
+      Whole numbers become <code>long</code> and fractional numbers become <code>double</code>:
+    </p>
+    <ul>
+      <li><code>long</code>, because JSON integers often exceed 32 bits. Unix milliseconds do, and so do Snowflake-style IDs.</li>
+      <li><code>double</code>, because that is what a JSON number is under the specification&rsquo;s interoperability guidance.</li>
+    </ul>
+    <p>
+      For money, change the property to <code>decimal</code>, and make sure the API sends the value as a
+      string. A monetary amount that went through a double on the server has already lost precision,
+      and no client-side type can recover it.
+    </p>
+
+    <h2>Nullable reference types</h2>
+    <p>
+      Values that were null in your sample, and keys missing from some records, get <code>?</code>.
+      Reference-type properties that were always present have no <code>?</code>. Under
+      <code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code> this gives CS8618: &ldquo;non-nullable property
+      must contain a non-null value when exiting constructor&rdquo;. Three ways to resolve it:
+    </p>
+    <ul>
+      <li>Add <code>required</code> to the property (C# 11 and later). This is the clearest signal.</li>
+      <li>Initialise with <code>= string.Empty;</code> or <code>= new();</code> where a sensible empty value exists.</li>
+      <li>Declare a constructor that takes the required values.</li>
+    </ul>
+    <p>Do not use <code>= null!;</code> as a habit. It stops the compiler warning and keeps the bug.</p>
+
+    <h2>Converting to records</h2>
+    <p>
+      For immutability, change each <code>set</code> to <code>init</code>, which keeps the class shape
+      and the attributes, or write a positional record:
+    </p>
+    <pre><code>public record Customer(
+    [property: JsonPropertyName("id")] long Id,
+    [property: JsonPropertyName("full_name")] string FullName);</code></pre>
+    <p>
+      Use the <code>property:</code> target. Without it, the attribute goes on the constructor parameter
+      and the serialiser ignores it.
+    </p>
+
+    <h2>Deserialising safely</h2>
+    <p>
+      Set two options on <code>JsonSerializerOptions</code>. <code>UnmappedMemberHandling.Disallow</code>
+      (.NET 8+) turns an unexpected key into an exception, so you learn when the API changes.
+      <code>NumberHandling = JsonNumberHandling.AllowReadingFromString</code> helps when a provider
+      sometimes sends numbers as strings.
+    </p>
+  </Fragment>
+</ToolLayout>

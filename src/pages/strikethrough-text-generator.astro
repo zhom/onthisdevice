@@ -1,0 +1,87 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="strikethrough-text-generator">
+  <DevEncodeFancyText
+    client:load
+    sample="crossed out"
+    featured={['strikethrough', 'strikethrough-short', 'slashed', 'underline', 'double-underline']}
+  />
+  <Fragment slot="explainer">
+    <h2>How strikethrough works in plain text</h2>
+    <p>
+      Unicode has a category of characters called combining marks. They have no width; they attach to the
+      character before them, and the font draws both together. The strikethrough text generator puts U+0336
+      COMBINING LONG STROKE OVERLAY after each letter, so the line is part of the text and needs no
+      formatting.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Mark</th><th>Codepoint</th><th>Effect</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Long stroke overlay</td><td>U+0336</td><td>The standard strikethrough</td></tr>
+          <tr><td>Short stroke overlay</td><td>U+0335</td><td>Shorter dashes; better in wide fonts</td></tr>
+          <tr><td>Long solidus overlay</td><td>U+0338</td><td>A diagonal slash through each character</td></tr>
+          <tr><td>Low line</td><td>U+0332</td><td>Underline</td></tr>
+          <tr><td>Double low line</td><td>U+0333</td><td>Double underline</td></tr>
+          <tr><td>Overline</td><td>U+0305</td><td>A line above</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the line sometimes looks broken</h2>
+    <p>
+      The font draws each mark per character, so the line is a row of short strokes. Whether they join
+      depends on the font. Monospace and condensed fonts join cleanly; wide proportional fonts leave visible
+      gaps, most of all around spaces and narrow letters such as <code>i</code> and <code>l</code>. If the
+      standard mark has gaps, try the short-stroke or slash variant. The slash variant never looks broken,
+      because it is not meant to be continuous.
+    </p>
+
+    <h2>Use the native syntax where it exists</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Where</th><th>Native way</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Discord</td><td>Wrap in double tildes</td></tr>
+          <tr><td>Slack</td><td>Wrap in single tildes</td></tr>
+          <tr><td>WhatsApp</td><td>Wrap in single tildes</td></tr>
+          <tr><td>Markdown / GitHub</td><td>Double tildes</td></tr>
+          <tr><td>Google Docs, Word</td><td>A real strikethrough command</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Native formatting renders consistently and stays searchable. Use this page for bios, form fields,
+      spreadsheet cells, plain-text notes and apps with no formatting.
+    </p>
+
+    <h2>Search stops finding the words</h2>
+    <p>
+      A combining mark changes the byte sequence, so a plain-text search for the original word no longer
+      finds it. This can be useful, for a crossed-out phrase that must not appear in search results, or a
+      problem, when you later search for your own note. Keep this in mind before you strike through a whole
+      document.
+    </p>
+
+    <h2>How screen readers read it</h2>
+    <p>
+      Usually badly. Some screen readers ignore combining marks and read the text normally, some announce
+      each mark, and some spell the word out. A real strikethrough in a document is announced as such, and
+      the listener can skip it; this text cannot be skipped. If the strikethrough has a meaning, such as a
+      price that no longer applies or a finished task, also say so in words.
+    </p>
+
+    <h2>Copying safely</h2>
+    <p>
+      Combining marks are invisible characters, so a partial selection can leave a stray mark or lose one at
+      the start. Use the copy button next to each style, most of all on a phone.
+    </p>
+  </Fragment>
+</ToolLayout>

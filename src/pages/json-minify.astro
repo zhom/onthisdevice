@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-minify">
+  <DevFormatJson client:load mode="minify" />
+  <Fragment slot="explainer">
+    <h2>What minifying JSON removes</h2>
+    <p>
+      To minify JSON, the tool removes only insignificant whitespace: the spaces, tabs and newlines
+      between tokens that a pretty printer added. Strings, key order and numbers stay the same. The tool
+      parses the document and writes the parsed value again, so the output is always valid JSON with
+      exactly the same data. An invalid input gives an error, not a damaged string.
+    </p>
+
+    <h2>Does minifying make it faster?</h2>
+    <p>
+      Minification saves many raw bytes and very few transferred bytes. Indentation is the most
+      compressible part of a text file: long runs of identical characters in predictable positions,
+      which gzip and Brotli remove almost for free. A document that is 28% smaller after minification is
+      usually only 3&ndash;6% smaller after Brotli.
+    </p>
+    <p>So minify when the limit is on uncompressed bytes:</p>
+    <ul>
+      <li>A database column with a length cap.</li>
+      <li>A message-queue or webhook payload size limit (SQS 256 KB, EventBridge 256 KB, Lambda 6 MB synchronous).</li>
+      <li>A cookie, a URL query parameter, or a header value.</li>
+      <li>localStorage, which is quota-limited per origin and stores strings uncompressed.</li>
+      <li>An embedded device with a fixed receive buffer.</li>
+    </ul>
+    <p>
+      Do not minify a static <code>.json</code> file served over HTTP only for speed. Enable compression
+      on the server and keep the readable version.
+    </p>
+
+    <h2>Sorting keys before minifying</h2>
+    <p>
+      Object member order has no meaning in JSON, but a byte-level comparison (a checksum, a cache key,
+      a text diff) treats a reordered document as a different one. If you hash JSON to detect change, or
+      compare two API responses written by different runtime versions, turn on
+      <strong>Sort keys A→Z</strong> first. Array order has meaning, and the tool never changes it.
+    </p>
+
+    <h2>Numbers survive, formatting does not</h2>
+    <p>
+      If you will compare the minified document with the original, note that the round trip normalises
+      number formatting. <code>1.50</code> becomes <code>1.5</code>, <code>1e3</code> becomes
+      <code>1000</code>, and <code>-0</code> becomes <code>0</code>. The values are identical, but the
+      text is not. If you need byte-identical numeric formatting, for example for a signature over a
+      canonical form, do not send it through a parser.
+    </p>
+
+    <h2>Minifying very large files</h2>
+    <p>
+      The tool parses the whole document in memory, so the limit is your device, not an upload limit.
+      Tens of megabytes are fine on a desktop browser. A phone has problems sooner. For files over a
+      megabyte, use the file button: pasting a large document into a textarea is slower than reading
+      the file.
+    </p>
+  </Fragment>
+</ToolLayout>

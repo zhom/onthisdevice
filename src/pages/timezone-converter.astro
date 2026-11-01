@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TimezoneConverter from '@/components/tools/datetime/TimezoneConverter.tsx'
+---
+
+<ToolLayout slug="timezone-converter">
+  <TimezoneConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert a time between zones</h2>
+    <ol>
+      <li>Enter the date and time, and the time zone of that time.</li>
+      <li>Add the zones you want to compare. This device remembers your selection for next time.</li>
+      <li>Read the table: each row is the same instant, written as a person in that zone would write it.</li>
+      <li>
+        Use the overlap strip to find an hour that suits everyone, then tap a column to set the reference time to
+        that hour.
+      </li>
+    </ol>
+
+    <h2>Reading the overlap strip</h2>
+    <p>
+      Each row is one time zone and each of the 24 columns is one hour of the reference day. The number in a cell
+      is the local hour in that zone. Green cells are inside the working window you set, amber cells are waking
+      hours outside it, and grey cells are night. A dot above a column means every selected zone is in working
+      hours at that hour, so that column is a possible meeting slot.
+    </p>
+    <p>
+      Rows can be shifted by a day, and that is correct: 09:00 Monday in San Francisco is 02:00 Tuesday in
+      Berlin. The date column and the "next day" note show the shift, so nobody books a meeting on the wrong
+      day.
+    </p>
+
+    <h2>Daylight saving time</h2>
+    <p>
+      Offsets change during the year. About 70 countries change their clocks, on different days. Most scheduling
+      errors happen in the gaps between those days:
+    </p>
+    <ul>
+      <li>
+        Mid-March: the US moves its clocks forward two to three weeks before Europe, so New York and London are 4
+        hours apart, not the usual 5, for that period.
+      </li>
+      <li>
+        Late October: Europe moves its clocks back a week before the US, so the gap is 4 hours again for a week.
+      </li>
+      <li>
+        Southern hemisphere: Australia and New Zealand change in the opposite direction, so the gap between Europe
+        and Sydney changes by two hours over the year.
+      </li>
+      <li>
+        No DST: most of Asia, Africa and South America, and Arizona, Hawaii, Queensland and Saskatchewan.
+      </li>
+    </ul>
+    <p>
+      The time zone converter uses your browser's IANA time zone database, which has the rules for each zone,
+      including historical changes. So it applies the offset in force on the date you selected, not today's.
+      Change the date across a transition and the offsets change.
+    </p>
+
+    <h2>Why zone names beat abbreviations</h2>
+    <p>
+      Abbreviations are ambiguous; do not use them to schedule. CST is Central Standard Time in North America,
+      China Standard Time and Cuba Standard Time. IST is India, Ireland and Israel. BST is British Summer Time and
+      Bangladesh Standard Time. Even unambiguous ones change between standard and summer forms twice a year, so
+      "EST" written in June is usually wrong: the sender meant EDT.
+    </p>
+    <p>
+      IANA identifiers such as Europe/Lisbon or America/Argentina/Buenos_Aires name a region with a shared history
+      of clock changes, so software uses them. The pickers here list these identifiers.
+    </p>
+
+    <h2>Meeting planning across time zones</h2>
+    <ul>
+      <li>
+        Give the instant, not the wall clock. "14:00 UTC" or "14:00 Europe/Berlin" is unambiguous; "2pm my time"
+        is not.
+      </li>
+      <li>
+        Watch the date line. A meeting across Asia-Pacific and the Americas falls on different calendar days for
+        different people.
+      </li>
+      <li>
+        Share the inconvenience. With a wide spread, no hour suits everybody. Alternate which region takes the
+        early or late call; do not always favour headquarters.
+      </li>
+      <li>
+        Avoid the transition weeks. A recurring meeting near the edge of the working day moves outside it in March
+        and October for half the participants.
+      </li>
+      <li>
+        Nine-hour rule of thumb: Europe and the US west coast, or Europe and East Asia, have about one comfortable
+        overlap hour. Plan for it.
+      </li>
+    </ul>
+
+    <h2>Half-hour and quarter-hour offsets</h2>
+    <p>
+      Some zones are not a whole number of hours from UTC. India is UTC+05:30, Iran UTC+03:30, Newfoundland
+      UTC−03:30, Nepal UTC+05:45 and the Chatham Islands UTC+12:45. The difference column shows fractional hours,
+      and the overlap strip puts those zones on the nearest hour. Check the exact time in the table before you
+      send an invite.
+    </p>
+  </Fragment>
+</ToolLayout>

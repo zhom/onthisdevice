@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoToMp3Batch from '@/components/tools/media/VideoToMp3Batch.tsx'
+---
+
+<ToolLayout slug="mp4-to-mp3">
+  <VideoToMp3Batch
+    client:load
+    from="mp4"
+    hint="Drop in as many MP4 files as you need. Each one is decoded on this device"
+  />
+  <Fragment slot="explainer">
+    <h2>How to pull the audio out of an MP4</h2>
+    <ol>
+      <li>Drop one file or fifty onto the box above.</li>
+      <li>Pick a bitrate. 192 kbps suits music. 128 kbps or mono is enough for speech.</li>
+      <li>Press extract. Each file gets its own progress bar and download button.</li>
+      <li>With more than one result, download them all at once as a ZIP.</li>
+    </ol>
+
+    <h2>Choosing a bitrate</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Bitrate</th>
+            <th>Size per hour</th>
+            <th>Good for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>320 kbps</td>
+            <td>~137 MB</td>
+            <td>Music you will listen to on decent headphones</td>
+          </tr>
+          <tr>
+            <td>256 kbps</td>
+            <td>~110 MB</td>
+            <td>Music, effectively transparent</td>
+          </tr>
+          <tr>
+            <td>192 kbps</td>
+            <td>~82 MB</td>
+            <td>The default. Good for almost everything</td>
+          </tr>
+          <tr>
+            <td>128 kbps</td>
+            <td>~55 MB</td>
+            <td>Podcasts, lectures, background listening</td>
+          </tr>
+          <tr>
+            <td>96 kbps mono</td>
+            <td>~41 MB</td>
+            <td>Interviews and voice notes for transcription</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>About quality</h2>
+    <p>
+      An MP4 usually carries AAC audio, which is already lossy. MP4 to MP3 compresses the decoded
+      result a second time, and no setting can recover detail the first pass discarded. That is
+      generation loss, and it comes from the formats, not from this tool.
+    </p>
+    <p>
+      In practice it is inaudible at 192 kbps and above on almost all material. To avoid the second
+      compression, extract to M4A with the <a href="/audio-converter">audio converter</a>. An M4A
+      extraction can copy the AAC stream out of the video unchanged, which is lossless. Choose MP3 for
+      a car stereo, an old MP3 player or software from 2009. Choose M4A when quality is the priority.
+    </p>
+
+    <h2>Why a batch queue matters here</h2>
+    <p>
+      Upload-based converters limit this operation, because each conversion costs them CPU time and
+      bandwidth. Here the conversion runs locally, so there is no file counter or daily limit. Queue a
+      whole lecture series and leave it to run.
+    </p>
+
+    <h2>What is not included</h2>
+    <ul>
+      <li>No ID3 tags. The MP3 has no title, artist or album, and no stray metadata from the source video.</li>
+      <li>No normalisation. The loudness of the source stays exactly the same, so a quiet recording stays quiet.</li>
+      <li>No trimming. For part of the audio, extract first and then use <a href="/trim-audio">trim audio</a>.</li>
+      <li>One audio track. If the MP4 has several languages, the tool uses the first.</li>
+    </ul>
+
+    <h2>A note on what you convert</h2>
+    <p>
+      This tool runs on your machine and asks nothing about your file, but the law still applies. To
+      extract audio from something you bought or recorded is your business. To redistribute somebody
+      else’s work is not.
+    </p>
+  </Fragment>
+</ToolLayout>

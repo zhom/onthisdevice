@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SortLines from '@/components/tools/text/SortLines.tsx'
+---
+
+<ToolLayout slug="sort-lines">
+  <SortLines client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to sort a list of lines</h2>
+    <ol>
+      <li>Paste your list, one item per line, or drop a text file onto the box.</li>
+      <li>Pick a sort method. Alphabetical is the default; Natural is usually better when your lines contain numbers.</li>
+      <li>Choose ascending or descending, and turn on case sensitivity if uppercase and lowercase must count as different.</li>
+      <li>Optionally remove blank lines, trim whitespace and remove duplicates in the same pass.</li>
+      <li>Copy the result or download it as a text file.</li>
+    </ol>
+
+    <h2>Alphabetical vs natural vs numeric</h2>
+    <p>
+      These three methods give different results. The wrong choice is the most common reason a sorted list
+      “looks wrong”.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Alphabetical</th>
+            <th>Natural</th>
+            <th>Numeric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>file10</td><td>file1</td><td>file1</td><td>file1</td></tr>
+          <tr><td>file2</td><td>file10</td><td>file2</td><td>file2</td></tr>
+          <tr><td>file1</td><td>file2</td><td>file10</td><td>file10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <strong>Alphabetical</strong> compares character by character, so “1” sorts before “2” and
+      <code>file10</code> comes before <code>file2</code>. <strong>Natural</strong> sort reads runs of digits
+      as numbers, as Finder, Windows Explorer and people order filenames. <strong>Numeric</strong> ignores the
+      text and sorts by the first number on each line. Use it for rows such as “Item 4: 128 units” where the
+      leading figure matters. Lines with no number stay together at the end.
+    </p>
+
+    <h2>Case sensitivity and locale</h2>
+    <p>
+      With case sensitivity on, the tool compares Unicode code points: every uppercase ASCII letter sorts
+      before every lowercase one, so <code>Zebra</code> comes before <code>apple</code>. This is the same as
+      <code>LC_ALL=C sort</code> on the command line, and it is right when you must reproduce a
+      machine-generated order.
+    </p>
+    <p>
+      With it off, the tool uses your browser’s locale collator, which sorts “apple, Apple, Äpfel, banana” as
+      a dictionary in your language does. Use this for lists that people will read.
+    </p>
+
+    <h2>Stability, blank lines and duplicates</h2>
+    <p>
+      The sort is stable: lines that compare as equal keep their original order. This matters most for “by
+      length” and numeric sorting, where ties are common. For example, ten seven-character lines stay in the
+      order you typed them.
+    </p>
+    <p>
+      Blank lines are removed before sorting, so empty rows do not collect at the top. Deduplication also
+      happens before sorting, follows the case-sensitivity setting and keeps the first occurrence of each
+      value.
+    </p>
+
+    <h2>Shuffling</h2>
+    <p>
+      “Shuffle” uses a Fisher–Yates shuffle with a seeded pseudorandom generator, which gives each order an
+      equal chance. Press <strong>Reshuffle</strong> for a new seed. Use it to randomise a question bank, pick
+      a running order or assign reviewers. For a prize draw, use a method you can audit and publish.
+    </p>
+
+    <h2>Runs locally</h2>
+    <p>
+      The tool reads lines in chunks, so a list of several hundred thousand rows sorts without locking the
+      tab. Customer identifiers, internal hostnames and other private lists stay on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

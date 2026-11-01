@@ -1,0 +1,43 @@
+---
+/**
+ * A tool in a list: line icon, title, one line of description. No box; the
+ * row takes the faint fill on hover. The icon and title carry data-vt-* so the
+ * page transition can morph them into the tool page heading.
+ */
+import { cn } from '@/lib/utils'
+import { CATEGORY_BY_ID, type Tool } from '@/lib/tools'
+import Icon from './Icon.tsx'
+
+interface Props {
+  tool: Tool
+  /** Show the category name (used on mixed lists). */
+  showCategory?: boolean
+  /** Title only, for dense lists. */
+  compact?: boolean
+  class?: string
+}
+
+const { tool, showCategory = false, compact = false, class: className } = Astro.props
+const category = CATEGORY_BY_ID[tool.category]
+---
+
+<a href={`/${tool.slug}`} class={cn('row-link group', compact ? 'items-center py-2' : '', className)} data-vt-tool>
+  <span class={cn('grid place-items-center text-foreground', compact ? 'size-5' : 'mt-px size-6')}>
+    <span class="inline-block" data-vt-icon>
+      <Icon name={tool.icon} className={compact ? 'size-[1.125rem]' : 'size-[1.375rem]'} strokeWidth={1.6} />
+    </span>
+  </span>
+  <span class="min-w-0">
+    <span class="flex items-baseline gap-2">
+      <span class={cn('inline-block font-[650] text-foreground', compact ? 'truncate text-[0.9375rem]' : 'text-[1rem] leading-snug')} data-vt-title>
+        {tool.title}
+      </span>
+      <Icon
+        name="ArrowRight"
+        className="size-3.5 shrink-0 -translate-x-1 self-center opacity-0 transition-[opacity,translate] duration-200 ease-(--ease-out) group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+      />
+    </span>
+    {!compact && <span class="mt-1 line-clamp-2 block text-[0.875rem] leading-snug text-muted-foreground">{tool.description}</span>}
+    {showCategory && category && !compact && <span class="mt-1.5 block text-[0.8125rem] font-[560] text-foreground">{category.title}</span>}
+  </span>
+</a>

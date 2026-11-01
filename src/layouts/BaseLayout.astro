@@ -1,0 +1,331 @@
+---
+import '@/styles/global.css'
+import Header, { type NavCategory, type NavGroup } from '@/components/site/Header.astro'
+import Footer from '@/components/site/Footer.astro'
+import SearchRuntime from '@/components/site/search/SearchRuntime.astro'
+import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+import { ogImagePath } from '@/lib/seo'
+import { hasPage } from '@/components/site/pages'
+
+interface Props {
+  title: string
+  description: string
+  /** Absolute path used for <link rel="canonical">. Defaults to the current URL. */
+  canonicalPath?: string
+  ogType?: string
+  /** Path of the 1200×630 share image. Defaults to the page's generated card. */
+  ogImage?: string
+  ogImageAlt?: string
+  noindex?: boolean
+  /** Extra JSON-LD node(s) merged into the page's @graph. */
+  jsonLd?: object | object[]
+  bodyClass?: string
+  /** Category id, used by the share-card generator to pick the page's glyph. */
+  category?: string
+  /** Place in the site (0 home, 1 hub or page, 2 tool); sets the direction of page transitions. */
+  depth?: number
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogType = 'website',
+  ogImage,
+  ogImageAlt,
+  noindex = false,
+  jsonLd,
+  bodyClass,
+  category,
+  depth: depthProp,
+} = Astro.props
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const path = canonicalPath ?? Astro.url.pathname.replace(/\/$/, '') ?? '/'
+const canonical = new URL(path || '/', SITE)
+const image = new URL(ogImage ?? ogImagePath(path || '/'), SITE)
+const imageAlt = ogImageAlt ?? title
+const depth = depthProp ?? (path === '' || path === '/' ? 0 : 1)
+
+/* ── Header navigation data ────────────────────────────────────────────── */
+const NAV_TOOL_LIMIT = 8
+const navGroups: NavGroup[] = GROUPS.map((group) => {
+  const members = CATEGORIES.filter((c) => c.group === group.id)
+  // A group with one category shows more of its tools, in columns.
+  const limit = members.length === 1 ? NAV_TOOL_LIMIT * 2 : NAV_TOOL_LIMIT
+  const categories: NavCategory[] = members.map((c) => {
+    const tools = toolsByCategory(c.id).filter(hasPage)
+    const popular = tools.filter((t) => t.popular)
+    const rest = tools.filter((t) => !t.popular)
+    return {
+      id: c.id,
+      title: c.title,
+      href: categoryHref(c),
+      tagline: c.tagline,
+      icon: c.icon,
+      count: tools.length,
+      tools: [...popular, ...rest].slice(0, limit).map((t) => ({ slug: t.slug, title: t.title })),
+    }
+  })
+  return { id: group.id, title: group.title, categories: categories.filter((c) => c.count > 0) }
+}).filter((g) => g.categories.length > 0)
+
+/* ── Structured data ───────────────────────────────────────────────────── */
+const organization = {
+  '@type': 'Organization',
+  '@id': `${SITE.origin}/#organization`,
+  name: 'onthisdevice',
+  url: `${SITE.origin}/`,
+  logo: { '@type': 'ImageObject', url: new URL('/icons/icon-512.png', SITE).href, width: 512, height: 512 },
+}
+
+const website = {
+  '@type': 'WebSite',
+  '@id': `${SITE.origin}/#website`,
+  name: 'onthisdevice',
+  alternateName: 'onthisdevice.com',
+  url: `${SITE.origin}/`,
+  description: `${TOOL_COUNT} free tools for PDFs, images, video, data and calculations that run in your browser. Files are never uploaded.`,
+  inLanguage: 'en',
+  publisher: { '@id': `${SITE.origin}/#organization` },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: { '@type': 'EntryPoint', urlTemplate: `${SITE.origin}/all-tools?q={search_term_string}` },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
+const extra = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
+const graph = { '@context': 'https://schema.org', '@graph': [organization, website, ...extra] }
+const graphJson = JSON.stringify(graph).replace(/</g, '\\u003c')
+
+---
+
+<!doctype html>
+<html lang="en" class="scroll-pt-24" data-cat={category} data-depth={depth}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex, follow" />
+      ) : (
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+      )
+    }
+
+    <link rel="preload" href="/fonts/archivo-latin.394a9add.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:site_name" content="onthisdevice" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={image.href} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image.href} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    {/* Applies the stored theme before first paint: no flash of the wrong theme. */}
+    <script is:inline>
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('theme')
+          var dark =
+            stored === 'dark' ||
+            (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          var root = document.documentElement
+          root.classList.toggle('dark', dark)
+          root.style.colorScheme = dark ? 'dark' : 'light'
+        } catch (e) {
+          /* storage disabled: follow the light palette */
+        }
+      })()
+    </script>
+
+    {/* Page transitions: name the tool row that leads to or from a tool page, so its icon and
+        title morph into the page heading; travel toward home slides the other way. */}
+    <script is:inline>
+      ;(function () {
+        var html = document.documentElement
+        function clear() {
+          var named = document.querySelectorAll('[data-vt-named]')
+          for (var i = 0; i < named.length; i++) {
+            named[i].style.viewTransitionName = ''
+            named[i].removeAttribute('data-vt-named')
+          }
+        }
+        function set(el, name) {
+          if (!el) return
+          el.style.viewTransitionName = name
+          el.setAttribute('data-vt-named', '')
+        }
+        function rowFor(path) {
+          var links = document.querySelectorAll('a[data-vt-tool]')
+          for (var i = 0; i < links.length; i++) {
+            if (links[i].pathname !== path) continue
+            var r = links[i].getBoundingClientRect()
+            if (r.bottom > 0 && r.top < innerHeight) return links[i]
+          }
+          return null
+        }
+        function nameRow(a) {
+          var fixed = document.querySelectorAll('.vt-tool-title, .vt-tool-icon')
+          for (var i = 0; i < fixed.length; i++) set(fixed[i], 'none')
+          set(a.querySelector('[data-vt-title]'), 'tool-title')
+          set(a.querySelector('[data-vt-icon]'), 'tool-icon')
+        }
+        addEventListener('pageswap', function (e) {
+          if (!e.viewTransition || !e.activation || !e.activation.entry) return
+          try {
+            sessionStorage.setItem('vt-depth', html.dataset.depth || '1')
+          } catch (_) {}
+          var a = rowFor(new URL(e.activation.entry.url).pathname)
+          if (a) nameRow(a)
+        })
+        addEventListener('pagereveal', function (e) {
+          if (!e.viewTransition) return
+          var act = window.navigation && navigation.activation
+          var prev = null
+          try {
+            prev = sessionStorage.getItem('vt-depth')
+          } catch (_) {}
+          var traverseBack =
+            act && act.navigationType === 'traverse' && act.entry && act.from && act.entry.index < act.from.index
+          var up = prev !== null && Number(prev) > Number(html.dataset.depth || 1)
+          if (traverseBack || up) e.viewTransition.types.add('back')
+          var from = act && act.from && act.from.url
+          if (from && !document.querySelector('.vt-tool-title')) {
+            var a = rowFor(new URL(from).pathname)
+            if (a) nameRow(a)
+          }
+          e.viewTransition.finished.finally(clear)
+        })
+        addEventListener('pageshow', function (e) {
+          if (e.persisted) clear()
+        })
+      })()
+    </script>
+
+    {/* Open pages before the click: prerender a same-site page when a link is hovered or pressed. */}
+    <script type="speculationrules" is:inline>
+      {
+        "prerender": [
+          {
+            "where": {
+              "and": [
+                { "href_matches": "/*" },
+                { "not": { "href_matches": ["/og/*", "/licenses/*", "/ffmpeg/*", "/models/*", "/*.json", "/*.xml", "/*.txt"] } },
+                { "not": { "selector_matches": "[download], [target=_blank], [rel~=nofollow]" } }
+              ]
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json" is:inline set:html={graphJson} />
+  </head>
+
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only rounded-lg bg-primary px-4 py-2.5 text-sm font-[650] text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-200"
+    >
+      Skip to content
+    </a>
+
+    <Header groups={navGroups} toolCount={TOOL_COUNT} />
+
+    <main id="main" tabindex="-1" class="min-h-[60svh] focus:outline-none">
+      <slot />
+    </main>
+
+    <Footer />
+
+    {/* Search hotkeys and [data-search-open] delegation; the dialog itself loads on first use. */}
+    <script is:inline>
+      ;(function () {
+        var root = document.documentElement
+        function openSearch() {
+          root.dataset.searchPending = '1'
+          window.dispatchEvent(new CustomEvent('otd:search-open'))
+        }
+        document.addEventListener('keydown', function (e) {
+          if (root.dataset.search === 'open') return
+          if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault()
+            openSearch()
+            return
+          }
+          if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return
+          var t = e.target
+          var tag = t && t.tagName ? t.tagName.toLowerCase() : ''
+          if (tag === 'input' || tag === 'textarea' || tag === 'select' || (t && t.isContentEditable)) return
+          e.preventDefault()
+          openSearch()
+        })
+        document.addEventListener('click', function (e) {
+          var t = e.target
+          var trigger = t && t.closest ? t.closest('[data-search-open]') : null
+          if (!trigger) return
+          e.preventDefault()
+          openSearch()
+        })
+      })()
+    </script>
+    <script>
+      // Offline support: cache this site's own pages and code as they are used.
+      if ('serviceWorker' in navigator && location.protocol === 'https:') {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {})
+        })
+      }
+
+      let loading: Promise<void> | null = null
+      const load = () => {
+        loading ??= import('@/components/site/palette-mount').then((m) => m.mount())
+        return loading
+      }
+      window.addEventListener('otd:search-open', () => void load())
+      if (document.documentElement.dataset.searchPending === '1') void load()
+      // Warm the dialog when a search control is hovered or focused.
+      const warm = (e: Event) => {
+        const t = e.target
+        if (t instanceof Element && t.closest('[data-search-open]')) {
+          document.removeEventListener('pointerover', warm, true)
+          document.removeEventListener('focusin', warm, true)
+          void load()
+        }
+      }
+      document.addEventListener('pointerover', warm, true)
+      document.addEventListener('focusin', warm, true)
+    </script>
+    <script>
+      import '@/components/site/motion'
+    </script>
+    <SearchRuntime />
+  </body>
+</html>

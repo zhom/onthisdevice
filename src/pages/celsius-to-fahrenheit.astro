@@ -1,0 +1,68 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="celsius-to-fahrenheit">
+  <UnitsLifePairConverter client:load spec="celsius-to-fahrenheit" />
+  <Fragment slot="explainer">
+    <h2>Why you cannot just add a number</h2>
+    <p>
+      Celsius and Fahrenheit differ in two ways: the position of zero and the size of a degree. Celsius
+      puts zero at the freezing point of water and 100 at its boiling point, so there are a hundred
+      degrees between them. Fahrenheit puts the same two points at 32 and 212, so there are a hundred
+      and eighty. A Fahrenheit degree is thus only 5/9 the size of a Celsius degree.
+    </p>
+    <p>The formula has two parts, in this order:</p>
+    <p><strong>&deg;F = (&deg;C &times; 9/5) + 32</strong></p>
+    <p>
+      Scale first, then shift. If you add 32 before you multiply, the answer is always 25.6 degrees too
+      high.
+    </p>
+
+    <h2>The anchor points</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">&deg;C</th><th scope="col">&deg;F</th><th scope="col">What it is</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>-40</td><td>-40</td><td>The only point where the scales agree</td></tr>
+        <tr><td>0</td><td>32</td><td>Water freezes</td></tr>
+        <tr><td>4</td><td>39.2</td><td>Fridge target temperature</td></tr>
+        <tr><td>16</td><td>60.8</td><td>Chilly indoors</td></tr>
+        <tr><td>20</td><td>68</td><td>Comfortable room temperature</td></tr>
+        <tr><td>37</td><td>98.6</td><td>Normal body temperature</td></tr>
+        <tr><td>38</td><td>100.4</td><td>Fever threshold</td></tr>
+        <tr><td>100</td><td>212</td><td>Water boils at sea level</td></tr>
+        <tr><td>180</td><td>356</td><td>A moderate oven</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Mental conversion that is actually good enough</h2>
+    <p>
+      Double it and add 30. 20 &rarr; 70 (true 68). 25 &rarr; 80 (true 77). 30 &rarr; 90 (true 86). The
+      error grows with temperature because you use 2 instead of 1.8. It is within a few degrees for
+      weather and useless for an oven. For cold values it is very good: 5 &rarr; 40 against a true 41.
+    </p>
+    <p>
+      The exact mental method: subtract a tenth of the number, double it, add 32. For 20: 20 minus 2 is
+      18, doubled is 36, plus 32 is 68.
+    </p>
+
+    <h2>Differences convert differently</h2>
+    <p>
+      A temperature change has no zero point to shift, so a difference converts with the 9/5 factor
+      alone. A rise of 10 &deg;C is a rise of 18 &deg;F, not 50. People often get this wrong in weather
+      reports and engineering specifications, where "a 5 degree tolerance" means very different things
+      in the two scales.
+    </p>
+
+    <h2>Where each scale is still used</h2>
+    <p>
+      Fahrenheit is the everyday scale in the United States and some of its territories, and is used
+      informally in the Cayman Islands, Liberia and parts of the Caribbean. All other countries use
+      Celsius, as do US science and medicine. The UK uses both: forecasts are in Celsius, but people
+      still describe a hot summer day as "in the nineties".
+    </p>
+  </Fragment>
+</ToolLayout>

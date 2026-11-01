@@ -1,0 +1,135 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureToSheet from '@/components/tools/pdf-convert/PdfSecureToSheet.tsx'
+---
+
+<ToolLayout slug="pdf-to-csv">
+  <PdfSecureToSheet client:load format="csv" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why take the CSV rather than the workbook</h2>
+      <p>
+        CSV is the format you want when a machine is the next reader. It is plain text, so it opens
+        in anything, diffs cleanly in Git, streams into a database loader, and cannot carry a macro.
+        An .xlsx is a zip of XML with types, styles and formulas: useful for a person, extra work for a
+        script.
+      </p>
+      <ul>
+        <li>
+          For pandas, R or a database, use CSV. Run <code>pd.read_csv("statement.csv")</code> and you
+          are done.
+        </li>
+        <li>
+          To commit extracted data to a repository, use CSV. The diff is readable.
+        </li>
+        <li>
+          For a colleague to edit, use <a href="/pdf-to-excel">PDF to Excel</a>, so each page keeps its
+          own sheet.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The escaping rules used</h2>
+      <p>
+        Output follows RFC 4180, which is what Excel, Numbers, LibreOffice, Python's
+        <code>csv</code> module and every serious parser expect:
+      </p>
+      <ul>
+        <li>Fields are separated by a comma and rows by a newline.</li>
+        <li>
+          A field containing a comma, a double quote or a line break is wrapped in double quotes.
+        </li>
+        <li>A double quote inside a quoted field is written twice.</li>
+        <li>Nothing else is escaped: no backslashes, no HTML entities.</li>
+      </ul>
+      <p>
+        So a cell reading <code>Smith, John "Jack"</code> is written as
+        <code>"Smith, John ""Jack"""</code>. This is the part hand-rolled exporters get wrong, and
+        it is exactly the part that silently corrupts a column of names.
+      </p>
+    </section>
+
+    <section>
+      <h2>How multi-page documents are laid out</h2>
+      <p>
+        Each page's rows are written in order, with a blank line between pages. That gives you one
+        file for a whole statement with an unambiguous boundary. A blank line is never valid inside a
+        record, so it is safe to split on it.
+      </p>
+      <p>
+        If your pages repeat a header row, you will get that header once per page. Filtering those
+        out is a one-liner in whatever you load the file into, and leaving them in is the honest
+        thing for the exporter to do: guessing which rows are headers is how data quietly goes
+        missing.
+      </p>
+    </section>
+
+    <section>
+      <h2>Common sources and what to expect</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Source document</th>
+              <th scope="col">Typical result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bank statement downloaded from online banking</td>
+              <td>Very good. Fixed columns, consistent alignment, digitally generated</td>
+            </tr>
+            <tr>
+              <td>Invoice from accounting software</td>
+              <td>Good for the line-item table; header blocks come through as stray rows</td>
+            </tr>
+            <tr>
+              <td>Report exported from a database tool</td>
+              <td>Excellent. These are the cleanest tables</td>
+            </tr>
+            <tr>
+              <td>Scientific paper with a results table</td>
+              <td>Mixed. Multi-level headers and footnote markers confuse the columns</td>
+            </tr>
+            <tr>
+              <td>Scanned or photographed statement</td>
+              <td>Nothing. No text layer exists to read</td>
+            </tr>
+            <tr>
+              <td>Government form with boxed fields</td>
+              <td>Poor. Boxes are not columns, and the field labels mix with the values</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Numbers, dates and locales</h2>
+      <p>
+        Cells are exported exactly as they appear in the document: as text, not as parsed values.
+        That is deliberate: <code>1.240,00</code> means one thousand two hundred and forty in Berlin
+        and something else entirely in London, and a converter that guesses will eventually guess
+        wrong on your money.
+      </p>
+      <p>
+        Do the conversion where you have the context: set the locale when importing into your
+        spreadsheet, or parse explicitly in your script. Dates behave the same way:
+        <code>03/04/2026</code> stays as written and is not read differently.
+      </p>
+    </section>
+
+    <section>
+      <h2>Nothing leaves the tab</h2>
+      <p>
+        Financial documents are the single most common input to this tool, which makes the
+        no-upload property more than a nicety. The PDF is decoded by pdf.js inside this page, the
+        clustering is ordinary JavaScript, and the CSV string is built in memory and handed to your
+        download folder. There is no endpoint to send it to: the site is static files on a CDN with a
+        content security policy that allows no third-party connections.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

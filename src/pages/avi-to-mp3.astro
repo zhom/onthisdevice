@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoToMp3Batch from '@/components/tools/media/VideoToMp3Batch.tsx'
+---
+
+<ToolLayout slug="avi-to-mp3">
+  <VideoToMp3Batch
+    client:load
+    from="avi"
+    hint="Old camcorder captures and DivX files. The soundtrack comes out as a plain MP3"
+  />
+  <Fragment slot="explainer">
+    <h2>Getting sound out of a twenty-year-old file</h2>
+    <p>
+      AVI files hold audio in many formats, from a time when Windows codecs were installed one by one
+      from a CD. FFmpeg has decoders for nearly all of them: MP3, AC-3, PCM, IMA ADPCM, MS ADPCM, GSM,
+      μ-law. If your media player cannot open a file, this page can usually still extract its
+      soundtrack.
+    </p>
+    <p>
+      The audio is decoded to raw samples and encoded again as MP3 with LAME. If the source was already
+      MP3 (common in DivX-era AVI files), this adds a second generation of loss. At 320 kbps, the
+      difference is not audible on material of that age.
+    </p>
+
+    <h2>Typical reasons people do this</h2>
+    <ul>
+      <li>Rescuing a recording: a camcorder tape capture where the video is unwatchable but the conversation is worth keeping.</li>
+      <li>Lecture and seminar archives: shelves of institutional AVI files that people still need to hear but not watch.</li>
+      <li>Transcription: speech-to-text tools take audio, not 1.5 GB of video, and mono at 96 kbps is enough.</li>
+      <li>Music from an old video collection: concert footage and TV captures whose soundtrack you want on a phone.</li>
+    </ul>
+
+    <h2>When it comes out silent</h2>
+    <p>
+      A few AVI files use audio compressed with a proprietary ACM codec that was a Windows system
+      component and was never standardised. No modern decoder includes those codecs, so the audio stream
+      cannot be read. The page then reports the problem and does not give you an empty MP3 that looks
+      valid. You would find an empty result only later, which is worse than an error.
+    </p>
+    <p>
+      The other cause of silence: some AVI files have no audio stream. The error message tells the two
+      cases apart.
+    </p>
+
+    <h2>Mono, and when to use it</h2>
+    <p>
+      Old camcorder audio is often mono, copied to two channels. In that case, "downmix to mono" halves
+      the file size with no loss. For real stereo content, such as music or a proper recording setup,
+      leave it off.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Source material</th>
+            <th>Suggested setting</th>
+            <th>One hour becomes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Camcorder voice, single mic</td>
+            <td>96 kbps mono</td>
+            <td>~41 MB</td>
+          </tr>
+          <tr>
+            <td>Lecture or seminar</td>
+            <td>128 kbps mono</td>
+            <td>~55 MB</td>
+          </tr>
+          <tr>
+            <td>TV capture with music</td>
+            <td>192 kbps stereo</td>
+            <td>~82 MB</td>
+          </tr>
+          <tr>
+            <td>Concert footage</td>
+            <td>320 kbps stereo</td>
+            <td>~137 MB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Batch the whole folder</h2>
+    <p>
+      Drop in all your AVI files at once. They convert one after another, each with a progress row, and
+      you can download them as one ZIP at the end. There is no file counter, daily quota or account,
+      because no server does the work.
+    </p>
+  </Fragment>
+</ToolLayout>

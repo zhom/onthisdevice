@@ -1,0 +1,227 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import Icon from '@/components/site/Icon.tsx'
+import { TOOL_COUNT } from '@/lib/tools'
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const pageUrl = new URL('/privacy', SITE).href
+const updated = '2026-10-30'
+const updatedLabel = new Date(updated).toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+})
+
+const nots: { icon: string; label: string; detail: string }[] = [
+  {
+    icon: 'CloudOff',
+    label: 'We never receive your files',
+    detail: 'There is no upload endpoint. Your browser opens your files, and they stay in this tab.',
+  },
+  {
+    icon: 'Cookie',
+    label: 'We set no cookies',
+    detail: 'The site sets no cookies of any kind, so it has no consent banner.',
+  },
+  {
+    icon: 'ChartNoAxesColumn',
+    label: 'We run no analytics',
+    detail: 'There is no analytics script, tracking pixel, heatmap, session recorder or error-reporting beacon.',
+  },
+  {
+    icon: 'UserX',
+    label: 'We have no accounts',
+    detail: 'You cannot sign up, so we store no email address, password or profile.',
+  },
+  {
+    icon: 'Megaphone',
+    label: 'We serve no ads',
+    detail: 'There is no ad network, affiliate tag or third-party script.',
+  },
+  {
+    icon: 'Share2',
+    label: 'We share nothing',
+    detail: 'We collect no data, so there is none to sell, rent or hand over.',
+  },
+]
+
+const sections: { id: string; title: string }[] = [
+  { id: 'files', title: 'Your files and inputs' },
+  { id: 'stored', title: 'What is stored on your device' },
+  { id: 'server', title: 'What our server sees' },
+  { id: 'third-parties', title: 'Third parties' },
+  { id: 'verify', title: 'How to verify all of this' },
+  { id: 'children', title: 'Children' },
+  { id: 'changes', title: 'Changes to this policy' },
+]
+---
+
+<BaseLayout
+  title="Privacy: nothing you enter is sent anywhere | onthisdevice"
+  description="onthisdevice sends no file, text or number to a server. It sets no cookies, runs no analytics and has no accounts. This page explains what happens to your data."
+  canonicalPath="/privacy"
+  jsonLd={[
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#page`,
+      name: 'Privacy',
+      url: pageUrl,
+      dateModified: updated,
+      isPartOf: { '@id': `${SITE.origin}/#website` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumbs`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/` },
+        { '@type': 'ListItem', position: 2, name: 'Privacy', item: pageUrl },
+      ],
+    },
+  ]}
+>
+  <Container size="narrow" class="pt-12 sm:pt-20">
+    <h1 class="t-title enter max-w-3xl text-foreground">No file, text or number you enter here is sent anywhere</h1>
+    <p class="t-lead enter mt-6 max-w-2xl" style="--i:1">
+      All {TOOL_COUNT} tools run inside your browser. There is no API to send your data to, no database to keep it in
+      and no account to attach it to.
+    </p>
+    <p class="enter mt-5 text-[0.875rem] text-muted-foreground" style="--i:2">Last updated {updatedLabel}</p>
+  </Container>
+
+  <Container size="narrow" class="pt-14 sm:pt-20">
+    <div class="grid gap-x-10 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        nots.map((item) => (
+          <div class="min-w-0">
+            <Icon name={item.icon} className="size-6 text-foreground" strokeWidth={1.5} />
+            <h2 class="t-h3 mt-3 text-foreground">{item.label}</h2>
+            <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-pretty text-muted-foreground">{item.detail}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+
+  <Container size="narrow" class="pt-20 sm:pt-28">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,14rem)_minmax(0,1fr)] lg:gap-16">
+      <nav aria-label="On this page" class="lg:sticky lg:top-24 lg:self-start">
+        <h2 class="text-[0.875rem] font-[600] text-foreground">On this page</h2>
+        <ul class="mt-3 space-y-2">
+          {
+            sections.map((section) => (
+              <li>
+                <a href={`#${section.id}`} class="link-quiet text-[0.875rem]">
+                  {section.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="max-w-2xl text-[1rem] leading-7 text-muted-foreground">
+        <section id="files" class="scroll-mt-24">
+          <h2 class="t-h2 text-foreground">Your files and inputs</h2>
+          <p class="mt-4">
+            When you choose a file, your browser gives the tool a reference to it. The tool reads the bytes into the
+            memory of this tab, does the work with JavaScript and WebAssembly on your own processor, and makes the
+            result as an object in memory that your browser then saves to your downloads folder.
+          </p>
+          <p class="mt-4">
+            The same is true of what you type: text you paste into a formatter, numbers in a calculator, a password
+            you generate, a secret you hash. None of it is sent. When you close the tab, it is gone from memory.
+          </p>
+          <p class="mt-4">
+            So we hold no copy of your data, have nothing to delete on request, and cannot produce your files in
+            response to a legal demand.
+          </p>
+        </section>
+
+        <section id="stored" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">What is stored on your device</h2>
+          <p class="mt-4">
+            Your browser keeps a few things for this site, on your device only. None of it is sent anywhere, and we
+            cannot read it:
+          </p>
+          <ul class="mt-4 list-disc space-y-3 pl-5 marker:text-muted-foreground">
+            <li>
+              <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">theme</code> in localStorage: whether you chose the light or dark theme.
+            </li>
+            <li>
+              <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd:recent-tools</code>, <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd:last-tool</code> and
+              <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd:tool-pairs</code> in localStorage: which tools you opened, so the search and the
+              suggestions under a tool can offer them again.
+            </li>
+            <li>
+              Some tools keep their own settings in localStorage, such as your currency or your units, so you do
+              not have to set them again.
+            </li>
+            <li>
+              <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd:handoff</code> in sessionStorage and <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd-handoff</code> in IndexedDB: a
+              file you dropped on one page, kept for at most 10 minutes to give it to the tool you picked. The tool
+              deletes it when it reads it.
+            </li>
+            <li>
+              <code class="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[0.85em] text-foreground">otd-models-v1</code> in Cache Storage: detection models and engines, downloaded once from
+              this site so the redaction tools work again without a download.
+            </li>
+            <li>
+              The service worker caches: this site’s own pages and code, so a tool you used once works offline.
+              They hold program code, never your content.
+            </li>
+          </ul>
+          <p class="mt-4">Clearing your browser’s site data for onthisdevice.com removes all of it.</p>
+        </section>
+
+        <section id="server" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">What our server sees</h2>
+          <p class="mt-4">
+            onthisdevice.com is a set of static files sent by a CDN. To send you a page, the CDN handles the usual
+            parts of an HTTP request (your IP address, the URL, your user agent), as for every website. We do not
+            build profiles from this data, combine it with other data or analyse it.
+          </p>
+          <p class="mt-4">
+            That request happens when the page loads, before you choose anything. Using a tool makes no further
+            request that carries your input.
+          </p>
+        </section>
+
+        <section id="third-parties" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">Third parties</h2>
+          <p class="mt-4">
+            The site embeds no third-party analytics, ad network, social widgets, comment system, chat bubble, or fonts
+            and scripts from another host. Everything the page needs comes from onthisdevice.com, so nothing on it can
+            send data to someone else.
+          </p>
+        </section>
+
+        <section id="verify" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">How to verify all of this</h2>
+          <p class="mt-4">
+            Open your browser’s developer tools, go to the Network tab, clear it, then use any tool with a real file.
+            You see the page’s own code and, for some tools, a WebAssembly module, and no request with your data. For
+            a stronger test, disconnect from the network and run the tool again. It still works.
+          </p>
+        </section>
+
+        <section id="children" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">Children</h2>
+          <p class="mt-4">
+            The site is suitable for all ages and collects no personal information from anyone, including children.
+            It has no registration, profiles or content submission.
+          </p>
+        </section>
+
+        <section id="changes" class="mt-14 scroll-mt-24">
+          <h2 class="t-h2 text-foreground">Changes to this policy</h2>
+          <p class="mt-4">
+            If this page changes, the date at the top changes with it. We will not build a feature that sends what you
+            put into a tool off your device.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </Container>
+</BaseLayout>

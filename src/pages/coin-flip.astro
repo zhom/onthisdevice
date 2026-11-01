@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CoinFlip from '@/components/tools/everyday/CoinFlip.tsx'
+---
+
+<ToolLayout slug="coin-flip">
+  <CoinFlip client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the coin flipper</h2>
+    <ol>
+      <li>Press <strong>Flip once</strong> for a single animated toss.</li>
+      <li>
+        Set a batch size and press the batch button to run up to 10,000 flips at once. The page shows
+        progress and stays responsive, because the flips are processed in chunks.
+      </li>
+      <li>
+        Watch the fairness chart: it plots the running share of heads from the first flip to the last,
+        against the 50% line.
+      </li>
+      <li>Press <strong>Reset</strong> to clear the tally and start a new experiment.</li>
+    </ol>
+
+    <h2>Is this coin actually fair?</h2>
+    <p>
+      Yes. Each flip reads a new 32-bit value from <code>crypto.getRandomValues</code>, the
+      cryptographically secure random number generator of the browser, seeded by the operating system.
+      Rejection sampling maps the value to heads or tails, so the mapping adds no bias. There is no
+      predictable seed, no dependence on the clock, and no memory of previous flips.
+    </p>
+    <p>
+      The coin does not remember its last result. After nine heads, the tenth flip is still exactly
+      50/50.
+    </p>
+
+    <h2>Streaks are normal; the gambler's fallacy is not</h2>
+    <p>
+      The belief that a run of heads makes tails "due" is the gambler's fallacy, the most common
+      misreading of randomness. Long runs are expected:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Number of flips</th>
+            <th scope="col">Expected longest run</th>
+            <th scope="col">Chance of a run of 5+</th>
+            <th scope="col">Chance of a run of 10+</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10</td><td>~3</td><td>~22%</td><td>~0.2%</td></tr>
+          <tr><td>100</td><td>~6–7</td><td>~97%</td><td>~5%</td></tr>
+          <tr><td>1,000</td><td>~9–10</td><td>&gt;99.9%</td><td>~38%</td></tr>
+          <tr><td>10,000</td><td>~13</td><td>&gt;99.9%</td><td>~99%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Run a batch of ten thousand here and compare the longest-run figure with the table. A sequence
+      with no long runs is suspicious: it is typical of a person who tries to fake randomness.
+    </p>
+
+    <h2>How the proportion converges</h2>
+    <p>
+      The law of large numbers says that the proportion of heads approaches 50%. It does not say that
+      the counts get closer. The absolute gap usually grows, roughly with the square root of the number
+      of flips:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Flips</th>
+            <th scope="col">Typical gap from an even split</th>
+            <th scope="col">Typical gap as a percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>100</td><td>±5 flips</td><td>±5.0%</td></tr>
+          <tr><td>1,000</td><td>±16 flips</td><td>±1.6%</td></tr>
+          <tr><td>10,000</td><td>±50 flips</td><td>±0.5%</td></tr>
+          <tr><td>100,000</td><td>±158 flips</td><td>±0.16%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      So 5,050 heads out of 10,000 is a 50-flip gap, which is ordinary, and as 50.5% it looks very close
+      to fair. Both describe the same result. The fairness chart on this page shows this.
+    </p>
+
+    <h2>Real coins are slightly unfair</h2>
+    <p>
+      A physical coin toss is close to fair but not perfectly fair. Careful experiments, including a
+      study of hundreds of thousands of tosses, found a small bias of about 51% towards the side that
+      faced up at the start. The cause is precession: the coin wobbles about an axis and does not spin
+      cleanly, so the starting face is up for slightly more time. A coin spun on a table has much more
+      bias, because the rim is not symmetrical.
+    </p>
+    <p>A digital flip has no such physical structure.</p>
+
+    <h2>Good uses for a coin flip</h2>
+    <ul>
+      <li>Settling a two-way choice quickly and visibly fairly</li>
+      <li>Deciding who goes first in a game</li>
+      <li>Teaching probability: the batch mode and the chart do the demonstration</li>
+      <li>
+        Breaking a real tie in a decision: notice how you feel about the result, which often shows what
+        you wanted from the start
+      </li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      Flips are generated and counted in your browser. Nothing is sent to a server, and the tally is
+      deleted when you close the tab.
+    </p>
+  </Fragment>
+</ToolLayout>

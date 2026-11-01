@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-formatter">
+  <DevFormatXml client:load mode="format" />
+  <Fragment slot="explainer">
+    <h2>How the formatter decides where to break</h2>
+    <p>
+      Mixed content makes XML indentation difficult. The XML formatter walks the parsed document and applies
+      four rules:
+    </p>
+    <ol>
+      <li>An element whose children are all elements gets each child on its own line, indented one level.</li>
+      <li>An element with a single short text child stays on one line: <code>&lt;price&gt;44.95&lt;/price&gt;</code>.</li>
+      <li>An element with mixed content (text and elements together) stays exactly as written, because the whitespace between those children is part of the rendered text.</li>
+      <li>An element with more attributes than fit on one line gets each attribute on its own line, which makes a WSDL or an Android layout readable.</li>
+    </ol>
+    <p>
+      Rule three keeps the output correct. If <code>&lt;p&gt;An &lt;em&gt;important&lt;/em&gt; note&lt;/p&gt;</code>
+      is spread across three lines, whitespace appears on both sides of the emphasis and the reader sees a
+      different text. The tool detects this case, leaves it unchanged, and tells you.
+    </p>
+
+    <h2>Working with SOAP and WSDL</h2>
+    <p>
+      SOAP envelopes arrive as one very long line, so they need formatting. Two points:
+    </p>
+    <ul>
+      <li>
+        A fragment copied from a larger envelope usually fails to parse, because the namespace prefixes
+        (<code>soap:</code>, <code>xsi:</code>, <code>wsse:</code>) are declared on the root element you did
+        not copy. Copy from <code>&lt;soap:Envelope&gt;</code> down, or add the <code>xmlns:</code>
+        declarations to the fragment.
+      </li>
+      <li>
+        WSDL documents have many attributes, so the attribute-wrapping rule applies often. A
+        <code>&lt;wsdl:operation&gt;</code> with six attributes on one 200-character line is unreadable.
+      </li>
+    </ul>
+
+    <h2>What the XML formatter keeps</h2>
+    <table>
+      <thead><tr><th>Construct</th><th>Treatment</th></tr></thead>
+      <tbody>
+        <tr><td><code>&lt;?xml … ?&gt;</code> declaration</td><td>Kept at the top, verbatim</td></tr>
+        <tr><td><code>&lt;!DOCTYPE …&gt;</code></td><td>Kept, including an internal subset</td></tr>
+        <tr><td>Comments</td><td>Kept by default, one per line; removable with a switch</td></tr>
+        <tr><td>CDATA sections</td><td>Reproduced byte-for-byte, contents untouched</td></tr>
+        <tr><td>Processing instructions</td><td>Kept on their own line</td></tr>
+        <tr><td>Attribute order</td><td>Unchanged; order has no meaning in XML, but it matters in diffs</td></tr>
+        <tr><td>Empty elements</td><td>Collapsed to <code>&lt;a/&gt;</code> by default; switchable</td></tr>
+        <tr><td>Entity references</td><td>Resolved by the parser and re-escaped on output</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The parser is your browser&rsquo;s</h2>
+    <p>
+      This page has no bundled XML library. It parses with <code>DOMParser</code>, the same implementation the
+      browser uses for XHR responses, XSLT and <code>fetch</code>. So a document that is well-formed here is
+      well-formed in a real consumer. The error messages come from the browser engine, so the tool turns them
+      into one plain sentence and keeps the raw text behind a disclosure.
+    </p>
+
+    <h2>Formatting private XML</h2>
+    <p>
+      Enterprise XML often contains sensitive data: SOAP headers with WS-Security tokens, HL7 and FHIR patient
+      records, financial messages, SAML assertions with a whole identity. The processing happens in this tab.
+      Expand the panel under the tool to watch the request counter, or turn off your network and check that
+      the page still works.
+    </p>
+  </Fragment>
+</ToolLayout>

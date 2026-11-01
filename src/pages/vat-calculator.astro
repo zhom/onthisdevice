@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyVat from '@/components/tools/finance/CalcMoneyVat.tsx'
+---
+
+<ToolLayout slug="vat-calculator">
+  <CalcMoneyVat client:load variant="vat" />
+
+  <Fragment slot="explainer">
+    <h2>Adding VAT and removing VAT</h2>
+    <p>
+      Adding is easy: multiply the net figure by 1 plus the rate. At the UK standard rate of 20%,
+      100 net becomes 120 gross.
+    </p>
+    <p>
+      To remove VAT, divide by 1.2; do not subtract 20%. 120 minus 20% is 96; 120 divided by 1.2 is the correct
+      answer, 100. The error is 4 units in every hundred, because a percentage of the larger number differs
+      from a percentage of the smaller one.
+    </p>
+
+    <h2>The VAT fraction</h2>
+    <p>
+      The tax share of a VAT-inclusive price is <code>rate ÷ (100 + rate)</code>. HMRC calls it the VAT
+      fraction. For the UK standard rate it is 20/120 = 1/6, so one sixth of any standard-rated gross price is
+      VAT.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Rate</th>
+            <th style="text-align:right">Divide gross by</th>
+            <th style="text-align:right">VAT fraction</th>
+            <th style="text-align:right">VAT in 1,000 gross</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>5%</td><td style="text-align:right">1.05</td><td style="text-align:right">1/21</td><td style="text-align:right">47.62</td></tr>
+          <tr><td>19%</td><td style="text-align:right">1.19</td><td style="text-align:right">19/119</td><td style="text-align:right">159.66</td></tr>
+          <tr><td>20%</td><td style="text-align:right">1.20</td><td style="text-align:right">1/6</td><td style="text-align:right">166.67</td></tr>
+          <tr><td>21%</td><td style="text-align:right">1.21</td><td style="text-align:right">21/121</td><td style="text-align:right">173.55</td></tr>
+          <tr><td>23%</td><td style="text-align:right">1.23</td><td style="text-align:right">23/123</td><td style="text-align:right">186.99</td></tr>
+          <tr><td>25%</td><td style="text-align:right">1.25</td><td style="text-align:right">1/5</td><td style="text-align:right">200.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Standard rates around Europe</h2>
+    <p>
+      The VAT calculator presets cover the standard and common reduced rates for the UK, Ireland, Germany,
+      France, the Netherlands, Spain, Italy, Belgium, Poland, Sweden, Denmark, Portugal, Austria, Switzerland
+      and South Africa. They are stored in the page with the date they were checked, because this site makes no
+      network requests.
+    </p>
+    <p>
+      A static table does not update itself. Rates change rarely, and changes are announced in advance. Check
+      with your own tax authority before you file anything, and type a custom rate when you need one that is
+      not listed.
+    </p>
+
+    <h2>Reduced, zero-rated and exempt</h2>
+    <ul>
+      <li>
+        Reduced rate: a lower positive rate on specified goods, such as domestic energy or children's car
+        seats in the UK at 5%.
+      </li>
+      <li>
+        Zero-rated: VAT is charged at 0%. It is still a taxable supply, so you can reclaim input VAT on the
+        costs behind it. In the UK, most food and children's clothing are zero-rated.
+      </li>
+      <li>
+        Exempt: outside the VAT system. No VAT is charged and input VAT generally cannot be reclaimed.
+        Examples are insurance, most financial services, and much education and healthcare.
+      </li>
+    </ul>
+    <p>
+      Zero-rated and exempt look the same to the customer and are very different for the business. Whether you
+      can reclaim input VAT depends on this distinction.
+    </p>
+
+    <h2>Invoicing several lines</h2>
+    <p>
+      The multi-line panel handles a real invoice: any number of lines, each with its own rate, so a mix of
+      standard-rated services and zero-rated goods totals correctly. Each line is rounded to the minor unit
+      separately, as almost all accounting software does and most tax authorities expect. Rounding only the
+      total can differ by a penny per line; that is normally acceptable, but be consistent.
+    </p>
+    <p>
+      A compliant VAT invoice needs more than the arithmetic: an invoice number, dates, both parties' details,
+      your VAT registration number, a description of the supply, and the net, VAT and gross amounts per rate.
+      This page gives the numbers; your invoicing system makes the document.
+    </p>
+
+    <h2>Margin is always on the net figure</h2>
+    <p>
+      The VAT you charge is collected for the tax authority and passes through your business. It is not revenue
+      or profit, and it must never appear in a margin calculation. Set prices and calculate margin on the net
+      figure, and add VAT last.
+    </p>
+
+    <h2>Registration thresholds and the flat-rate trap</h2>
+    <p>
+      Most VAT systems have a registration threshold; below it you do not charge or reclaim VAT. Just above it,
+      a business that sells mainly to consumers loses the VAT fraction from its prices unless it raises them.
+      For this reason many businesses keep their turnover just below the threshold. In business-to-business
+      sales the effect mostly disappears, because your customers reclaim what you charge.
+    </p>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      Invoice values, client work and turnover figures stay in this browser tab. Your device makes the CSV,
+      Excel and PDF exports, and the page works with the network off.
+    </p>
+  </Fragment>
+</ToolLayout>

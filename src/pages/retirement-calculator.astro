@@ -1,0 +1,133 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RetirementCalculator from '@/components/tools/finance/RetirementCalculator.tsx'
+---
+
+<ToolLayout slug="retirement-calculator">
+  <RetirementCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the retirement calculator</h2>
+    <ol>
+      <li>
+        Set your <strong>current age</strong> and the <strong>age you want to stop working</strong>. The
+        gap between them has the largest effect on the projection.
+      </li>
+      <li>
+        Enter your <strong>current retirement savings</strong> across all accounts: workplace pension,
+        personal pension, 401(k), IRA, ISA and any other money kept for retirement.
+      </li>
+      <li>
+        Enter your <strong>monthly contribution</strong> including any employer match, and set a
+        <strong>yearly increase</strong> if your contributions rise with your pay.
+      </li>
+      <li>
+        Choose an <strong>expected return</strong> for your actual asset mix, minus fund fees, and an
+        <strong>inflation rate</strong> so the projection can show today's money.
+      </li>
+      <li>
+        Read both numbers: the nominal balance is what the statement will say, and the real balance is
+        what it will buy.
+      </li>
+    </ol>
+
+    <h2>Why the real figure matters</h2>
+    <p>
+      If you are 35 now, a million at 65 is less than a million in today's terms. At 2.5% inflation,
+      prices roughly double over 30 years, so that million buys what about 477,000 buys today. The
+      calculator shows both figures and the gap, because plans built only on the nominal number
+      overestimate how comfortable they are.
+    </p>
+    <p>
+      The real return is <code>(1 + r) / (1 + inflation) − 1</code>. A 7% nominal return with 2.5%
+      inflation is about 4.39% real. That is the rate at which your purchasing power compounds.
+    </p>
+
+    <h2>What 500 a month builds by 65</h2>
+    <p>
+      Starting from nothing, 7% nominal return, 2.5% inflation, contributions flat in cash terms.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[500px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Start at age</th>
+            <th style="text-align:right">Years saving</th>
+            <th style="text-align:right">Balance at 65</th>
+            <th style="text-align:right">In today's money</th>
+            <th style="text-align:right">Income at 4%</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>25</td><td style="text-align:right">40</td><td style="text-align:right">1,312,407</td><td style="text-align:right">488,780</td><td style="text-align:right">52,496</td></tr>
+          <tr><td>30</td><td style="text-align:right">35</td><td style="text-align:right">900,527</td><td style="text-align:right">379,456</td><td style="text-align:right">36,021</td></tr>
+          <tr><td>35</td><td style="text-align:right">30</td><td style="text-align:right">609,985</td><td style="text-align:right">290,806</td><td style="text-align:right">24,399</td></tr>
+          <tr><td>40</td><td style="text-align:right">25</td><td style="text-align:right">405,036</td><td style="text-align:right">218,473</td><td style="text-align:right">16,201</td></tr>
+          <tr><td>45</td><td style="text-align:right">20</td><td style="text-align:right">260,463</td><td style="text-align:right">158,953</td><td style="text-align:right">10,419</td></tr>
+          <tr><td>50</td><td style="text-align:right">15</td><td style="text-align:right">158,481</td><td style="text-align:right">109,426</td><td style="text-align:right">6,339</td></tr>
+          <tr><td>55</td><td style="text-align:right">10</td><td style="text-align:right">86,542</td><td style="text-align:right">67,607</td><td style="text-align:right">3,462</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you start at 25 in place of 35, you contribute twice as much and end with more than twice as
+      much: 1.31 million against 610,000. The earliest contributions compound the longest, so the extra
+      decade is worth more than the extra money.
+    </p>
+
+    <h2>Monthly contribution needed to reach a million by 65</h2>
+    <p>At a 7% nominal return, starting from zero:</p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[360px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Start at age</th>
+            <th style="text-align:right">Monthly contribution</th>
+            <th style="text-align:right">Total contributed</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>25</td><td style="text-align:right">381</td><td style="text-align:right">182,880</td></tr>
+          <tr><td>30</td><td style="text-align:right">555</td><td style="text-align:right">233,100</td></tr>
+          <tr><td>35</td><td style="text-align:right">820</td><td style="text-align:right">295,200</td></tr>
+          <tr><td>40</td><td style="text-align:right">1,234</td><td style="text-align:right">370,200</td></tr>
+          <tr><td>45</td><td style="text-align:right">1,920</td><td style="text-align:right">460,800</td></tr>
+          <tr><td>50</td><td style="text-align:right">3,155</td><td style="text-align:right">567,900</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The 4% rule and its limits</h2>
+    <p>
+      The 4% rule comes from studies of historical US portfolios. Withdraw 4% of the starting balance in
+      year one, then increase that amount with inflation each year: the portfolio survived every
+      historical 30-year window tested. The calculator uses it to turn a pot into an income. The rate is
+      adjustable, because whether 4% is still right is disputed.
+    </p>
+    <p>
+      The rule does not account for your asset mix, fees, tax, longer retirements, non-US markets or
+      sequence-of-returns risk. A bad first five years hurts far more than the same bad years later,
+      because you sell assets as prices fall. Use 4% to size the pot while you save, not as a withdrawal
+      policy for the day you retire.
+    </p>
+
+    <h2>What this projection excludes</h2>
+    <ul>
+      <li>State pensions, social security and any defined-benefit pension income.</li>
+      <li>
+        Contribution limits and tax relief rules, which differ by country and by account type.
+      </li>
+      <li>
+        Investment fees. Subtract your total ongoing charge from the expected return. A 0.75% fee over 30
+        years typically costs a fifth of the final balance.
+      </li>
+      <li>
+        Career breaks and redundancy. Almost nobody contributes without interruption for four decades.
+      </li>
+      <li>
+        Volatility. A steady 7% and an average 7% with real market swings give very different outcomes,
+        most of all close to retirement.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

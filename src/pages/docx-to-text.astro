@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DocxToText from '@/components/tools/data/DocxToText.tsx'
+---
+
+<ToolLayout slug="docx-to-text">
+  <DocxToText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to extract plain text from a Word document</h2>
+    <ol>
+      <li>Drop one or more <code>.docx</code> files onto the page. Nothing is uploaded: the documents are unzipped and read in this tab.</li>
+      <li>Choose the paragraph spacing. A blank line between paragraphs is easiest to read; one line per paragraph is easier to process with a script.</li>
+      <li>Tidy the text: trim indentation, collapse runs of blank lines, and optionally straighten the curly quotes of Word.</li>
+      <li>Copy or download. With several documents loaded, you can export all of them as one ZIP of <code>.txt</code> files.</li>
+    </ol>
+
+    <h2>What gets extracted</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Document part</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Included</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="border-b px-3 py-2">Body paragraphs and headings</td><td class="border-b px-3 py-2">Yes, in reading order</td></tr>
+          <tr><td class="border-b px-3 py-2">Bulleted and numbered list text</td><td class="border-b px-3 py-2">Yes: the text, not the bullet glyphs</td></tr>
+          <tr><td class="border-b px-3 py-2">Table cell text</td><td class="border-b px-3 py-2">Yes, cell by cell</td></tr>
+          <tr><td class="border-b px-3 py-2">Text boxes and shapes</td><td class="border-b px-3 py-2">Usually, when stored in the main document part</td></tr>
+          <tr><td class="border-b px-3 py-2">Headers, footers, footnotes, endnotes</td><td class="border-b px-3 py-2">No: separate parts of the package</td></tr>
+          <tr><td class="border-b px-3 py-2">Comments and tracked-change markup</td><td class="border-b px-3 py-2">No</td></tr>
+          <tr><td class="border-b px-3 py-2">Images, charts, embedded objects</td><td class="border-b px-3 py-2">No: plain text cannot hold them</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What a .docx actually is</h2>
+    <p>
+      A <code>.docx</code> looks like one file but is a ZIP archive. In it, <code>word/document.xml</code>
+      holds the text as a tree of paragraph (<code>w:p</code>) and run (<code>w:r</code>) elements, with
+      formatting stored separately. To extract the text, the tool unzips the package, walks that tree and
+      writes one line break per paragraph. It uses the mammoth library, which is part of the page, so it
+      works offline and needs no copy of your file.
+    </p>
+
+    <h2>Why the old .doc format is not supported</h2>
+    <p>
+      Word 97-2003 <code>.doc</code> files use a completely different container: a binary OLE compound
+      document with the text spread across streams and piece tables. That needs a very different parser, so
+      the tool detects the format and tells you, and does not give garbled output. Open the file in Word or
+      LibreOffice, choose <strong>Save As → Word Document (.docx)</strong>, and convert that copy.
+    </p>
+
+    <h2>Straightening smart quotes</h2>
+    <p>
+      Word autocorrect replaces typed punctuation with typographic characters: <code>"</code> becomes
+      <code>“ ”</code>, <code>'</code> becomes <code>‘ ’</code>, <code>--</code> becomes an em dash, and
+      <code>...</code> becomes one ellipsis character. These look good in print but cause problems in a CSV,
+      a JSON string or a code comment. The straightening option converts them back to ASCII and also
+      changes non-breaking spaces to ordinary ones. A non-breaking space is invisible and can make a value
+      fail to match in a lookup.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Moving a manuscript from Word into a plain-text editor or a static site.</li>
+      <li>Preparing documents for search indexing, diffing or word-frequency analysis.</li>
+      <li>Removing formatting before you paste into a CMS that would otherwise get the inline styles of Word.</li>
+      <li>Extracting text from a folder of reports: drop them all at once and download the ZIP.</li>
+    </ul>
+    <p>
+      To keep the structure, use <a href="/docx-to-markdown">DOCX to Markdown</a>, which keeps headings,
+      lists, links and tables.
+    </p>
+  </Fragment>
+</ToolLayout>

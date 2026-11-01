@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatMarkdownTable from '@/components/tools/data/DevFormatMarkdownTable.tsx'
+---
+
+<ToolLayout slug="markdown-table-to-csv">
+  <DevFormatMarkdownTable client:load mode="md-to-csv" />
+  <Fragment slot="explainer">
+    <h2>What counts as a Markdown table</h2>
+    <p>
+      A Markdown table needs three parts, in order: a header row of pipe-separated cells, a separator
+      row where each cell is dashes with optional colons, and zero or more body rows. Leading and
+      trailing pipes are optional, and both styles work. If the separator is missing, or its cell count
+      does not match the header, the parser tells you and does not guess, because a wrong guess would
+      shift all columns.
+    </p>
+    <pre><code>| Endpoint   | Method | p95 latency |
+| ---------- | :----: | ----------: |
+| /v1/orders | GET    | 84 ms       |</code></pre>
+
+    <h2>What happens to Markdown-specific syntax</h2>
+    <ul>
+      <li>Escaped pipes (<code>\|</code>) become a literal pipe in the CSV field, correctly quoted so a spreadsheet does not split on it.</li>
+      <li>Alignment markers are read and then discarded. CSV has no alignment. A spreadsheet applies its own from the value type.</li>
+      <li>Padding spaces are trimmed from each cell.</li>
+      <li>Inline formatting (<code>**bold**</code>, backticks, link syntax) stays as literal text, because removing it would lose the URL from a link. For plain values, remove it in the grid.</li>
+      <li><code>&lt;br&gt;</code> tags stay as text and do not become newlines. A CSV field can legally contain a real line break, but an automatic change would alter your data. Make that change in the grid if you need it.</li>
+    </ul>
+
+    <h2>Opening the result in Excel</h2>
+    <p>
+      Excel splits a CSV with your regional list separator, not from the file&rsquo;s contents. In a
+      locale where the decimal separator is a comma (most of continental Europe and Latin America), a
+      comma-delimited file opens with each row in column A.
+    </p>
+    <p>Three fixes, easiest first:</p>
+    <ol>
+      <li>Switch the delimiter to <strong>semicolon</strong> in the output options before downloading. Excel in those locales opens it correctly.</li>
+      <li>In Excel, use <strong>Data → From Text/CSV</strong> and do not double-click the file. Choose the delimiter in the import dialog.</li>
+      <li>Rename the file to <code>.txt</code>, which forces Excel to show the import wizard.</li>
+    </ol>
+    <p>
+      Google Sheets and Numbers detect the delimiter themselves and usually read both correctly.
+    </p>
+
+    <h2>JSON instead of CSV</h2>
+    <p>
+      Switch the output format to JSON and each body row becomes an object keyed by the header cells.
+      This is the fastest way from a documentation table to a test fixture, a seed file or a lookup
+      map. A table of HTTP codes, currency codes, feature flags or config defaults becomes usable data
+      in one step.
+    </p>
+
+    <h2>Round-tripping</h2>
+    <p>
+      Markdown table to CSV and back keeps the data but not the presentation: alignment markers and
+      padding come from your new choices. To keep alignment through a round trip, note it before you
+      convert, or edit the CSV and go back through <a href="/csv-to-markdown-table">CSV to Markdown</a>
+      and set the alignment again in the grid.
+    </p>
+  </Fragment>
+</ToolLayout>

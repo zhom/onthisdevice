@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MemeGenerator from '@/components/tools/image-edit/MemeGenerator.tsx'
+---
+
+<ToolLayout slug="meme-generator">
+  <MemeGenerator client:load variant="meme" />
+
+  <Fragment slot="explainer">
+    <h2>How to make a meme</h2>
+    <ol>
+      <li>Drop in a template or any photo. Your browser decodes it, with no upload step and no queue.</li>
+      <li>Two caption boxes appear at once, in the classic top-and-bottom position. Click one and type over the placeholder.</li>
+      <li>Drag a caption anywhere on the image, or select it and move it with the arrow keys (hold <kbd>Shift</kbd> for bigger steps).</li>
+      <li>Adjust size, outline thickness and wrap width, then download PNG, JPG or WebP.</li>
+    </ol>
+
+    <h2>Why memes use Impact, and what to do without it</h2>
+    <p>
+      Impact was drawn in 1965 as a poster face: very heavy strokes, tiny counters and almost no space
+      between letters. So it stays readable as a small thumbnail in a feed, and the meme format kept
+      it. The convention that came with it (white fill, black outline, all caps) has the same reason:
+      white-on-black shows on any background, and the outline keeps the letters legible over a bright
+      sky or a dark shadow.
+    </p>
+    <p>
+      Impact comes with Windows and macOS, but not with most Linux distributions or Android. This page
+      never loads a remote font, because that would be a network request. So the meme generator uses
+      the heaviest condensed sans your device has. If your captions look thin, pick
+      <strong>Heavy sans</strong> from the font list, which uses Arial Black and its equivalents, and
+      increase the outline a little.
+    </p>
+
+    <h2>Settings that matter, and sensible values</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Control</th><th>Good default</th><th>What it changes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Size</td><td>10–12% of image height</td><td>Classic meme captions are large. Below about 6%, the text disappears in a feed thumbnail.</td></tr>
+          <tr><td>Outline thickness</td><td>12–16%</td><td>Measured against the font size, so it scales with the text. Below 8% the outline vanishes on busy photos.</td></tr>
+          <tr><td>Wrap width</td><td>90%</td><td>Where lines break. Narrow it to force a two-line caption, widen it for one long line.</td></tr>
+          <tr><td>Uppercase</td><td>On</td><td>Applies at render time, so your typing stays readable while you edit.</td></tr>
+          <tr><td>White space above/below</td><td>0%, or 15% for the caption-bar style</td><td>Adds bars outside the photo so text never covers the image.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Exporting for each platform</h2>
+    <ul>
+      <li>For Discord, Slack and WhatsApp, use PNG. It keeps the letter edges sharp, and these platforms do not re-compress hard. If the file is over the attachment limit, use JPG at quality 85.</li>
+      <li>Twitter/X and Instagram re-encode all uploads. Export at your largest resolution and let them reduce it. A small upload only gives their encoder less detail.</li>
+      <li>For Reddit, use PNG for flat colour or a caption bar, and JPG for photographic templates, which are otherwise too large.</li>
+      <li>For printing, export PNG, then use <a href="/change-image-dpi">Change Image DPI</a> to tag it at 300 DPI so it prints at the intended physical size.</li>
+    </ul>
+
+    <h2>Why there is no watermark</h2>
+    <p>
+      Your browser makes the image, and the page adds no branding to it. The canvas in the preview is
+      the canvas that is encoded. The only difference: the selection outline around the caption you
+      edit is drawn after the export copy is made, so it is not in the download.
+    </p>
+
+    <h2>Related things you might want next</h2>
+    <p>
+      For one caption in a specific place, <a href="/add-text-to-image">Add Text to Image</a> starts
+      with a single box and no outline. For a multi-panel meme, lay out the frames first with
+      <a href="/combine-images">Combine Images</a>, then caption the finished sheet. If the result is
+      too large for a chat attachment limit, <a href="/compress-image-to-500kb">compress it to
+      500 KB</a>. The search shows the quality it chose.
+    </p>
+  </Fragment>
+</ToolLayout>

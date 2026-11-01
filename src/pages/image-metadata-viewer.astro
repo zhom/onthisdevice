@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ImageMetadataViewer from '@/components/tools/image-edit/ImageMetadataViewer.tsx'
+---
+
+<ToolLayout slug="image-metadata-viewer">
+  <ImageMetadataViewer client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to read a photo’s metadata</h2>
+    <ol>
+      <li>Drop one or more images onto the box above. The page parses them locally and does not upload them.</li>
+      <li>The image metadata viewer groups the tags into sections: camera and lens, exposure, image, date and time, location, and description and rights.</li>
+      <li>GPS coordinates show in decimal degrees and in degrees-minutes-seconds. You can copy each with one click.</li>
+      <li>Scroll to <strong>Raw JSON</strong> for the complete, untranslated set, to copy or download.</li>
+    </ol>
+
+    <h2>Reading the exposure numbers</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Tag</th><th>Shown as</th><th>What it tells you</th></tr></thead>
+        <tbody>
+          <tr><td>ExposureTime</td><td>1/250 s</td><td>How long the shutter was open. Below about 1/60 s, handheld shots start to blur.</td></tr>
+          <tr><td>FNumber</td><td>f/2.8</td><td>Aperture. A smaller number is a wider opening, more light and a shallower depth of field.</td></tr>
+          <tr><td>ISO</td><td>100–25600</td><td>Sensor sensitivity. Higher means brighter but noisier.</td></tr>
+          <tr><td>FocalLength</td><td>50 mm</td><td>Actual lens focal length. Compare with the 35 mm equivalent for the real field of view.</td></tr>
+          <tr><td>ExposureBiasValue</td><td>−0.33 EV</td><td>How far the photographer moved the exposure from the meter’s reading.</td></tr>
+          <tr><td>Flash</td><td>“Flash did not fire”</td><td>Decoded from a bit field that also records red-eye mode and return detection.</td></tr>
+          <tr><td>Orientation</td><td>“Rotate 90 CW”</td><td>Which way is up. Apps that ignore it show photos sideways.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The metadata standards, briefly</h2>
+    <ul>
+      <li>EXIF is written by the camera: technical capture data plus the GPS sub-directory, in a TIFF-structured block inside the JPEG.</li>
+      <li>IPTC-IIM is the news industry’s captioning standard: headline, byline, credit, source, city, country, keywords. Editors and agencies add it, not cameras.</li>
+      <li>XMP is Adobe’s XML-based container: editing history, ratings, licence terms, catalogue identifiers. It often duplicates IPTC fields.</li>
+      <li>An ICC profile describes the colour space, so other software can show the intended colours.</li>
+      <li>JFIF is a small JPEG header with pixel-density information.</li>
+    </ul>
+
+    <h2>Understanding the coordinates</h2>
+    <p>
+      GPS latitude and longitude are stored as three rational numbers (degrees, minutes and seconds)
+      plus a reference letter (N/S, E/W). This viewer converts them to signed decimal degrees, the format
+      all mapping tools accept:
+    </p>
+    <p><code>decimal = degrees + minutes / 60 + seconds / 3600</code>, negated for S and W.</p>
+    <p>
+      Six decimal places is about 11 cm of precision at the equator, much finer than consumer GPS. Most
+      phone photos are accurate to 3–15 metres. The <code>GPSHPositioningError</code> tag, when present,
+      records the camera’s own estimate.
+    </p>
+
+    <h2>What people use this for</h2>
+    <ul>
+      <li>Learn from photographs. The shutter, aperture and ISO behind a shot you like show how it was made.</li>
+      <li>Check before you publish. Confirm that a file has no location or client name, then clean it with the <a href="/remove-exif-data">EXIF remover</a>.</li>
+      <li>Verify provenance. Capture timestamps, camera serial numbers and software fields help check if an image is what it claims to be. Metadata is easy to edit, so treat it as a lead, not proof.</li>
+      <li>Keep insurance and property records. Confirm when and where documentation photos were taken.</li>
+      <li>Debug a photo pipeline. Find which step in an export chain rotated, re-tagged or stripped a file.</li>
+    </ul>
+
+    <h2>Why an image might show nothing</h2>
+    <p>
+      Empty results are common and usually normal. Screenshots have no capture data, because there was
+      no camera. Images exported from design tools have only what the tool wrote. A social network
+      re-encodes images and removes the metadata. Some messaging apps and CMS uploaders remove it too.
+      For the original tags, get the file from the camera or phone, not from a chat thread.
+    </p>
+  </Fragment>
+</ToolLayout>

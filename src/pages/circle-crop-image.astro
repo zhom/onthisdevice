@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CircleCropImage from '@/components/tools/image-edit/CircleCropImage.tsx'
+---
+
+<ToolLayout slug="circle-crop-image">
+  <CircleCropImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to crop a photo into a circle</h2>
+    <ol>
+      <li>Drop a photo onto the box above, or several to make avatars for a whole team.</li>
+      <li>Choose the shape: a full circle, a rounded square (with an adjustable corner radius) or a plain square.</li>
+      <li>Set the output size. The image scales to cover the frame, so the edges are never empty.</li>
+      <li>Drag the preview to reposition it, or use the zoom and position sliders for precise keyboard control.</li>
+      <li>Optionally add a border ring and a solid background, then export as PNG for real transparency.</li>
+    </ol>
+
+    <h2>Why the output is a PNG</h2>
+    <p>
+      A circle inside a square file needs transparent corners, not white ones. That needs an alpha
+      channel, which PNG and WebP have and JPEG does not. A circular crop exported as JPEG gets solid
+      black corners, or the background colour you set. If a site accepts only JPEG uploads, turn on the
+      solid background and match it to the page colour behind the avatar.
+    </p>
+    <p>
+      If you control the site, consider WebP: it supports transparency and gives files about a quarter
+      the size of the same PNG.
+    </p>
+
+    <h2>Profile picture sizes across platforms</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Platform</th><th>Displayed at</th><th>Upload</th><th>Shape</th></tr></thead>
+        <tbody>
+          <tr><td>Slack</td><td>up to 512 px</td><td>512 × 512</td><td>Rounded square</td></tr>
+          <tr><td>Discord</td><td>128 px</td><td>512 × 512</td><td>Circle</td></tr>
+          <tr><td>LinkedIn</td><td>400 px</td><td>400 × 400 or larger</td><td>Circle</td></tr>
+          <tr><td>GitHub</td><td>460 px</td><td>500 × 500</td><td>Rounded square</td></tr>
+          <tr><td>X (Twitter)</td><td>400 px</td><td>400 × 400</td><td>Circle</td></tr>
+          <tr><td>Instagram</td><td>320 px</td><td>320 × 320 or larger</td><td>Circle</td></tr>
+          <tr><td>Zoom / Teams</td><td>256 px</td><td>512 × 512</td><td>Circle</td></tr>
+          <tr><td>Gravatar</td><td>up to 2048 px</td><td>512 × 512</td><td>Square (cropped by site)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A square 512 × 512 export covers almost all cases. A much larger upload is only downscaled by the
+      platform, and an upload smaller than the display size is the usual cause of a soft, blurry avatar.
+    </p>
+
+    <h2>Framing a headshot well</h2>
+    <ul>
+      <li>Fill the frame. The head and shoulders should fill most of the circle. A full-body shot cropped to 128 px is an unrecognisable smudge.</li>
+      <li>Put the eyes on the upper third. Leave a little space above the head, not a lot; most people crop too loose.</li>
+      <li>Watch the corners. A circular mask removes about 21% of a square image. Keep important content inside the inscribed circle.</li>
+      <li>Check it small. Zoom your browser out until the preview is about 40 px across. If you cannot recognise the person, crop tighter.</li>
+      <li>Contrast the background. Avatars show on both light and dark UI. A subject that blends into a mid-grey background disappears in one of them; a border ring fixes this.</li>
+    </ul>
+
+    <h2>Rounded squares and the corner-radius number</h2>
+    <p>
+      The radius slider is a percentage of the output size, so it stays proportional at any export
+      resolution. 50% gives a full circle. About 22–25% matches the “squircle” look of iOS and macOS
+      app icons, and 8–12% gives the gentle rounding of most web card components.
+    </p>
+
+    <h2>Batch avatars for a team</h2>
+    <p>
+      Add all headshots at once and set the options on the first image. The tool renders the whole
+      batch with the same shape, size, border and zoom. Each photo is scaled to cover its own frame, so
+      portrait and landscape sources all come out square. Download them together as a ZIP. If the
+      framing of the source photos varies a lot, <a href="/crop-image">pre-crop</a> the odd ones so
+      the faces have a consistent scale.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,117 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ExcelToJson from '@/components/tools/data/ExcelToJson.tsx'
+---
+
+<ToolLayout slug="excel-to-json">
+  <ExcelToJson client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert an Excel sheet to JSON</h2>
+    <ol>
+      <li>Drop the workbook: <code>.xlsx</code>, <code>.xls</code>, <code>.xlsm</code>, <code>.xlsb</code>, <code>.ods</code> or <code>.csv</code>.</li>
+      <li>Pick the worksheet, or choose <strong>All sheets</strong> to get one JSON object keyed by sheet name.</li>
+      <li>Choose the source of the keys: the first row, the column letters, or none, for arrays of arrays.</li>
+      <li>Set the date and type behaviour so the output matches what your API or database expects.</li>
+      <li>Copy or download the <code>.json</code>.</li>
+    </ol>
+
+    <h2>Choosing an output shape</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Keys come from</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Output</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">The first row</td>
+            <td class="border-b px-3 py-2"><code>[&#123; "name": "Ada", "role": "engineer" &#125;]</code></td>
+            <td class="border-b px-3 py-2">API payloads, seed data, most imports</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Column letters</td>
+            <td class="border-b px-3 py-2"><code>[&#123; "A": "Ada", "B": "engineer" &#125;]</code></td>
+            <td class="border-b px-3 py-2">Sheets with no header, or duplicated headers</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">No keys</td>
+            <td class="border-b px-3 py-2"><code>[["Ada", "engineer"]]</code></td>
+            <td class="border-b px-3 py-2">Positional processing and matrix maths</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">All sheets</td>
+            <td class="border-b px-3 py-2"><code>&#123; "Q1": [...], "Q2": [...] &#125;</code></td>
+            <td class="border-b px-3 py-2">Converting a whole workbook in one pass</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How Excel dates become JSON</h2>
+    <p>
+      Excel has no date type. It stores a number (the count of days since 30 December 1899) with a display
+      format. For this reason, a date pasted between workbooks sometimes becomes 45,000. This converter reads
+      the format, recognises the cell as a date, and lets you choose how to write it:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Mode</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Example output</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Use when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">ISO 8601</td>
+            <td class="border-b px-3 py-2"><code>"2026-08-16T00:00:00.000Z"</code></td>
+            <td class="border-b px-3 py-2">Feeding an API or a JS <code>new Date()</code></td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Date only</td>
+            <td class="border-b px-3 py-2"><code>"2026-08-16"</code></td>
+            <td class="border-b px-3 py-2">Calendar dates with no meaningful time</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">As displayed</td>
+            <td class="border-b px-3 py-2"><code>"16/08/2026"</code></td>
+            <td class="border-b px-3 py-2">Reproducing a human-facing report</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Serial number</td>
+            <td class="border-b px-3 py-2"><code>46250</code></td>
+            <td class="border-b px-3 py-2">Round-tripping back into a spreadsheet</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Header rows that are not quite clean</h2>
+    <p>
+      Real sheets have empty header cells and repeated labels. The tool handles both without data loss: an
+      empty header becomes <code>column_3</code>, and a repeat becomes <code>total_2</code>. If your headers
+      use dot notation such as <code>address.city</code>, turn on <strong>Expand dotted headers</strong>, and
+      the flat row becomes a nested object.
+    </p>
+
+    <h2>Typed values, and when to switch them off</h2>
+    <p>
+      With typed values on, you get real JSON numbers, <code>true</code>/<code>false</code> booleans and
+      <code>null</code> for blanks, the shape a database or a schema validator expects. Turn it off when the
+      formatting has meaning: a part number stored as <code>0042</code>, a percentage you want as
+      <code>"12.5%"</code>, or an account reference longer than fifteen digits that would lose precision as a
+      floating-point number.
+    </p>
+
+    <h2>Runs entirely on your device</h2>
+    <p>
+      SheetJS parses the workbook in this browser tab, with no upload and no retention, so you can convert
+      payroll exports, patient data and files under an NDA.
+    </p>
+  </Fragment>
+</ToolLayout>

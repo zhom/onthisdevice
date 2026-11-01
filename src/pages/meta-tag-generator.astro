@@ -1,0 +1,121 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MetaTagGenerator from '@/components/tools/generators/MetaTagGenerator.tsx'
+---
+
+<ToolLayout slug="meta-tag-generator">
+  <MetaTagGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use this</h2>
+    <ol>
+      <li>Write the title and description first. Watch the pixel width, not the character count, because Google truncates by pixels.</li>
+      <li>Add the canonical URL. It must be absolute, with the scheme, and point to the version of the page you want indexed.</li>
+      <li>Do not change the robots switches without a reason. The default, <code>index, follow</code>, is correct for almost all pages.</li>
+      <li>Fill in the share image and check the social preview. A missing or broken image is the most common reason a shared link looks bad.</li>
+      <li>Copy the block into the <code>&lt;head&gt;</code> of the page.</li>
+    </ol>
+
+    <h2>Title and description length, properly</h2>
+    <p>
+      Guides give a character count, but Google measures pixels. A desktop title renders at about 20 px
+      Arial and is clipped near 600 px. The snippet is about 14 px over two lines, near 920 px in total.
+      A “W” is more than three times the width of an “i”, so two titles of the same length can fit very
+      differently. This meta tag generator measures the real rendered width of your text as you type.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Pixel budget</th>
+            <th>Roughly</th>
+            <th>Advice</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Title, desktop</td><td>~600 px</td><td>50–60 characters</td><td>Put the keyword first and the brand at the end, after a pipe or dash</td></tr>
+          <tr><td>Title, mobile</td><td>~500 px</td><td>45–50 characters</td><td>The most important words must be in the first 45</td></tr>
+          <tr><td>Description</td><td>~920 px over two lines</td><td>120–158 characters</td><td>Write it as ad copy. It affects the click, not the ranking</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Google rewrites the description about a third of the time, when other text on the page matches
+      the query better than your summary. That is normal, and you do not need to fight it. A good
+      description still controls the snippet for brand searches and exact-match queries, which convert
+      best.
+    </p>
+
+    <h2>The tags that matter, and the ones that do not</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Tag</th>
+            <th>Effect</th>
+            <th>Worth it?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>&lt;title&gt;</code></td><td>Primary ranking factor and the clickable line in results</td><td>Essential</td></tr>
+          <tr><td><code>meta description</code></td><td>Controls the snippet. No direct ranking effect</td><td>Essential for click-through</td></tr>
+          <tr><td><code>link rel="canonical"</code></td><td>Consolidates duplicates onto one URL</td><td>Essential on any site with parameters or pagination</td></tr>
+          <tr><td><code>meta robots</code></td><td>Directive controlling indexing and link following</td><td>Only when you need something other than the default</td></tr>
+          <tr><td><code>og:*</code></td><td>Card layout on Facebook, LinkedIn, Slack, Discord, WhatsApp</td><td>Essential if links get shared</td></tr>
+          <tr><td><code>twitter:*</code></td><td>X card type and attribution</td><td>Useful. Without it, X uses Open Graph</td></tr>
+          <tr><td><code>meta keywords</code></td><td>None. Ignored by Google since 2009, a spam signal to Bing</td><td>No. This tool leaves it out</td></tr>
+          <tr><td><code>meta author</code>, <code>meta revisit-after</code></td><td>No search effect</td><td>Harmless, but not useful</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Robots directives, and how to lose all your traffic</h2>
+    <p>
+      <code>noindex</code> is a directive, not a hint. Put it in a live template and all pages that use
+      that template leave the index within days, and take weeks to come back. Two rules:
+    </p>
+    <ul>
+      <li>Never combine <code>noindex</code> with a <code>Disallow</code> in robots.txt. If the crawler cannot fetch the page, it never sees the tag, so the URL stays in the index as a bare result with no description. Allow the crawl and serve the noindex.</li>
+      <li><code>nofollow</code> at page level is almost never correct. It stops link equity from flowing to your own pages. To mark individual links, use <code>rel="nofollow"</code>, <code>rel="ugc"</code> or <code>rel="sponsored"</code> on the anchor.</li>
+    </ul>
+    <p>
+      Other useful values, which combine with commas: <code>noarchive</code> removes the cached copy,
+      <code>nosnippet</code> removes the description, <code>max-snippet:150</code> limits its length,
+      <code>noimageindex</code> keeps your images out of image search, and
+      <code>unavailable_after:2026-12-31T23:59:59Z</code> schedules removal.
+    </p>
+
+    <h2>Canonical URLs</h2>
+    <p>
+      A canonical tag tells search engines which URL is the real one when several show the same
+      content. A wrong canonical can remove a page from the index as surely as <code>noindex</code>.
+    </p>
+    <ul>
+      <li>Always absolute: <code>https://example.com/page</code>, never <code>/page</code>.</li>
+      <li>Self-referential on each page. A page whose canonical points at itself is unambiguous.</li>
+      <li>Match the served version exactly. Trailing slash, protocol, subdomain and letter case all count.</li>
+      <li>Do not canonicalise paginated pages to page one. Each page of a listing has different content and should stand alone.</li>
+      <li>Never point a canonical at a page that redirects, or at a page that is itself canonicalised elsewhere.</li>
+    </ul>
+
+    <h2>Share images</h2>
+    <p>
+      Use 1200 × 630 pixels, under 5 MB, PNG or JPEG, served over HTTPS from an absolute URL. Most
+      crawlers ignore relative paths and images behind authentication. Add <code>og:image:alt</code>.
+      Several platforms show it, and it is the only accessible description a shared card gets.
+    </p>
+    <p>
+      If a card still looks wrong after you fix the tags, the platform shows a cached scrape.
+      Facebook’s Sharing Debugger, LinkedIn’s Post Inspector and X’s card validator each have a
+      “scrape again” action that refreshes it.
+    </p>
+
+    <h2>Nothing here touches a server</h2>
+    <p>
+      The previews render from what you type, and the pixel measurements come from a canvas in this
+      tab. The only network request is the browser loading the share image you entered, so you can see
+      if the URL works. Your unpublished titles, descriptions and staging URLs stay on your machine.
+    </p>
+  </Fragment>
+</ToolLayout>

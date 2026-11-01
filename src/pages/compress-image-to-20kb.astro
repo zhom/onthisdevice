@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-20kb">
+  <CompressImageToTarget client:load targetKb={20} inputLabel="Drop the photo, signature or scan that must fit 20 KB" />
+
+  <Fragment slot="explainer">
+    <h2>20 KB is a very small budget</h2>
+    <p>
+      For scale: this sentence as plain text is about 80 bytes. Twenty kilobytes is 20,480 bytes, and a
+      photograph must encode all visible detail in that. Form-processing systems built for the storage
+      of the dial-up era set this limit, mostly exam boards, recruitment portals and government
+      e-services. You can reach it, but you must know what to give up.
+    </p>
+
+    <h2>What fits</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Content</th><th>Realistic at 20 KB</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Scanned signature on white</td><td>Easy, even at 800 px wide</td><td>Mostly flat white; compresses very well</td></tr>
+          <tr><td>Passport-style headshot, plain wall</td><td>300 × 400 px, quality 55–70</td><td>The intended use of most 20 KB limits</td></tr>
+          <tr><td>Document scan, text only</td><td>Legible up to about 900 px wide</td><td>Convert it to grayscale first if the tool allows</td></tr>
+          <tr><td>Outdoor snapshot</td><td>250 × 350 px, visibly soft</td><td>Crop tightly or accept the softness</td></tr>
+          <tr><td>Screenshot with fine text</td><td>Not really</td><td>Text needs sharp edges that JPEG cannot give at this size</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The single most effective move: crop</h2>
+    <p>
+      At this size, the problem for the encoder is the pixel count. A 3000 × 4000 photo has 12 million
+      pixels; a crop to the head and shoulders can leave 600,000. That is twenty times fewer pixels to
+      encode, which gives much more quality at the same byte count. Crop first with
+      <a href="/crop-image">Crop Image</a>, then come back here.
+    </p>
+
+    <h2>How the search behaves at extreme targets</h2>
+    <p>
+      The tool first does a binary search of the JPEG quality at full resolution. At a 20 KB target this
+      usually fails even at quality 5, so the tool starts the second pass: it searches the scale factor,
+      resamples with a Lanczos3 filter, and encodes again at a fixed mid quality. A small image encoded
+      cleanly looks much better than a full-size image smeared into blocks, so the tool fixes quality
+      and searches size. The result card lists each attempt and shows the final values.
+    </p>
+
+    <h2>Format matters more than usual here</h2>
+    <ul>
+      <li>WebP keeps about a third more detail than JPEG at 20 KB. If the portal accepts <code>.webp</code>, use it.</li>
+      <li>JPEG is the safe default, and almost all forms expect it.</li>
+      <li>PNG is a poor choice for photos here: it is lossless, so only the size can change, and a 20 KB PNG photo is tiny. It is the best choice for a signature or a line drawing, which compress losslessly to almost nothing.</li>
+    </ul>
+
+    <h2>Common 20 KB requirements</h2>
+    <p>
+      Indian competitive-exam portals are the best-known source: a photograph between 20 and 50 KB and a
+      signature between 10 and 20 KB, plus fixed pixel dimensions. When a range is given, aim for the
+      top of it, because the largest allowed file is the clearest. When pixel dimensions are also
+      specified, set the width limit first so the search stays within them.
+    </p>
+
+    <h2>What not to do</h2>
+    <p>
+      Do not put the output through the tool a second time. Each JPEG generation quantises coefficients
+      that were already rounded, so errors add up quickly. A file compressed twice to 20 KB looks much
+      worse than the same original compressed once. If the result is not good enough, go back to your
+      highest-quality original, crop more, and try again.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-50kb">50 KB</a> ·
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

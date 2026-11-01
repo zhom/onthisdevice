@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="miles-to-km">
+  <UnitsLifePairConverter client:load spec="miles-to-km" />
+  <Fragment slot="explainer">
+    <h2>The exact factor, and why it is exact</h2>
+    <p>
+      A statute mile is 5,280 feet. A foot is exactly 0.3048 m. Multiply and you get
+      <strong>1,609.344 m</strong>, or 1.609344 km, exact to the last digit. It is two definitions
+      multiplied together, with no measurement. Road-sign conversions round this number. This miles
+      to km converter uses it exactly.
+    </p>
+
+    <h2>Running distances</h2>
+    <p>
+      Race distances are defined in metres and then described in miles, so the mile figures look
+      untidy:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Race</th><th scope="col">Official distance</th><th scope="col">In miles</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5K</td><td>5,000 m</td><td>3.10686 mi</td></tr>
+        <tr><td>10K</td><td>10,000 m</td><td>6.21371 mi</td></tr>
+        <tr><td>Half marathon</td><td>21,097.5 m</td><td>13.10938 mi</td></tr>
+        <tr><td>Marathon</td><td>42,195 m</td><td>26.21876 mi</td></tr>
+        <tr><td>Mile</td><td>1,609.344 m</td><td>1 mi</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The marathon is not "26.2 miles rounded to 42.195 km". It is the other way round: the distance
+      was fixed in metres in 1921, and 26.2 is the rounded description.
+    </p>
+
+    <h2>Speeds convert with the same number</h2>
+    <p>
+      Miles per hour to kilometres per hour uses the identical factor, because the hours cancel:
+    </p>
+    <ul>
+      <li>30 mph = 48.28 km/h (a UK urban limit against a European 50)</li>
+      <li>50 mph = 80.47 km/h</li>
+      <li>60 mph = 96.56 km/h</li>
+      <li>70 mph = 112.65 km/h (UK motorway against a French 130)</li>
+    </ul>
+    <p>
+      Speedometers can legally show too high a speed, never too low, usually by 1&ndash;3% plus a
+      fixed offset. The conversion here is exact. Your dashboard shows a little more than your real
+      speed on purpose.
+    </p>
+
+    <h2>Pace inverts</h2>
+    <p>
+      A pace is time per distance, so it converts in the opposite direction to a distance. To turn
+      minutes per mile into minutes per kilometre, divide by 1.609344. An 8:00/mile pace is 4:58/km,
+      and a 5:00/km pace is 8:03/mile. This is the most common conversion error in running, and the
+      wrong direction makes you look about 60% faster.
+    </p>
+
+    <h2>Nautical miles are a different unit</h2>
+    <p>
+      A nautical mile is exactly 1,852 m (originally one minute of latitude), about 15% longer than a
+      land mile. Aviation and marine distances, and the knot (one nautical mile per hour), use it. If
+      your figure came from a chart or a flight plan, convert with 1.852, not 1.609344.
+    </p>
+  </Fragment>
+</ToolLayout>

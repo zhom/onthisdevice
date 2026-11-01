@@ -1,0 +1,150 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompoundInterestCalculator from '@/components/tools/finance/CompoundInterestCalculator.tsx'
+---
+
+<ToolLayout slug="compound-interest-calculator">
+  <CompoundInterestCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the compound interest calculator</h2>
+    <ol>
+      <li>
+        Enter your <strong>starting balance</strong>. Set it to zero if you start from nothing and only
+        make regular deposits.
+      </li>
+      <li>
+        Enter the <strong>regular deposit</strong> and how often you make it. The annual equivalent
+        shows below, so you can check it.
+      </li>
+      <li>
+        Set the <strong>annual interest rate</strong> and the <strong>compounding frequency</strong>.
+        The effective annual rate shows next to the frequency. Use this number to compare accounts.
+      </li>
+      <li>
+        Choose the number of <strong>years</strong>. If you deposit at the start of each period, change
+        the deposit timing.
+      </li>
+      <li>
+        Read the projection, then use the stacked chart to see when interest starts to contribute more
+        than your own deposits.
+      </li>
+    </ol>
+
+    <h2>The formula, and why frequency matters</h2>
+    <p>
+      A lump sum grows by <code>FV = P × (1 + r/m)^(m·t)</code>, where <code>r</code> is the nominal
+      annual rate, <code>m</code> is the number of compounding periods per year and <code>t</code> is
+      the number of years. Regular deposits add a second term, the future value of an annuity:
+      <code>FV = PMT × [((1 + i)^n − 1) / i]</code>.
+    </p>
+    <p>
+      More frequent compounding raises the effective rate, because interest starts to earn interest
+      sooner. The gain is real but modest, and it gets smaller as frequency rises: annual to monthly
+      gains much more than monthly to daily.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Compounding</th>
+            <th style="text-align:right">Periods / year</th>
+            <th style="text-align:right">Effective rate on 7% nominal</th>
+            <th style="text-align:right">10,000 after 20 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Annually</td><td style="text-align:right">1</td><td style="text-align:right">7.0000%</td><td style="text-align:right">38,697</td></tr>
+          <tr><td>Quarterly</td><td style="text-align:right">4</td><td style="text-align:right">7.1859%</td><td style="text-align:right">40,064</td></tr>
+          <tr><td>Monthly</td><td style="text-align:right">12</td><td style="text-align:right">7.2290%</td><td style="text-align:right">40,387</td></tr>
+          <tr><td>Weekly</td><td style="text-align:right">52</td><td style="text-align:right">7.2458%</td><td style="text-align:right">40,514</td></tr>
+          <tr><td>Daily</td><td style="text-align:right">365</td><td style="text-align:right">7.2501%</td><td style="text-align:right">40,547</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What a lump sum becomes</h2>
+    <p>10,000 with no further deposits:</p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[480px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Annual return</th>
+            <th style="text-align:right">5 years</th>
+            <th style="text-align:right">10 years</th>
+            <th style="text-align:right">20 years</th>
+            <th style="text-align:right">30 years</th>
+            <th style="text-align:right">40 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>3%</td><td style="text-align:right">11,593</td><td style="text-align:right">13,439</td><td style="text-align:right">18,061</td><td style="text-align:right">24,273</td><td style="text-align:right">32,620</td></tr>
+          <tr><td>5%</td><td style="text-align:right">12,763</td><td style="text-align:right">16,289</td><td style="text-align:right">26,533</td><td style="text-align:right">43,219</td><td style="text-align:right">70,400</td></tr>
+          <tr><td>7%</td><td style="text-align:right">14,026</td><td style="text-align:right">19,672</td><td style="text-align:right">38,697</td><td style="text-align:right">76,123</td><td style="text-align:right">149,745</td></tr>
+          <tr><td>10%</td><td style="text-align:right">16,105</td><td style="text-align:right">25,937</td><td style="text-align:right">67,275</td><td style="text-align:right">174,494</td><td style="text-align:right">452,593</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Compounded annually, no deposits, before tax and inflation.</p>
+
+    <h2>What 500 a month becomes</h2>
+    <p>Deposits only, no starting balance, compounded monthly:</p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Annual return</th>
+            <th style="text-align:right">10 years</th>
+            <th style="text-align:right">20 years</th>
+            <th style="text-align:right">30 years</th>
+            <th style="text-align:right">40 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>4%</td><td style="text-align:right">73,625</td><td style="text-align:right">183,387</td><td style="text-align:right">347,025</td><td style="text-align:right">590,981</td></tr>
+          <tr><td>6%</td><td style="text-align:right">81,940</td><td style="text-align:right">231,020</td><td style="text-align:right">502,258</td><td style="text-align:right">995,745</td></tr>
+          <tr><td>8%</td><td style="text-align:right">91,473</td><td style="text-align:right">294,510</td><td style="text-align:right">745,180</td><td style="text-align:right">1,745,504</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At 8% over 40 years, you deposit 240,000 and end with about 1.75 million. Over 10 years, you
+      deposit 60,000 and end with 91,473. The deposit and the rate are the same; only the time is
+      different.
+    </p>
+
+    <h2>How long does money take to double?</h2>
+    <p>
+      The rule of 72: divide 72 by the annual percentage rate. It is a good mental shortcut from 6% to
+      10% and less accurate at the extremes.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[360px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Rate</th>
+            <th style="text-align:right">Rule of 72</th>
+            <th style="text-align:right">Exact years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>2%</td><td style="text-align:right">36.0</td><td style="text-align:right">35.00</td></tr>
+          <tr><td>4%</td><td style="text-align:right">18.0</td><td style="text-align:right">17.67</td></tr>
+          <tr><td>6%</td><td style="text-align:right">12.0</td><td style="text-align:right">11.90</td></tr>
+          <tr><td>8%</td><td style="text-align:right">9.0</td><td style="text-align:right">9.01</td></tr>
+          <tr><td>10%</td><td style="text-align:right">7.2</td><td style="text-align:right">7.27</td></tr>
+          <tr><td>12%</td><td style="text-align:right">6.0</td><td style="text-align:right">6.12</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Read the projection honestly</h2>
+    <p>
+      A constant rate is a model, not a forecast. A savings rate changes when the central bank moves,
+      and investment returns come as a mix of good and bad years with an average. Two adjustments make
+      the number more useful: subtract your platform and fund fees from the expected return, and put
+      the final figure through an inflation calculator to see it in today's money. A 40-year projection
+      at 7% nominal is about 4.4% in real terms if inflation is 2.5%.
+    </p>
+  </Fragment>
+</ToolLayout>

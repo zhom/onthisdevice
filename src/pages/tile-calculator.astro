@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyArea from '@/components/tools/everyday/CalcMoneyArea.tsx'
+---
+
+<ToolLayout slug="tile-calculator">
+  <CalcMoneyArea client:load variant="tile" />
+
+  <Fragment slot="explainer">
+    <h2>How the tile calculator counts tiles</h2>
+    <p>
+      The area is the surface to cover; the tile count is what you buy. The grout joint and the waste allowance
+      make the difference between them.
+    </p>
+    <pre><code>effective tile area = (width + joint) × (height + joint) ÷ 144   [sq ft]
+tiles needed        = area × (1 + waste) ÷ effective tile area, rounded up
+boxes               = tiles ÷ tiles per box, rounded up</code></pre>
+    <p>
+      A 12 × 12 inch tile with a 1/8 inch joint covers 12.125 × 12.125 inches, or 1.0209 square feet. So a
+      hundred square feet needs 98 tiles before waste, not 100, and 108 with a 10% allowance.
+    </p>
+
+    <h2>Grout joints matter most on small tiles</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Tile size</th>
+            <th style="text-align:right">Joint</th>
+            <th style="text-align:right">Area taken by grout</th>
+            <th style="text-align:right">Tiles per 100 sq ft</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>2 × 2 in mosaic</td><td style="text-align:right">1/8"</td><td style="text-align:right">11.4%</td><td style="text-align:right">3,189</td></tr>
+          <tr><td>4 × 4 in</td><td style="text-align:right">1/8"</td><td style="text-align:right">6.0%</td><td style="text-align:right">846</td></tr>
+          <tr><td>6 × 6 in</td><td style="text-align:right">1/8"</td><td style="text-align:right">4.0%</td><td style="text-align:right">384</td></tr>
+          <tr><td>12 × 12 in</td><td style="text-align:right">1/8"</td><td style="text-align:right">2.1%</td><td style="text-align:right">98</td></tr>
+          <tr><td>12 × 24 in</td><td style="text-align:right">1/16"</td><td style="text-align:right">0.8%</td><td style="text-align:right">50</td></tr>
+          <tr><td>24 × 24 in</td><td style="text-align:right">1/16"</td><td style="text-align:right">0.5%</td><td style="text-align:right">25</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      Common joints as decimals: 1/16" = 0.0625, 1/8" = 0.125, 3/16" = 0.1875, 1/4" = 0.25.
+    </p>
+    <p>
+      On a large-format floor the joint makes almost no difference. On mosaic it takes more than a tenth of
+      the coverage, which is enough to leave you two sheets short.
+    </p>
+
+    <h2>How much waste to allow</h2>
+    <ul>
+      <li>10%: straight grid layout, simple rectangular room.</li>
+      <li>15%: diagonal, herringbone or brick-bond layouts, which need many more cuts.</li>
+      <li>15–20%: rooms with many angles, niches, alcoves or curved edges.</li>
+      <li>A few spares: in addition to the percentage, keep whole tiles for future repairs.</li>
+    </ul>
+    <p>
+      The waste figure is off-cuts you cannot reuse, tiles that break when you cut them, and the pieces at the
+      room edge where less than half a tile is left.
+    </p>
+
+    <h2>Buy from one batch</h2>
+    <p>
+      Ceramic and porcelain tiles are made in batches, and colour and size vary measurably between batches.
+      For this reason most manufacturers print a batch or "shade" code on the box. A second box ordered a
+      month later often makes a visible band across the floor. Buy the whole quantity, including waste, in one
+      order, and keep the leftovers.
+    </p>
+
+    <h2>Floors and walls in one job</h2>
+    <p>
+      Add a row for each surface. Use the rectangle shape for a floor and the wall shape for vertical areas,
+      and set a quantity for identical walls: three shower walls at 3 × 7 ft is one row with a quantity of
+      three. The totals cover the whole job, so you take one box count to the merchant.
+    </p>
+    <p>
+      There is no negative-area row: measure the tiled surface directly. A shower wall with a window is easier
+      to enter as two rectangles than as one rectangle minus a hole.
+    </p>
+
+    <h2>The other materials</h2>
+    <p>
+      This calculator counts tiles. The other materials scale with the same area, approximately:
+    </p>
+    <ul>
+      <li>
+        Adhesive: about 4–6 kg per m² (about 1 lb per sq ft) with a notched trowel on a flat floor, and more
+        for large-format tiles that need back-buttering.
+      </li>
+      <li>
+        Grout: depends on tile size, joint width and depth. Manufacturers publish a coverage chart; small
+        tiles with wide joints use several times more than large-format tiles.
+      </li>
+      <li>
+        Spacers, trim and edging: counted by the perimeter, not the area.
+      </li>
+    </ul>
+
+    <h2>Metric tiles</h2>
+    <p>
+      European tiles are sold in millimetres; 300 × 300, 600 × 300 and 600 × 600 are the common sizes. Convert
+      to inches (divide by 25.4) for the tile dimension fields, or measure the room in metres and read the
+      square-metre total, which European merchants quote against. 300 mm is 11.81 in; 600 mm is 23.62 in.
+    </p>
+
+    <h2>Works offline</h2>
+    <p>
+      The calculator runs in your browser and makes no network request, so it works in a half-renovated
+      bathroom with no signal. Your measurement list is stored only if you turn saving on, and only on this
+      device.
+    </p>
+  </Fragment>
+</ToolLayout>

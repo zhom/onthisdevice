@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="weight-converter">
+  <UnitConverter client:load dimension="weight" from="kg" to="lb" />
+  <Fragment slot="explainer">
+    <h2>How to convert a weight</h2>
+    <ol>
+      <li>Enter your figure in either box. Both fields update, so the weight converter works for kilograms to pounds and pounds to kilograms.</li>
+      <li>Choose your units from the grouped list: metric, imperial and US, or the precious-metal units at the bottom.</li>
+      <li>Read the result, the formula, and the two-way chart below, which is useful when you need a row of values and not one number.</li>
+      <li>Copy the result with one click, or share the URL, which encodes the unit pair you chose.</li>
+    </ol>
+
+    <h2>Reading UK, US and metric body weight</h2>
+    <p>
+      Body weight is where the three systems meet most often. The UK uses stone and pounds ("11 st 4"), the US
+      uses pounds ("158 lb"), and almost everywhere else uses kilograms. A stone is exactly 14 pounds, so 11 st
+      4 lb is 158 lb, or 71.7 kg. The converter treats stone as a decimal unit: 11.5 st means eleven and a half
+      stone, which is 11 st 7 lb, not 11 st 5 lb.
+    </p>
+    <p>
+      For recipes, shipping and gym plates, remember that 1 kg is about 2.2 lb, a 20 kg plate is 44 lb, and a
+      US 45 lb plate is 20.4 kg. People usually treat the two plates as the same, although they differ.
+    </p>
+
+    <h2>Which factors are exact</h2>
+    <p>
+      Since the 1959 international yard and pound agreement, the pound is exactly 0.45359237 kilograms. The
+      imperial units follow from it without rounding: an ounce is exactly one sixteenth of a pound, a stone
+      exactly fourteen pounds, a US short ton exactly 2,000 pounds and a UK long ton exactly 2,240. The metric
+      tonne is exactly 1,000 kg.
+    </p>
+    <p>
+      The troy ounce, at 31.1034768 g, is different. It is used only for gold, silver and platinum. A gold price
+      per "ounce" applied to the everyday 28.35 g ounce understates the metal by just under 10 %, a costly
+      error.
+    </p>
+
+    <h2>Common weights in kilograms, pounds and stone</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Kilograms</th><th>Pounds</th><th>Stone and pounds</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>50 kg</td><td>110.2 lb</td><td>7 st 12 lb</td></tr>
+          <tr><td>60 kg</td><td>132.3 lb</td><td>9 st 6 lb</td></tr>
+          <tr><td>70 kg</td><td>154.3 lb</td><td>11 st 0 lb</td></tr>
+          <tr><td>80 kg</td><td>176.4 lb</td><td>12 st 8 lb</td></tr>
+          <tr><td>90 kg</td><td>198.4 lb</td><td>14 st 2 lb</td></tr>
+          <tr><td>100 kg</td><td>220.5 lb</td><td>15 st 10 lb</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Mass and weight</h2>
+    <p>
+      In physics, mass is the amount of matter in an object, measured in kilograms; weight is the force of
+      gravity on that mass, measured in newtons. A 70 kg person weighs about 687 N on Earth and about 114 N on
+      the Moon, and their mass is 70 kg in both places.
+    </p>
+    <p>
+      In practice, every scale is calibrated for Earth's gravity and shows mass, and every unit on this page
+      (kilogram, pound, ounce, stone, ton) is a mass unit. So the numbers from a "weight converter" are the
+      ones you want.
+    </p>
+  </Fragment>
+</ToolLayout>

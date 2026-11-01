@@ -1,0 +1,88 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioCompressGif from '@/components/tools/media/GifAudioCompressGif.tsx'
+---
+
+<ToolLayout slug="resize-gif">
+  <GifAudioCompressGif client:load mode="resize" />
+  <Fragment slot="explainer">
+    <h2>How to resize an animated GIF</h2>
+    <ol>
+      <li>Drop the GIF in. The tool reads its dimensions, frame count, frame rate and loop setting from the file header before it decodes anything.</li>
+      <li>Pick a preset or type a width. The height follows; change it only if you want to distort the image.</li>
+      <li>Leave the palette at 256 colours unless you also have a file-size limit.</li>
+      <li>Press resize, compare the result with the original above it, and download.</li>
+    </ol>
+
+    <h2>Common GIF sizes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Width</th><th>Used for</th><th>Also constrained by</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>128 px</td><td>Discord custom emoji and stickers</td><td>256 KB file size</td></tr>
+          <tr><td>128 px</td><td>Slack custom emoji</td><td>128 KB file size</td></tr>
+          <tr><td>256 px</td><td>Forum avatars, small reaction images</td><td>Often 512 KB</td></tr>
+          <tr><td>320 px</td><td>Inline chat images, mobile-first content</td><td>No other limit</td></tr>
+          <tr><td>480 px</td><td>README files, documentation, changelogs</td><td>GitHub renders at container width</td></tr>
+          <tr><td>640 px</td><td>Full-width blog posts on a phone screen</td><td>Page-weight budgets</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why simple GIF resizing looks bad</h2>
+    <p>
+      A GIF is already quantised: each frame is an index into a table of at most 256 colours. When you
+      scale it, the resampling filter averages neighbouring pixels, and those averages are new colours
+      that are not in the table. A simple resizer then moves each new pixel to the nearest entry in the
+      original palette. If that palette was built for large flat areas, the intermediate tones from scaling
+      have no good match, and you get blotches and colour drift.
+    </p>
+    <p>
+      This tool runs FFmpeg’s two-pass palette pipeline after scaling. It analyses the scaled frames to
+      build a new 256-colour palette from the colours the resized animation contains, then maps the frames
+      onto it with dithering. The extra pass costs a second or two, and it makes a 128 px emoji clear in
+      place of blotchy.
+    </p>
+
+    <h2>Why the Lanczos filter is used</h2>
+    <p>
+      Scaling uses the Lanczos filter, a windowed sinc kernel that samples a wider neighbourhood than
+      bilinear or bicubic interpolation. It keeps edges and fine text sharper when you shrink by large
+      factors, as from a 500 px screen recording to a 128 px emoji. The cost is slight ringing around very
+      high-contrast edges, which is invisible at these sizes.
+    </p>
+
+    <h2>What is kept and what changes</h2>
+    <ul>
+      <li>Kept: frame count, each per-frame delay, the Netscape loop block (an infinite GIF stays infinite) and playback speed.</li>
+      <li>Changed: pixel dimensions, the colour palette, and so the file size.</li>
+      <li>Removed: comment and application extension blocks other than the loop count. Authoring tools often put identifying metadata there.</li>
+    </ul>
+
+    <h2>Can I enlarge a GIF?</h2>
+    <p>
+      You can type a larger width, and Lanczos does a reasonable job. But the source has only 256 colours,
+      and no filter recovers detail that was never stored. Enlarging also multiplies the file size by the
+      area ratio: double the width and the bytes roughly quadruple. If the animation came from a video,
+      export it again from the original at the size you need with the
+      <a href="/video-to-gif">video to GIF</a> tool.
+    </p>
+
+    <h2>Resize first, then compress</h2>
+    <p>
+      Resolution has the largest effect on GIF size, so resize first; often that is enough. If the resized
+      file is still over a hard byte limit, such as a 128 KB Slack emoji, use
+      <a href="/compress-gif">Compress GIF</a>. It searches frame rate and palette settings for the best
+      version that fits. If you compress first, the compressor works on pixels you then discard.
+    </p>
+
+    <h2>File size and offline use</h2>
+    <p>
+      FFmpeg, compiled to WebAssembly, decodes and re-encodes the GIF inside this tab. There is no daily
+      limit, no watermark and no maximum file size other than your device’s memory. After the engine is
+      cached, the page works with the network off.
+    </p>
+  </Fragment>
+</ToolLayout>

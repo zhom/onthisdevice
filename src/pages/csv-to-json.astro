@@ -1,0 +1,110 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CsvToJson from '@/components/tools/data/CsvToJson.tsx'
+---
+
+<ToolLayout slug="csv-to-json">
+  <CsvToJson client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a CSV file to JSON</h2>
+    <ol>
+      <li>Load your data. Paste the CSV into the left pane, or drag a <code>.csv</code>, <code>.tsv</code> or <code>.txt</code> file onto it. The tool parses it in this browser tab.</li>
+      <li>Check the delimiter. Auto-detect reads the first rows and picks the separator that gives a consistent column count. Change it if your file uses an unusual one.</li>
+      <li>Decide how the keys are built. Keep “First row is a header” on to use row 1 as the JSON keys, or turn it off to get generated <code>column_1</code>, <code>column_2</code> names.</li>
+      <li>Choose the output shape. An array of objects suits most APIs; column arrays suit plotting libraries; arrays of arrays keep the raw grid.</li>
+      <li>Copy or download. The JSON updates as you type. Use Copy to paste it, or Download for a <code>.json</code> file.</li>
+    </ol>
+
+    <h2>Type inference: what changes and what does not</h2>
+    <p>
+      CSV has no types: each cell is text. With <strong>Infer value types</strong> on, the tool converts
+      cells whose type is clear and keeps the others as text. Converters that do not make this
+      distinction often corrupt data.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">CSV cell</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">JSON value</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2"><code>42</code></td>
+            <td class="border-b px-3 py-2"><code>42</code></td>
+            <td class="border-b px-3 py-2">Plain integer, safely representable</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>3.14</code></td>
+            <td class="border-b px-3 py-2"><code>3.14</code></td>
+            <td class="border-b px-3 py-2">Decimal number</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>007</code></td>
+            <td class="border-b px-3 py-2"><code>"007"</code></td>
+            <td class="border-b px-3 py-2">Leading zeros have meaning: usually a code, not a number</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>4916338506082832</code></td>
+            <td class="border-b px-3 py-2"><code>"4916338506082832"</code></td>
+            <td class="border-b px-3 py-2">Over 15 digits: JavaScript numbers would lose the last digits</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>true</code></td>
+            <td class="border-b px-3 py-2"><code>true</code></td>
+            <td class="border-b px-3 py-2">Boolean literal (also <code>TRUE</code> and <code>True</code>)</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">(empty)</td>
+            <td class="border-b px-3 py-2"><code>null</code></td>
+            <td class="border-b px-3 py-2">A missing value, not an empty string</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>2026-08-16</code></td>
+            <td class="border-b px-3 py-2"><code>"2026-08-16"</code></td>
+            <td class="border-b px-3 py-2">JSON has no date type; ISO text round-trips everywhere</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Building nested JSON from flat columns</h2>
+    <p>
+      Spreadsheets are flat; APIs are not. With <strong>Expand dotted keys</strong> on, a header path
+      becomes structure: a column called <code>profile.city</code> becomes a nested object, and a numeric
+      segment becomes an array index.
+    </p>
+    <pre><code>id,name,profile.city,tags.0,tags.1
+1,Ada,London,analysis,mathematics</code></pre>
+    <p>becomes</p>
+    <pre><code>[
+  &#123;
+    "id": 1,
+    "name": "Ada",
+    "profile": &#123; "city": "London" &#125;,
+    "tags": ["analysis", "mathematics"]
+  &#125;
+]</code></pre>
+
+    <h2>Quoting, embedded commas and line breaks</h2>
+    <p>
+      The parser follows RFC 4180. A field in double quotes can contain the delimiter, newlines and
+      escaped quotes written as <code>""</code>. So <code>1,"Doe, Jane","She said ""hi"""</code> parses
+      to three fields, and the last one contains <code>She said "hi"</code>. Rows with a different
+      number of fields than the header are still converted, and each one is listed as a warning, so you
+      can find a malformed export before you import it.
+    </p>
+
+    <h2>Why do this in the browser?</h2>
+    <p>
+      CSV exports are often very sensitive files: payroll runs, customer lists, transaction logs. Here the
+      file is read with the FileReader API, parsed by Papa Parse and rendered in the tab, so it is not
+      uploaded. The only file size limit is the memory of your device. When the page has loaded, it works
+      with the network turned off.
+    </p>
+  </Fragment>
+</ToolLayout>

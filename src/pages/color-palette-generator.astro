@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ColorPaletteGenerator from '@/components/tools/generators/ColorPaletteGenerator.tsx'
+---
+
+<ToolLayout slug="color-palette-generator">
+  <ColorPaletteGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to build a palette</h2>
+    <ol>
+      <li>Start from a colour you must use: a brand colour, a photograph, an existing logo.</li>
+      <li>Pick a harmony. Analogous and monochromatic are easy to get right; complementary and triadic need more care.</li>
+      <li>Lock the swatches you want to keep, then press regenerate. Locked colours stay, and the others change around them.</li>
+      <li>Click a swatch to load its ten-step shade scale. You use these shades for hovers, borders and disabled states.</li>
+      <li>Check the contrast table first, then export CSS variables, a Tailwind config or JSON.</li>
+    </ol>
+
+    <h2>The six harmonies</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Harmony</th>
+            <th>Hue relationship</th>
+            <th>Character</th>
+            <th>Good for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Monochromatic</td><td>One hue, varied lightness</td><td>Calm, cohesive, impossible to break</td><td>Product interfaces, dashboards, documentation</td></tr>
+          <tr><td>Analogous</td><td>Neighbours within ~60°</td><td>Harmonious with gentle variety</td><td>Editorial sites, illustration, nature themes</td></tr>
+          <tr><td>Complementary</td><td>Opposites, 180° apart</td><td>Maximum contrast, high energy</td><td>A call-to-action that must stand out against the brand colour</td></tr>
+          <tr><td>Split complementary</td><td>Base plus the two hues on each side of its complement</td><td>Most of the contrast, much less tension</td><td>Marketing pages that need impact without being loud</td></tr>
+          <tr><td>Triadic</td><td>Three hues 120° apart</td><td>Vibrant and balanced</td><td>Playful brands, children’s products, data categories</td></tr>
+          <tr><td>Tetradic</td><td>Two complementary pairs, 90° apart</td><td>Richest and hardest to control</td><td>Illustration and packaging, rarely UI</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      For all harmonies, the 60-30-10 rule applies: about 60% of the surface in a dominant neutral or
+      light tint, 30% in a secondary colour, and 10% in the accent. Palettes fail more often because the
+      colours are used in equal amounts than because the hues are wrong.
+    </p>
+
+    <h2>Reading the contrast table</h2>
+    <p>
+      WCAG contrast is the ratio between the relative luminance of two colours, from 1:1 (identical) to
+      21:1 (pure black on pure white). The important thresholds:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Requirement</th>
+            <th>Ratio</th>
+            <th>Applies to</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>AA, normal text</td><td>4.5:1</td><td>Anything under 24 px, or under 19 px bold</td></tr>
+          <tr><td>AA, large text</td><td>3:1</td><td>24 px and up, or 19 px bold and up</td></tr>
+          <tr><td>AA, non-text</td><td>3:1</td><td>Icons, form borders, focus rings, chart keys</td></tr>
+          <tr><td>AAA, normal text</td><td>7:1</td><td>The enhanced level; required for some public-sector work</td></tr>
+          <tr><td>AAA, large text</td><td>4.5:1</td><td>Headings under the enhanced level</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The ratio does not capture two things. First, colour blindness: red and green of the same
+      luminance pass the check, but about 8% of men cannot tell them apart, so never show meaning with
+      hue alone. Second, it is a luminance formula, not a perception model: saturated blues often
+      measure worse than they look. Use the number as a minimum, not as a design decision.
+    </p>
+
+    <h2>How the shade scale is built</h2>
+    <p>
+      Each step keeps the hue and saturation of the base colour and moves to a fixed lightness: 96% at
+      step 50, 50% at step 500, and 15% at step 900. Tailwind and most design systems use this method.
+      The steps stay recognisably the same colour, and the same step number gives a predictable contrast
+      level for all hues in your palette. Thus <code>brand-700</code> on <code>brand-50</code> works with
+      any brand colour.
+    </p>
+    <p>
+      You will use the extremes much more than the middle: 50 and 100 for surfaces and hover states, 600
+      and 700 for text and solid buttons, 900 for headings on a tinted background. The 400–500 range is
+      usually too light for text and too dark for a background.
+    </p>
+
+    <h2>From palette to design tokens</h2>
+    <p>
+      A palette is usable when the colours have semantic names. Export the hex values, then map them
+      once:
+    </p>
+    <pre><code>:root &#123;
+  /* raw palette */
+  --violet-600: #6d28d9;
+  --violet-50:  #f5f3ff;
+
+  /* semantic tokens: what components reference */
+  --color-primary: var(--violet-600);
+  --color-surface: var(--violet-50);
+  --color-on-primary: #ffffff;
+&#125;</code></pre>
+    <p>
+      Components should reference <code>--color-primary</code>, never <code>--violet-600</code>. With
+      this one indirection, you can rebrand, add a dark theme, or add a high-contrast mode without
+      changes to any component.
+    </p>
+
+    <h2>Everything is computed locally</h2>
+    <p>
+      Hue rotation, the shade scale, the luminance maths and all exports run in this tab. Palettes are
+      not saved on a server, and you can press regenerate as often as you like. Unreleased brand colours
+      stay on your machine.
+    </p>
+  </Fragment>
+</ToolLayout>

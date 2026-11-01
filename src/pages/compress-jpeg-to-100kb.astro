@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-jpeg-to-100kb">
+  <CompressImageToTarget client:load targetKb={100} fixedFormat="jpeg" inputLabel="Drop the JPG files you need at 100 KB" />
+
+  <Fragment slot="explainer">
+    <h2>Which encoder does the work</h2>
+    <p>
+      This page uses <strong>MozJPEG</strong>, compiled to WebAssembly and running in your browser.
+      Professional image pipelines use the same encoder. It differs from the encoder built into your
+      browser in ways that matter for a fixed budget: trellis quantisation chooses coefficients that
+      cost fewer bits for the same visual result, progressive scan scripts are optimised per image, and
+      the Huffman tables are built for each image. The result is 5–15% smaller at the same apparent
+      quality, which at a 100 KB limit is the difference between quality 68 and quality 76.
+    </p>
+
+    <h2>Generation loss: the one rule that matters</h2>
+    <p>
+      JPEG splits the image into 8 × 8 blocks, converts each to frequency coefficients and rounds them.
+      Each decode and re-encode rounds coefficients that were already rounded, so the errors add up:
+      edges get halos, flat areas get blotches, and colour bleeds across block boundaries. The same photo
+      saved ten times at quality 80 looks much worse than the original saved once at quality 40.
+    </p>
+    <p>
+      Always start from the highest-quality copy you have, ideally directly from the camera or the
+      phone. Never put a compressed result through a second pass. If the output is not good enough,
+      change the crop or the target.
+    </p>
+
+    <h2>How the target is hit</h2>
+    <ol>
+      <li>Encode at quality 92 and measure. If it fits, that is your file.</li>
+      <li>If not, do a binary search of the quality range: encode at the midpoint, keep it and raise the floor if it fits, lower the ceiling if it does not.</li>
+      <li>After nine or ten rounds the range is one quality point wide, and the best encode that fits wins.</li>
+      <li>If even quality 5 is too large, search the pixel dimensions with a Lanczos3 resample.</li>
+    </ol>
+    <p>
+      The result card lists each step with its byte count, so you can see how fast size falls with
+      quality for your photo. This tells you more than a generic quality table.
+    </p>
+
+    <h2>Why two JPEGs at 100 KB can look completely different</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Subject</th><th>How it compresses</th><th>Quality typically reached at 100 KB</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Studio portrait, plain backdrop</td><td>Very well: large smooth areas</td><td>85–92</td></tr>
+          <tr><td>Product on white</td><td>Very well</td><td>85–92</td></tr>
+          <tr><td>Street scene</td><td>Moderately</td><td>65–78</td></tr>
+          <tr><td>Trees, grass, water</td><td>Badly: high-frequency detail everywhere</td><td>45–60</td></tr>
+          <tr><td>High-ISO night shot</td><td>Worst case: noise cannot be compressed</td><td>35–50</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If your photo is in the bottom rows, the fix is fewer pixels, not a better encoder. Crop tighter or
+      limit the width, and the same 100 KB gives a much higher quality setting.
+    </p>
+
+    <h2>Chroma subsampling, briefly</h2>
+    <p>
+      JPEG stores brightness at full resolution and colour at half, because the eye is much more
+      sensitive to brightness. For this reason, red text on a dark background looks fringed in a JPEG,
+      and screenshots belong in PNG. A JPEG screenshot converted to PNG later is not repaired: the colour
+      detail was discarded at the first save.
+    </p>
+
+    <h2>Everything runs on your machine</h2>
+    <p>
+      The tool runs ten to eighteen full encodes of a large photo in less than a second, with no upload,
+      so an exact byte target is practical. A server-based compressor needs a round trip per attempt.
+      Your photo, including its EXIF and GPS data, stays in this tab, and the metadata is dropped when
+      the tool re-encodes from pixels.
+    </p>
+
+    <h2>Related</h2>
+    <p>
+      <a href="/compress-image-to-100kb">Compress any image to 100 KB</a> ·
+      <a href="/compress-png-to-100kb">PNG at 100 KB</a> ·
+      <a href="/jpg-to-webp">JPG to WebP</a> for a smaller file at the same quality ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

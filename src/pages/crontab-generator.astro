@@ -1,0 +1,112 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeCrontab from '@/components/tools/dev/DevEncodeCrontab.tsx'
+---
+
+<ToolLayout slug="crontab-generator">
+  <DevEncodeCrontab client:load />
+  <Fragment slot="explainer">
+    <h2>The five fields</h2>
+    <pre><code>┌───────── minute        0–59
+│ ┌─────── hour          0–23
+│ │ ┌───── day of month  1–31
+│ │ │ ┌─── month         1–12 or JAN–DEC
+│ │ │ │ ┌─ day of week   0–6 or SUN–SAT (7 also means Sunday)
+│ │ │ │ │
+* * * * *  command to run</code></pre>
+    <p>
+      In a field, <code>*</code> means every value, <code>*/n</code> means every nth,
+      <code>a-b</code> is a range, and commas separate a list. So <code>0,30 9-17 * * 1-5</code> is
+      &ldquo;on the hour and half hour, between 9am and 5pm, Monday to Friday&rdquo;.
+    </p>
+
+    <h2>The day-of-month / day-of-week trap</h2>
+    <p>
+      When both fields are restricted, cron runs the job when <strong>either</strong> matches, not
+      when both match. <code>0 0 13 * 5</code> thus runs on each 13th of the month and also on each
+      Friday: about 60 times a year, not once or twice.
+    </p>
+    <p>
+      This is documented behaviour from Vixie cron, and it surprises almost everyone. If you need an
+      AND, schedule the broader condition and test the narrower one in the command:
+      <code>0 0 13 * * [ "$(date +\%u)" = 5 ] &amp;&amp; /path/to/job</code>. The description above
+      the builder shows which rule applies to your expression.
+    </p>
+
+    <h2>Timezones</h2>
+    <p>
+      cron uses the local timezone of the machine unless you set another, and this causes most
+      &ldquo;it ran an hour early&rdquo; incidents. Daylight-saving transitions add two hazards: a job
+      scheduled in the hour that is skipped in spring may not run, and a job in the repeated hour in
+      autumn may run twice.
+    </p>
+    <p>
+      Reliable options, best first: run the server in UTC and convert in your head; set
+      <code>CRON_TZ=Europe/London</code> at the top of the crontab if your cron supports it; or use a
+      systemd timer with <code>Persistent=true</code>, which also catches up after downtime. The
+      timezone selector above shows the next ten runs in the zone you choose, so you can see the
+      difference before you install the job.
+    </p>
+
+    <h2>Special strings</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Shorthand</th><th>Equivalent</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>@yearly</code> / <code>@annually</code></td><td><code>0 0 1 1 *</code></td></tr>
+          <tr><td><code>@monthly</code></td><td><code>0 0 1 * *</code></td></tr>
+          <tr><td><code>@weekly</code></td><td><code>0 0 * * 0</code></td></tr>
+          <tr><td><code>@daily</code> / <code>@midnight</code></td><td><code>0 0 * * *</code></td></tr>
+          <tr><td><code>@hourly</code></td><td><code>0 * * * *</code></td></tr>
+          <tr><td><code>@reboot</code></td><td>Once at start-up; no schedule equivalent</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why a correct expression still fails</h2>
+    <p>
+      Usually the schedule is not the problem. cron runs your command with an almost empty environment:
+    </p>
+    <ul>
+      <li>
+        PATH is minimal, usually <code>/usr/bin:/bin</code>. Use absolute paths for the interpreter and
+        the script: <code>/usr/bin/python3 /opt/app/job.py</code>.
+      </li>
+      <li>
+        No shell profile is loaded, so nothing from <code>.bashrc</code> or <code>.profile</code>
+        exists, including virtualenv activation, nvm and exported credentials.
+      </li>
+      <li>
+        The working directory is the home directory of the user, not the location of the script. Use
+        absolute paths for data files too, or <code>cd</code> first.
+      </li>
+      <li>
+        A bare <code>%</code> is a newline in crontab syntax and must be escaped as <code>\%</code>.
+        This most often breaks <code>date +%Y-%m-%d</code>.
+      </li>
+      <li>
+        Output goes to email. If mail is not configured, the output is lost. Redirect it:
+        <code>&gt;&gt; /var/log/job.log 2&gt;&amp;1</code>.
+      </li>
+    </ul>
+
+    <h2>Testing a job</h2>
+    <p>
+      Run the job as cron runs it, not as your shell does:
+      <code>env -i /bin/sh -c '/full/path/to/command'</code> removes your environment and shows most
+      cron-only failures immediately. Then check the schedule with the next-run table above, and only
+      then install it with <code>crontab -e</code>.
+    </p>
+
+    <h2>Quartz is a different syntax</h2>
+    <p>
+      Java schedulers (Quartz, Spring <code>@Scheduled</code>, Jenkins in some configurations) use six
+      or seven fields with seconds first, require <code>?</code> in the unconstrained one of
+      day-of-month or day-of-week, and number weekdays 1–7 starting at Sunday. Quartz mode above adds
+      the seconds field, but the run times still use Unix rules, so use them only as a guide for
+      Quartz.
+    </p>
+  </Fragment>
+</ToolLayout>

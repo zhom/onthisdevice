@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RemoveLineBreaks from '@/components/tools/text/RemoveLineBreaks.tsx'
+---
+
+<ToolLayout slug="remove-line-breaks">
+  <RemoveLineBreaks client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to remove line breaks from text</h2>
+    <ol>
+      <li>Paste the text, usually copied from a PDF, an email or a terminal, or drop a file onto the box.</li>
+      <li>Choose the action: unwrap paragraphs, remove every break, or only normalise the line endings.</li>
+      <li>Pick the separator for joined lines: a space (the usual choice), nothing, a comma, a pipe or your own string.</li>
+      <li>Leave trimming and space-collapsing on to clean up the uneven spacing that hard wrapping leaves.</li>
+      <li>Copy the cleaned text or download it.</li>
+    </ol>
+
+    <h2>Unwrap paragraphs, or remove every break?</h2>
+    <p>
+      <strong>Unwrap paragraphs</strong> treats a blank line as a new paragraph and every other break as the
+      place where the original column ended. It joins the lines in each block and keeps the blank line
+      between blocks, so a three-paragraph letter stays three paragraphs. This is the right choice about 90%
+      of the time.
+    </p>
+    <p>
+      <strong>Remove every break</strong> puts the entire text on one line. Use it when you need a single
+      value: a CSV cell, a JSON string, an SQL literal, or a column of values as a comma-separated list.
+    </p>
+    <p>
+      <strong>Normalise only</strong> keeps the structure. It converts Windows (CRLF) and classic Mac (CR)
+      endings to Unix ones, limits runs of blank lines to one, and strips trailing spaces. Run it before you
+      commit a file or compare two documents.
+    </p>
+
+    <h2>Why PDF text arrives broken</h2>
+    <p>
+      A PDF has no paragraphs. It stores glyphs at coordinates, so when you copy from one, the extractor
+      guesses line breaks from vertical positions and puts a hard newline at the end of each visual line.
+      In a document with a different column width, you get a stair-step of short lines. The same happens
+      with plain-text emails wrapped at 72 characters, terminal output, and text copied from code editors
+      with soft wrap off.
+    </p>
+
+    <h2>Line-ending reference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Escape</th>
+            <th>Bytes</th>
+            <th>Used by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Line feed (LF)</td><td><code>\n</code></td><td>0A</td><td>Unix, Linux, macOS, the web, Git</td></tr>
+          <tr><td>Carriage return + line feed (CRLF)</td><td><code>\r\n</code></td><td>0D 0A</td><td>Windows, HTTP headers, SMTP, CSV per RFC 4180</td></tr>
+          <tr><td>Carriage return (CR)</td><td><code>\r</code></td><td>0D</td><td>Classic Mac OS 9 and earlier</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Mixed endings in one file cause stray <code>^M</code> characters in an editor, a Git diff that shows
+      every line as changed, and a CSV import that makes one giant row. Run “Normalise only” before you
+      commit or import to fix all of these.
+    </p>
+
+    <h2>Common tasks</h2>
+    <ul>
+      <li>PDF or email to a document: unwrap paragraphs, join with a space, collapse repeated spaces.</li>
+      <li>Column of values to a CSV row: remove every break, join with a comma.</li>
+      <li>Text into a JSON or SQL string: remove every break, join with a space or with a literal <code>\n</code>.</li>
+      <li>Cleaning a scraped page: normalise, then limit blank lines to one.</li>
+      <li>Fixing a Windows file on Linux: normalise with LF endings selected.</li>
+    </ul>
+
+    <h2>Large files</h2>
+    <p>
+      The tool processes lines in chunks and lets the browser repaint between them, so a very long document
+      does not freeze the tab. Your browser reads the file you drop, and the file stays on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

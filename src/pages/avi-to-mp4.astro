@@ -1,0 +1,99 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="avi-to-mp4">
+  <VideoRemux
+    client:load
+    from="avi"
+    target="mp4"
+    hint="Old camcorder captures, DivX rips and Windows-era clips, converted on your own machine"
+  />
+  <Fragment slot="explainer">
+    <h2>Bringing a 2003 file into 2026</h2>
+    <p>
+      AVI is a Microsoft container from 1992. It is older than most of what modern video expects: it has
+      no reliable way to store variable frame rates, no standard place for aspect-ratio metadata, and no
+      support for the B-frames that modern codecs use. Many home videos, camcorder captures and
+      DivX-era downloads are still AVI, and people need to open them on phones that do not support it.
+    </p>
+    <p>
+      AVI to MP4 is almost always a full re-encode, not a re-wrap. The video is usually MPEG-4 Part 2
+      (DivX, Xvid) or an older MJPEG or Cinepak stream, and modern devices decode H.264 and little else,
+      so the frames must be rebuilt. This page inspects the file first and tells you which path it takes.
+    </p>
+
+    <h2>Common AVI problems and what fixes them</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Cause</th>
+            <th>Result after converting</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Phone or TV refuses the file</td>
+            <td>The AVI container itself</td>
+            <td>Fixed: all devices support MP4</td>
+          </tr>
+          <tr>
+            <td>Video plays, no sound</td>
+            <td>AC-3, ADPCM or a proprietary ACM audio codec</td>
+            <td>Fixed: audio is re-encoded to AAC</td>
+          </tr>
+          <tr>
+            <td>Green or blocky picture in a browser</td>
+            <td>Xvid packed bitstream</td>
+            <td>Fixed by the re-encode</td>
+          </tr>
+          <tr>
+            <td>People look stretched or squashed</td>
+            <td>Non-square pixels with no aspect metadata</td>
+            <td>Usually fixed; check the preview before saving</td>
+          </tr>
+          <tr>
+            <td>Combing lines on fast motion</td>
+            <td>Interlaced footage from a camcorder or TV capture</td>
+            <td>Not fixed: this tool does not deinterlace</td>
+          </tr>
+          <tr>
+            <td>Audio drifts out of sync over time</td>
+            <td>VBR MP3 audio in a container that assumed CBR</td>
+            <td>Usually fixed, because the audio is rebuilt with correct timestamps</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What to expect from the quality</h2>
+    <p>
+      Re-encoding always loses some quality. The AVI was already compressed once, and a second
+      compression of the decoded result removes more. You control how much. The
+      <strong>high quality</strong> preset (CRF 18) keeps almost all detail of an old standard-definition
+      source and gives a file a little larger than the original. <strong>Balanced</strong> (CRF 23) is
+      the default. <strong>Small file</strong> (CRF 28) is for clips you email, where the content
+      matters more than the grain.
+    </p>
+    <p>
+      Old footage is low resolution, usually 640×480 or 720×576, so encoding runs at about real time or
+      faster on a modern laptop. The MP4 is usually much smaller than the AVI, because H.264 is a much
+      better codec than those of 2003.
+    </p>
+
+    <h2>Archiving a shelf of old files</h2>
+    <p>
+      For a folder of family videos, convert at the high-quality setting and keep the originals.
+      Storage is cheap, and a re-encode cannot be undone. Convert once, to a format you can still open
+      in twenty years. H.264 in MP4 is currently the safest choice, and all phones, browsers, TVs and
+      editors support it.
+    </p>
+    <p>
+      The conversion runs on your machine, so your family footage is not uploaded, kept on a server or
+      linked to an account.
+    </p>
+  </Fragment>
+</ToolLayout>

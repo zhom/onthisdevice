@@ -1,0 +1,67 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatMarkdownTable from '@/components/tools/data/DevFormatMarkdownTable.tsx'
+---
+
+<ToolLayout slug="html-table-to-markdown">
+  <DevFormatMarkdownTable client:load mode="html-to-md" />
+  <Fragment slot="explainer">
+    <h2>Getting the HTML in the first place</h2>
+    <p>
+      To convert an HTML table to Markdown, paste the markup, not the rendered table. In Chrome, Firefox
+      or Safari, right-click the table, choose <strong>Inspect</strong>, find the
+      <code>&lt;table&gt;</code> element in the DOM panel, right-click it and choose
+      <strong>Copy → Copy outerHTML</strong>. In VS Code or a CMS, select the source.
+    </p>
+    <p>
+      If you select the table on the page and press <kbd>Ctrl</kbd>+<kbd>C</kbd>, most browsers copy
+      tab-separated text, not HTML. Paste that into
+      <a href="/csv-to-markdown-table">CSV to Markdown</a>, which detects tabs automatically.
+    </p>
+
+    <h2>How the conversion works</h2>
+    <p>
+      The browser&rsquo;s own HTML parser reads the markup, so malformed tables, missing
+      <code>&lt;tbody&gt;</code> and unclosed <code>&lt;td&gt;</code> tags are handled as a browser
+      handles them. Each <code>&lt;tr&gt;</code> becomes a row and each <code>&lt;th&gt;</code> or
+      <code>&lt;td&gt;</code> becomes a cell, in document order. The first row&rsquo;s
+      <code>align</code> attributes become the Markdown alignment markers.
+    </p>
+    <p>
+      Cell contents become plain text. Runs of whitespace collapse to a single space, as in a browser, so
+      a cell whose source spans four indented lines becomes one clean value.
+    </p>
+
+    <h2>What cannot survive</h2>
+    <table>
+      <thead><tr><th>HTML feature</th><th>Why it cannot convert</th><th>What happens</th></tr></thead>
+      <tbody>
+        <tr><td><code>colspan</code> / <code>rowspan</code></td><td>GFM tables are strictly rectangular. No Markdown table format supports merged cells</td><td>The cell fills one column and the rest of the row shifts. Check the grid</td></tr>
+        <tr><td>Nested tables</td><td>A cell cannot contain a block element</td><td>Flattened to the inner table&rsquo;s text</td></tr>
+        <tr><td>Lists inside a cell</td><td>Same reason</td><td>Flattened to text; add <code>&lt;br&gt;</code> by hand if you need breaks</td></tr>
+        <tr><td>Bold, links, images inside a cell</td><td>Markdown can express these, but to rebuild them reliably is a different job</td><td>Reduced to text. Add the syntax again in the grid</td></tr>
+        <tr><td>CSS-based alignment</td><td>Not in the markup</td><td>Defaults to left. Set it in the grid</td></tr>
+        <tr><td><code>&lt;caption&gt;</code></td><td>GFM tables have no caption</td><td>Dropped. Add a heading or a sentence above the table</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The documentation-migration case</h2>
+    <p>
+      A common case is a migration: a Confluence, SharePoint, WordPress or Notion page becomes a Markdown
+      file in a repository. Tables often break in an automated export, and a spec table with forty rows
+      is too long to type again.
+    </p>
+    <p>
+      A reliable workflow: convert one table, compare the column count with the original, fix merged-cell
+      damage in the grid, then copy. One table at a time is slower per table, but faster overall than
+      finding three pages later that each table with a merged header is misaligned.
+    </p>
+
+    <h2>Content that should not be uploaded</h2>
+    <p>
+      People often paste internal wiki tables into converters: staff lists, salary bands, server
+      inventories, incident timelines. Here the browser&rsquo;s own parser does the work in your tab.
+      Expand the panel under the tool to see the live count of network requests the page has made.
+    </p>
+  </Fragment>
+</ToolLayout>

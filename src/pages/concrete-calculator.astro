@@ -1,0 +1,134 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyArea from '@/components/tools/everyday/CalcMoneyArea.tsx'
+---
+
+<ToolLayout slug="concrete-calculator">
+  <CalcMoneyArea client:load variant="concrete" />
+
+  <Fragment slot="explainer">
+    <h2>Volume, not area</h2>
+    <p>
+      For concrete, the third dimension matters. The concrete calculator uses these formulas:
+    </p>
+    <pre><code>slab:        length × width × (thickness ÷ 12)      [cubic feet]
+round hole:  π × (diameter ÷ 2)² × (depth ÷ 12)     [cubic feet]
+cubic yards: cubic feet ÷ 27
+cubic metres: cubic feet × 0.0283168</code></pre>
+    <p>
+      A 20 × 12 ft patio slab 4 inches thick is 20 × 12 × 0.333 = 80 cubic feet, or 2.96 cubic yards.
+      With a 10% allowance you order 3.26, which in practice is 3.5 yards, because trucks deliver in
+      quarter-yard increments.
+    </p>
+
+    <h2>Bags or a truck?</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[440px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Bag</th>
+            <th style="text-align:right">Yield</th>
+            <th style="text-align:right">Bags per cubic yard</th>
+            <th style="text-align:right">Bags per cubic metre</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>40 lb</td><td style="text-align:right">0.30 cu ft</td><td style="text-align:right">90</td><td style="text-align:right">118</td></tr>
+          <tr><td>50 lb</td><td style="text-align:right">0.375 cu ft</td><td style="text-align:right">72</td><td style="text-align:right">94</td></tr>
+          <tr><td>60 lb</td><td style="text-align:right">0.45 cu ft</td><td style="text-align:right">60</td><td style="text-align:right">79</td></tr>
+          <tr><td>80 lb</td><td style="text-align:right">0.60 cu ft</td><td style="text-align:right">45</td><td style="text-align:right">59</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The practical crossover is at about one cubic yard. Below that, bags are simpler and there is no
+      truck minimum. Above it, you mix forty-five 80 lb bags by hand, which is about two tonnes of
+      material and most of a day. A ready-mix truck is then cheaper and faster.
+    </p>
+    <p>
+      Most suppliers have a minimum load (often 1 cubic yard) and a short-load surcharge below a full
+      truck, so ask first. Trucks also have a limited discharge time before the mix starts to set. Have
+      the forms, reinforcement and people ready before the truck arrives.
+    </p>
+
+    <h2>Typical thicknesses</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[380px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Application</th>
+            <th style="text-align:right">Thickness</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Footpath, patio, shed base</td><td style="text-align:right">4 in / 100 mm</td></tr>
+          <tr><td>Driveway (cars)</td><td style="text-align:right">4–5 in / 100–125 mm</td></tr>
+          <tr><td>Driveway (heavy vehicles)</td><td style="text-align:right">6 in / 150 mm</td></tr>
+          <tr><td>Garage floor</td><td style="text-align:right">5–6 in / 125–150 mm</td></tr>
+          <tr><td>Fence post hole depth</td><td style="text-align:right">⅓ of post height, min 24 in</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      Local building codes and frost-depth requirements override any rule of thumb, mostly for
+      footings: in cold climates, footings must be below the frost line.
+    </p>
+
+    <h2>Post holes</h2>
+    <p>
+      Use the round column shape: enter the hole diameter and the depth in inches, and set the quantity
+      to the number of identical holes. A 12 inch diameter hole 36 inches deep is 2.36 cubic feet, so six
+      holes are 14.1 cubic feet, or twenty-four 80 lb bags.
+    </p>
+    <p>
+      The post takes up some of that volume. A 4 × 4 in post in a 12 in hole fills about 11% of the
+      volume, which the waste allowance covers. For a larger post in a tight hole, subtract its volume.
+    </p>
+
+    <h2>Why to over-order, not under-order</h2>
+    <p>
+      Running out during a pour is the one mistake in concrete work that you cannot fix later. The first
+      pour starts to cure immediately, and more concrete added half an hour later makes a cold joint: a
+      permanent plane of weakness and a visible line. Five to ten per cent extra is standard, for three
+      reasons:
+    </p>
+    <ul>
+      <li>The sub-base is never perfectly level, and low spots take more concrete than expected.</li>
+      <li>Timber forms bend outwards under the weight of wet concrete.</li>
+      <li>Spillage, and the remainder in the barrow and the mixer.</li>
+    </ul>
+
+    <h2>What the volume does not tell you</h2>
+    <ul>
+      <li>
+        Strength: the mix specification (3,000 psi / C20-25 and up) depends on the application and the
+        climate, not the quantity.
+      </li>
+      <li>
+        Reinforcement: rebar, mesh, fibre and control joints are separate decisions. The joints decide
+        if the slab cracks in a straight line or randomly.
+      </li>
+      <li>
+        Sub-base: most slabs need a compacted hardcore or gravel layer below, which is a separate volume
+        calculation.
+      </li>
+      <li>
+        Weight: concrete is about 150 lb per cubic foot, or 2,400 kg per cubic metre. A cubic yard is
+        about two tonnes; know this before you plan the access.
+      </li>
+    </ul>
+
+    <h2>Mixed jobs</h2>
+    <p>
+      Add a slab row for each flat pour and a round column row for each set of holes, and set quantities
+      where they repeat. The total covers the whole job. Give that number to the supplier. It exports to
+      CSV, Excel or PDF with the individual pours, so others can check the breakdown.
+    </p>
+
+    <h2>Works on site, with no signal</h2>
+    <p>
+      There is no server behind the page. When it has loaded, it runs on your device, so it works in a
+      garden with no reception. Your list is saved only if you turn on saving, and only in this browser.
+    </p>
+  </Fragment>
+</ToolLayout>

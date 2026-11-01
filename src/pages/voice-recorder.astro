@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioVoiceRecorder from '@/components/tools/media/GifAudioVoiceRecorder.tsx'
+---
+
+<ToolLayout slug="voice-recorder">
+  <GifAudioVoiceRecorder client:load />
+  <Fragment slot="explainer">
+    <h2>How to record your voice</h2>
+    <ol>
+      <li>Press record and allow microphone access when the browser asks. The permission is for this site only, and the voice recorder captures nothing before you press the button.</li>
+      <li>Watch the waveform and the level bar. Speech should move the bar to between 40% and 80%. A bar that barely moves means the gain is too low; a bar at 100% means clipping.</li>
+      <li>Pause and resume as often as you like; the segments join without gaps.</li>
+      <li>Stop, listen in the player, then download the file as it is or convert it to MP3 or WAV.</li>
+    </ol>
+
+    <h2>Where the recording is kept</h2>
+    <p>
+      The browser’s <code>MediaRecorder</code> gives a chunk of encoded audio once a second, and this tab keeps
+      the chunks in an array in memory. When you press stop, they are joined into one Blob for the player.
+      Nothing is written to disk until you press download, and nothing is sent: the site’s
+      Content-Security-Policy lists no third-party origin.
+    </p>
+    <p>
+      So if you reload or close the tab, the recording is lost. No draft is saved anywhere else.
+    </p>
+
+    <h2>Recording format, and when to convert</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Browser</th><th>Container and codec</th><th>Roughly</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Chrome, Edge, Firefox, Opera</td><td>WebM containing Opus</td><td>30 MB per hour</td></tr>
+          <tr><td>Safari (macOS and iOS)</td><td>MP4 containing AAC</td><td>45 MB per hour</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Both are complete, playable files. Convert only when the destination needs it:
+    </p>
+    <ul>
+      <li>MP3 for older software, a car stereo, a voicemail system, or a transcription service with a limited decoder.</li>
+      <li>WAV for a DAW or sampler, where uncompressed PCM avoids repeated decoding. See <a href="/mp3-to-wav">MP3 to WAV</a> for the size cost.</li>
+      <li>Neither if you keep the file or send it to someone with a modern device. WebM and MP4 audio play in every current browser and phone.</li>
+    </ul>
+
+    <h2>The three processing switches</h2>
+    <p>
+      By default, browsers apply voice-call signal processing to microphone streams. The advanced panel has a
+      switch for each of the three, because the right setting depends on what you record.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>Leave on for</th><th>Turn off for</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Echo cancellation</td>
+            <td>Recordings through laptop speakers, or with audio playing</td>
+            <td>Music and instruments: it can reduce sustained notes as if they were echo</td>
+          </tr>
+          <tr>
+            <td>Noise suppression</td>
+            <td>Speech in a room with fans, traffic or air conditioning</td>
+            <td>Singing, acoustic instruments, ambience you want to keep, very quiet speech</td>
+          </tr>
+          <tr>
+            <td>Automatic gain control</td>
+            <td>Interviews where people move around, or when levels vary</td>
+            <td>Performances with intentional dynamics; it flattens loud and quiet parts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Getting a better recording</h2>
+    <ul>
+      <li>Distance matters more than equipment. A cheap headset mic 10 cm from your mouth sounds better than an expensive one across the room, because room reflections make recordings sound amateur.</li>
+      <li>Speak past the microphone, not into it. A position slightly off-axis avoids the plosive blast on p and b sounds.</li>
+      <li>Avoid reflective surfaces. A recording made facing a bookshelf or a curtain sounds much better than one facing a bare wall or a window.</li>
+      <li>Test first. The <a href="/microphone-test">microphone test</a> checks levels and playback in a few seconds, before a long take.</li>
+      <li>Record a few seconds of silence at the start. Noise-reduction tools in editors use it as a profile.</li>
+    </ul>
+
+    <h2>Is there a time limit?</h2>
+    <p>
+      The tool sets no time limit. The real limit is memory: at about 30 MB an hour for Opus, a session of
+      several hours works on a desktop and less well on an older phone. For sessions over about two hours,
+      stop and start a new take from time to time, in case the browser crashes. You can join the takes later
+      with the <a href="/audio-joiner">audio joiner</a>, losslessly if they are all the same format.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>No system audio: <code>getUserMedia</code> gives only microphone inputs. To capture what your computer plays, you need screen-capture permission with audio sharing, and on macOS a loopback driver.</li>
+      <li>One microphone at a time: a multitrack session needs a DAW and an audio interface.</li>
+      <li>No transcription: that needs a speech model, which means a large download or a server.</li>
+      <li>No recovery after a reload: the tool stores nothing, by design.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

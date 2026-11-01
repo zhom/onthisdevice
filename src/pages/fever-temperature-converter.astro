@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="fever-temperature-converter">
+  <UnitsLifePairConverter client:load spec="fever-temperature-converter" />
+  <Fragment slot="explainer">
+    <h2>The thresholds, in both scales</h2>
+    <p>
+      A thermometer reading is useful only against a threshold, and health services publish thresholds in
+      the scale they use. This table shows both.
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Reading</th><th scope="col">&deg;C</th><th scope="col">&deg;F</th><th scope="col">Usual description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hypothermia</td><td>below 35.0</td><td>below 95.0</td><td>Medical emergency</td></tr>
+        <tr><td>Normal range</td><td>36.1&ndash;37.5</td><td>97.0&ndash;99.5</td><td>Varies across the day</td></tr>
+        <tr><td>Raised / low-grade</td><td>37.5&ndash;38.0</td><td>99.5&ndash;100.4</td><td>Above normal, below the fever line</td></tr>
+        <tr><td>Fever</td><td>38.0 and above</td><td>100.4 and above</td><td>The standard clinical threshold</td></tr>
+        <tr><td>High fever</td><td>39.0 and above</td><td>102.2 and above</td><td>Get medical advice</td></tr>
+        <tr><td>Very high fever</td><td>40.0 and above</td><td>104.0 and above</td><td>Urgent assessment</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The 38.0/100.4 pair is not a rounding coincidence: 38 &deg;C is exactly 100.4 &deg;F, so both numbers
+      appear in guidance worldwide.
+    </p>
+
+    <h2>&quot;Normal&quot; is a range, not 37</h2>
+    <p>
+      The 37 &deg;C figure comes from the 1868 study by Carl Wunderlich of about 25,000 patients, and the
+      well-known 98.6 &deg;F is that round Celsius number converted. Modern studies find a lower average,
+      about 36.6 &deg;C, and a real daily rhythm: body temperature is lowest in the early morning and highest
+      in the late afternoon or early evening, a change of half a degree Celsius or more.
+    </p>
+    <p>
+      So one reading shows one moment. 37.4 &deg;C at 6 pm and 37.4 &deg;C at 4 am are quite different
+      observations.
+    </p>
+
+    <h2>Where you measure changes the number</h2>
+    <ul>
+      <li>Rectal: the reference standard, usually 0.3&ndash;0.6 &deg;C above oral</li>
+      <li>Tympanic (ear): close to rectal when placed correctly, easily wrong when not</li>
+      <li>Oral: the basis of most published thresholds; affected by drinking and breathing through the mouth</li>
+      <li>Temporal (forehead): convenient, sensitive to sweat, draughts and recent sun exposure</li>
+      <li>Axillary (armpit): usually 0.3&ndash;0.6 &deg;C below oral, and the least reliable</li>
+    </ul>
+    <p>
+      Compare like with like. A trend measured the same way at the same time of day tells you much more
+      than one number from a different site.
+    </p>
+
+    <h2>When the number is not the point</h2>
+    <p>
+      The height of a fever does not show reliably how serious an illness is. These signs matter more than
+      the reading: any fever in an infant under three months; a stiff neck, a rash that does not fade under
+      pressure, difficulty breathing, confusion or unusual drowsiness; a fever that lasts more than three
+      days; or dehydration. Each of these needs medical attention, whatever the thermometer says. This page
+      converts units and lists published thresholds; it does not diagnose.
+    </p>
+
+    <h2>Nothing here is recorded</h2>
+    <p>
+      The fever temperature converter is arithmetic in the page. There is no server, no cookies and no
+      analytics. To verify, turn off your network connection: the tool works the same way.
+    </p>
+  </Fragment>
+</ToolLayout>

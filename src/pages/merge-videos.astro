@@ -1,0 +1,99 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MergeVideos from '@/components/tools/media/MergeVideos.tsx'
+---
+
+<ToolLayout slug="merge-videos">
+  <MergeVideos client:load />
+  <Fragment slot="explainer">
+    <h2>Two ways to join videos, and why it matters which one runs</h2>
+    <p>
+      To merge videos looks simple but is not. There are two different mechanisms. A tool that uses
+      one without telling you often gives merged files with audio drift or a missing second clip.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Concat demuxer (copy)</th>
+            <th>Concat filter (re-encode)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Requirement</td>
+            <td>Every clip has the same codec, resolution and audio format</td>
+            <td>None. Any clips can be joined</td>
+          </tr>
+          <tr>
+            <td>What happens</td>
+            <td>Compressed packets are joined and indexed again</td>
+            <td>Everything is decoded, normalised and encoded once</td>
+          </tr>
+          <tr>
+            <td>Speed</td>
+            <td>Seconds, even for gigabytes</td>
+            <td>Around real time for the whole running length</td>
+          </tr>
+          <tr>
+            <td>Quality</td>
+            <td>Identical to the sources</td>
+            <td>One generation of H.264 loss</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This page inspects each clip first, chooses the better method automatically, and tells you which
+      one ran and why. A table lists each clip’s codec, resolution and length as FFmpeg reported them.
+    </p>
+
+    <h2>What makes clips "matching"</h2>
+    <p>
+      Clips from the same camera, phone or export preset almost always match, and those merges take
+      almost no time. Mixed sources rarely match. The usual differences:
+    </p>
+    <ul>
+      <li>Resolution: a 4K phone clip and a 1080p screen recording.</li>
+      <li>Codec: an H.264 MP4 and a VP9 WebM.</li>
+      <li>Audio: AAC in one file, Opus in another, or one clip with no audio.</li>
+      <li>Frame rate: 30 fps and 60 fps, or variable-frame-rate phone footage.</li>
+    </ul>
+    <p>
+      On the re-encode path, each clip is scaled to fit the largest frame size in the set and padded
+      with black, not stretched, so nobody in the footage is distorted. All clips are normalised to
+      30 fps with one AAC soundtrack.
+    </p>
+
+    <h2>The silent-clip trap</h2>
+    <p>
+      When one clip in a set has no audio track, naive concatenation gives a file where the sound runs
+      ahead of the picture from that point on. This tool generates silence of exactly the correct
+      length for each clip without sound, so the two streams stay the same length and all later clips
+      stay in sync.
+    </p>
+
+    <h2>Ordering</h2>
+    <p>
+      The clips join from top to bottom in the list. Drag a row to move it, or use the arrow buttons on
+      each row, which work with the keyboard. Files go into the list in the order you drop them, and
+      files you drop later go at the end.
+    </p>
+
+    <h2>How many, and how big</h2>
+    <p>
+      The tool has no limit on the number of clips or their size. The limit is your device’s memory,
+      because the inputs and the output are all in this tab. For very large sets, merge a few at a time
+      and then merge the results. This uses less memory.
+    </p>
+
+    <h2>Before you merge</h2>
+    <p>
+      To trim clips first, <a href="/trim-video">trim video</a> cuts without re-encoding. If one clip
+      has a different shape, crop it to match with <a href="/crop-video">crop video</a> first, so the
+      merge can use the fast path. If the result must fit an upload limit, run it through
+      <a href="/compress-video">compress video</a> afterwards.
+    </p>
+  </Fragment>
+</ToolLayout>

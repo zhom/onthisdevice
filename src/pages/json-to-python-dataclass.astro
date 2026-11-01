@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-python-dataclass">
+  <DevFormatJsonCode client:load target="python" />
+  <Fragment slot="explainer">
+    <h2>What you get</h2>
+    <p>
+      The JSON to Python dataclass generator writes one <code>@dataclass</code> per distinct nested
+      object, children first, so the file reads top-down. It uses modern type hints: built-in generics
+      (<code>list[str]</code>, not <code>List[str]</code>) and the <code>X | None</code> union syntax.
+      The file starts with <code>from __future__ import annotations</code>, which makes all annotations
+      lazy, so forward references resolve in any class order.
+    </p>
+    <p>The target is Python 3.10 or later. For 3.8 and 3.9, replace the built-in generics with their <code>typing</code> equivalents and <code>X | None</code> with <code>Optional[X]</code>.</p>
+
+    <h2>Field names</h2>
+    <p>
+      JSON keys become snake_case, as PEP 8 asks and the rest of your code expects. Two things happen
+      automatically:
+    </p>
+    <ul>
+      <li>A name that collides with a Python keyword gets a trailing underscore: <code>class</code> becomes <code>class_</code>, <code>from</code> becomes <code>from_</code>.</li>
+      <li>When the attribute name differs from the JSON key, a comment on the same line shows the original key, so you can see what to map.</li>
+    </ul>
+
+    <h2>Why required fields come first</h2>
+    <p>
+      Python raises <code>TypeError: non-default argument follows default argument</code> at class
+      definition time if a field without a default comes after one with a default. So optional fields
+      come last, with <code>= None</code>. If you reorder them by hand, keep that rule, or the module
+      will not import.
+    </p>
+    <p>
+      The generator never writes a mutable default. <code>tags: list[str] = []</code> is an error in a
+      dataclass, because all instances would share the same list. If you add a default for a list or
+      dict, use <code>field(default_factory=list)</code>.
+    </p>
+
+    <h2>Dataclasses do not deserialise nested JSON</h2>
+    <p>
+      <code>Order(**data)</code> works for a flat object. For a nested one, <code>order.customer</code>
+      is a plain <code>dict</code>, not a <code>Customer</code>: the type hint is not enforced and nothing
+      builds the child. Three ways to fix it:
+    </p>
+    <table>
+      <thead><tr><th>Approach</th><th>Cost</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>Write a <code>from_dict</code> classmethod per class</td><td>Manual, explicit, no dependency</td><td>A handful of classes</td></tr>
+        <tr><td><code>dacite.from_dict(Order, data)</code></td><td>One small dependency, keeps the dataclasses</td><td>Most cases</td></tr>
+        <tr><td>Switch to Pydantic <code>BaseModel</code></td><td>Bigger dependency, but validation and coercion included</td><td>API boundaries</td></tr>
+      </tbody>
+    </table>
+    <p>
+      If you already use Pydantic, the change is simple: replace <code>@dataclass</code> with a
+      <code>class X(BaseModel)</code> declaration and delete the decorator. The field annotations stay
+      the same.
+    </p>
+
+    <h2>Types that need a second look</h2>
+    <ul>
+      <li>Timestamps arrive as <code>str</code>. Convert with <code>datetime.fromisoformat</code>, which handles the trailing <code>Z</code> since 3.11.</li>
+      <li>Money arrives as <code>float</code>. Change it to <code>Decimal</code> and make sure the API sends it as a string, or you get binary-float rounding.</li>
+      <li>A field that is always one of a few strings should become an <code>Enum</code> or a <code>Literal[...]</code>.</li>
+      <li>A dict keyed by ID gives one attribute per key in your sample. Replace the whole class with <code>dict[str, Thing]</code>.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

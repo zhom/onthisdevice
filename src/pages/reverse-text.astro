@@ -1,0 +1,90 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ReverseText from '@/components/tools/text/ReverseText.tsx'
+---
+
+<ToolLayout slug="reverse-text">
+  <ReverseText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to reverse text</h2>
+    <ol>
+      <li>Type or paste your text, or drop a text file onto the box.</li>
+      <li>Choose what to reverse: the characters, the word order, the line order, or one of the two Unicode effects.</li>
+      <li>Choose whether to reverse each line separately or the whole text end to end.</li>
+      <li>Copy or download the result. The palindrome indicator updates as you type.</li>
+    </ol>
+
+    <h2>The five modes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>“Hello world”</th>
+            <th>What it is for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Characters</td><td>dlrow olleH</td><td>Palindrome checks, puzzles, hiding a spoiler</td></tr>
+          <tr><td>Word order</td><td>world Hello</td><td>Reversing lists and name orders while keeping words readable</td></tr>
+          <tr><td>Line order</td><td>last line first</td><td>Flipping a chronological log or a ranked list</td></tr>
+          <tr><td>Mirror text</td><td>blɿow olleH</td><td>Text meant to be read in a mirror, vinyl and iron-on transfers</td></tr>
+          <tr><td>Upside down</td><td>plɹoʍ ollǝH</td><td>Chat messages, social bios, novelty captions</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why simple reversal breaks emoji</h2>
+    <p>
+      The obvious way to reverse a string is to split it into characters, reverse the array and join it.
+      This breaks much modern text. JavaScript strings are sequences of UTF-16 code units, and a character
+      outside the Basic Multilingual Plane is stored as a surrogate pair. Reversing the units separates the
+      pair, and the result shows as two replacement boxes. The same happens to a letter followed by a
+      combining accent, to flag emoji built from two regional indicators, and to family emoji joined by
+      zero-width joiners.
+    </p>
+    <p>
+      This tool splits text into graphemes (user-perceived characters) with the browser’s
+      <code>Intl.Segmenter</code>, then reverses those. Emoji, accents, Hangul syllables and Devanagari
+      clusters stay intact.
+    </p>
+
+    <h2>Mirror text vs upside-down text</h2>
+    <p>
+      <strong>Mirror text</strong> reverses the character order and replaces each character with its
+      left-to-right reflection, so the result reads correctly in a mirror. Use it for a design printed on
+      the inside of a window or applied as an iron-on transfer. <strong>Upside-down text</strong> turns the
+      whole line 180° and replaces each character with a look-alike that appears inverted. Both use ordinary
+      Unicode characters, so you can paste the output anywhere that accepts Unicode. Some fonts lack a few
+      of the substitutes and show a box.
+    </p>
+    <p>
+      Neither effect is a font or an image, so the text stays selectable and copyable. Screen readers also
+      read the substitute characters literally. Use the effects for decoration, never for content people
+      must understand.
+    </p>
+
+    <h2>Palindromes</h2>
+    <p>
+      The palindrome indicator removes everything that is not a letter or digit, lowercases the rest, and
+      compares the result with its reverse. This is the standard convention, so “A man, a plan, a canal:
+      Panama” and “Never odd or even” count as palindromes despite their spaces and punctuation. Single words
+      such as “level” and “racecar” work the same way.
+    </p>
+
+    <h2>Practical uses</h2>
+    <ul>
+      <li>Bidirectional text testing: check how a layout handles unexpected character order.</li>
+      <li>Puzzles and quizzes: hide an answer in plain sight.</li>
+      <li>Exported lists: flip the line order without sorting, so ties keep their order.</li>
+      <li>Craft and signage: mirrored text for transfers, stencils and window graphics.</li>
+      <li>Teaching: show a programming class why string reversal is harder than it looks.</li>
+    </ul>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      Each mode runs locally, in chunks for long documents. After the page loads, it also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

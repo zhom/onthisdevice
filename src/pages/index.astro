@@ -1,0 +1,249 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import ToolCard from '@/components/site/ToolCard.astro'
+import Glyph from '@/components/site/Glyph.astro'
+import HeroField from '@/components/site/HeroField.astro'
+import Icon from '@/components/site/Icon.tsx'
+import HeroSearch from '@/components/site/search/HeroSearch.tsx'
+import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
+import { FEATURED, QUICK } from '@/lib/featured'
+import { hasPage } from '@/components/site/pages'
+
+const pick = (slugs: string[]) => slugs.map((s) => getTool(s)).filter((t): t is Tool => t !== undefined && hasPage(t))
+const quick = pick(QUICK)
+const featured = pick(FEATURED)
+
+let glyphIndex = 0
+const catalogue = GROUPS.map((g) => ({
+  group: g,
+  categories: CATEGORIES.filter((c) => c.group === g.id).map((c) => ({
+    category: c,
+    count: toolsByCategory(c.id).filter(hasPage).length,
+    // Glyphs in the list change one after another, not all at once.
+    offset: (glyphIndex++ * 0.42) % 7.2,
+  })).filter((c) => c.count > 0),
+})).filter((g) => g.categories.length > 0)
+
+const title = `onthisdevice: ${TOOL_COUNT} free tools that never upload your files`
+const description = `Free PDF, image, video, redaction, data and calculator tools that run in your browser. Your files stay on your device and are never uploaded.`
+
+const checks: { what: string; how: string; code?: string }[] = [
+  {
+    what: 'Nothing is uploaded',
+    how: 'Open your browser’s network panel, then use any tool. No request carries your file. The site is static files and has no server to send it to.',
+  },
+  {
+    what: 'Nothing can be sent',
+    how: 'Every page arrives with a connection rule that lets it talk to this site only. Your browser refuses any other address.',
+    code: "connect-src 'self' blob: data:",
+  },
+  {
+    what: 'Your device does the work',
+    how: 'The work runs in your tab as WebAssembly, with the same codecs desktop software uses. A 300 MB file is fine if your device has the memory.',
+  },
+]
+
+const comparison: { label: string; them: string; us: string }[] = [
+  { label: 'Where your file goes', them: 'To a company’s server', us: 'Nowhere. It stays in this tab' },
+  { label: 'How long it takes', them: 'Upload, queue, process, download', us: 'Starts when you drop the file' },
+  { label: 'Size limit', them: 'Set by their free tier', us: 'Your device’s memory' },
+  { label: 'Daily limit', them: 'A few files, then a paywall', us: 'None' },
+  { label: 'Account', them: 'Often needed to download', us: 'None' },
+  { label: 'Watermarks', them: 'Common on free output', us: 'Never' },
+]
+
+const faqs: { q: string; a: string }[] = [
+  {
+    q: 'Are my files really never uploaded?',
+    a: 'Yes. Each tool is a static page plus JavaScript and WebAssembly. Your file is read with the browser’s File API and processed in memory on your device. Watch the network panel while you work: no request carries your data.',
+  },
+  {
+    q: 'How can this be free?',
+    a: 'There is almost nothing to pay for. The site is a set of static files, and the work runs on your computer. Upload services pay for every file they process, which is why they meter you.',
+  },
+  {
+    q: 'Do the tools work offline?',
+    a: 'A tool keeps working after its page and its engine have loaded, also with the network off. Video tools get a 10 MB engine from this site the first time; your browser keeps it.',
+  },
+  {
+    q: 'What are the limits?',
+    a: 'There is no size cap and no daily quota. The limits are your device: how much memory the browser tab can use and how fast your processor is.',
+  },
+  {
+    q: 'Do you use cookies, analytics or ads?',
+    a: 'No. The site has no cookies, analytics, trackers or ads. Your browser stores only your theme and your recent searches, in its own local storage.',
+  },
+]
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    '@id': 'https://onthisdevice.com/#page',
+    url: 'https://onthisdevice.com/',
+    name: title,
+    description,
+    isPartOf: { '@id': 'https://onthisdevice.com/#website' },
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': 'https://onthisdevice.com/#faq',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  },
+]
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/" jsonLd={jsonLd}>
+  <section aria-labelledby="hero-title">
+    <Container class="grid grid-cols-1 items-center gap-y-10 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-x-16 lg:pt-20 lg:pb-16">
+      <div class="min-w-0">
+        <h1 id="hero-title" class="t-display enter max-w-[12ch] text-foreground">Your files stay on this device.</h1>
+        <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${TOOL_COUNT} free tools that run in your browser. Nothing is uploaded.`}>
+          {TOOL_COUNT} free tools for PDFs, images, video, redaction and everyday sums. They run in this browser tab.
+          Nothing is uploaded.
+        </p>
+
+        <div class="enter relative z-10 mt-9 max-w-[34rem]" style="--i:2">
+          <HeroSearch client:load />
+        </div>
+
+        <ul class="enter mt-5 flex max-w-[34rem] flex-wrap gap-x-5 gap-y-2" aria-label="Most used tools" style="--i:3">
+          {
+            quick.map((tool) => (
+              <li>
+                <a href={`/${tool.slug}`} class="link text-[0.9375rem] font-[560]">
+                  {tool.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <HeroField class="enter h-[17rem] sm:h-[22rem] lg:h-[32rem]" />
+    </Container>
+  </section>
+
+  <Container class="pt-20 sm:pt-28">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
+      <div>
+        <h2 class="t-h2 text-foreground">Check it yourself</h2>
+        <p class="mt-3 max-w-sm text-[1rem] leading-relaxed text-pretty text-muted-foreground">
+          The privacy is in how the site is built. Three ways to see it.
+        </p>
+      </div>
+      <dl class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-3">
+        {
+          checks.map((c) => (
+            <div>
+              <dt class="t-h3 text-foreground">{c.what}</dt>
+              <dd class="mt-2 text-[0.9375rem] leading-relaxed text-pretty text-muted-foreground">
+                {c.how}
+                {c.code && (
+                  <code class="mt-3 block w-fit max-w-full rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.8125rem] break-words text-foreground">
+                    {c.code}
+                  </code>
+                )}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </Container>
+
+  <Container class="pt-20 sm:pt-28">
+    <div class="flex flex-wrap items-baseline justify-between gap-4">
+      <h2 class="t-h2 text-foreground">Most used</h2>
+      <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {TOOL_COUNT} tools</a>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+      {featured.map((tool) => <ToolCard tool={tool} />)}
+    </div>
+  </Container>
+
+  <Container class="pt-20 sm:pt-28">
+    <h2 class="t-h2 text-foreground">Categories</h2>
+    <div class="mt-8 space-y-12">
+      {
+        catalogue.map(({ group, categories }) => (
+          <section aria-labelledby={`g-${group.id}`}>
+            <h3 id={`g-${group.id}`} class="text-[0.9375rem] font-[600] text-muted-foreground">
+              {group.title}
+            </h3>
+            <div class="mt-3 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+              {categories.map(({ category, count, offset }) => (
+                <a href={categoryHref(category)} class="row-link group items-center">
+                  <Glyph id={category.id} offset={offset} class="size-10 text-foreground" />
+                  <span class="min-w-0">
+                    <span class="flex items-baseline gap-2">
+                      <span class="text-[1.0625rem] font-[680] text-foreground">{category.title}</span>
+                      <span class="num text-[0.875rem] text-muted-foreground">{count}</span>
+                    </span>
+                    <span class="mt-0.5 block truncate text-[0.875rem] text-muted-foreground">{category.tagline}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </Container>
+
+  <Container class="pt-20 sm:pt-28">
+    <h2 class="t-h2 text-foreground">What changes without an upload</h2>
+    <div class="mt-6 overflow-x-auto">
+      <table class="w-full min-w-[34rem] border-collapse text-left text-[0.9375rem]">
+        <thead>
+          <tr>
+            <th scope="col" class="w-[30%] py-2 pr-6 font-[600] text-muted-foreground"><span class="sr-only">Question</span></th>
+            <th scope="col" class="w-[35%] py-2 pr-6 font-[600] text-muted-foreground">Upload services</th>
+            <th scope="col" class="w-[35%] py-2 font-[650] text-foreground">onthisdevice</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            comparison.map((row) => (
+              <tr class="align-top">
+                <th scope="row" class="py-3 pr-6 font-[600] text-foreground">{row.label}</th>
+                <td class="py-3 pr-6 text-muted-foreground">{row.them}</td>
+                <td class="py-3 font-[560] text-foreground">{row.us}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </Container>
+
+  <Container class="pt-20 sm:pt-28">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
+      <div>
+        <h2 class="t-h2 text-foreground">Questions</h2>
+        <p class="mt-3 max-w-sm text-[1rem] leading-relaxed text-muted-foreground">
+          The <a href="/privacy" class="link font-[600]">privacy page</a> lists what the site stores and what it never sees.
+        </p>
+      </div>
+      <div class="max-w-3xl">
+        {
+          faqs.map((faq) => (
+            <details class="faq">
+              <summary class="flex cursor-pointer list-none items-start justify-between gap-6 rounded-md py-4 text-[1.0625rem] font-[620] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden">
+                <span class="text-pretty">{faq.q}</span>
+                <span class="faq-mark mt-0.5 grid size-5 shrink-0 place-items-center">
+                  <Icon name="Plus" className="size-5" />
+                </span>
+              </summary>
+              <p class="max-w-2xl pb-5 text-[1rem] leading-relaxed text-pretty text-muted-foreground">{faq.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </Container>
+</BaseLayout>

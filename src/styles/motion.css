@@ -1,0 +1,345 @@
+/* ─────────────────────────────────────────────────────────────
+   Motion. Only transform, opacity and clip-path move. Entries use
+   --ease-out, moves --ease-in-out. Reduced motion: still frames and
+   plain fades (bottom of this file).
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Page navigation: cross-document view transitions ─────────── */
+@view-transition {
+  navigation: auto;
+  types: nav;
+}
+
+/* The header stays put; the tool heading is a shared element. */
+.site-header {
+  view-transition-name: site-header;
+}
+.vt-tool-title {
+  view-transition-name: tool-title;
+}
+.vt-tool-icon {
+  view-transition-name: tool-icon;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+::view-transition-new(site-header) {
+  animation: none;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 10;
+}
+
+::view-transition-group(tool-title),
+::view-transition-group(tool-icon) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-old(tool-title),
+::view-transition-new(tool-title),
+::view-transition-old(tool-icon),
+::view-transition-new(tool-icon) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+
+html:active-view-transition-type(nav)::view-transition-old(root) {
+  animation: 160ms var(--ease-in-out) both vt-leave;
+}
+html:active-view-transition-type(nav)::view-transition-new(root) {
+  animation: 360ms var(--ease-out) 40ms both vt-enter;
+}
+html:active-view-transition-type(back)::view-transition-old(root) {
+  animation-name: vt-leave-back;
+}
+html:active-view-transition-type(back)::view-transition-new(root) {
+  animation-name: vt-enter-back;
+}
+@keyframes vt-leave {
+  to {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+@keyframes vt-enter {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes vt-leave-back {
+  to {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+@keyframes vt-enter-back {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+/* Theme switch: one snapshot, revealed in a circle from the switch (script in BaseLayout). */
+html.vt-theme * {
+  view-transition-name: none !important;
+}
+html.vt-theme::view-transition-old(root),
+html.vt-theme::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* ── Questions: smooth open and close ────────────────────────── */
+details.faq::details-content {
+  block-size: 0;
+  overflow-y: clip;
+  transition:
+    block-size 320ms var(--ease-out),
+    content-visibility 320ms allow-discrete;
+}
+details.faq[open]::details-content {
+  block-size: auto;
+}
+details.faq > summary .faq-mark {
+  transition: transform 320ms var(--ease-out);
+}
+details.faq[open] > summary .faq-mark {
+  transform: rotate(45deg);
+}
+details.faq > p {
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 200ms ease,
+    transform 320ms var(--ease-out);
+}
+details.faq[open] > p {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Entrances ───────────────────────────────────────────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+.enter {
+  animation: rise 520ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+/* Result reveal: wipes down from the top edge. */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+}
+.reveal {
+  animation: reveal 420ms var(--ease-out) both;
+}
+
+/* ── Category glyphs (src/lib/glyphs.ts) ─────────────────────── */
+.glyph .g {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-duration: 7.2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease-in-out);
+  animation-delay: calc(var(--x, 0) * 55ms - var(--t, 0s));
+  animation-play-state: paused;
+}
+.glyph .o {
+  transform: scale(0);
+}
+.glyph.is-live .g {
+  animation-play-state: running;
+}
+html.is-hidden .glyph .g {
+  animation-play-state: paused;
+}
+.gm1{animation-name:gm1}
+.gm2{animation-name:gm2}
+.gm3{animation-name:gm3}
+.gm4{animation-name:gm4}
+.gm5{animation-name:gm5}
+.gm6{animation-name:gm6}
+.gm7{animation-name:gm7}
+.gm8{animation-name:gm8}
+.gm9{animation-name:gm9}
+.gm10{animation-name:gm10}
+.gm11{animation-name:gm11}
+.gm12{animation-name:gm12}
+.gm13{animation-name:gm13}
+.gm14{animation-name:gm14}
+@keyframes gm1{0%,19%,100%{transform:none}25%,44%,50%,69%,75%,94%{transform:scale(0)}}
+@keyframes gm2{25%,44%{transform:none}0%,19%,50%,69%,75%,94%,100%{transform:scale(0)}}
+@keyframes gm3{0%,19%,25%,44%,100%{transform:none}50%,69%,75%,94%{transform:scale(0)}}
+@keyframes gm4{50%,69%{transform:none}0%,19%,25%,44%,75%,94%,100%{transform:scale(0)}}
+@keyframes gm5{0%,19%,50%,69%,100%{transform:none}25%,44%,75%,94%{transform:scale(0)}}
+@keyframes gm6{25%,44%,50%,69%{transform:none}0%,19%,75%,94%,100%{transform:scale(0)}}
+@keyframes gm7{0%,19%,25%,44%,50%,69%,100%{transform:none}75%,94%{transform:scale(0)}}
+@keyframes gm8{75%,94%{transform:none}0%,19%,25%,44%,50%,69%,100%{transform:scale(0)}}
+@keyframes gm9{0%,19%,75%,94%,100%{transform:none}25%,44%,50%,69%{transform:scale(0)}}
+@keyframes gm10{25%,44%,75%,94%{transform:none}0%,19%,50%,69%,100%{transform:scale(0)}}
+@keyframes gm11{0%,19%,25%,44%,75%,94%,100%{transform:none}50%,69%{transform:scale(0)}}
+@keyframes gm12{50%,69%,75%,94%{transform:none}0%,19%,25%,44%,100%{transform:scale(0)}}
+@keyframes gm13{0%,19%,50%,69%,75%,94%,100%{transform:none}25%,44%{transform:scale(0)}}
+@keyframes gm14{25%,44%,50%,69%,75%,94%{transform:none}0%,19%,100%{transform:scale(0)}}
+
+
+/* ── Reduced motion: still frames and plain fades ────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .glyph .g {
+    animation: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  ::view-transition-old(root) {
+    animation: 160ms linear both fade-out !important;
+  }
+  ::view-transition-new(root) {
+    animation: 160ms linear both fade !important;
+  }
+  details.faq::details-content {
+    transition: none;
+  }
+}
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ── Drop zone (FileDropzone.tsx) ────────────────────────────── */
+.dropzone .dz-flood {
+  clip-path: circle(0 at var(--ox, 50%) var(--oy, 50%));
+  transition: clip-path 380ms var(--ease-in-out);
+}
+.dropzone[data-state='over'] .dz-flood {
+  clip-path: circle(150% at var(--ox, 50%) var(--oy, 50%));
+  transition-duration: 520ms;
+  transition-timing-function: var(--ease-out);
+}
+.dz-icon rect {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0);
+  transition: transform 300ms var(--ease-out);
+  transition-delay: calc(var(--y, 0) * 28ms + var(--x, 0) * 12ms);
+}
+.dropzone[data-state='idle'] .dz-icon rect.i,
+.dropzone[data-state='over'] .dz-icon rect.o,
+.dropzone[data-state='fed'] .dz-icon rect.f {
+  transform: none;
+}
+.dropzone .dz-key {
+  transition: transform 200ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .dropzone[data-state='idle']:not([aria-disabled]):hover .dz-icon {
+    transform: translateY(-2px);
+  }
+  .dropzone:not([aria-disabled]):hover .dz-key {
+    transform: translateY(-1px);
+  }
+}
+.dropzone .dz-icon {
+  transition: transform 300ms var(--ease-out);
+}
+.dropzone:active .dz-key {
+  transform: scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dz-icon rect {
+    transition: none;
+  }
+  .dropzone .dz-flood {
+    transition: clip-path 0.01ms;
+  }
+}
+
+/* ── Progress (ProgressPanel.tsx): a row of 8 px pixels, 3 px apart ── */
+.px-row {
+  position: relative;
+  max-width: 100%;
+  height: 8px;
+  overflow: hidden;
+  background: var(--background);
+  -webkit-mask: linear-gradient(90deg, #000 0 8px, transparent 8px 11px) 0 0 / 11px 100% repeat-x;
+  mask: linear-gradient(90deg, #000 0 8px, transparent 8px 11px) 0 0 / 11px 100% repeat-x;
+}
+.px-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--foreground);
+  transform-origin: left center;
+  transition: transform 260ms var(--ease-out);
+}
+.px-scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 66px;
+  background: var(--foreground);
+  animation: px-scan 1.8s steps(var(--steps, 46)) infinite;
+}
+@keyframes px-scan {
+  from {
+    transform: translateX(-66px);
+  }
+  to {
+    transform: translateX(calc(var(--steps, 46) * 11px - 66px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .px-scan {
+    animation: none;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Copy and download confirmation: the icon turns into a tick ── */
+.swap-icon > span > svg {
+  transition:
+    transform 280ms var(--ease-out),
+    opacity 160ms ease;
+}
+.swap-icon > span > svg:last-child,
+.swap-icon[data-done] > span > svg:first-child {
+  opacity: 0;
+  transform: scale(0.4) rotate(-20deg);
+}
+.swap-icon[data-done] > span > svg:last-child {
+  opacity: 1;
+  transform: none;
+}

@@ -1,0 +1,108 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PlaceholderImageGenerator from '@/components/tools/generators/PlaceholderImageGenerator.tsx'
+---
+
+<ToolLayout slug="placeholder-image-generator">
+  <PlaceholderImageGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to make a placeholder image</h2>
+    <ol>
+      <li>Enter the size, or pick a preset: Open Graph, hero, thumbnail, avatar and the standard ad slots.</li>
+      <li>Set the colours. The label stays legible automatically if you press “Auto” next to the text colour.</li>
+      <li>Leave the grid on if you want it obvious at a glance that the image is a stand-in.</li>
+      <li>Choose PNG, WebP or SVG, then download the file or copy the data URI straight into your markup.</li>
+    </ol>
+
+    <h2>Why not use a placeholder service</h2>
+    <p>
+      Hosted placeholder image services are convenient, but each image is a request to somebody
+      else’s server, so:
+    </p>
+    <ul>
+      <li>Your prototype gets slower. A grid of twenty placeholders is twenty DNS lookups, TLS handshakes and round trips.</li>
+      <li>Your work leaks. The referrer header tells the service which page (often on a staging domain) loads the image.</li>
+      <li>Layouts break without warning. When the service is down, rate-limits you, or quietly changes its URL format, every mockup in the project breaks at once.</li>
+      <li>They do not work offline: on a plane, in a client meeting, behind a strict firewall.</li>
+    </ul>
+    <p>
+      A generated file or an inline data URI has none of those problems, costs nothing, and looks
+      exactly the same every time.
+    </p>
+
+    <h2>Which format to pick</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Typical size</th>
+            <th>Scales</th>
+            <th>Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SVG</td><td>Under 1 KB</td><td>Infinitely</td><td>Almost everything: inline data URIs, responsive layouts, design handoff</td></tr>
+          <tr><td>PNG</td><td>5–60 KB</td><td>Fixed</td><td>Email templates, older tooling, anything that refuses SVG</td></tr>
+          <tr><td>WebP</td><td>25–35% smaller than PNG</td><td>Fixed</td><td>Web mockups where file size matters and support is guaranteed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      SVG is best for a placeholder, because the content is a rectangle, a few lines and some text:
+      the exact shapes vectors are made for. The result is a few hundred bytes at any dimension, and
+      it stays sharp on a 3× display without a second file.
+    </p>
+
+    <h2>Standard image sizes worth remembering</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Use</th>
+            <th>Size</th>
+            <th>Ratio</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Open Graph / social share</td><td>1200 × 630</td><td>1.91:1</td><td>Facebook, LinkedIn, Slack, Discord, WhatsApp</td></tr>
+          <tr><td>Twitter summary_large_image</td><td>1200 × 675</td><td>16:9</td><td>Also crops acceptably at 1.91:1</td></tr>
+          <tr><td>Instagram feed</td><td>1080 × 1080</td><td>1:1</td><td>Portrait 1080 × 1350 gets more screen space</td></tr>
+          <tr><td>Full-width hero</td><td>1920 × 1080</td><td>16:9</td><td>Serve a 960 px version to mobile</td></tr>
+          <tr><td>Card thumbnail</td><td>400 × 300</td><td>4:3</td><td>Common in listing grids</td></tr>
+          <tr><td>Avatar</td><td>256 × 256</td><td>1:1</td><td>Rendered anywhere from 24 to 128 px</td></tr>
+          <tr><td>Leaderboard ad</td><td>728 × 90</td><td>8.09:1</td><td>IAB standard</td></tr>
+          <tr><td>Medium rectangle ad</td><td>300 × 250</td><td>1.2:1</td><td>IAB standard, the most widely bought slot</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Data URIs: when they help and when they hurt</h2>
+    <p>
+      A data URI embeds the whole file in the document as Base64 text. That removes a network request,
+      which helps for a tiny image needed at once. But it has costs that are easy to miss:
+    </p>
+    <ul>
+      <li>Roughly 33% larger. Base64 spends four characters on every three bytes.</li>
+      <li>No separate caching. The image is re-downloaded with the HTML on every uncached page view, and cannot be shared between pages.</li>
+      <li>Parser cost. A very long data URI in the markup is bytes the HTML parser must chew through before it can continue.</li>
+      <li>Unreadable diffs. A 40 KB string in a component file makes code review miserable.</li>
+    </ul>
+    <p>
+      The practical line is a few kilobytes. Under that, inline it. Above roughly 30 KB, save the
+      file and link to it. The tool warns you when the URI is above that size. SVG stays
+      well under the limit at any dimension, which is another reason to prefer it here.
+    </p>
+
+    <h2>Reserving space and avoiding layout shift</h2>
+    <p>
+      Placeholders exist to prove a layout works, so use them the way the real images will be used:
+      always give the <code>&lt;img&gt;</code> explicit <code>width</code> and <code>height</code>
+      attributes. Modern browsers use the ratio between them to reserve the correct box before the
+      file has loaded, which is the difference between a page that settles smoothly and one that
+      jumps. The copyable <code>&lt;img&gt;</code> tag above already includes both.
+    </p>
+  </Fragment>
+</ToolLayout>

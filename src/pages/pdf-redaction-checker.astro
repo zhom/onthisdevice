@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfRedactionChecker from '@/components/tools/redact/docs/PdfRedactionChecker.tsx'
+---
+
+<ToolLayout slug="pdf-redaction-checker">
+  <PdfRedactionChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop a PDF that was redacted, by you or by someone else.</li>
+      <li>The checker reads every page and lists, page by page, the text that can still be read out of the file.</li>
+      <li>It also lists the document properties, metadata, attachments, bookmarks and scripts in the file.</li>
+      <li>Download the report as a .txt file if you need to send it on.</li>
+    </ol>
+
+    <h2>What it checks</h2>
+    <ul>
+      <li>Text under boxes: each word's position is compared with the filled shapes and images drawn on the page, and the rendered page is checked to see if the word shows. A word that is in the file but does not show under a dark, white or image box is a leak.</li>
+      <li>Text that does not show at all: white text on a white page, text in a hidden layer, text outside the page edges and text in a tiny font.</li>
+      <li>Redaction marks that were never applied. Some editors mark an area first and only remove the text when you apply the marks.</li>
+      <li>Earlier versions. A PDF saved with incremental updates keeps every earlier version after the new one. The checker opens each earlier version and lists text that is no longer in the current one.</li>
+      <li>Comments, annotations and form field values, document properties such as the author, and XMP metadata.</li>
+      <li>Attached files, bookmarks and scripts.</li>
+    </ul>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The PDF engine that renders and reads the pages runs in your browser. There is no model to download. A 20-page
+      document takes a few seconds.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>Open the Network tab in your browser's developer tools before you drop the file. No request carries the document.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Text in scanned pages is part of the image and is not read. A black box painted on a scan cannot be undone, so it is not a leak.</li>
+      <li>Very unusual drawing methods, such as a box drawn as many thin lines, can make a covered word show as invisible text instead of text under a box. It is still listed.</li>
+      <li>A clean result means none of these leaks was found. Still read the visible text: names often appear in headers, footers and quoted emails.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

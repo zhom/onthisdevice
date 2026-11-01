@@ -1,0 +1,106 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CssGradientGenerator from '@/components/tools/generators/CssGradientGenerator.tsx'
+---
+
+<ToolLayout slug="css-gradient-generator">
+  <CssGradientGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to build a gradient</h2>
+    <ol>
+      <li>Pick the type: linear for a straight sweep, radial for a glow, conic for a sweep around a centre.</li>
+      <li>Drag the handles on the stop bar to move colours, or click on the bar to add a new stop. Its colour is interpolated from its neighbours.</li>
+      <li>Set the angle with the dial, the number field or one of the eight quick buttons.</li>
+      <li>Press the random button until you see something you like, then refine it.</li>
+      <li>Copy the CSS. It includes a flat-colour fallback, the prefixed line for old WebKit, and the standard declaration.</li>
+    </ol>
+
+    <h2>Which way the angle points</h2>
+    <p>
+      Two conventions are still in use, and almost everyone confuses them. In the standard
+      <code>linear-gradient()</code>, <code>0deg</code> points to the top of the box and angles increase
+      clockwise. The old <code>-webkit-linear-gradient()</code> measured from the east and went
+      anti-clockwise. The relation is <code>webkit = 90 − standard</code>, and this CSS gradient
+      generator applies that conversion when it writes the prefixed line.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Standard angle</th>
+            <th>Direction</th>
+            <th>Keyword equivalent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>0deg</code></td><td>Bottom → top</td><td><code>to top</code></td></tr>
+          <tr><td><code>90deg</code></td><td>Left → right</td><td><code>to right</code></td></tr>
+          <tr><td><code>180deg</code></td><td>Top → bottom</td><td><code>to bottom</code> (the default)</td></tr>
+          <tr><td><code>270deg</code></td><td>Right → left</td><td><code>to left</code></td></tr>
+          <tr><td><code>135deg</code></td><td>Top-left → bottom-right</td><td><code>to bottom right</code> only on a square box</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      On a non-square element, the keyword and degree forms are different: <code>to bottom right</code>
+      always points at the real corner, at any aspect ratio, and <code>135deg</code> is a fixed
+      direction. To make the gradient follow the corner as the box resizes, use the keyword.
+    </p>
+
+    <h2>The three gradient functions</h2>
+    <h3>linear-gradient()</h3>
+    <p>
+      Colours go along a straight line through the centre of the box. Its length is set so that the
+      perpendicular lines through the corners fall exactly on the 0% and 100% stops. For this reason, a
+      45° gradient on a wide box has a ramp longer than the height of the box.
+    </p>
+    <h3>radial-gradient()</h3>
+    <p>
+      Colours radiate from a point. Two settings matter: the shape (<code>circle</code> or
+      <code>ellipse</code>) and the size keyword, which sets where 100% falls.
+      <code>farthest-corner</code> is the default and usually correct; <code>closest-side</code> gives a
+      tight, contained glow for spotlight effects.
+    </p>
+    <h3>conic-gradient()</h3>
+    <p>
+      Colours sweep around a centre point like a clock hand. It is the simplest way to draw a pie chart,
+      a progress ring, a colour wheel, or the rotating sheen on a card border. Stops are angles, not
+      distances, and there is no <code>-webkit-</code> variant: the function shipped without a prefix in
+      all browsers.
+    </p>
+
+    <h2>Fixing a muddy middle</h2>
+    <p>
+      Blue blended into yellow in sRGB gives grey in the middle, not green. This happens because the
+      interpolation is in a non-perceptual colour space, where the path between two hues passes close to
+      the neutral axis. Three fixes:
+    </p>
+    <ul>
+      <li>Add a mid stop in a colour you like, so the gradient does not pass through the grey zone.</li>
+      <li>Reduce the hue distance. Neighbouring hues never go muddy, so analogous gradients look clean.</li>
+      <li>Interpolate in a better space. Modern browsers accept <code>linear-gradient(in oklch, …)</code>, which keeps saturation and lightness perceptually even across the ramp. Keep the sRGB declaration above it as a fallback.</li>
+    </ul>
+
+    <h2>Repeating gradients and stripes</h2>
+    <p>
+      <code>repeating-linear-gradient()</code> repeats the stop list after the last stop. It is useful
+      only when your last stop is well below 100%: the pattern repeats every N%, where N is the position
+      of the last stop. Hard stops, where two stops have the same position, give sharp stripes, not a
+      blend:
+    </p>
+    <pre><code>background: repeating-linear-gradient(
+  45deg,
+  #1e293b 0 10px,
+  #334155 10px 20px
+);</code></pre>
+
+    <h2>Performance and accessibility</h2>
+    <ul>
+      <li>Never animate the gradient itself. Changes to stop positions or colours force a repaint of the whole painted area on each frame. Animate <code>background-position</code> on an oversized gradient, or cross-fade the opacity of two stacked layers; the compositor can handle both.</li>
+      <li>Check the text on top. On a gradient background, the contrast ratio changes across the element. Test the text against the lightest and the darkest point, not the average.</li>
+      <li>Also give the element a background colour. The flat fallback line matters when a gradient fails to parse: one typo in a long stop list leaves the element transparent.</li>
+      <li>Watch for banding on large, low-contrast gradients. A subtle noise texture at 2–3% opacity hides it.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

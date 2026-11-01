@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeSizeConverter from '@/components/tools/units/UnitsLifeSizeConverter.tsx'
+---
+
+<ToolLayout slug="shoe-size-converter">
+  <UnitsLifeSizeConverter client:load mode="shoe" />
+  <Fragment slot="explainer">
+    <h2>Measure the foot, not the label</h2>
+    <p>
+      Shoe sizing has no international standard, and the three main systems were not designed to convert
+      into one another. A label-to-label conversion adds two approximations together. A conversion from a
+      measured foot length adds only one, so each row in the shoe size converter charts starts from
+      centimetres.
+    </p>
+    <h3>How to measure</h3>
+    <ol>
+      <li>Measure at the end of the day. Feet swell by up to half a size between morning and evening.</li>
+      <li>Stand on a sheet of paper with your heel against a wall, in the socks you will wear with the shoes.</li>
+      <li>Mark the paper at the tip of your longest toe, which is not always the big toe.</li>
+      <li>Measure from the wall edge of the paper to the mark, in centimetres.</li>
+      <li>Measure both feet and use the longer measurement. Most people have a measurable difference.</li>
+    </ol>
+
+    <h2>Where the shoe size systems come from</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">System</th><th scope="col">Unit</th><th scope="col">Measures</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>UK</td><td>Barleycorn, 1/3 inch</td><td>The last, starting from a zero point of 4 inches</td></tr>
+        <tr><td>US</td><td>Barleycorn, 1/3 inch</td><td>The same, with a different zero, which gives the constant offset</td></tr>
+        <tr><td>EU (Paris point)</td><td>2/3 cm</td><td>The last, not the foot</td></tr>
+        <tr><td>Japan / Mondopoint</td><td>Millimetre or centimetre</td><td>The foot itself</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Two of the four systems measure the last, the form the shoe is built on. The last includes toe room,
+      which varies by manufacturer. Only Mondopoint and Japanese sizing measure the foot, so only those two
+      are predictable.
+    </p>
+
+    <h2>Common offsets</h2>
+    <ul>
+      <li>Men: US &asymp; UK + 0.5 to 1</li>
+      <li>Women: US &asymp; UK + 2</li>
+      <li>Women&apos;s US &asymp; men&apos;s US + 1.5, for the same foot</li>
+      <li>EU &asymp; 1.5 &times; (foot length in cm + 1.5)</li>
+    </ul>
+    <p>
+      These are rules of thumb, and they drift at the ends of the range. Where they disagree with the chart,
+      use the chart.
+    </p>
+
+    <h2>Width is the other half of a fit</h2>
+    <p>
+      Length gets the attention, but width causes most of the pain. American brands publish width letters:
+      B is standard for women and D for men, and the scale runs from 2A (narrow) to 6E (extra extra wide).
+      European brands seldom publish a width, though some use a G or H fitting for wide. If a shoe is the
+      right length but pinches across the ball of the foot, you need a wider fitting, not a longer shoe.
+    </p>
+
+    <h2>Toe room</h2>
+    <p>
+      Leave 10&ndash;15 mm, about a thumb&apos;s width, between your longest toe and the end of the shoe.
+      With less, downhill walking or running bruises the toenail. For this reason the chart lists a
+      recommended shoe interior length next to your foot length. A shoe whose interior equals your foot
+      length is too small.
+    </p>
+
+    <h2>Why brands still differ</h2>
+    <p>
+      Even with an exact conversion, a running brand and a dress-shoe brand can be a full size apart at the
+      same label, and one brand&apos;s models vary between lasts. If a brand publishes a foot-length chart,
+      use it: it describes their lasts, and this one describes the industry average. If not, buy from a
+      retailer with free returns and order both half sizes.
+    </p>
+  </Fragment>
+</ToolLayout>

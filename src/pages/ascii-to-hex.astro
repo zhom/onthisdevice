@@ -1,0 +1,67 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="ascii-to-hex">
+  <DevEncodeRadixText client:load radix="hex" direction="encode" asciiFlavour />
+  <Fragment slot="explainer">
+    <h2>One character, one byte, two hex digits</h2>
+    <p>
+      In ASCII mode, each character gives exactly one byte, so the output is always twice the length
+      of the input. A character above U+00FF does not fit in a byte. The tool shows a message that
+      names the character, and it does not replace it with a question mark.
+    </p>
+
+    <h2>Worked example</h2>
+    <pre><code>Input:   Hex OK!
+Chars:   H    e    x    ␣    O    K    !
+Decimal: 72   101  120  32   79   75   33
+Hex:     48   65   78   20   4F   4B   21</code></pre>
+    <p>
+      The space is a real character with the code 0x20. If you forget it, a byte total counted by hand
+      is too short.
+    </p>
+
+    <h2>Uppercase or lowercase</h2>
+    <p>
+      Parsers accept both. Conventions differ by field: RFCs, hardware datasheets and Windows tools
+      usually use uppercase; Unix tools, most programming languages and web APIs use lowercase. Git,
+      OpenSSL and <code>sha256sum</code> print lowercase. Match the value you compare against, because
+      a diff tool sees the difference.
+    </p>
+
+    <h2>Where a hex string is expected</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Context</th><th>Expected shape</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C or Rust byte array</td><td><code>0x48, 0x65, 0x78</code></td></tr>
+          <tr><td>Shell <code>printf</code></td><td><code>\x48\x65\x78</code></td></tr>
+          <tr><td>Modbus / serial protocol frame</td><td>Continuous uppercase, no separators</td></tr>
+          <tr><td>MySQL literal</td><td><code>X'486578'</code></td></tr>
+          <tr><td>URL percent-encoding</td><td><code>%48%65%78</code>, uppercase by convention</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Sending text to a device</h2>
+    <p>
+      The most common use of ASCII to hex is to build a frame for a serial or TCP device whose manual
+      gives its commands in hex. Two details often cause errors. First, line terminators are part of
+      the command: many devices expect a trailing <code>0D</code>, <code>0A</code> or
+      <code>0D 0A</code>, and the manual often writes it as <code>&lt;CR&gt;</code>. Second, a checksum
+      is usually calculated over the bytes, not over the text, so generate the hex first and then
+      calculate the checksum.
+    </p>
+
+    <h2>Why not just use Base64?</h2>
+    <p>
+      Hex doubles the size; Base64 adds only a third. Hex is better when a person must read the
+      result, when you must point at byte number seven, or when the receiving system is hardware with
+      a manual written in hex. Base64 is better when the payload is large and nobody reads it.
+    </p>
+  </Fragment>
+</ToolLayout>

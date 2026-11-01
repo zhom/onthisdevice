@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SvgToPng from '@/components/tools/image-convert/SvgToPng.tsx'
+---
+
+<ToolLayout slug="svg-to-png">
+  <SvgToPng client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert SVG to PNG</h2>
+    <ol>
+      <li>Drop your .svg files onto the box above. A batch is fine; every file uses the same size setting.</li>
+      <li>Choose how big the PNG should be. <strong>Scale factor</strong> multiplies the SVG's own dimensions (2× is the usual choice for retina assets). <strong>Fixed width</strong> or <strong>fixed height</strong> pins one dimension and derives the other from the aspect ratio.</li>
+      <li>Leave the background transparent, or switch it on and pick a colour.</li>
+      <li>Save each PNG, or download the batch as a ZIP.</li>
+    </ol>
+    <p>
+      Your browser's own SVG engine, the same one that draws it on a web page, renders the SVG into a canvas at the
+      size you asked for, and the tool encodes the pixels as PNG. It fetches no external resources.
+    </p>
+
+    <h2>Choosing the PNG size</h2>
+    <p>
+      An SVG has no pixels. It is a set of drawing instructions, so it renders at any resolution with the same
+      sharpness. So to convert SVG to PNG you must choose a size. The tool takes a starting size from the file:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">What the SVG declares</th>
+            <th align="left">Intrinsic size used</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>width="512" height="512"</td><td>512 × 512 px</td></tr>
+          <tr><td>width="4cm" height="3cm"</td><td>Converted at 96 dpi → 151 × 113 px</td></tr>
+          <tr><td>viewBox="0 0 24 24" only</td><td>24 × 24 px</td></tr>
+          <tr><td>width="100%" plus a viewBox</td><td>The viewBox dimensions</td></tr>
+          <tr><td>Neither width/height nor viewBox</td><td>The CSS default, 300 × 150 px</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Icon sets are the common problem: a 24 × 24 viewBox rendered at 1× gives a 24-pixel PNG. To export icons
+      at a larger size, set a fixed width or a scale factor of 16 or more.
+    </p>
+
+    <h2>Common export sizes</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Purpose</th>
+            <th align="left">Recommended output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Favicon source</td><td>512 × 512 px, transparent</td></tr>
+          <tr><td>App icon (iOS / Android)</td><td>1024 × 1024 px, opaque background</td></tr>
+          <tr><td>Website logo, retina</td><td>2× or 3× the CSS display width</td></tr>
+          <tr><td>Slide deck or document</td><td>2× the placed size, transparent</td></tr>
+          <tr><td>Social sharing image</td><td>1200 px wide, solid background</td></tr>
+          <tr><td>Print at 300 dpi</td><td>Physical inches × 300 as the fixed width</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What can render differently</h2>
+    <ul>
+      <li>Fonts: text in a font-family that is not installed on your computer falls back to a default. The tool downloads no fonts. For an exact match, convert text to outlines in your editor.</li>
+      <li>External images: an SVG that links to a remote bitmap renders that region blank. Embed the image as a data: URI first.</li>
+      <li>CSS from the surrounding page: styles outside the SVG file do not apply. Only the contents of the file are rendered.</li>
+      <li>Filters and blend modes: these render as your browser draws them, which is usually correct but can differ slightly between browsers.</li>
+      <li>Very large outputs: canvas has a hard limit of about 16384 px per side. The tool refuses a scale above it, so you do not get a blank image.</li>
+    </ul>
+    <p>
+      For other raster formats, the <a href="/image-converter">universal image converter</a> also accepts SVG
+      and writes JPG, WebP or AVIF. For a flattened photo-style export, use <a href="/png-to-jpg">PNG to JPG</a>
+      next.
+    </p>
+  </Fragment>
+</ToolLayout>

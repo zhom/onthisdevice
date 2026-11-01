@@ -1,0 +1,131 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureMarkdownToWord from '@/components/tools/data/PdfSecureMarkdownToWord.tsx'
+---
+
+<ToolLayout slug="text-to-word">
+  <PdfSecureMarkdownToWord client:load source="text" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Text to Word, with real paragraphs</h2>
+      <p>
+        Word opens a <code>.txt</code> file as one long unstyled block, with every hard line break kept as a
+        real break, and you must reflow it by hand. This page does that work for you.
+      </p>
+      <p>
+        The output is a real .docx with paragraph objects, so text wraps to the page, spacing is consistent,
+        and the document behaves like one written in Word.
+      </p>
+    </section>
+
+    <section>
+      <h2>The conversion rules</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">In your text</th>
+              <th scope="col">Becomes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A blank line</td>
+              <td>A new paragraph</td>
+            </tr>
+            <tr>
+              <td>A single line break inside a block</td>
+              <td>Joined into flowing text, or kept if you tick the option</td>
+            </tr>
+            <tr>
+              <td>A short ALL-CAPS line on its own</td>
+              <td>Heading 2 (optional)</td>
+            </tr>
+            <tr>
+              <td>A block where every line starts with -, * or •</td>
+              <td>A real Word bulleted list</td>
+            </tr>
+            <tr>
+              <td>Windows or classic Mac line endings</td>
+              <td>Normalised; CRLF and CR both work</td>
+            </tr>
+            <tr>
+              <td>Tabs</td>
+              <td>Kept inside the paragraph text</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>When to keep every line break</h2>
+      <p>
+        By default the tool joins lines within a paragraph. This is right for prose hard-wrapped at a fixed
+        column width, such as the 72-character convention of email and README files. Turn the option on when
+        the line endings have a meaning:
+      </p>
+      <ul>
+        <li>Poetry and song lyrics, where the line is the unit.</li>
+        <li>Postal addresses and letterheads.</li>
+        <li>Log excerpts, stack traces and console output.</li>
+        <li>Scripts and screenplays.</li>
+        <li>Text already laid out with deliberate alignment.</li>
+      </ul>
+      <p>
+        With the option on, each line becomes a soft break inside one paragraph, not a separate paragraph.
+        This keeps the spacing tight and lets you style the whole block as one unit.
+      </p>
+    </section>
+
+    <section>
+      <h2>The ALL-CAPS heading rule</h2>
+      <p>
+        Plain-text documents used capitals for section titles long before word processors. The tool treats a
+        line as a heading when all of these are true:
+      </p>
+      <ol>
+        <li>it stands alone, with no other lines in its block;</li>
+        <li>it is 80 characters or fewer;</li>
+        <li>it does not end in <code>.</code> <code>:</code> <code>;</code> <code>,</code> <code>!</code> or <code>?</code>;</li>
+        <li>it contains at least one letter and is entirely in capitals.</li>
+      </ol>
+      <p>
+        Turn the rule off if your text uses capitals for other reasons, such as product codes, legal
+        disclaimers or chat logs. The block counts under the result show how many headings the tool found
+        before you open the file.
+      </p>
+    </section>
+
+    <section>
+      <h2>Encoding and special characters</h2>
+      <p>
+        Files are read as UTF-8, so accented Latin, Greek, Cyrillic, CJK and emoji all go into the .docx
+        unchanged. A Word document does not embed fonts by default; it refers to them by name, and the
+        reader's installed fonts render the text. For this reason full Unicode works here, while the PDF tools
+        on this site are limited to their built-in fonts.
+      </p>
+      <p>
+        Control characters other than tab and newline are removed, because Word refuses files that contain
+        them.
+      </p>
+    </section>
+
+    <section>
+      <h2>Good sources for this converter</h2>
+      <ul>
+        <li>Notes from a plain-text editor that you must now share.</li>
+        <li>A transcript or dictation export.</li>
+        <li>Output from a command-line tool that must go into a report.</li>
+        <li>An old <code>.txt</code> archive for a document management system.</li>
+        <li>Text copied from a terminal, a chat window or a code comment.</li>
+      </ul>
+      <p>
+        If the text uses Markdown (<code>#</code> headings, <code>**bold**</code>, pipe tables), use
+        <a href="/markdown-to-word">Markdown to Word</a>. For a PDF, use <a href="/text-to-pdf">Text to
+        PDF</a>. To check the length before you convert, use the <a href="/word-counter">Word counter</a>.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

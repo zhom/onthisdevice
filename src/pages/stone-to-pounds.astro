@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="stone-to-pounds">
+  <UnitsLifePairConverter client:load spec="stone-to-pounds" />
+  <Fragment slot="explainer">
+    <h2>One stone is exactly 14 pounds</h2>
+    <p>
+      A stone is exactly fourteen pounds. To convert stone to pounds, multiply by 14; the result has no
+      decimals.
+    </p>
+    <p>
+      Usually the task is to turn a two-part weight such as "11 stone 4" into one number for an American
+      form or a fitness app. That is 158 pounds, or 71.67 kg.
+    </p>
+
+    <h2>Three ways to type a weight in stone</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Entry</th><th scope="col">Means</th><th scope="col">Pounds</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>11 st 4 lb</td><td>Eleven stone four pounds</td><td>158</td></tr>
+        <tr><td>11.5</td><td>Eleven and a half stone</td><td>161</td></tr>
+        <tr><td>11</td><td>Eleven stone exactly</td><td>154</td></tr>
+      </tbody>
+    </table>
+    <p>
+      In the middle row, half a stone is seven pounds, not five. The decimal and the two-part forms are
+      different notations and you cannot swap one for the other.
+    </p>
+
+    <h2>Stone to pounds and kilograms</h2>
+    <ul>
+      <li>7 st = 98 lb = 44.45 kg</li>
+      <li>9 st = 126 lb = 57.15 kg</li>
+      <li>10 st = 140 lb = 63.50 kg</li>
+      <li>11 st = 154 lb = 69.85 kg</li>
+      <li>12 st = 168 lb = 76.20 kg</li>
+      <li>14 st = 196 lb = 88.90 kg</li>
+      <li>16 st = 224 lb = 101.60 kg</li>
+      <li>20 st = 280 lb = 127.01 kg</li>
+    </ul>
+
+    <h2>Filling in an American form</h2>
+    <p>
+      US medical intake forms, gym sign-ups, airline seat-belt-extension requests and driving licences all
+      ask for pounds. American paperwork has no "stone" field. If you write 11.4 in a pounds box, it is read
+      as about eleven pounds, not one hundred and sixty.
+    </p>
+
+    <h2>Boxing and horse racing</h2>
+    <p>
+      Two sports still use the stone. British boxing gives weight classes in stone and pounds next to the
+      official pound figure: middleweight is 11 st 6 lb (160 lb). Horse racing handicaps in the UK and
+      Ireland give the weight carried in stone and pounds. A single pound matters there, and the two-part
+      notation makes single pounds visible.
+    </p>
+  </Fragment>
+</ToolLayout>

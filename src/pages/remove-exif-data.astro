@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RemoveExifData from '@/components/tools/image-edit/RemoveExifData.tsx'
+---
+
+<ToolLayout slug="remove-exif-data">
+  <RemoveExifData client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to remove EXIF and other metadata</h2>
+    <ol>
+      <li>Drop in the photos you want to share. The tool parses each one and lists every tag it found.</li>
+      <li>Expand a file to read the full list: camera body, lens, serial number, exposure, timestamps, captions, and GPS coordinates if present.</li>
+      <li>Press <strong>Remove metadata</strong>. The tool decodes each image to raw pixels and encodes a new file from them, so no metadata can carry over.</li>
+      <li>The tool parses the cleaned file again and shows the tag count. A green “verified clean” badge means the second parse found nothing.</li>
+    </ol>
+
+    <h2>What EXIF data a photo holds</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Block</th><th>Typical contents</th><th>Privacy risk</th></tr></thead>
+        <tbody>
+          <tr><td>EXIF: camera</td><td>Make, model, body and lens serial numbers, firmware</td><td>Links each photo you post to the same physical camera</td></tr>
+          <tr><td>EXIF: exposure</td><td>Shutter, aperture, ISO, focal length, flash</td><td>Low, but shows your gear and habits</td></tr>
+          <tr><td>EXIF: timestamps</td><td>Original, digitised and modified dates, timezone offset</td><td>Puts you at a location at a specific minute</td></tr>
+          <tr><td>GPS IFD</td><td>Latitude, longitude, altitude, heading, accuracy</td><td>High: the exact spot where the shutter fired, to a few metres</td></tr>
+          <tr><td>IPTC</td><td>Caption, headline, byline, credit, city, country, keywords</td><td>Names, employers and locations added by editing software</td></tr>
+          <tr><td>XMP</td><td>Editing history, software used, ratings, catalogue IDs</td><td>Shows your workflow and sometimes local file paths</td></tr>
+          <tr><td>Maker note</td><td>Vendor-specific data, sometimes face-detection results</td><td>Undocumented and unpredictable</td></tr>
+          <tr><td>Thumbnail</td><td>A small JPEG preview embedded in the file</td><td>Can still show the uncropped original image</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Some editors update the main image but not the embedded thumbnail, so a cropped photo can still
+      hold a small copy of what you cropped out. Re-encoding from pixels removes the thumbnail with
+      everything else.
+    </p>
+
+    <h2>Why re-encoding is the reliable method</h2>
+    <p>
+      There are two ways to strip metadata. One is to walk the file structure and delete the segments the
+      parser recognises. It is fast and keeps the compressed data exactly, but it removes only what the
+      parser knows. Vendor extensions, unusual XMP packets and application-specific segments can get through.
+    </p>
+    <p>
+      The other is to decode the image to a raw pixel buffer and write a new file from it. Only pixels go
+      into the new file, so no other data can remain. This tool uses that method. The cost is one
+      re-compression pass for JPEG output, and at quality 95 that generation loss is invisible. PNG output
+      is pixel-perfect but larger.
+    </p>
+
+    <h2>Which channels strip metadata</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Channel</th><th>Metadata removed?</th></tr></thead>
+        <tbody>
+          <tr><td>Facebook, Instagram, X, LinkedIn posts</td><td>Yes: images are re-encoded on upload</td></tr>
+          <tr><td>WhatsApp / Signal / Telegram “photo” mode</td><td>Usually yes (the image is recompressed)</td></tr>
+          <tr><td>WhatsApp / Telegram “document” or “file” mode</td><td>No: the original file is sent unchanged</td></tr>
+          <tr><td>Email attachments</td><td>No</td></tr>
+          <tr><td>Cloud drive share links</td><td>No</td></tr>
+          <tr><td>AirDrop and Bluetooth transfer</td><td>No (unless you turn off location in the share sheet)</td></tr>
+          <tr><td>Marketplace and classified-ad listings</td><td>Varies; do not rely on it</td></tr>
+          <tr><td>Your own website or CMS upload</td><td>Depends on the software</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When you should keep the metadata</h2>
+    <p>
+      Metadata is a problem only when it goes further than you intended. Keep it in your own archive: dates
+      and camera settings make a library searchable, GPS gives a map view, and IPTC credit fields are how
+      photographers get paid. Keep full metadata on the master copy and strip it from the copy you publish.
+      To read all the tags first, use the <a href="/image-metadata-viewer">metadata viewer</a>.
+    </p>
+
+    <h2>Turning geotagging off at the source</h2>
+    <ul>
+      <li>iPhone: Settings → Privacy &amp; Security → Location Services → Camera → Never. Or, when you share, tap Options at the top of the share sheet and turn off Location.</li>
+      <li>Android: open the Camera app → Settings → turn off “Save location” or “Location tags”.</li>
+      <li>Dedicated cameras: turn off the built-in GPS, and unpair phone-based location logging in the companion app.</li>
+    </ul>
+    <p>
+      These settings affect only new photos. Photos already in your library still hold their coordinates;
+      use this tool to remove them.
+    </p>
+  </Fragment>
+</ToolLayout>

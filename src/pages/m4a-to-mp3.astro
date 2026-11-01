@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="m4a-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".m4a,.mp4,.aac,.m4b,audio/mp4,audio/aac"
+    sourceLabel="M4A"
+    sourceHint="Voice Memos, GarageBand bounces, iTunes tracks, phone recordings. Drop as many as you like"
+    target="mp3"
+    defaultBitrate="192"
+    formatNote="M4A holds AAC (or occasionally Apple Lossless). Both are decoded here and re-encoded as MP3 with LAME, the same encoder desktop tools use."
+  />
+  <Fragment slot="explainer">
+    <h2>What an M4A file actually is</h2>
+    <p>
+      M4A is a container, not a codec: an MPEG-4 file that holds only audio. Inside, it is almost
+      always AAC, the codec Apple uses for iTunes, Voice Memos and QuickTime. Sometimes it holds Apple
+      Lossless (ALAC), a truly lossless format that some people rip CDs to. This M4A to MP3 converter
+      decodes both, so you do not need to know which you have.
+    </p>
+    <p>
+      The problem with M4A is support, not quality: AAC is better than MP3 at the same bitrate. Car
+      head units, gym equipment, DJ software, older Android builds, transcription services and much
+      embedded hardware read only MP3.
+    </p>
+
+    <h2>Picking a bitrate</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Source</th><th>Suggested MP3 bitrate</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Voice Memo, dictation, interview</td><td>96–128 kbps, mono</td><td>Speech has little high-frequency content. Mono halves the size again</td></tr>
+          <tr><td>Podcast episode</td><td>128 kbps</td><td>The industry norm. Higher is inaudible over headphones on a commute</td></tr>
+          <tr><td>Music from iTunes (256 kbps AAC)</td><td>256 kbps</td><td>MP3 is less efficient, so match the number, not the perceived quality</td></tr>
+          <tr><td>GarageBand bounce you will keep</td><td>320 kbps</td><td>Maximum MP3 quality. Export a WAV from GarageBand if you will edit more</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>About the quality you lose</h2>
+    <p>
+      AAC is already lossy. To decode it to samples and encode those as MP3 is a second generation of
+      loss. The two codecs discard slightly different things, so the artefacts add up. In practice the
+      effect is inaudible for speech at any sensible bitrate, and very hard to hear on music at
+      192 kbps or above. Two rules: encode at or above the source bitrate, and always keep the
+      original M4A, because it has only one generation of loss.
+    </p>
+
+    <h2>Converting a whole folder of Voice Memos</h2>
+    <p>
+      Select all files at once. The queue converts them one after another, with a progress row for
+      each, and gives one ZIP at the end as well as individual downloads. There is no daily or hourly
+      limit. On a modern laptop a five-minute memo converts in a few seconds.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      Voice memos are the most sensitive everyday audio: therapy notes, medical appointments, legal
+      calls, interviews under embargo, unpublished song ideas. An upload converter asks you to trust
+      its retention policy. Here, FFmpeg compiled to WebAssembly converts the file in this browser tab,
+      and the site’s Content-Security-Policy allows no third-party origin. Open the Network tab and
+      convert a file: after the one-time engine download, no data moves.
+    </p>
+
+    <h2>What will not work</h2>
+    <ul>
+      <li>.m4p files are DRM-protected iTunes Store purchases from before 2009, encrypted with FairPlay. No local tool can decode them. This one tells you so and does not make a broken file.</li>
+      <li>Audiobooks with chapters: a .m4b converts, but MP3 has no equivalent chapter structure, so the chapter marks are lost and you get one long track.</li>
+      <li>Video files: a .mp4 with a picture track works, and the tool takes only the audio. To keep the video, use the <a href="/video-converter">video converter</a>.</li>
+    </ul>
+
+    <h2>Related conversions</h2>
+    <p>
+      If your files are raw AAC streams and not M4A, <a href="/aac-to-mp3">AAC to MP3</a> uses the same
+      engine. For an uncompressed master for an editor, use <a href="/mp3-to-wav">MP3 to WAV</a>. To
+      join several memos into one file first, try the <a href="/audio-joiner">audio joiner</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

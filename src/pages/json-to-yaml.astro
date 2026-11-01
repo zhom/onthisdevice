@@ -1,0 +1,108 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JsonToYaml from '@/components/tools/data/JsonToYaml.tsx'
+---
+
+<ToolLayout slug="json-to-yaml">
+  <JsonToYaml client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert JSON to YAML</h2>
+    <ol>
+      <li>Paste the JSON into the left pane, or drop a <code>.json</code> file onto it.</li>
+      <li>Choose an indent width. Two spaces is the community default, and Kubernetes, Docker Compose and GitHub Actions examples use it.</li>
+      <li>If you want, sort keys, so you can diff two generated files line by line.</li>
+      <li>Copy or download the <code>.yaml</code>. If the JSON has a parse error, the tool shows its line and column and writes no output.</li>
+    </ol>
+
+    <h2>Why YAML instead of JSON?</h2>
+    <p>
+      YAML is a superset of JSON made for people: no braces, no trailing-comma problems, comments allowed,
+      and readable multi-line strings. So configuration ecosystems standardised on it. But YAML’s scalar
+      rules are subtle. A JSON to YAML converter that ignores them gives files that parse into values you
+      did not mean.
+    </p>
+
+    <h2>The quoting rules this converter applies</h2>
+    <p>
+      A string is written bare only when it reads back as exactly the same string. Any value that could be
+      read differently gets quotes:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">JSON value</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">YAML written</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"production"</code></td>
+            <td class="border-b px-3 py-2"><code>production</code></td>
+            <td class="border-b px-3 py-2">Unambiguous plain scalar</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"yes"</code></td>
+            <td class="border-b px-3 py-2"><code>'yes'</code></td>
+            <td class="border-b px-3 py-2">YAML 1.1 parsers would read it as <code>true</code></td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"007"</code></td>
+            <td class="border-b px-3 py-2"><code>'007'</code></td>
+            <td class="border-b px-3 py-2">Otherwise becomes the number 7</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"2026-08-16"</code></td>
+            <td class="border-b px-3 py-2"><code>'2026-08-16'</code></td>
+            <td class="border-b px-3 py-2">Otherwise resolves to a timestamp</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"key: value"</code></td>
+            <td class="border-b px-3 py-2"><code>'key: value'</code></td>
+            <td class="border-b px-3 py-2">A bare colon-space would start a nested mapping</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"# not a comment"</code></td>
+            <td class="border-b px-3 py-2"><code>'# not a comment'</code></td>
+            <td class="border-b px-3 py-2">A leading hash starts a comment</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>"line1\nline2\n"</code></td>
+            <td class="border-b px-3 py-2"><code>|</code> block literal</td>
+            <td class="border-b px-3 py-2">Readable multi-line text without escapes</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>""</code></td>
+            <td class="border-b px-3 py-2"><code>''</code></td>
+            <td class="border-b px-3 py-2">A bare empty value would parse as null</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Block literals and chomping</h2>
+    <p>
+      Multi-line strings become block scalars, and the chomping indicator sets what happens to the trailing
+      newline. <code>|</code> keeps exactly one, <code>|-</code> removes it, and <code>|+</code> keeps all
+      trailing blank lines. The correct indicator makes a round trip byte-for-byte accurate: run the result
+      through <a href="/yaml-to-json">YAML to JSON</a> and you get your original document.
+    </p>
+
+    <h2>Structure mapping</h2>
+    <ul>
+      <li>Objects become block mappings, one <code>key: value</code> per line.</li>
+      <li>Arrays become block sequences with a <code>- </code> marker, indented under their key.</li>
+      <li>Empty containers are written inline as <code>&#123;&#125;</code> and <code>[]</code>, because an empty block has no representation.</li>
+      <li><code>null</code> is written as <code>null</code>, not left blank, so the intent is explicit.</li>
+      <li>Keys that contain a colon, start with an indicator character, or look numeric also get quotes.</li>
+    </ul>
+
+    <h2>Nothing is uploaded</h2>
+    <p>
+      Config files contain hostnames, bucket names and sometimes secrets. This converter is a few kilobytes of
+      JavaScript that runs in your tab and makes no request. After the page loads, it also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ReversePdfPageOrder from '@/components/tools/pdf/ReversePdfPageOrder.tsx'
+---
+
+<ToolLayout slug="reverse-pdf-page-order">
+  <ReversePdfPageOrder client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Three ways a PDF ends up backwards</h2>
+      <ul>
+        <li>
+          A face-down scan: feed a stack face-down into a sheet feeder and the scanner works from the bottom
+          of the pile up, so the document comes out in reverse.
+        </li>
+        <li>
+          A face-up printer stack: some printers deliver pages face-up, so the last page is on top. Scan that
+          pile and you get a reversed PDF.
+        </li>
+        <li>
+          A right-to-left original: an Arabic, Hebrew or Japanese document assembled with Western page order
+          reads back to front for its readers.
+        </li>
+      </ul>
+      <p>You can reverse the PDF page order in one click in all three cases, without a new scan.</p>
+    </section>
+
+    <section>
+      <h2>The three reverse modes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Mode</th>
+            <th scope="col">1,2,3,4,5,6 becomes</th>
+            <th scope="col">Use it when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Every page</td>
+            <td>6,5,4,3,2,1</td>
+            <td>The whole document is back to front</td>
+          </tr>
+          <tr>
+            <td>Sheets, fronts and backs together</td>
+            <td>5,6,3,4,1,2</td>
+            <td>A duplex stack came out in the wrong sheet order</td>
+          </tr>
+          <tr>
+            <td>Only a range, e.g. 3-6</td>
+            <td>1,2,6,5,4,3</td>
+            <td>An appendix or exhibit set was scanned backwards</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        In a double-sided document, pages come in pairs: 1 and 2 are the two faces of one sheet. If you
+        reverse every page, the pairs separate and the backs come before the fronts. Sheet mode reverses
+        the order of the sheets and keeps each pair together, which is what a mis-stacked duplex run needs.
+      </p>
+    </section>
+
+    <section>
+      <h2>The order preview</h2>
+      <p>
+        Under the options, a strip of numbered cards shows the new sequence: new position on top, original
+        page number below. Check it in range mode, where a range is easily off by one. The tool writes
+        nothing until you press the button.
+      </p>
+    </section>
+
+    <section>
+      <h2>What reversing does not change</h2>
+      <p>
+        The tool copies each page into the output document as a complete object: its content stream, fonts,
+        images, annotations and text layer. Only the page tree, the list that sets the page order, changes.
+        Resolution, compression, colour and searchable text stay identical, and the file size barely changes.
+      </p>
+      <p>
+        Bookmarks and internal cross-reference links point at specific page objects. They stay attached to
+        their pages, so a bookmark to &ldquo;Chapter 3&rdquo; still goes to chapter 3, which is now near the
+        front of the document.
+      </p>
+    </section>
+
+    <section>
+      <h2>Reversing versus reordering</h2>
+      <p>
+        For any other new order, such as moving page 12 to the front, dropping a section or interleaving two
+        files, use <a href="/organize-pdf">Organize PDF</a>. It has drag-and-drop page thumbnails.
+        <a href="/merge-alternate-pdf-pages">Merge Alternate Pages</a> handles the two-file duplex case.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

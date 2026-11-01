@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ExtractAudioFromVideo from '@/components/tools/media/ExtractAudioFromVideo.tsx'
+---
+
+<ToolLayout slug="extract-audio-from-video">
+  <ExtractAudioFromVideo client:load />
+  <Fragment slot="explainer">
+    <h2>How to extract the audio track</h2>
+    <ol>
+      <li>Drop in a video: MP4, MOV, MKV, WebM, AVI or MPEG.</li>
+      <li>Keep the mode on <strong>Keep the original codec</strong>. FFmpeg inspects the file, finds the audio stream and copies it out unchanged.</li>
+      <li>Or switch to <strong>Convert the audio</strong> if you need a specific format such as MP3 or WAV.</li>
+      <li>Press <strong>Extract audio</strong>. A copy is almost instant; a conversion takes about as long as the audio plays.</li>
+      <li>Listen to the result and download it.</li>
+    </ol>
+
+    <h2>Demuxing versus converting</h2>
+    <p>
+      A video file is a container with parallel streams. Taking the audio stream out without changing the
+      data is called demuxing, and this tool does it by default: FFmpeg reads the packets, writes them into
+      an audio container, and never runs a decoder. The output is identical to the audio in the video, and
+      the operation takes a second or two at any length.
+    </p>
+    <p>
+      Converting is different: decode to PCM, then encode again with a new codec. If the target is MP3, AAC
+      or Vorbis, that is a second lossy generation. Convert only when the destination requires that format.
+    </p>
+
+    <h2>What you get for each source codec</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Audio inside the video</th>
+            <th>Usually found in</th>
+            <th>Extracted as</th>
+            <th>Lossless?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AAC</td>
+            <td>MP4, MOV, phone recordings</td>
+            <td>.m4a</td>
+            <td>Yes: copied</td>
+          </tr>
+          <tr>
+            <td>Opus</td>
+            <td>WebM, screen recordings, calls</td>
+            <td>.ogg</td>
+            <td>Yes: copied</td>
+          </tr>
+          <tr>
+            <td>Vorbis</td>
+            <td>Older WebM and OGV</td>
+            <td>.ogg</td>
+            <td>Yes: copied</td>
+          </tr>
+          <tr>
+            <td>MP3</td>
+            <td>AVI, older MP4</td>
+            <td>.mp3</td>
+            <td>Yes: copied</td>
+          </tr>
+          <tr>
+            <td>FLAC / ALAC</td>
+            <td>MKV, MOV masters</td>
+            <td>.flac / .m4a</td>
+            <td>Yes: copied</td>
+          </tr>
+          <tr>
+            <td>AC-3 / E-AC-3</td>
+            <td>MKV rips, broadcast</td>
+            <td>.ac3 / .eac3</td>
+            <td>Yes: copied</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      For codecs not in this list, the tool converts the audio and explains why in the result panel, so you
+      do not get a file that no player can open.
+    </p>
+
+    <h2>Which tool should you use?</h2>
+    <ul>
+      <li>This tool, when you want the audio exactly as it is in the video, in the fewest steps.</li>
+      <li><a href="/video-to-mp3">Video to MP3</a>, when the destination needs MP3, or when you want to trim while you extract.</li>
+      <li><a href="/audio-converter">Audio converter</a>, to change an audio file you already extracted.</li>
+      <li><a href="/mute-video">Mute video</a>, to keep the picture and remove the sound.</li>
+    </ul>
+
+    <h2>Everything stays on your device</h2>
+    <p>
+      FFmpeg runs as WebAssembly in the page. Recordings of meetings, lectures, therapy sessions and other
+      confidential material go from your local disk into the memory of the tab and never go over a
+      network. After the engine is cached once, the whole tool works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

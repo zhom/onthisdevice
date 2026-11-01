@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SavingsGoalCalculator from '@/components/tools/finance/SavingsGoalCalculator.tsx'
+---
+
+<ToolLayout slug="savings-goal-calculator">
+  <SavingsGoalCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the savings goal calculator</h2>
+    <ol>
+      <li>
+        Pick the direction. <strong>Deposit needed</strong> answers "how much a month to reach this amount
+        by that date". <strong>Time needed</strong> answers "when do I reach it if I save what I can spare".
+      </li>
+      <li>
+        Enter the <strong>goal</strong> and how much you have <strong>already saved</strong>. The existing
+        balance keeps earning, so it reduces the deposit by more than its face value.
+      </li>
+      <li>
+        Set a realistic <strong>annual return</strong>. For short goals, use your account's actual rate; use
+        zero if the money is in a current account.
+      </li>
+      <li>
+        Choose your <strong>deposit frequency</strong> to match how you save: weekly, fortnightly, monthly
+        or annually.
+      </li>
+      <li>
+        Read the year-by-year plan to see when interest starts to make a real difference, and export it as
+        CSV to track your progress.
+      </li>
+    </ol>
+
+    <h2>Monthly deposit needed to reach 10,000</h2>
+    <p>
+      Starting from zero, with deposits at the end of each month. Scale linearly for other targets: a 25,000
+      goal needs 2.5 times these figures.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Timeframe</th>
+            <th style="text-align:right">0% return</th>
+            <th style="text-align:right">2%</th>
+            <th style="text-align:right">4%</th>
+            <th style="text-align:right">6%</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>1 year</td><td style="text-align:right">833.33</td><td style="text-align:right">825.72</td><td style="text-align:right">818.17</td><td style="text-align:right">810.66</td></tr>
+          <tr><td>2 years</td><td style="text-align:right">416.67</td><td style="text-align:right">408.74</td><td style="text-align:right">400.92</td><td style="text-align:right">393.21</td></tr>
+          <tr><td>3 years</td><td style="text-align:right">277.78</td><td style="text-align:right">269.76</td><td style="text-align:right">261.91</td><td style="text-align:right">254.22</td></tr>
+          <tr><td>5 years</td><td style="text-align:right">166.67</td><td style="text-align:right">158.61</td><td style="text-align:right">150.83</td><td style="text-align:right">143.33</td></tr>
+          <tr><td>10 years</td><td style="text-align:right">83.33</td><td style="text-align:right">75.35</td><td style="text-align:right">67.91</td><td style="text-align:right">61.02</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Over one year, the return changes the deposit by only 23 a month between 0% and 6%. Over ten years, 6%
+      cuts the required deposit by more than a quarter. For short goals the deposit decides the result; for
+      long goals the return does.
+    </p>
+
+    <h2>The two savings formulas</h2>
+    <p>
+      To find the deposit, the calculator rearranges the future value of an annuity:
+      <code>PMT = (FV − P(1 + i)^n) × i / ((1 + i)^n − 1)</code>. The first term removes the part of the goal
+      that your existing balance grows into by itself; the deposits cover the rest.
+    </p>
+    <p>
+      To find the time, it solves the same equation for n:
+      <code>n = ln((FV·i + PMT) / (P·i + PMT)) / ln(1 + i)</code>. When the return is zero, this becomes
+      <code>(FV − P) / PMT</code>. The number of periods is rounded up, because you cannot make part of a
+      deposit.
+    </p>
+
+    <h2>Choosing where to keep the money</h2>
+    <ul>
+      <li>
+        Under two years: an instant-access or notice savings account, or a term deposit that matures before
+        you need the money. A safe capital matters more than the return.
+      </li>
+      <li>
+        Two to five years: still cash-like for most people. A market fall in the year you need the money
+        cannot recover in that time.
+      </li>
+      <li>
+        Over five years: a diversified investment starts to make sense for many savers, and the return
+        assumption in this calculator has more effect.
+      </li>
+    </ul>
+
+    <h2>Two adjustments to make</h2>
+    <p>
+      Inflate the goal. If the price of what you save for rises, as with a house deposit, a car or a wedding,
+      the target rises too. Put today's price through the inflation calculator for your timeframe and use
+      that figure as the goal.
+    </p>
+    <p>
+      Allow for tax. In most places interest is taxable unless the account is tax-sheltered. Reduce the
+      assumed return by your marginal tax rate for a more accurate plan.
+    </p>
+  </Fragment>
+</ToolLayout>

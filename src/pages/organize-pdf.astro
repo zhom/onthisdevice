@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import OrganizePdf from '@/components/tools/pdf/OrganizePdf.tsx'
+---
+
+<ToolLayout slug="organize-pdf">
+  <OrganizePdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to reorder pages in a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above. Each page shows as a thumbnail card.</li>
+        <li>
+          Drag a card to a new position, or use the ◀ and ▶ buttons on the card. The buttons work with
+          the keyboard, so the whole tool works without a mouse.
+        </li>
+        <li>Rotate, duplicate or delete individual pages with the buttons underneath each thumbnail.</li>
+        <li>Press <strong>Export PDF</strong> to build the reorganised document and download it.</li>
+      </ol>
+      <p>
+        Deleted pages go to a restore strip and are not discarded. Before you export,
+        <strong>Reset</strong> returns the document to its original state at any time.
+      </p>
+    </section>
+
+    <section>
+      <h2>What each control does</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[560px]">
+          <thead>
+            <tr>
+              <th scope="col">Control</th>
+              <th scope="col">Effect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Drag a card / arrow buttons</td>
+              <td>Moves the page. All later pages renumber automatically</td>
+            </tr>
+            <tr>
+              <td>Rotate left / right</td>
+              <td>Adds 90° to that page's stored rotation, cumulative</td>
+            </tr>
+            <tr>
+              <td>Duplicate</td>
+              <td>Inserts a second copy of the page immediately after it</td>
+            </tr>
+            <tr>
+              <td>Delete</td>
+              <td>Moves the page to the restore strip, out of the export</td>
+            </tr>
+            <tr>
+              <td>Reverse order</td>
+              <td>Reverses the whole document. Useful for back-to-front scans</td>
+            </tr>
+            <tr>
+              <td>Reset</td>
+              <td>Restores the original order, rotations and deletions</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The small grey label under each card (for example <code class="font-mono">p7</code>) is the
+        page's number in the original file, so you can always see where a card came from.
+      </p>
+    </section>
+
+    <section>
+      <h2>Fixing a badly scanned document</h2>
+      <p>
+        A sheet-feed scanner without duplex gives all the fronts, then all the backs in reverse order.
+        To fix it here: scan the fronts, scan the backs, merge the two files, then use this tool to
+        interleave them. Drag the last back page after the first front page and work inwards. For a
+        small document that takes under a minute. The page content is not rendered again, so nothing
+        degrades.
+      </p>
+      <p>
+        Export copies page objects exactly, so you can organise the same PDF many times with no
+        generational loss: the tenth export is byte-for-byte as sharp as the first.
+      </p>
+    </section>
+
+    <section>
+      <h2>Large documents</h2>
+      <p>
+        Thumbnails render one page at a time, so the interface stays responsive, and a progress bar
+        shows the progress. A few hundred pages is fine on a laptop. On a phone, the previews take
+        longer and memory is the limit. Nothing is uploaded, so a confidential document stays
+        confidential.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

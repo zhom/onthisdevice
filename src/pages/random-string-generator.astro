@@ -1,0 +1,116 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RandomStringGenerator from '@/components/tools/security/RandomStringGenerator.tsx'
+---
+
+<ToolLayout slug="random-string-generator">
+  <RandomStringGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate random strings</h2>
+    <ol>
+      <li>
+        Choose a character set. Alphanumeric is the safe default: it passes through URLs, filenames,
+        shell arguments and spreadsheets unchanged. Pick hex if the value sits next to hashes, base64url
+        if it goes in a URL, and digits if people will read it aloud.
+      </li>
+      <li>
+        Set the length. The panel shows the bits per character for the alphabet you chose, so you can
+        work back from a target: 128 bits of base64url is 22 characters, 128 bits of hex is 32.
+      </li>
+      <li>
+        Add a prefix or suffix if you want the values to show what they are. Both are fixed text and add
+        no entropy, and the tool says so.
+      </li>
+      <li>
+        Generate in bulk: up to 500 at a time. Copy them as a block or download a plain text file with one
+        per line.
+      </li>
+    </ol>
+
+    <h2>Bits per character, by alphabet</h2>
+    <p>
+      Entropy is length multiplied by the base-2 logarithm of the alphabet size. The last two columns give
+      the length needed for the two thresholds used in practice.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Character set</th>
+          <th>Size</th>
+          <th>Bits per character</th>
+          <th>Length for 128 bits</th>
+          <th>Length for 256 bits</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Digits (0–9)</td><td>10</td><td>3.32</td><td>39</td><td>78</td></tr>
+        <tr><td>Hexadecimal</td><td>16</td><td>4.00</td><td>32</td><td>64</td></tr>
+        <tr><td>Lowercase alphanumeric</td><td>36</td><td>5.17</td><td>25</td><td>50</td></tr>
+        <tr><td>Mixed-case alphanumeric</td><td>62</td><td>5.95</td><td>22</td><td>44</td></tr>
+        <tr><td>Base64URL</td><td>64</td><td>6.00</td><td>22</td><td>43</td></tr>
+        <tr><td>Printable ASCII</td><td>94</td><td>6.55</td><td>20</td><td>40</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Uses for random strings</h2>
+    <ul>
+      <li>
+        API keys and access tokens: 32 base64url characters is 192 bits, far past any brute-force risk.
+        Add a prefix (<code>sk_live_</code>, <code>pk_test_</code>) so people can recognise them in logs and
+        scanning tools can identify a leaked key.
+      </li>
+      <li>
+        Session identifiers and CSRF tokens: OWASP asks for at least 128 bits from a cryptographically
+        secure source, which this page gives.
+      </li>
+      <li>
+        Database seed data and test fixtures: bulk mode with a prefix gives a few hundred unique,
+        obviously fake values in one click.
+      </li>
+      <li>
+        Coupon, invite and licence codes: use the uppercase alphanumeric set without ambiguous characters,
+        so people can read a code over the phone without a spelling alphabet.
+      </li>
+      <li>
+        Salts and nonces you handle by hand: hex is usually the format the other tools expect.
+      </li>
+      <li>
+        Temporary filenames and cache-busting suffixes: lowercase alphanumeric avoids case-sensitivity
+        problems across operating systems.
+      </li>
+    </ul>
+
+    <h2>Why the randomness source matters</h2>
+    <p>
+      Some random string pages use <code>Math.random</code>. That function is fast and predictable: a
+      modest number of consecutive outputs is enough to reconstruct its internal state, and then all
+      future values are known. That is acceptable for a dice animation and a vulnerability for an API key.
+    </p>
+    <p>
+      This page uses <code>crypto.getRandomValues</code>, which draws on the operating system's entropy
+      pool, the same source a server-side library uses. It also avoids a smaller problem: a plain
+      <code>%</code> that turns a 32-bit random number into an index makes the first characters of the
+      alphabet slightly more likely than the rest, because 2<sup>32</sup> is not divisible by 62. The tool
+      discards and redraws values that land in the last partial bucket, so each character is exactly
+      equally likely.
+    </p>
+
+    <h3>Custom alphabets and duplicate characters</h3>
+    <p>
+      If you give your own character set, the tool removes duplicate characters before it generates. A
+      character listed twice would appear twice as often and reduce the real entropy below the figure on
+      the page. With duplicates removed, the alphabet size and the bits-per-character number stay correct.
+    </p>
+
+    <h2>Choosing a length</h2>
+    <p>
+      For a credential, 128 bits is the standard minimum and 256 bits is the safe margin. For values that
+      must be unique but need not be secret, such as a cache key or a filename, 64 bits makes a collision
+      very unlikely. When a person must type the value, trade length against the alphabet: 12 characters of
+      uppercase alphanumeric without ambiguous glyphs is still 60 bits, and causes fewer transcription
+      errors than a shorter dense string.
+    </p>
+  </Fragment>
+</ToolLayout>

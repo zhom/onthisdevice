@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-lint">
+  <DevFormatJson client:load mode="lint" />
+  <Fragment slot="explainer">
+    <h2>Validating and linting are different jobs</h2>
+    <p>
+      Validation answers a yes/no question: will a parser accept this document? JSON lint asks a harder
+      one: is this document what its author meant? A file can pass the first and fail the second. Those
+      failures are expensive, because they do not throw an error. The file only behaves differently from
+      how it reads.
+    </p>
+    <p>Both run here. The syntax result shows first, and the lint warnings show under it.</p>
+
+    <h2>The checks that run on a valid document</h2>
+    <h3>Duplicate keys</h3>
+    <p>
+      The JSON grammar allows the same key twice in one object, and no mainstream parser reports it.
+      <code>JSON.parse</code>, Python&rsquo;s <code>json</code>, Go&rsquo;s <code>encoding/json</code>
+      and Jackson all keep the last occurrence. So a settings file with a key pasted twice by accident
+      uses the wrong value without a warning, and a code review of the diff shows no problem, because
+      both lines look plausible.
+    </p>
+    <h3>Integers beyond double precision</h3>
+    <p>
+      The JSON specification sets no limit on the magnitude of a number, and does not say how to store
+      one. All JavaScript parsers use a double, which is exact only up to
+      2<sup>53</sup>&nbsp;&minus;&nbsp;1. A longer integer (a Snowflake ID, a nanosecond timestamp, a
+      bigint primary key) is rounded on parse without a warning and written back as the rounded value.
+      The linter flags integers of 16 digits or more that fail an exactness check.
+    </p>
+
+    <h2>What this linter does not do</h2>
+    <p>
+      It does not enforce a style. JSON has no canonical formatting, so warnings about indentation, key
+      order or line length would only be noise. For consistency across a repository, pick one indent and
+      sort keys, apply it once, and commit the result. The sort-keys switch on this page does it in one
+      step and keeps future diffs stable.
+    </p>
+    <p>
+      It also does not validate structure. Whether <code>"email"</code> is present, whether
+      <code>"status"</code> is one of three allowed values, and whether <code>"count"</code> is
+      non-negative are schema questions. Generate a starting schema with the
+      <a href="/json-to-json-schema">JSON Schema generator</a> and validate with Ajv or
+      python-jsonschema in your own pipeline.
+    </p>
+
+    <h2>Linting JSON that is not quite JSON</h2>
+    <table>
+      <thead><tr><th>Format</th><th>What it adds</th><th>How to lint it here</th></tr></thead>
+      <tbody>
+        <tr><td>JSONC (VS Code settings, tsconfig)</td><td>Comments, trailing commas</td><td>Run the repair, then lint the strict copy</td></tr>
+        <tr><td>JSON5</td><td>Comments, unquoted keys, single quotes, hex numbers, <code>Infinity</code></td><td>Repair handles all but hex numbers</td></tr>
+        <tr><td>NDJSON / JSON Lines</td><td>One document per line</td><td>Lint one line at a time, or wrap the lines in an array</td></tr>
+        <tr><td>JSON with a BOM</td><td>An invisible U+FEFF prefix</td><td>Repair strips it</td></tr>
+      </tbody>
+    </table>
+
+    <h2>A workflow that catches problems earlier</h2>
+    <ol>
+      <li>Lint the file when it fails, before you edit it. The original error position tells you much more than the position after three speculative fixes.</li>
+      <li>If the document came from an API, check the first character. A <code>&lt;</code> means you received an HTML error page, and the JSON is not the problem.</li>
+      <li>When it parses, read the warnings before you close the tab. A duplicate key found now is cheaper than a support ticket later.</li>
+      <li>Format with a fixed indent and commit that, so the next diff shows content changes and not whitespace.</li>
+    </ol>
+  </Fragment>
+</ToolLayout>

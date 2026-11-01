@@ -1,0 +1,92 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="aac-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".aac,.m4a,.mp4,.adts,.aacp,audio/aac,audio/mp4"
+    sourceLabel="AAC"
+    sourceHint="Raw .aac streams, ADTS captures and .m4a files all decode here"
+    target="mp3"
+    defaultBitrate="256"
+    formatNote="Raw AAC has no container, so it carries no tags and no reliable duration. This is normal. The conversion works, and the progress bar uses FFmpeg's own reports."
+  />
+  <Fragment slot="explainer">
+    <h2>Raw AAC versus M4A</h2>
+    <p>
+      Both hold the same codec. The difference is the packaging.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>.aac (raw ADTS)</th><th>.m4a (MPEG-4)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Structure</td><td>A bare sequence of frames, each with its own small header</td><td>A container with an index, a sample table and metadata atoms</td></tr>
+          <tr><td>Tags</td><td>None</td><td>Title, artist, album, artwork, chapters</td></tr>
+          <tr><td>Seeking</td><td>Approximate: players estimate from bitrate</td><td>Exact, from the index</td></tr>
+          <tr><td>Typical source</td><td>Broadcast and stream captures, HLS segments, embedded devices</td><td>iTunes, Voice Memos, phone recorders</td></tr>
+          <tr><td>Robustness</td><td>Can be cut anywhere and still mostly play</td><td>A truncated file may not open at all</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This tool accepts both. For an Apple export, the <a href="/m4a-to-mp3">M4A to MP3</a> page has
+      more on Voice Memos, GarageBand and DRM.
+    </p>
+
+    <h2>AAC is the better codec. Why convert down?</h2>
+    <p>
+      This conversion gives no gain in quality. AAC was designed as the successor to MP3 and is better
+      at every bitrate, most of all below 128 kbps. All reasons to convert are about compatibility:
+    </p>
+    <ul>
+      <li>Car head units and factory stereos, mostly from before about 2015.</li>
+      <li>DJ software and controllers with fixed format support.</li>
+      <li>Cheap MP3 players, gym equipment, in-flight entertainment, hotel clock radios.</li>
+      <li>Voicemail systems, telephony platforms and IVR uploads that require MP3.</li>
+      <li>Older transcription and audio-analysis tools with narrow decoders.</li>
+    </ul>
+    <p>
+      If all your devices read AAC, conversion only makes the file bigger and a little worse. Keep the
+      original.
+    </p>
+
+    <h2>Choosing a bitrate for a second-generation encode</h2>
+    <p>
+      The source is already lossy, so the artefacts of the two encoders add up. AAC and MP3 discard
+      different parts of the signal. The damage shows where AAC kept detail that MP3 handles poorly:
+      pre-echo on sharp transients and high-frequency detail on cymbals.
+    </p>
+    <p>
+      Encode at or above the source bitrate. The default here is 256 kbps: iTunes-era AAC is usually
+      256 kbps, and most broadcast captures are between 96 and 192 kbps. Use 128 kbps only for speech.
+    </p>
+    <p>
+      Do not chain conversions. AAC to MP3 to AAC to MP3 is four lossy passes, and by the fourth the
+      cymbals sound like frying bacon. Always start from the earliest copy you have.
+    </p>
+
+    <h2>When a raw .aac file will not open anywhere</h2>
+    <p>
+      This is common, and the cause is usually the file. Raw ADTS streams captured mid-broadcast often
+      start partway through a frame or end abruptly. If FFmpeg reports invalid data here, other tools
+      read the same broken bytes and fail the same way. Download or capture the file again.
+    </p>
+    <p>
+      Some files with an <code>.aac</code> extension are HE-AAC v2 with spectral band replication, and a
+      few decoders handle the parametric stereo layer badly. FFmpeg decodes it correctly, but the output
+      can be mono where you expected stereo. This comes from the source.
+    </p>
+
+    <h2>Batch conversion, no queue, no cap</h2>
+    <p>
+      Up to fifty files convert one after another, each with its own progress row, and the set
+      downloads as a ZIP. Nothing is uploaded: the AAC decoder and the LAME MP3 encoder are part of the
+      WebAssembly build of FFmpeg that runs in this tab. There is no daily limit, and the only size
+      limit is your device's memory.
+    </p>
+  </Fragment>
+</ToolLayout>

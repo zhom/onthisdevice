@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactScannedDocument from '@/components/tools/redact/scan/RedactScannedDocument.tsx'
+---
+
+<ToolLayout slug="redact-scanned-document" width="wide">
+  <RedactScannedDocument client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact a scanned document</h2>
+    <ol>
+      <li>Drop a scanned PDF, or photos or scans of pages as JPG or PNG.</li>
+      <li>Each page is read with OCR. Names, addresses, emails, phone, card and account numbers, dates and ID numbers get a black box.</li>
+      <li>Click a box to keep that text visible. Drag on the page to cover anything else.</li>
+      <li>Choose what to hide, and add words to the always-hide list. The boxes change at once.</li>
+      <li>Download a PDF, or the pages as PNG or JPG images.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The OCR engine (Tesseract with its English data, about 7 MB) reads the words and where they are on the page. Pattern
+      rules check the text for emails, phone numbers, card numbers with the Luhn check, IBANs with the mod 97 check, dates
+      and national ID numbers. A small language model (21 MB, with a 15 MB runtime) finds names, places and addresses. These
+      files download once from this site and stay in your browser.
+    </p>
+    <p>
+      Each page of the PDF is saved as an image with the boxes burned in. No text layer is kept, so nothing under a box can
+      be copied out.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and drop a file. You see the OCR engine and the model load
+      from this site the first time, and no request after that.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>OCR needs a sharp, straight page. Blurry photos, handwriting and very small print are read badly or not at all, and then nothing is found there.</li>
+      <li>The OCR data is English. Other languages in Latin script are read with more mistakes.</li>
+      <li>Each page takes a few seconds. Look at every page before you share the result.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

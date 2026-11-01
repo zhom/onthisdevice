@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TextRepeater from '@/components/tools/text/TextRepeater.tsx'
+---
+
+<ToolLayout slug="text-repeater">
+  <TextRepeater client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to repeat text</h2>
+    <ol>
+      <li>Type or paste the text to repeat. The text repeater repeats a multi-line block as one unit.</li>
+      <li>Set how many copies you need, from 2 to 100,000.</li>
+      <li>Choose what goes between the copies: a new line, a space, a comma, a blank line, nothing at all, or your own separator.</li>
+      <li>Turn on numbering to label each copy, and edit the template to set the label format.</li>
+      <li>Copy the result or download it as a text file.</li>
+    </ol>
+
+    <h2>The numbering template</h2>
+    <p>
+      With numbering on, each copy comes from a small template with two placeholders: <code>{'{n}'}</code> for
+      the counter and <code>{'{text}'}</code> for your text. You set the starting number, so you can continue
+      an existing list.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Template</th>
+            <th>Produces</th>
+            <th>Useful for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>{'{n}. {text}'}</code></td><td>1. Item</td><td>Numbered lists</td></tr>
+          <tr><td><code>{'{n}) {text}'}</code></td><td>1) Item</td><td>Legal and academic lists</td></tr>
+          <tr><td><code>{'row-{n}'}</code></td><td>row-1</td><td>Sequential identifiers and test IDs</td></tr>
+          <tr><td><code>{'INV-2026-{n}'}</code></td><td>INV-2026-1</td><td>Invoice and ticket numbers</td></tr>
+          <tr><td><code>{'<li>{text} {n}</li>'}</code></td><td>&lt;li&gt;Item 1&lt;/li&gt;</td><td>Quick HTML scaffolding</td></tr>
+          <tr><td><code>{"('{text}', {n}),"}</code></td><td>('Item', 1),</td><td>SQL insert values</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Uses for repeated text</h2>
+    <ul>
+      <li>Test data: generate hundreds of rows to check pagination, table performance or import limits.</li>
+      <li>Field-length testing: build a string of an exact character count to find where a form truncates without warning.</li>
+      <li>Layout stress tests: repeat a long word to see how a component handles overflow.</li>
+      <li>Numbered lists: make a hundred sequential labels without a spreadsheet.</li>
+      <li>Repeated markup: create list items, table rows or component stubs before you add real content.</li>
+      <li>Practice and drills: handwriting lines, typing practice, or a phrase repeated for a rehearsal script.</li>
+    </ul>
+
+    <h2>Size, speed and limits</h2>
+    <p>
+      The output is limited to about eight million characters (about 8 MB), so the browser can still show and
+      copy it. The tool builds it in chunks with a repaint between them and shows a progress indicator for a
+      large job. At the limit, reduce the number of copies, or download the file and join copies locally; a
+      text file on disk has no such limit.
+    </p>
+    <p>
+      The character, line and byte counts under the output show exactly what you made, for when you need a
+      string of a specific size.
+    </p>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      The repetition runs in your browser tab, so an internal template, a licence key format or a customer
+      record stays on your computer. The tool also works with the network off.
+    </p>
+  </Fragment>
+</ToolLayout>

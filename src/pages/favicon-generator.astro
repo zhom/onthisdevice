@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FaviconGenerator from '@/components/tools/generators/FaviconGenerator.tsx'
+---
+
+<ToolLayout slug="favicon-generator">
+  <FaviconGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate a favicon pack</h2>
+    <ol>
+      <li>Drop in a square image. An SVG or a PNG of 512 px or more gives the best results.</li>
+      <li>Add a background colour if your logo is transparent. iOS paints transparency black on the home screen, so a solid background is usually better.</li>
+      <li>Add a little padding if the mark is dense; about 10% keeps a wordmark from touching the edges.</li>
+      <li>Check the real-size previews. If the 16 px version is a smudge, the mark has too much detail for a browser tab.</li>
+      <li>Download the ZIP, unpack it into your site root, and paste the HTML snippet into your <code>&lt;head&gt;</code>.</li>
+    </ol>
+    <p>
+      The favicon generator renders each image from a 1024 px master by repeated halving, not one large
+      downscale, which keeps the 16 and 32 px versions readable. All work happens in this tab, and your logo
+      is not uploaded.
+    </p>
+
+    <h2>What each file is for</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Size</th>
+            <th>Consumed by</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>favicon.ico</code></td><td>16, 32, 48</td><td>Legacy browsers, Windows shortcuts, and the default request to <code>/favicon.ico</code> when nothing else matches</td></tr>
+          <tr><td><code>favicon-16x16.png</code></td><td>16</td><td>Browser tab and bookmarks bar at 1× density</td></tr>
+          <tr><td><code>favicon-32x32.png</code></td><td>32</td><td>Retina tab, taskbar shortcut, most browser UI</td></tr>
+          <tr><td><code>favicon-48x48.png</code></td><td>48</td><td>Windows site shortcuts</td></tr>
+          <tr><td><code>favicon-64x64.png</code></td><td>64</td><td>High-DPI tabs and some extension surfaces</td></tr>
+          <tr><td><code>favicon-128x128.png</code></td><td>128</td><td>Chrome Web Store, packaged apps</td></tr>
+          <tr><td><code>apple-touch-icon.png</code></td><td>180</td><td>iOS and iPadOS “Add to Home Screen”</td></tr>
+          <tr><td><code>android-chrome-192x192.png</code></td><td>192</td><td>Android home screen</td></tr>
+          <tr><td><code>android-chrome-512x512.png</code></td><td>512</td><td>Android splash screen and PWA install dialog</td></tr>
+          <tr><td><code>site.webmanifest</code></td><td>n/a</td><td>PWA name, icons, theme colour, install behaviour</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The HTML you need</h2>
+    <p>
+      Five links and one meta tag cover all current browsers and platforms. The many
+      <code>msapplication-*</code> tags and Apple size variants that older generators write have not been
+      necessary for years.
+    </p>
+    <pre><code>&lt;link rel="icon" href="/favicon.ico" sizes="any"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;
+&lt;meta name="theme-color" content="#0f172a"&gt;</code></pre>
+    <p>
+      If you also have an SVG favicon, add
+      <code>&lt;link rel="icon" type="image/svg+xml" href="/favicon.svg"&gt;</code> before the PNG lines.
+      Browsers that support SVG use the vector; the others use the PNGs.
+    </p>
+
+    <h2>Inside an .ico file</h2>
+    <p>
+      ICO is a container, not an image format. It starts with a six-byte ICONDIR header (two reserved bytes,
+      a type field of 1 for icons, and a count), followed by one sixteen-byte directory entry per image. Each
+      entry records the width and height as single bytes (0 means 256), the colour depth, the payload length
+      and the byte offset where the payload starts. The payloads follow, one after another.
+    </p>
+    <p>
+      Originally each payload was a headerless BMP with an awkward AND mask for transparency. Since Windows
+      Vista, the payload can be a complete PNG file, which is smaller and has real alpha. This tool writes PNG
+      payloads at 16, 32 and 48 pixels, and all browsers and supported Windows versions read them. The tool
+      builds the whole container in JavaScript in this tab, with no server-side image processing.
+    </p>
+
+    <h2>Designing a mark that survives 16 pixels</h2>
+    <p>
+      A favicon is 16 device pixels on a standard display. That is enough for one bold shape or one letter,
+      and nothing else. Some rules:
+    </p>
+    <ul>
+      <li>Drop the wordmark. Use the symbol, or one initial. Text of more than about four characters is illegible at 16 px.</li>
+      <li>Make the strokes thicker. A hairline that looks elegant at 512 px disappears at 16.</li>
+      <li>Increase the contrast. Subtle tonal differences merge into one grey when the image is a few pixels.</li>
+      <li>Test on both themes. A dark navy mark disappears against dark browser chrome. If yours does, add a second SVG favicon with a <code>prefers-color-scheme</code> media query in it.</li>
+      <li>Keep the silhouette distinctive. At tab size, people recognise shape and colour, never detail.</li>
+    </ul>
+
+    <h2>Why your new favicon is not showing</h2>
+    <p>
+      Browsers cache favicons more aggressively than almost any other file, often in a cache separate from the
+      normal page cache. The causes, most likely first: your browser keeps the old one (open the icon URL
+      directly and hard-reload it), a CDN keeps it (purge the path), or a service worker serves an old copy. A
+      query string such as <code>/favicon.ico?v=2</code> in the link tags fixes all layers at once.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="inches-to-mm">
+  <UnitsLifePairConverter client:load spec="inches-to-mm" />
+  <Fragment slot="explainer">
+    <h2>One multiplication, no rounding</h2>
+    <p>
+      Inches to mm is <strong>&times; 25.4</strong>. That factor is a definition, not a measurement,
+      so the answer is exact. 1 in is 25.4 mm. 1/16 in is 1.5875 mm. 0.001 in (one thou) is 0.0254 mm.
+      Nothing in that chain is approximate, so you can convert an imperial drawing to metric once and
+      trust the result.
+    </p>
+
+    <h2>The sixteenths ladder</h2>
+    <p>
+      Most imperial dimensions are fractions. Most workshops know half of this ladder by heart:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Fraction</th><th scope="col">Decimal in</th><th scope="col">Millimetres</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1/16</td><td>0.0625</td><td>1.5875</td></tr>
+        <tr><td>1/8</td><td>0.125</td><td>3.175</td></tr>
+        <tr><td>3/16</td><td>0.1875</td><td>4.7625</td></tr>
+        <tr><td>1/4</td><td>0.25</td><td>6.35</td></tr>
+        <tr><td>5/16</td><td>0.3125</td><td>7.9375</td></tr>
+        <tr><td>3/8</td><td>0.375</td><td>9.525</td></tr>
+        <tr><td>7/16</td><td>0.4375</td><td>11.1125</td></tr>
+        <tr><td>1/2</td><td>0.5</td><td>12.7</td></tr>
+        <tr><td>5/8</td><td>0.625</td><td>15.875</td></tr>
+        <tr><td>3/4</td><td>0.75</td><td>19.05</td></tr>
+        <tr><td>7/8</td><td>0.875</td><td>22.225</td></tr>
+        <tr><td>1</td><td>1.0</td><td>25.4</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Each of those millimetre values ends in a 5 or a 0, because 25.4 has only one decimal place. If
+      your converted figure has a long tail of digits, you started from a decimal inch, or a value
+      upstream was already rounded.
+    </p>
+
+    <h2>Type the fraction, not the decimal</h2>
+    <p>
+      The input accepts 3/8, 1 1/4, 1&frac14; and 0.375. If you convert the fraction to a decimal in
+      your head first, you can drop a digit. This happens most with thirds and sixty-fourths, where the
+      decimal is long and the fraction is short.
+    </p>
+
+    <h2>Nominal sizes are not measurements</h2>
+    <p>
+      A "1/2 inch" pipe has no dimension of half an inch. Nominal pipe size is a trade designation from
+      wall thicknesses that stopped being standard a century ago: NPS 1/2 pipe has an outside diameter
+      of 0.840 in (21.34 mm). The same applies to lumber, where a 2&times;4 finishes at 1.5 &times;
+      3.5 in (38 &times; 89 mm), and to screw gauges, which are an index, not a length.
+    </p>
+    <p>
+      So convert the number your calliper shows, never the number on the label.
+    </p>
+
+    <h2>Tolerances survive the conversion</h2>
+    <p>
+      A tolerance converts the same way as the dimension. &plusmn;0.005 in becomes &plusmn;0.127 mm.
+      The implied precision of a rounded figure does not convert: 12.7 mm from 1/2 in implies
+      &plusmn;0.05 mm, which is much tighter than the drawing. Write the tolerance explicitly, and use
+      only the decimals the drawing supports.
+    </p>
+  </Fragment>
+</ToolLayout>

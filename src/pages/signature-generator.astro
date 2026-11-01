@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SignatureGenerator from '@/components/tools/generators/SignatureGenerator.tsx'
+---
+
+<ToolLayout slug="signature-generator">
+  <SignatureGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to create your signature</h2>
+    <ol>
+      <li>Sign in the box above. A finger on a phone or tablet gives the most natural result, a stylus is better, and a mouse takes a few attempts.</li>
+      <li>Undo removes the last stroke, for example when the tail of a letter goes wrong. Ctrl+Z does the same from the keyboard.</li>
+      <li>Set the pen width and ink colour. Dark grey looks more like real ink on a scanned page than pure black.</li>
+      <li>Download the transparent PNG for documents and PDF forms, or the SVG for a web page or email footer.</li>
+    </ol>
+    <p>
+      Your strokes exist as coordinates in this browser tab, and the signature generator renders them into
+      the file you save. When you close the tab they are gone, and no account holds a copy of your signature.
+    </p>
+
+    <h2>Why the line varies in thickness</h2>
+    <p>
+      A signature with a constant line width looks like a wire diagram. Real ink thins as the pen speeds up
+      and pools where it slows or changes direction. The canvas models this in two ways: when the device
+      reports real stylus pressure, it uses that; if not, it calculates the width from the speed between
+      points and smooths it so the line does not shake.
+    </p>
+    <p>
+      The path is a series of quadratic Bézier curves through the midpoints between sampled points, with each
+      raw point as the control point. This standard technique for freehand input removes the angular look of
+      straight segments and keeps the line where you drew it. To get a uniform stroke, turn off the variation
+      in the pen panel.
+    </p>
+
+    <h2>PNG or SVG?</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Transparent PNG</th>
+            <th>SVG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Scales without blurring</td><td>No: fixed resolution</td><td>Yes, to any size</td></tr>
+          <tr><td>Typical size</td><td>20–80 KB</td><td>3–15 KB</td></tr>
+          <tr><td>PDF form fields</td><td>Yes</td><td>Rarely accepted</td></tr>
+          <tr><td>Word and Google Docs</td><td>Yes</td><td>Partially</td></tr>
+          <tr><td>Email signature</td><td>Yes</td><td>Blocked by many clients</td></tr>
+          <tr><td>Web page</td><td>Yes</td><td>Yes, and sharper</td></tr>
+          <tr><td>Recolour after export</td><td>No</td><td>Yes, edit the stroke attribute</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The PNG is rendered at three times the on-screen size, so it stays sharp at normal scale in a document.
+      Trimming is on by default: it crops the empty space, so the image fits onto a signature line without a
+      wide transparent margin.
+    </p>
+
+    <h2>Adding a signature to a document</h2>
+    <ul>
+      <li>PDF: open the file in a PDF editor, choose the image or stamp tool, place the PNG over the signature line, then flatten the document before you send it.</li>
+      <li>Word: Insert → Picture, then set Wrap Text to “In Front of Text” so you can move it freely over the line.</li>
+      <li>Google Docs: Insert → Image → Upload from computer, then choose “Behind text” wrapping.</li>
+      <li>Email footer: use the PNG at about 200 px wide and always set explicit width and height attributes, because some clients ignore CSS sizing.</li>
+      <li>Web page: use the SVG inline. It is a few paths, it inherits <code>currentColor</code> if you remove the stroke attribute, and it stays sharp on any display.</li>
+    </ul>
+
+    <h2>Is an image of your signature legally binding?</h2>
+    <p>
+      Not by itself. The US ESIGN Act and the EU eIDAS regulation both recognise electronic signatures, but
+      what makes one valid is the evidence around it: proof that the signer intended to sign, proof that they
+      agreed to sign electronically, an audit trail that links the signature to that person and that
+      document, and a copy kept by both parties. A PNG has none of that.
+    </p>
+    <p>
+      A drawn signature is widely accepted for internal approvals, delivery notes, timesheets, school forms
+      and most everyday paperwork. For important contracts, such as employment, property or anything you may
+      need to enforce, use a service that records the audit trail, or sign on paper. eIDAS also defines
+      “advanced” and “qualified” electronic signatures. They need certificate-based identity verification,
+      and only they have the same legal standing as a handwritten signature across the EU.
+    </p>
+
+    <h2>Keeping your signature safe</h2>
+    <p>
+      After export, anyone can copy a signature image. Protect it:
+    </p>
+    <ul>
+      <li>Do not email the image file on its own. Send the signed, flattened document.</li>
+      <li>Flatten PDFs before you send them, so the image cannot be extracted as a separate layer.</li>
+      <li>Do not post a signed document publicly. Scanned contracts on company websites are a common source of forged signatures.</li>
+      <li>Keep the master file somewhere private, and draw a new one from time to time.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

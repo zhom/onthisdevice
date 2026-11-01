@@ -1,0 +1,64 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-validator">
+  <DevFormatXml client:load mode="validate" />
+  <Fragment slot="explainer">
+    <h2>Well-formed is not the same as valid</h2>
+    <p>
+      XML has two levels of correctness, and confusing them wastes time. Well-formed means the document follows
+      XML&rsquo;s syntax: one root element, every tag closed and correctly nested, attributes quoted, entities
+      defined, no stray <code>&amp;</code> or <code>&lt;</code>. Valid means it also conforms to a specific
+      schema: a DTD, XSD or RELAX NG grammar that says which elements may appear where.
+    </p>
+    <p>
+      This XML validator checks well-formedness, which catches most real failures, with the browser&rsquo;s own
+      parser. Schema validation needs the schema file and a validating processor, which belongs in a build
+      pipeline.
+    </p>
+
+    <h2>XML errors and what they mean</h2>
+    <table>
+      <thead><tr><th>Message</th><th>Cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Mismatched tag</td><td>A closing tag does not match the opening tag. XML is case-sensitive.</td><td><code>&lt;Item&gt;</code> must close with <code>&lt;/Item&gt;</code>, never <code>&lt;/item&gt;</code></td></tr>
+        <tr><td>Premature end of data</td><td>The document ends with elements still open</td><td>Find the last unclosed tag, usually near a truncated copy-paste</td></tr>
+        <tr><td>Entity not defined</td><td>An HTML entity such as <code>&amp;nbsp;</code></td><td>Use a numeric reference: <code>&amp;#160;</code></td></tr>
+        <tr><td>Not well-formed / invalid token</td><td>A bare <code>&amp;</code> or <code>&lt;</code> in text</td><td>Escape them as <code>&amp;amp;</code> and <code>&amp;lt;</code></td></tr>
+        <tr><td>Junk after document element</td><td>More than one root element</td><td>Wrap everything in a single container element</td></tr>
+        <tr><td>XML declaration allowed only at the start</td><td>A blank line, a BOM or a comment before <code>&lt;?xml</code></td><td>Delete whatever precedes it, including invisible bytes</td></tr>
+        <tr><td>Prefix not bound</td><td>A namespace prefix used without a declaration</td><td>Add the matching <code>xmlns:prefix="…"</code></td></tr>
+        <tr><td>Duplicate attribute</td><td>The same attribute set twice on one element</td><td>Remove the repeat</td></tr>
+        <tr><td>Specification mandate value for attribute</td><td>A boolean-style attribute with no value</td><td>XML requires <code>name="value"</code> for every attribute</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Why the ampersand causes so much trouble</h2>
+    <p>
+      A raw <code>&amp;</code> is the most common cause of an invalid XML document, and it almost always comes
+      from data, not hand-written markup: a company name (&ldquo;Smith &amp; Sons&rdquo;), a URL with query
+      parameters (<code>?a=1&amp;b=2</code>), or a value already HTML-escaped once. When a value goes into a
+      template without escaping, every ampersand in the data becomes a syntax error. Escape when you insert
+      the value, not afterwards.
+    </p>
+
+    <h2>Only five entities exist</h2>
+    <p>
+      XML predefines only <code>&amp;amp;</code>, <code>&amp;lt;</code>, <code>&amp;gt;</code>,
+      <code>&amp;quot;</code> and <code>&amp;apos;</code>. HTML&rsquo;s roughly two thousand named entities are
+      not available unless a DTD declares them, so documents copied from HTML fail here. You can still write
+      any character as a numeric reference, such as <code>&amp;#8212;</code> or <code>&amp;#x2014;</code> for an
+      em dash, or type it directly in a UTF-8 document.
+    </p>
+
+    <h2>After it passes</h2>
+    <p>
+      Well-formedness is the minimum. It does not show whether required elements are present, whether values are
+      in range, or whether the receiving service accepts the document. If you have an XSD, validate against it
+      in your build. When you debug an integration, a formatted, well-formed document is where you start to
+      read the content; for large documents, use the <a href="/xml-viewer">tree viewer</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

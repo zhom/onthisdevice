@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="whiteout-pdf">
+  <PdfEditOverlayEditor client:load mode="whiteout" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to white out a PDF and retype</h2>
+      <ol>
+        <li>Drop the PDF in and find the page with the mistake.</li>
+        <li>Drag a white box over the wrong text. Make it slightly taller than the line so no descenders show below it.</li>
+        <li>Switch to the <strong>Text</strong> tool, click just inside the box and type the replacement.</li>
+        <li>Move the text with the arrow keys until it sits on the same baseline as the text next to it, then apply and download.</li>
+      </ol>
+      <p>
+        Zoom to 200% before the final adjustment. At 100% a two-point misalignment is invisible on screen and
+        obvious on paper.
+      </p>
+    </section>
+
+    <section>
+      <h2>White-out is not redaction</h2>
+      <p>
+        A white box is opaque ink painted on top of the page. The characters below it are still in the content
+        stream. Anyone can select the covered area, copy it, run <a href="/pdf-to-text">PDF to Text</a> on the
+        file, or open it in a text extractor and read the covered text. Newspapers, law firms and government
+        departments have published documents this way, and others extracted the "hidden" text within hours.
+      </p>
+      <p>
+        Use white-out for corrections: a wrong date, an old office address, a typo in a name, an outdated figure.
+        If the covered text must not be recoverable, such as a salary, a witness, a national insurance number or
+        a bank account, use <a href="/redact-pdf">Redact PDF</a>. It rebuilds the affected pages as images, so
+        the words are no longer in the file.
+      </p>
+    </section>
+
+    <section>
+      <h2>Matching a background that is not white</h2>
+      <p>
+        Scanned paper is almost never pure white. It is cream or grey, or has a faint blue tint from the
+        scanner's colour profile, and a #FFFFFF patch on it looks like a sticker.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-[560px]">
+          <thead>
+            <tr>
+              <th scope="col">Background</th>
+              <th scope="col">Try</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Digital PDF, pure white page</td>
+              <td class="font-mono">#FFFFFF</td>
+              <td>Invisible; the easy case</td>
+            </tr>
+            <tr>
+              <td>Warm scan of ordinary paper</td>
+              <td class="font-mono">#FBF8F1</td>
+              <td>Adjust with the custom colour picker until the edge disappears</td>
+            </tr>
+            <tr>
+              <td>Grey photocopy</td>
+              <td class="font-mono">#F1F1F0</td>
+              <td>Extend the box to a natural boundary, such as a table cell</td>
+            </tr>
+            <tr>
+              <td>Coloured form field</td>
+              <td>Sample the fill colour</td>
+              <td>A slightly larger box aligned to the field's own border reads best</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        On a heavily textured or shadowed scan, no flat colour blends in fully. Then make the patch look
+        intentional: align it to a ruled line or a cell edge.
+      </p>
+    </section>
+
+    <section>
+      <h2>Getting the layering right</h2>
+      <p>
+        Objects are painted in the order you created them, so a white box added after your replacement text
+        covers the text. If that happens, select the text and press <strong>Bring to front</strong> to move it
+        to the end of the paint order. To avoid the problem, add the box first and the text second.
+      </p>
+      <p>
+        To cover several lines, drag one box for the whole block. Several overlapping opaque rectangles look the
+        same on screen but add more objects than the page needs.
+      </p>
+    </section>
+
+    <section>
+      <h2>When the whole page needs replacing</h2>
+      <p>
+        If more than a few lines are wrong, do not cover them. Delete the page with
+        <a href="/delete-pages-from-pdf">Delete Pages</a> and <a href="/merge-pdf">merge in</a> a corrected page
+        exported from your word processor. If the document was a form, fill a new copy with
+        <a href="/fill-pdf-form">Fill Out PDF Forms</a>. Both give a cleaner document than a page with many
+        patches.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

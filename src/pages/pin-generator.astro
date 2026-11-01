@@ -1,0 +1,156 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PinGenerator from '@/components/tools/security/PinGenerator.tsx'
+---
+
+<ToolLayout slug="pin-generator">
+  <PinGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate a secure PIN</h2>
+    <ol>
+      <li>
+        Choose the length. Four digits for a bank card, six for a phone, more for
+        anything where an attacker could try codes without a lockout.
+      </li>
+      <li>
+        Leave the weak-pattern filter on. It removes the codes that appear at the
+        top of every leaked PIN dataset, along with runs, repeats, palindromes, years and dates.
+      </li>
+      <li>
+        Generate, and read the numbers. The panel shows how many codes remain after
+        filtering and what that is worth in bits, so the cost of the filter is visible rather than
+        assumed.
+      </li>
+      <li>
+        Memorise it before you leave the page. Nothing is stored anywhere. Say it
+        out loud a few times, or split it into two pairs and rehearse those.
+      </li>
+    </ol>
+
+    <h2>How much protection does a PIN give?</h2>
+    <p>
+      Very little on its own, and that is fine: a PIN is never meant to withstand an unlimited
+      attack. It works because something else limits the attempts: three tries before a cash machine
+      swallows the card, ten before a phone wipes itself, a lockout timer that doubles after each
+      failure. Remove that limit and even a twelve-digit PIN is weak.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Digits</th>
+          <th>Possible codes</th>
+          <th>Entropy</th>
+          <th>3 guesses allowed</th>
+          <th>Offline, 100 G/s</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>4</td><td>10,000</td><td>13.3 bits</td><td>1 chance in 3,333</td><td>instantly</td></tr>
+        <tr><td>5</td><td>100,000</td><td>16.6 bits</td><td>1 chance in 33,333</td><td>instantly</td></tr>
+        <tr><td>6</td><td>1,000,000</td><td>19.9 bits</td><td>1 chance in 333,333</td><td>instantly</td></tr>
+        <tr><td>8</td><td>100,000,000</td><td>26.6 bits</td><td>1 chance in 33 million</td><td>instantly</td></tr>
+        <tr><td>10</td><td>10 billion</td><td>33.2 bits</td><td>1 chance in 3.3 billion</td><td>under a second</td></tr>
+        <tr><td>12</td><td>1 trillion</td><td>39.9 bits</td><td>1 chance in 333 billion</td><td>5 seconds</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      The last column is why a PIN should never be the only thing protecting data that can be copied
+      off a device. If the storage is encrypted with a key derived from the PIN alone, and an
+      attacker can take an image of the disk, they are not limited to three guesses any more.
+    </p>
+
+    <h2>The patterns this tool refuses to produce</h2>
+    <p>
+      Studies of leaked PIN datasets keep finding the same thing: roughly a quarter of all four-digit
+      PINs come from a list of about twenty codes, and <code>1234</code> alone accounts for around
+      one in ten. Human choice concentrates in a tiny corner of a small space. The filter removes
+      that corner.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Rejected pattern</th>
+          <th>Examples</th>
+          <th>Why</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>One digit repeated</td>
+          <td>0000, 1111, 8888</td>
+          <td>Ten codes in total, and always tried first.</td>
+        </tr>
+        <tr>
+          <td>Straight run</td>
+          <td>1234, 4321, 6789</td>
+          <td>A keypad walk in either direction. Attackers try it second.</td>
+        </tr>
+        <tr>
+          <td>Repeated block</td>
+          <td>1212, 123123</td>
+          <td>The attacker guesses the block, then the length.</td>
+        </tr>
+        <tr>
+          <td>Palindrome</td>
+          <td>1221, 45654</td>
+          <td>Memorable, and only a tenth of the space of a random code.</td>
+        </tr>
+        <tr>
+          <td>Year</td>
+          <td>1987, 2024</td>
+          <td>1900 to 2099 is 200 of the 10,000 four-digit codes.</td>
+        </tr>
+        <tr>
+          <td>Day and month</td>
+          <td>0312, 1203</td>
+          <td>About 700 codes, and a stolen wallet usually contains the date of birth.</td>
+        </tr>
+        <tr>
+          <td>Six and eight-digit dates</td>
+          <td>031287, 03121987</td>
+          <td>How most people pick longer codes; an eight-digit birthday has under 40,000 options.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Does filtering make the PIN less random?</h3>
+    <p>
+      No, but a naive filter does. If you generated a code and then "fixed" it by changing digits
+      until it passed, the result would be biased. This PIN generator discards a rejected code and
+      draws a new one. Every code that
+      survives is exactly as likely as every other, so the distribution stays uniform over a
+      slightly smaller set. The entropy figure in the tool is computed from the size of that set,
+      exactly for short PINs and by sampling for long ones.
+    </p>
+
+    <h2>Practical advice</h2>
+    <ul>
+      <li>
+        Never use a date connected to you. Not your birthday, not your child's, not
+        your wedding anniversary. A thief who has your wallet has your ID.
+      </li>
+      <li>
+        Do not reuse a card PIN as a phone passcode. Someone who shoulder-surfs one
+        gets the other.
+      </li>
+      <li>
+        Mind the smudges. A greasy touchscreen shows which digits are involved,
+        which cuts a four-digit search from 10,000 to a few dozen. Longer codes and the occasional
+        deliberate wrong swipe both help.
+      </li>
+      <li>
+        <strong>Prefer six digits to four wherever the device offers it,</strong> and a full
+        alphanumeric passcode on anything that holds your email, because your email is the reset
+        channel for all other accounts.
+      </li>
+      <li>
+        If you must write it down, disguise it. A PIN hidden as a phone number in
+        your contacts is far safer than the same PIN memorised badly and therefore replaced with
+        1234.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

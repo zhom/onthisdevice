@@ -1,0 +1,93 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ImageConverter from '@/components/tools/image-convert/ImageConverter.tsx'
+---
+
+<ToolLayout slug="image-converter">
+  <ImageConverter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert an image to another format</h2>
+    <ol>
+      <li>Drop images onto the box above: JPG, PNG, WebP, AVIF, GIF, BMP or SVG, in any mix.</li>
+      <li>Choose the output format from the <strong>Convert to</strong> list. Each input format can be written as JPG, PNG, WebP or AVIF.</li>
+      <li>Set quality if the target is lossy, a background colour if the target is JPG, and a raster size if you added SVGs.</li>
+      <li>Check the before and after size of each file, then download each result or all of them as one ZIP.</li>
+    </ol>
+    <p>
+      The image converter reads the source format from each file's magic bytes, not its extension, so a PNG
+      renamed to .jpg still converts correctly. Decoding and encoding happen in a worker thread on your
+      machine, with WebAssembly builds of MozJPEG, libpng, libwebp and libavif.
+    </p>
+
+    <h2>Which output format should you pick?</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Format</th>
+            <th align="left">Compression</th>
+            <th align="left">Transparency</th>
+            <th align="left">Relative size (photo)</th>
+            <th align="left">Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>JPG</td><td>Lossy</td><td>No</td><td>100% (baseline)</td><td>Maximum compatibility, photos, anything old software must open</td></tr>
+          <tr><td>PNG</td><td>Lossless</td><td>Yes</td><td>500–900%</td><td>Screenshots, logos, line art, editing masters</td></tr>
+          <tr><td>WebP</td><td>Both</td><td>Yes</td><td>65–75%</td><td>The web default. Smaller than JPG, supported in all browsers</td></tr>
+          <tr><td>AVIF</td><td>Both</td><td>Yes</td><td>40–60%</td><td>Smallest files, if slow encoding and newer decoders are acceptable</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      As a rule, use WebP. Use JPG when a system accepts nothing else, PNG when the pixels must be exact or the
+      image needs an alpha channel, and AVIF when you optimise for bandwidth and can serve a fallback.
+    </p>
+
+    <h2>Supported inputs</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Input</th>
+            <th align="left">How it is decoded</th>
+            <th align="left">Caveats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>JPEG (.jpg, .jpeg)</td><td>Browser decoder, MozJPEG fallback</td><td>EXIF rotation is applied automatically</td></tr>
+          <tr><td>PNG (.png)</td><td>Browser decoder, libpng fallback</td><td>16-bit PNGs are reduced to 8 bits per channel</td></tr>
+          <tr><td>WebP (.webp)</td><td>Browser decoder, libwebp fallback</td><td>Animated files convert their first frame only</td></tr>
+          <tr><td>AVIF (.avif)</td><td>Browser decoder, libavif fallback</td><td>HDR is tone-mapped to 8-bit sRGB</td></tr>
+          <tr><td>GIF (.gif)</td><td>Browser decoder</td><td>First frame only; animation is not preserved</td></tr>
+          <tr><td>BMP (.bmp)</td><td>Browser decoder</td><td>Uncompressed input, so large files are normal</td></tr>
+          <tr><td>SVG (.svg)</td><td>Rendered by the browser at your chosen size</td><td>External fonts and remote images cannot be loaded offline</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The tool detects HEIC and HEIF photos from Apple devices but cannot convert them: no open, patent-free
+      HEVC decoder can ship in a browser. Export them as JPEG from the Photos app first.
+    </p>
+
+    <h2>Privacy, limits and metadata</h2>
+    <ul>
+      <li>No server is involved in the conversion. After the page loads, it also works in aeroplane mode.</li>
+      <li>There is no file size cap. The limit is your device's memory. Each image is held as uncompressed RGBA during processing, about width × height × 4 bytes.</li>
+      <li>Metadata is removed. Rebuilding from raw pixels drops EXIF, XMP and IPTC, including GPS coordinates, camera model and capture time. You usually want this before you publish a photo.</li>
+      <li>Colour is normalised to sRGB. The tool applies embedded ICC profiles during decoding and does not attach them again, so wide-gamut sources are converted.</li>
+      <li>Batches are sequential. Files convert one at a time with a progress bar, so a large batch is slow but does not freeze the page.</li>
+    </ul>
+
+    <h2>Single-purpose pages</h2>
+    <p>
+      If you always make the same conversion, these pages start with the correct settings:
+      <a href="/png-to-jpg">PNG to JPG</a>, <a href="/jpg-to-png">JPG to PNG</a>,
+      <a href="/png-to-webp">PNG to WebP</a>, <a href="/webp-to-png">WebP to PNG</a>,
+      <a href="/jpg-to-webp">JPG to WebP</a>, <a href="/webp-to-jpg">WebP to JPG</a>,
+      <a href="/image-to-avif">image to AVIF</a>, <a href="/avif-to-jpg">AVIF to JPG</a>,
+      <a href="/avif-to-png">AVIF to PNG</a> and <a href="/svg-to-png">SVG to PNG</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,56 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactPdf from '@/components/tools/redact/docs/RedactPdf.tsx'
+---
+
+<ToolLayout slug="redact-pdf" width="wide">
+  <RedactPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact a PDF</h2>
+    <ol>
+      <li>Drop a PDF. The tool reads the text layer of each page and marks what it finds: emails, phone numbers, card and bank numbers, ID numbers, birth dates, addresses and keys.</li>
+      <li>Load the language model to also find names, organizations and places.</li>
+      <li>Check the Found list. Uncheck a value, or press its box on the page, to keep it.</li>
+      <li>Drag on a page to add a box by hand, for example over a signature or a photo. Use Find a word to box every match of a word.</li>
+      <li>Press Redact and download the file. The tool then reads the new file and tells you if a hidden value is still in it.</li>
+    </ol>
+
+    <h2>Why a black rectangle is not enough</h2>
+    <p>
+      A box drawn in a PDF editor sits on top of the text. The text is still in the file. Anyone can select the area and
+      copy it, or open the file in another program and read it. Court filings and government documents have leaked
+      this way many times.
+    </p>
+
+    <h2>What the PDF redactor does to the file</h2>
+    <ul>
+      <li>The tool renders each page that has a box to an image, paints the boxes into the pixels and replaces the page with the image. The text, fonts and drawings of that page are not copied.</li>
+      <li>Redacted pages lose their selectable text. They cannot be searched or read aloud by a screen reader.</li>
+      <li>Pages without a box are copied with their selectable text. Comments and other annotations are removed.</li>
+      <li>Document properties (title, author, subject, keywords), XMP metadata, bookmarks, form data, attachments and scripts are removed from the whole file.</li>
+    </ul>
+
+    <h2>Choosing a resolution</h2>
+    <p>
+      150 DPI is good for reading on screen. Use 200 DPI for printing and 300 DPI for an archive. The resolution changes
+      the file size and the sharpness of redacted pages. It does not change how well the text is removed.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The PDF engine, the pattern rules and the optional language model all run in your browser. The model is a 19 MB
+      file and its runtime is 14 MB; both download once from this site and then work offline.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>Open the Network tab in your browser's developer tools before you drop the file. No request carries the document.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Only text in the text layer is found. A scanned page has no text layer: draw boxes by hand, or use the scanned document redactor, which reads pages with OCR.</li>
+      <li>Text inside images, logos and signatures is not found. Box it by hand.</li>
+      <li>Keep your original. Redaction cannot be undone.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

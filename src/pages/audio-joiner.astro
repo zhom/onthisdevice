@@ -1,0 +1,97 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioJoiner from '@/components/tools/media/GifAudioJoiner.tsx'
+---
+
+<ToolLayout slug="audio-joiner">
+  <GifAudioJoiner client:load />
+  <Fragment slot="explainer">
+    <h2>How to join audio files</h2>
+    <ol>
+      <li>Add all files at once. Each one gets a waveform, drawn by the audio decoder of your browser.</li>
+      <li>Reorder with the arrow buttons. The list plays from top to bottom.</li>
+      <li>Drag the handles under a waveform to trim that track. The tool uses the highlighted section.</li>
+      <li>Choose a crossfade if you want the tracks to blend.</li>
+      <li>Join, listen to the result in the player, and download.</li>
+    </ol>
+
+    <h2>Two paths, and why it matters which one runs</h2>
+    <p>
+      Joining audio can be lossless or lossy. This audio joiner picks the path from your settings and
+      tells you which one it used.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>Lossless copy</th><th>Re-encode</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Runs when</td><td>All files share one format, no trims, no crossfade</td><td>Mixed formats, any trim, or any crossfade</td></tr>
+          <tr><td>What happens</td><td>Audio packets are copied straight into the output container</td><td>Everything is decoded, normalised to 44.1 kHz stereo and encoded once</td></tr>
+          <tr><td>Quality</td><td>Bit-identical to the sources</td><td>One more generation of lossy encoding</td></tr>
+          <tr><td>Speed</td><td>Near-instant, even for hours of audio</td><td>About ten times faster than real time on a modern laptop</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If quality matters more than a smooth transition (audiobook chapters, or a recording split across
+      files), first convert all files to the same format with the
+      <a href="/audio-converter">audio converter</a>. Then join without trims to keep the lossless path.
+    </p>
+
+    <h2>How crossfades change the length</h2>
+    <p>
+      A crossfade overlaps two tracks, so it makes the result shorter. With <var>n</var> tracks and a
+      crossfade of <var>d</var> seconds, the total is:
+    </p>
+    <p><code>total = sum of trimmed lengths − (n − 1) × d</code></p>
+    <p>
+      Four tracks of three minutes each with a two-second crossfade give 12 minutes minus 6 seconds.
+      The running total above the track list includes this. A track shorter than the crossfade is
+      rejected with an explanation.
+    </p>
+    <p>
+      The fade shape is <code>tri</code>, a linear triangular curve on both sides. It is the neutral
+      default and suits speech, ambience and most music. Only sustained tonal material in matched keys
+      gains from other shapes.
+    </p>
+
+    <h2>What the waveforms are for</h2>
+    <p>
+      The Web Audio API of the browser decodes each track, and the tool reduces it to 480 peak values,
+      drawn as a bar chart. The highlighted part is what you keep; the dimmed parts are trimmed. You
+      can see where the speech starts, cut the count-in at the start of a take, or trim the noise at
+      the end of a voice note.
+    </p>
+    <p>
+      Some browsers cannot decode all formats (Opus in Safari is the usual case). Those tracks show a
+      note in place of a waveform. Trimming and joining still work without the picture.
+    </p>
+
+    <h2>Common jobs this handles</h2>
+    <ul>
+      <li>Stitching a split recording: phone recorders often split long sessions into 30-minute files. Join with no trims and no crossfade for one lossless file.</li>
+      <li>Building a continuous mix: reorder, trim the silence off each end, add a two-second crossfade.</li>
+      <li>Combining voice notes: turn a series of WhatsApp messages into one recording. To convert them first, see <a href="/opus-to-mp3">Opus to MP3</a>.</li>
+      <li>Assembling an audiobook chapter: join the takes and trim the retakes at the boundaries.</li>
+      <li>Adding an intro and outro to a podcast episode, with crossfades at both joins.</li>
+    </ul>
+
+    <h2>Why 44.1 kHz stereo on the re-encode path</h2>
+    <p>
+      To concatenate and crossfade, all branches of the filter graph must have the same sample rate,
+      sample format and channel layout, or FFmpeg cannot link them. This tool converts all branches to
+      44.1 kHz stereo, the safest common format for playback. It does not copy the properties of the
+      first file. A mono source is copied to both channels; a 48 kHz source is resampled once, with a
+      high-quality filter.
+    </p>
+
+    <h2>No upload and no file cap</h2>
+    <p>
+      You can join thirty tracks per session. The only limit on their length or total size is the
+      memory of your device, and there is no watermark or signup. Your processor does the work, so
+      server limits do not apply. To confirm that nothing is sent, open the Network tab or turn off
+      Wi-Fi first.
+    </p>
+  </Fragment>
+</ToolLayout>

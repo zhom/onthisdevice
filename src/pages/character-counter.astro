@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CharacterCounter from '@/components/tools/text/CharacterCounter.tsx'
+---
+
+<ToolLayout slug="character-counter">
+  <CharacterCounter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the character counter</h2>
+    <ol>
+      <li>Type or paste your text. The counts update on each keystroke.</li>
+      <li>Pick the limit you write for, or choose Custom and enter your own number.</li>
+      <li>Watch the ring: it fills as you approach the limit, and when you pass it, it turns red and shows “over by N”.</li>
+      <li>Decide if spaces count. Most platforms count them; a few internal systems do not.</li>
+      <li>Check the byte figure if the text goes into a database column, a URL or an HTTP header.</li>
+    </ol>
+
+    <h2>Characters, code points and bytes are three different things</h2>
+    <p>
+      For plain English the three numbers are the same, so the difference shows only when something
+      breaks. A <strong>character</strong> here is a UTF-16 code unit, the unit that JavaScript, Java,
+      .NET and most form validators count. A <strong>code point</strong> is one Unicode scalar; emoji
+      outside the basic plane take two code units each. A <strong>byte</strong> is what UTF-8 storage
+      uses.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Text</th>
+            <th>Characters (UTF-16)</th>
+            <th>UTF-8 bytes</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>hello</td><td>5</td><td>5</td><td>Plain ASCII, one byte each</td></tr>
+          <tr><td>café</td><td>4</td><td>5</td><td>é is two bytes in UTF-8</td></tr>
+          <tr><td>日本語</td><td>3</td><td>9</td><td>Most CJK characters are three bytes</td></tr>
+          <tr><td>🎉</td><td>2</td><td>4</td><td>Outside the basic plane: a surrogate pair</td></tr>
+          <tr><td>👨‍👩‍👧</td><td>8</td><td>18</td><td>Three emoji joined by zero-width joiners</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A <code>VARCHAR(255)</code> column in MySQL with a <code>utf8mb4</code> charset stores 255
+      characters but reserves up to 1,020 bytes; a Postgres <code>varchar(255)</code> counts
+      characters; an HTTP header counts bytes. If a form rejects a bio that “fits”, the byte count is
+      usually the cause.
+    </p>
+
+    <h2>Common character limits</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Where</th>
+            <th>Limit</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>X / Twitter post</td><td>280</td><td>Links count as a fixed 23 characters</td></tr>
+          <tr><td>X / Twitter bio</td><td>160</td><td></td></tr>
+          <tr><td>SMS (GSM-7)</td><td>160</td><td>153 per part when the message splits</td></tr>
+          <tr><td>SMS (UCS-2)</td><td>70</td><td>Triggered by one emoji or curly quote; 67 per part</td></tr>
+          <tr><td>Meta description</td><td>≈ 155</td><td>Google truncates by pixel width, not characters</td></tr>
+          <tr><td>Title tag</td><td>≈ 60</td><td>About 580 pixels on desktop results</td></tr>
+          <tr><td>Instagram caption</td><td>2,200</td><td>Truncated in the feed after about 125</td></tr>
+          <tr><td>LinkedIn post</td><td>3,000</td><td>“See more” appears after about 210</td></tr>
+          <tr><td>YouTube description</td><td>5,000</td><td>First 157 shown in search</td></tr>
+          <tr><td>Google Ads headline</td><td>30</td><td>Per headline, three per ad</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why an emoji can triple your SMS bill</h2>
+    <p>
+      SMS uses a 7-bit alphabet called GSM 03.38, which fits 160 characters in one message. A few
+      characters (<code>{`{ } [ ] ~ ^ \\ |`}</code> and the euro sign) are “extended” and take two slots
+      each. Any character outside that alphabet, including emoji, curly quotes from a word processor
+      and most accented characters beyond the basic set, forces the whole message into 16-bit UCS-2
+      encoding, with only 70 characters per part. A 200-character message costs two segments in GSM-7
+      but three in UCS-2. The counter shows which encoding your text uses and how many units remain
+      before the next segment.
+    </p>
+
+    <h2>Where a character counter earns its keep</h2>
+    <ul>
+      <li>Meta descriptions and title tags: write to the length that survives truncation.</li>
+      <li>Ad copy: Google and Meta reject headlines that are too long; they do not trim them.</li>
+      <li>Form and database limits: check a value before it is cut at 255 without warning.</li>
+      <li>Academic abstracts: journals often specify characters, not words.</li>
+      <li>Transactional SMS: each extra segment adds to the send cost.</li>
+    </ul>
+
+    <h2>Private by construction</h2>
+    <p>
+      The count runs in your browser. Nothing you type is uploaded, stored or logged, so you can paste
+      an embargoed press release, a password hint or a client draft.
+    </p>
+  </Fragment>
+</ToolLayout>

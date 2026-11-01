@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FindAndReplace from '@/components/tools/text/FindAndReplace.tsx'
+---
+
+<ToolLayout slug="find-and-replace">
+  <FindAndReplace client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to find and replace text</h2>
+    <ol>
+      <li>Paste your text, or drop a file onto the box.</li>
+      <li>Type the search text. The match count and the highlighted preview update as you type, before anything changes.</li>
+      <li>Type the replacement. Leave it empty to delete all matches.</li>
+      <li>Switch to regular-expression mode when you need patterns, not literal text.</li>
+      <li>Check the before/after preview and the match table, then copy, download, or press <strong>Apply to input</strong> to continue editing.</li>
+    </ol>
+
+    <h2>Plain text mode</h2>
+    <p>
+      Plain mode matches exactly what you type, with no special characters to escape. Two features are still
+      available in both fields: escape sequences (<code>\n</code> for a line break, <code>\t</code> for a
+      tab, <code>\uXXXX</code> for any Unicode character) and the whole-word option, which stops
+      <code>cat</code> from matching inside <code>category</code>. A literal <code>$1</code> in the
+      replacement stays a literal <code>$1</code>.
+    </p>
+
+    <h2>Regular expressions and capture groups</h2>
+    <p>
+      Regex mode uses the JavaScript flavour, including lookahead, lookbehind, named groups and Unicode
+      property escapes. Text in parentheses is captured, and you can reference it in the replacement.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Goal</th>
+            <th>Find</th>
+            <th>Replace with</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Renumber invoices</td><td><code>Invoice (\d+)</code></td><td><code>INV-$1</code></td></tr>
+          <tr><td>Swap “Last, First” to “First Last”</td><td><code>(\w+), (\w+)</code></td><td><code>$2 $1</code></td></tr>
+          <tr><td>US date to ISO</td><td><code>{'(\\d{2})/(\\d{2})/(\\d{4})'}</code></td><td><code>$3-$1-$2</code></td></tr>
+          <tr><td>Delete trailing spaces</td><td><code>[ \t]+$</code></td><td>(empty)</td></tr>
+          <tr><td>Collapse repeated blank lines</td><td><code>{'\\n{3,}'}</code></td><td><code>\n\n</code></td></tr>
+          <tr><td>Strip HTML tags</td><td><code>&lt;[^&gt;]+&gt;</code></td><td>(empty)</td></tr>
+          <tr><td>Wrap every line in quotes</td><td><code>^(.+)$</code></td><td><code>"$1",</code></td></tr>
+          <tr><td>Keep only the domain</td><td><code>.*@(.+)</code></td><td><code>$1</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Special replacement tokens follow the JavaScript standard: <code>$&amp;</code> is the whole match,
+      <code>$1</code>–<code>$99</code> are numbered groups, <code>$&lt;name&gt;</code> is a named group, and
+      <code>$$</code> inserts a literal dollar sign.
+    </p>
+
+    <h2>The option switches</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Case sensitive</td><td>When off, adds the <code>i</code> flag, so ACME, Acme and acme all match.</td></tr>
+          <tr><td>Whole words only</td><td>Requires a non-word character (or the start/end of the text) on both sides of the match.</td></tr>
+          <tr><td>Multiline</td><td>Adds the <code>m</code> flag, so <code>^</code> and <code>$</code> anchor to each line, not the whole text.</td></tr>
+          <tr><td>Dot matches newline</td><td>Adds the <code>s</code> flag, so <code>.</code> also matches line breaks. Needed for patterns that span lines.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the preview matters</h2>
+    <p>
+      A bad regex can destroy a document without warning. The before/after panels highlight your matches in
+      place, and the match table lists the first twenty matches with the exact replacement and the line of
+      each. Nothing changes in the input box until you press <strong>Apply to input</strong>, so you can try
+      patterns safely. If the pattern is invalid, the tool shows the error from the engine.
+    </p>
+
+    <h2>Handling large files</h2>
+    <p>
+      Matching runs in chunks, and the interface repaints between them, so a file of several megabytes stays
+      responsive. The highlighted preview shows only the first few thousand characters, for speed; the result
+      box and the download always contain the complete text. All processing happens in your browser, so
+      confidential documents stay on your machine.
+    </p>
+  </Fragment>
+</ToolLayout>

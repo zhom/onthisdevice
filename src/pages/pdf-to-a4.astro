@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResizePdfPages from '@/components/tools/pdf/ResizePdfPages.tsx'
+---
+
+<ToolLayout slug="pdf-to-a4">
+  <ResizePdfPages client:load mode="a4" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why a form insists on A4</h2>
+      <p>
+        Upload portals for universities, visa applications, tax filings and tenders are usually
+        wired to a print or archival pipeline configured for exactly one sheet size. A Letter-size
+        page fed into an A4 pipeline either gets clipped at the bottom, gets scaled without warning,
+        or trips an automated size check and lands in a manual review queue. Converting first is
+        cheap; a rejected submission is not.
+      </p>
+      <p>
+        A4 is 210 × 297 mm, or 595.28 × 841.89 points at 72 points to the inch. This PDF to A4 tool writes those
+        precise numbers into the page rectangle, so a validator that measures the MediaBox reports a
+        true A4 sheet rather than something 3 mm out.
+      </p>
+    </section>
+
+    <section>
+      <h2>What happens to each page size</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Source size</th>
+            <th scope="col">Scale onto A4</th>
+            <th scope="col">Visible effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>US Letter (216 × 279 mm)</td>
+            <td>~97%</td>
+            <td>Thin white bands left and right; slightly smaller text</td>
+          </tr>
+          <tr>
+            <td>US Legal (216 × 356 mm)</td>
+            <td>~83%</td>
+            <td>Noticeably smaller text; wide bands at the sides</td>
+          </tr>
+          <tr>
+            <td>A5 (148 × 210 mm)</td>
+            <td>~142%</td>
+            <td>Enlarged to fill the sheet; images may look softer</td>
+          </tr>
+          <tr>
+            <td>A3 (297 × 420 mm)</td>
+            <td>~71%</td>
+            <td>Fold-out tables become small but stay vector-sharp</td>
+          </tr>
+          <tr>
+            <td>A4 already</td>
+            <td>100%</td>
+            <td>No change beyond a rebuilt page object</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Scaling is always uniform: the smaller of the two ratios is used and the page is centred, so
+        the aspect ratio is preserved and nothing is ever stretched or cropped away.
+      </p>
+    </section>
+
+    <section>
+      <h2>Portrait, landscape, or match the page</h2>
+      <p>
+        The default, <em>match each page</em>, puts portrait sources on portrait A4 and landscape
+        sources on landscape A4. That keeps a wide table readable instead of shrinking it to fit a
+        portrait sheet.
+      </p>
+      <p>
+        Choose <strong>always portrait</strong> when the recipient requires a uniform document, with each sheet
+        the same way up. Wide pages will then be scaled down substantially, so check the scale
+        column in the results table before you submit.
+      </p>
+    </section>
+
+    <section>
+      <h2>A4 and text sharpness</h2>
+      <p>
+        Scaling a PDF is not like scaling a JPEG. Text and vector graphics are described
+        mathematically, so a page rendered at 97% is drawn afresh at that size and is exactly as
+        crisp as the original at any zoom or print resolution.
+      </p>
+      <p>
+        Embedded photographs are the exception. A photo placed at 300 DPI on Letter becomes about
+        310 DPI on A4: very slightly denser, which is an improvement. Scaling a small page up to
+        A4 works the other way: an A5 scan at 300 DPI ends up around 210 DPI, which is still
+        comfortably above the 150 DPI most print workflows treat as the floor.
+      </p>
+    </section>
+
+    <section>
+      <h2>Before you send it</h2>
+      <ul>
+        <li>Open the result and confirm nothing important sits in the new white bands.</li>
+        <li>If there is a file-size cap as well, run it through <a href="/compress-pdf">Compress PDF</a> afterwards.</li>
+        <li>Links and form fields are not kept. Check any interactive form again before you submit it.</li>
+        <li>Print at <em>actual size</em> if you are printing rather than uploading.</li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

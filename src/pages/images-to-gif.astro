@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioImagesToGif from '@/components/tools/media/GifAudioImagesToGif.tsx'
+---
+
+<ToolLayout slug="images-to-gif">
+  <GifAudioImagesToGif client:load />
+  <Fragment slot="explainer">
+    <h2>How to make a GIF from images</h2>
+    <ol>
+      <li>Select all images at once. The file picker keeps them in filename order, which is usually the order you want.</li>
+      <li>Drag the cards to reorder them. On a phone or with a keyboard, use the arrow buttons under each thumbnail.</li>
+      <li>Set the output width. The height follows the first image’s aspect ratio unless you unlink it.</li>
+      <li>Set the delay. 100 ms per frame is 10 fps and suits most slideshows. 40 ms is 25 fps and looks like video.</li>
+      <li>Watch the live preview, then press <strong>Create GIF</strong> and download.</li>
+    </ol>
+
+    <h2>Frame delay, frame rate and what the format can actually store</h2>
+    <p>
+      GIF does not store a frame rate. It stores a delay per frame, in hundredths of a second, in a
+      Graphic Control Extension block before each image. This has three results:
+    </p>
+    <ul>
+      <li>Timing is quantised to 10 ms. 33 ms, the natural delay for 30 fps, cannot be stored, so it becomes 30 ms or 40 ms. Delays that divide evenly into 100 give even playback: 100, 50, 40, 25 and 20 ms.</li>
+      <li>Very short delays are ignored. All mainstream browsers treat a delay of 0 or 1 centisecond as 100 ms, a rule from Netscape in the 1990s. A "60 fps GIF" made with 0 ms delays plays at 10 fps everywhere.</li>
+      <li>Frames can show for different lengths. The delay is per frame, so a title card can show for two seconds and the animation after it can run at 40 ms. Each card here has its own delay box for this.</li>
+    </ul>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Delay</th>
+            <th>Frame rate</th>
+            <th>Feels like</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1000 ms</td><td>1 fps</td><td>A slideshow with time to read each slide</td></tr>
+          <tr><td>500 ms</td><td>2 fps</td><td>Before-and-after comparisons</td></tr>
+          <tr><td>200 ms</td><td>5 fps</td><td>Step-by-step instructions, stop motion</td></tr>
+          <tr><td>100 ms</td><td>10 fps</td><td>The default. Smooth enough, half the frames of video</td></tr>
+          <tr><td>50 ms</td><td>20 fps</td><td>Screen recordings and UI demos</td></tr>
+          <tr><td>40 ms</td><td>25 fps</td><td>The closest to video that is sensible in GIF</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the palette matters more than anything else</h2>
+    <p>
+      Each GIF frame can use at most 256 colours. A generic web-safe table gives grey-green skin and
+      striped skies. This images to GIF tool uses two passes:
+    </p>
+    <ol>
+      <li><code>palettegen</code> scans all frames you added and builds a 256-entry palette from the colours in your pictures.</li>
+      <li><code>paletteuse</code> maps each frame onto that palette with error-diffusion dithering. The remaining quantisation error becomes fine noise, not hard bands.</li>
+    </ol>
+    <p>
+      A palette below 256 is the cheapest size saving, because GIF's LZW compression works much better
+      on fewer distinct symbols. Screenshots, line art and flat illustrations often look the same at 64
+      colours and encode at half the size. Photographs need the full 256.
+    </p>
+
+    <h2>Choosing an output size</h2>
+    <p>
+      Size scales with area, so the width has a squared effect: 640 px to 480 px removes about 44% of
+      the pixels, and 320 px removes 75%. Frame count is the other multiplier. The full size equation:
+    </p>
+    <p><code>bytes ≈ width × height × frames × compression factor</code></p>
+    <p>
+      A twelve-frame, 480 × 270 animation is about 700 KB with a rich palette and about 300 KB with 64
+      colours. To get under a specific size, <a href="/compress-gif">Compress GIF</a> searches for the
+      settings that fit.
+    </p>
+
+    <h2>Fitting images that are not the same shape</h2>
+    <p>
+      A GIF has one canvas for the whole animation, so mixed portrait and landscape sources must fit
+      one shape. <strong>Fit inside</strong> keeps each picture complete and fills the remaining space
+      with the padding colour. Use it for product photos and screenshots. <strong>Fill the frame</strong>
+      scales up until there are no gaps and crops the overflow, which suits faces and textures.
+      <strong>Stretch</strong> distorts, and is almost never correct.
+    </p>
+
+    <h2>When a GIF is the wrong format</h2>
+    <p>
+      Above about ten seconds, an MP4 or WebM is five to twenty times smaller at better quality. Those
+      codecs store how a frame differs from the previous one, and GIF stores each frame in full. Chat
+      apps, wikis and social networks all play short muted videos inline. Use GIF where the destination
+      requires it (email signatures, some documentation systems, old forums, Slack and Discord emoji),
+      and use the <a href="/video-converter">video converter</a> for the rest.
+    </p>
+
+    <h2>Everything happens in this tab</h2>
+    <p>
+      The browser decodes your images, draws them on a canvas at the output size, and passes them to
+      FFmpeg compiled to WebAssembly. After the engine is cached, the tool works offline. The limits
+      are 200 frames per session and the free memory of your device.
+    </p>
+  </Fragment>
+</ToolLayout>

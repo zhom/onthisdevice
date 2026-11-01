@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RatioCalculator from '@/components/tools/math/RatioCalculator.tsx'
+---
+
+<ToolLayout slug="ratio-calculator">
+  <RatioCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>Four ratio calculator tabs</h2>
+    <ul>
+      <li>Solve A : B = C : D. Leave one box empty and the tool finds the missing term by cross-multiplication.</li>
+      <li>Simplify reduces a ratio with any number of terms to its lowest whole-number form.</li>
+      <li>Scale gives all the terms of an equivalent ratio when you know one of them.</li>
+      <li>Split a total divides an amount between people or parts in proportion.</li>
+    </ul>
+
+    <h2>Solving a proportion</h2>
+    <p>
+      Two ratios are equal when their cross products match: A : B = C : D means A × D = B × C. Rearrange
+      that identity to get each missing term:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th scope="col">Unknown</th><th scope="col">Rearranged formula</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>A = (B × C) ÷ D</td></tr>
+          <tr><td>B</td><td>B = (A × D) ÷ C</td></tr>
+          <tr><td>C</td><td>C = (A × D) ÷ B</td></tr>
+          <tr><td>D</td><td>D = (B × C) ÷ A</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you fill in all four boxes, the tool checks whether the two ratios are equivalent.
+    </p>
+
+    <h2>Simplifying a ratio</h2>
+    <p>
+      Divide each term by the greatest common divisor of all of them. The GCD of 1920 and 1080 is 120, which
+      gives 16 : 9. Decimal terms are first multiplied by a power of ten, so 2.5 : 1.5 becomes 25 : 15 and
+      then 5 : 3. The tool also shows the “1 : n” form, which is how aspect ratios and gear ratios are
+      usually given.
+    </p>
+
+    <h2>Splitting a total</h2>
+    <p>
+      To share 1,200 in the ratio 2 : 3 : 5, add the terms to get 10 shares, divide 1,200 by 10 to get 120 per
+      share, then multiply: 240, 360 and 600. The split tab shows the exact value, a rounded value and the
+      percentage of the total for each part, so you can see if rounding left a penny unallocated.
+    </p>
+
+    <h2>Common ratios</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th scope="col">Ratio</th><th scope="col">Simplified</th><th scope="col">Where it appears</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1920 : 1080</td><td>16 : 9</td><td>HD and 4K video, most monitors</td></tr>
+          <tr><td>1280 : 1024</td><td>5 : 4</td><td>older LCD panels</td></tr>
+          <tr><td>3840 : 1600</td><td>12 : 5</td><td>ultrawide displays</td></tr>
+          <tr><td>210 : 297</td><td>70 : 99</td><td>A4 paper, approximately 1 : √2</td></tr>
+          <tr><td>1 : 1.618</td><td>Irrational</td><td>the golden ratio</td></tr>
+          <tr><td>4 : 3</td><td>4 : 3</td><td>classic television and iPad screens</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Ratios, fractions and percentages</h2>
+    <p>
+      A two-term ratio A : B and the fraction A/B hold the same information and answer different questions.
+      The ratio compares two parts with each other; a fraction of the whole compares one part with the total.
+      If a class is 3 : 2 boys to girls, boys are 3/5 of the class (60%) and 3/2 as many as the girls.
+      Mixing up “part to part” and “part to whole” is the most common ratio mistake, so the simplify tab also
+      shows each term as a percentage of the total.
+    </p>
+
+    <h2>Scaling recipes and drawings</h2>
+    <p>
+      Scaling keeps a ratio equivalent by multiplying each term by the same factor. If a recipe for four
+      people uses 300 g of flour and you cook for six, the factor is 6 ÷ 4 = 1.5, so you multiply each
+      ingredient by 1.5. Map and model scales work the same way: on a 1 : 50 drawing, 1 cm on paper is 50 cm
+      in reality, so a 7.4 cm line is 370 cm.
+    </p>
+
+    <h2>Accuracy</h2>
+    <p>
+      Simplification uses exact integer arithmetic with arbitrary-precision greatest common divisors, so
+      large terms reduce correctly. Proportion solving and splitting use double-precision arithmetic and
+      show up to ten decimal places. The ratio calculator runs in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

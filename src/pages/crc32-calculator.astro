@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="crc32-calculator">
+  <DevEncodeHash client:load algorithm="CRC32" />
+  <Fragment slot="explainer">
+    <h2>A checksum, not a hash</h2>
+    <p>
+      CRC-32 catches accidents: a flipped bit on a wire, a bad sector, a truncated transfer. It does
+      not resist attacks: a different file with the same CRC takes seconds to make, with no special
+      hardware. Use it against physical errors, and a real hash against people.
+    </p>
+
+    <h2>Which variant this is</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Polynomial</td><td>0x04C11DB7, reflected as 0xEDB88320</td></tr>
+          <tr><td>Initial value</td><td>0xFFFFFFFF</td></tr>
+          <tr><td>Final XOR</td><td>0xFFFFFFFF</td></tr>
+          <tr><td>Input / output reflected</td><td>Yes</td></tr>
+          <tr><td>Known as</td><td>CRC-32, CRC-32/ISO-HDLC, &ldquo;the zip CRC&rdquo;</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      ZIP, gzip, PNG, Ethernet and most tools that report a &ldquo;CRC32&rdquo; use this variant.
+      CRC-32C (Castagnoli, polynomial 0x1EDC6F41) is a different function, used by iSCSI, ext4 and
+      SSE4.2 hardware instructions. Its values do not match these, and this is expected.
+    </p>
+
+    <h2>Why ZIP tools show a different number</h2>
+    <p>
+      The CRC in a ZIP entry is calculated over the uncompressed contents of that one member, not over
+      the archive file. So the CRC of <code>archive.zip</code> as a file is not the CRC that your
+      archiver lists for <code>document.txt</code> inside it. Extract the member first, then calculate
+      its CRC here, and the values agree.
+    </p>
+
+    <h2>What CRC-32 is genuinely good at</h2>
+    <p>
+      Its guarantees are precise. A CRC with a well-chosen 32-bit polynomial detects all single-bit
+      errors, all double-bit errors within a very long span, all odd numbers of bit errors, and all
+      bursts of errors up to 32 bits, with certainty. Beyond that, it misses about one in four billion
+      random corruptions.
+    </p>
+    <p>
+      For this reason it is used at the bottom of the stack: in Ethernet frames, in each PNG chunk, in
+      each ZIP entry. It is cheap enough for hardware to calculate at line rate and strong enough for
+      the errors that real wires and disks make.
+    </p>
+
+    <h2>Hex or decimal</h2>
+    <p>
+      The value is a 32-bit unsigned integer. Most tools print it as eight lowercase hex characters;
+      some libraries return the same number in decimal, and a few, in languages with signed 32-bit
+      integers, show it as a negative number. The page shows all forms, so you can match the one you
+      have.
+    </p>
+
+    <h2>Streaming, so size is not an issue</h2>
+    <p>
+      CRC-32 updates one 32-bit register as bytes arrive, so this CRC32 calculator reads a file in
+      slices and holds only one chunk at a time. A 20&nbsp;GB archive is as easy as a text file, and
+      nothing is uploaded, so there is no transfer to wait for.
+    </p>
+  </Fragment>
+</ToolLayout>

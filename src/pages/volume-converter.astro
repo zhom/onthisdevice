@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="volume-converter">
+  <UnitConverter client:load dimension="volume" from="l" to="gal-us" />
+  <Fragment slot="explainer">
+    <h2>How to convert a volume</h2>
+    <ol>
+      <li>Type into either field. The volume converter works in both directions, so litres to gallons and gallons to litres use the same control.</li>
+      <li>Choose the units carefully where a US and an imperial version both exist. The list puts them in separate groups and labels each symbol, for example "gal (US)" and "gal (UK)".</li>
+      <li>Use the chart below for a range of values, for example to scale a tank, a batch or a recipe.</li>
+    </ol>
+
+    <h2>US and imperial units are not the same</h2>
+    <p>
+      This causes more wrong volume conversions than anything else. The US and UK use the same names for
+      different sizes:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Unit</th><th>US</th><th>Imperial (UK)</th><th>Difference</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gallon</td><td>3.785 L</td><td>4.546 L</td><td>UK is 20 % larger</td></tr>
+          <tr><td>Quart</td><td>0.946 L</td><td>1.137 L</td><td>UK is 20 % larger</td></tr>
+          <tr><td>Pint</td><td>473 mL</td><td>568 mL</td><td>UK is 20 % larger</td></tr>
+          <tr><td>Fluid ounce</td><td>29.57 mL</td><td>28.41 mL</td><td>US is 4 % larger</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The fluid ounce is the other way round because a US pint is 16 fl oz and an imperial pint is 20. So a
+      British pint of beer is about 95 mL bigger than an American one, although a British fluid ounce is the
+      smaller unit.
+    </p>
+
+    <h2>Which factors are exact</h2>
+    <p>
+      The imperial gallon is defined as exactly 4.54609 litres. The US liquid gallon is defined as exactly 231
+      cubic inches, and the inch is exactly 25.4 mm, so it is exactly 3.785411784 litres. The other units in
+      each system divide from its gallon without rounding: quarts are quarters, pints are eighths, and US
+      fluid ounces are 128ths.
+    </p>
+    <p>
+      The litre is exactly one cubic decimetre, so 1 mL and 1 cm³ are the same volume, and engine displacement
+      can be given in cc or litres. The oil barrel is exactly 42 US gallons, a figure from the 19th-century
+      Pennsylvania oil trade, now fixed by convention and not by any physical barrel.
+    </p>
+
+    <h2>Everyday container volumes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Container</th><th>Metric</th><th>US</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Espresso shot</td><td>30 mL</td><td>1 fl oz</td></tr>
+          <tr><td>Soft drink can</td><td>330 mL / 355 mL</td><td>11.2 / 12 fl oz</td></tr>
+          <tr><td>Wine bottle</td><td>750 mL</td><td>25.4 fl oz</td></tr>
+          <tr><td>Milk carton</td><td>1 L</td><td>33.8 fl oz</td></tr>
+          <tr><td>US milk jug</td><td>3.785 L</td><td>1 gallon</td></tr>
+          <tr><td>Small car fuel tank</td><td>45 L</td><td>11.9 US gal</td></tr>
+          <tr><td>Bathtub</td><td>150 L</td><td>39.6 US gal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When you need weight instead of volume</h2>
+    <p>
+      Volume and weight are interchangeable only for water, where one litre weighs one kilogram by design. For
+      other substances the answer depends on density: a litre of vegetable oil is about 918 g, a litre of honey
+      about 1.44 kg. To convert a recipe from cups to grams, use the cooking converter, which has a density
+      table for common baking ingredients.
+    </p>
+  </Fragment>
+</ToolLayout>

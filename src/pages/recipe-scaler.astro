@@ -1,0 +1,93 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeRecipeScaler from '@/components/tools/units/UnitsLifeRecipeScaler.tsx'
+---
+
+<ToolLayout slug="recipe-scaler">
+  <UnitsLifeRecipeScaler client:load />
+  <Fragment slot="explainer">
+    <h2>Paste the whole ingredient list</h2>
+    <p>
+      To scale a recipe by hand you do about fourteen small multiplications, and each one is a chance to
+      drop a factor of two. The recipe scaler takes the whole ingredient list at once, finds the quantity at
+      the start of each line, multiplies it, and rewrites the line with the rest of the text unchanged.
+    </p>
+    <p>
+      Text that is not a quantity passes through, so headings, method notes and "salt to taste" stay, and
+      the output is still a list you can cook from.
+    </p>
+
+    <h2>What the recipe scaler understands</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Input line</th><th scope="col">Doubled</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2 cups all-purpose flour</td><td>4 cups all-purpose flour</td></tr>
+        <tr><td>1 1/2 tsp baking powder</td><td>3 tsp baking powder</td></tr>
+        <tr><td>3/4 cup granulated sugar</td><td>1 1/2 cups granulated sugar</td></tr>
+        <tr><td>113 g butter, softened</td><td>226 g butter, softened</td></tr>
+        <tr><td>2-3 tbsp water, as needed</td><td>4&ndash;6 tbsp water, as needed</td></tr>
+        <tr><td>2 large eggs</td><td>4 large eggs</td></tr>
+        <tr><td>Salt to taste</td><td>Salt to taste</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The parser reads fractions, mixed numbers, unicode fractions such as 1&frac12;, decimals and ranges.
+      Results are rounded to fractions a measuring cup can hit: eighths for cups and teaspoons, quarters for
+      tablespoons and ounces. You get 1 3/8 cups, never 1.3333 cups.
+    </p>
+
+    <h2>What scales linearly, and what does not</h2>
+    <p>
+      Ingredient quantities scale; cooking physics does not. After the tool does the arithmetic, adjust these
+      by hand:
+    </p>
+    <ul>
+      <li>
+        Salt and strong spices: perceived intensity is not linear with concentration. Scale to about
+        85&ndash;90% and add more to taste.
+      </li>
+      <li>
+        Raising agents: baking powder and soda scale roughly linearly up to a point, but a doubled batter in
+        a deeper tin rises differently. Many bakers use about 90% when they double a recipe.
+      </li>
+      <li>
+        Baking time and tin size: a doubled traybake in a bigger tin of the same depth needs about the same
+        time. In the same tin it is twice as deep and needs much longer. Match the depth, not the volume.
+      </li>
+      <li>
+        Anything you sear or fry: double the quantity in the same pan and it steams and does not brown. Cook
+        in two batches; the total time more than doubles.
+      </li>
+      <li>
+        Evaporation: a doubled sauce in a wider pan reduces at a different rate. Judge reductions by
+        consistency, never by the clock.
+      </li>
+      <li>
+        Alcohol and acid: wine, vinegar and citrus scale down better than up. Taste before you add the full
+        amount.
+      </li>
+    </ul>
+
+    <h2>Halving an egg</h2>
+    <p>
+      Eggs are the usual problem when you halve a recipe. Beat one egg fully, weigh it (a large egg is about
+      50 g out of shell) and use half the weight. Half of an unbeaten egg gives an unpredictable mix of white
+      and yolk, which matters in custards and enriched doughs.
+    </p>
+
+    <h2>Metric weights alongside</h2>
+    <p>
+      Turn on the metric option to add a gram figure to each cup and spoon measure. The figures come from
+      the same ingredient density table as the grams-to-cups converter on this site. Known ingredients get a
+      weight; others get a volume in millilitres.
+    </p>
+
+    <h2>Your recipe stays in the tab</h2>
+    <p>
+      The text you paste stays in this page. It is not saved to a server or sent with analytics, which
+      matters if the recipe is unpublished or belongs to someone else.
+    </p>
+  </Fragment>
+</ToolLayout>

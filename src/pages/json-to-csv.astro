@@ -1,0 +1,93 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JsonToCsv from '@/components/tools/data/JsonToCsv.tsx'
+---
+
+<ToolLayout slug="json-to-csv">
+  <JsonToCsv client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert JSON to CSV</h2>
+    <ol>
+      <li>Paste or drop your JSON. An array of objects is the usual input. The tool also recognises single objects, arrays of arrays and column-array objects.</li>
+      <li>Pick a delimiter. Comma is standard. Semicolon suits many European Excel installs. Tab gives a TSV that you can paste into a spreadsheet.</li>
+      <li>Set how deep to flatten. Nested objects become dotted columns. Arrays stay as one JSON-encoded cell or spread into indexed columns.</li>
+      <li>Order the columns. Keep source order, sort alphabetically, or type an exact list. Columns you leave out go at the end.</li>
+      <li>Add the UTF-8 BOM if the file goes into Excel, then download the <code>.csv</code> or <code>.tsv</code>.</li>
+    </ol>
+
+    <h2>How each JSON shape becomes a table</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Input</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2"><code>[&#123;a:1&#125;, &#123;a:2&#125;]</code></td>
+            <td class="border-b px-3 py-2">One row per object; keys become the header</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>&#123;a:[1,2], b:[3,4]&#125;</code></td>
+            <td class="border-b px-3 py-2">Column arrays are transposed into two rows</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>&#123;a:1, b:2&#125;</code></td>
+            <td class="border-b px-3 py-2">A single object becomes a single row</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>[[1,2],[3,4]]</code></td>
+            <td class="border-b px-3 py-2">Raw grid; columns are named column_1, column_2…</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2"><code>[1, 2, 3]</code></td>
+            <td class="border-b px-3 py-2">A single “value” column with one row per item</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Flattening rules</h2>
+    <p>
+      Each leaf of the document becomes one column, named by its path. From
+      <code>&#123; "contact": &#123; "email": "a@b.c" &#125;, "skills": ["go", "sql"] &#125;</code> you get:
+    </p>
+    <ul>
+      <li><code>contact.email</code>, always, when flattening is on.</li>
+      <li><code>skills</code> with <code>["go","sql"]</code>, by default. This keeps the array whole, so you can import it again.</li>
+      <li><code>skills.0</code> and <code>skills.1</code> when <strong>Split arrays into columns</strong> is on. This is better for pivot tables and filters.</li>
+    </ul>
+    <p>
+      Records with different keys are merged: the header has each column that appears anywhere, and rows
+      without a field get an empty cell. Column order follows first appearance in the document unless you
+      change it.
+    </p>
+
+    <h2>Quoting and escaping</h2>
+    <p>
+      By default a field is quoted only when it contains the delimiter, a double quote, a carriage return
+      or a newline. Quotes inside a quoted field are doubled, per RFC 4180, so <code>She said "hi"</code>
+      becomes <code>"She said ""hi"""</code>. Switch on <strong>Quote every field</strong> when the
+      receiving system is strict about types and must treat all values as text.
+    </p>
+
+    <h2>Getting a clean import into Excel</h2>
+    <p>
+      Two settings matter. First, the UTF-8 BOM: without those three leading bytes, Excel assumes the local
+      code page and turns José into JosÃ©. Second, the delimiter: Excel uses your Windows list separator,
+      which is a semicolon in much of Europe. If a double-click puts each row in column A, export again with
+      semicolons, or use the <a href="/csv-to-excel">CSV to Excel converter</a>, which writes a real
+      <code>.xlsx</code> workbook.
+    </p>
+
+    <h2>Everything stays on your device</h2>
+    <p>
+      API dumps often contain email addresses, tokens and order histories. Papa Parse parses the JSON and
+      builds the CSV in your tab, and the download comes from an in-memory blob, so the data stays on your
+      device.
+    </p>
+  </Fragment>
+</ToolLayout>

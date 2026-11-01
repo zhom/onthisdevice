@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="mov-to-mp4">
+  <VideoRemux
+    client:load
+    from="mov"
+    target="mp4"
+    hint="QuickTime MOV from an iPhone, a DSLR or a Mac. No size cap and no queue, and nothing is uploaded"
+  />
+  <Fragment slot="explainer">
+    <h2>How to convert MOV to MP4</h2>
+    <ol>
+      <li>Drop your <strong>.mov</strong> file onto the box above, or click it to browse.</li>
+      <li>If you want, press <strong>Check what is inside first</strong>. FFmpeg reads the header and shows which codecs the file holds and if they can be copied.</li>
+      <li>Press <strong>Convert to MP4</strong>. The first run downloads the 10 MB video engine from this site once. After that it is cached and works offline.</li>
+      <li>Watch the real percentage, preview the result in the page, and download it.</li>
+    </ol>
+
+    <h2>Why this can finish in seconds</h2>
+    <p>
+      A video file has two separate parts. The container (MOV, MP4, MKV) is metadata that describes
+      where each chunk of data is. The codec (H.264, HEVC, ProRes) is how the pictures are compressed.
+      MOV and MP4 are very close relatives: both use the ISO base media file format, which Apple created
+      as QuickTime and gave to the standards body that made it into MP4.
+    </p>
+    <p>
+      So when your MOV already contains H.264 or HEVC video and AAC audio (almost all iPhone
+      recordings, DSLR clips and QuickTime exports), MOV to MP4 does not change the picture data.
+      FFmpeg copies each compressed packet into a new container and writes a new index. That is a
+      <strong>remux</strong>, and so a 2 GB file can convert faster than an upload service could
+      receive it.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>What is inside your MOV</th>
+            <th>What happens</th>
+            <th>Speed</th>
+            <th>Quality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>H.264 + AAC (iPhone, most cameras)</td>
+            <td>Streams copied into MP4</td>
+            <td>Seconds</td>
+            <td>Identical. Nothing re-compressed</td>
+          </tr>
+          <tr>
+            <td>HEVC / H.265 + AAC (iPhone “High Efficiency”)</td>
+            <td>Streams copied into MP4</td>
+            <td>Seconds</td>
+            <td>Identical, but needs a recent player</td>
+          </tr>
+          <tr>
+            <td>H.264 + PCM audio (screen capture, some editors)</td>
+            <td>Video copied, audio re-encoded to AAC</td>
+            <td>Fast</td>
+            <td>Picture untouched, audio effectively unchanged</td>
+          </tr>
+          <tr>
+            <td>Apple ProRes / Animation (editing masters)</td>
+            <td>Full transcode to H.264</td>
+            <td>Around real time</td>
+            <td>Much smaller file, some loss</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Windows will not play my iPhone MOV</h2>
+    <p>
+      This can be two different problems. If the file does not open, the cause is the container:
+      Windows Media Player has never handled QuickTime well, and MP4 fixes it. If the file opens but
+      shows a black screen or a missing-codec error, the cause is <strong>HEVC</strong>, and Windows
+      charges for an HEVC decoder. Then a stream copy is not enough. Set the method to
+      <strong>always re-encode</strong>, so the video becomes H.264, which all versions of Windows play
+      without extra software.
+    </p>
+    <p>
+      To avoid the problem at the source, on an iPhone set <strong>Settings → Camera → Formats → Most
+      Compatible</strong>. It records H.264, not HEVC.
+    </p>
+
+    <h2>What this tool does not do</h2>
+    <ul>
+      <li>It does not encode <strong>ProRes</strong>. It can read ProRes MOV files and convert them to H.264, but it cannot make a ProRes master. That needs a desktop encoder.</li>
+      <li>It does not edit. Trimming, cropping and rotating are separate tools on this site, so each one does one clear job.</li>
+      <li>It does not repair a damaged MOV. If the recording stopped early and the index (the “moov atom”) was never written, no converter can recover it. This one tells you so and does not make a zero-byte file.</li>
+    </ul>
+
+    <h2>Why do it in the browser at all</h2>
+    <p>
+      An upload converter puts your footage on a rented machine, often with a 100 MB or 1 GB cap and a
+      queue, and your video stays on its disk until deletion. Here the same FFmpeg code runs as
+      WebAssembly in your tab. The size limit is your own memory, there is no queue, and the file cannot
+      leave the device: the site’s content security policy lists no third-party origin.
+    </p>
+  </Fragment>
+</ToolLayout>

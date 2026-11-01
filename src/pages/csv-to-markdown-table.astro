@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatMarkdownTable from '@/components/tools/data/DevFormatMarkdownTable.tsx'
+---
+
+<ToolLayout slug="csv-to-markdown-table">
+  <DevFormatMarkdownTable client:load mode="csv-to-md" />
+  <Fragment slot="explainer">
+    <h2>Why a naive comma split is not enough</h2>
+    <p>
+      Many quick CSV to Markdown converters split each line on commas. That fails when a field contains
+      a comma, which happens quickly in real data: names (&ldquo;Doe, Jane&rdquo;), addresses, currency
+      in some locales, and free-text columns. RFC 4180 defines the escape (wrap the field in double
+      quotes, and double each quote inside it), and this page implements it.
+    </p>
+    <table>
+      <thead><tr><th>CSV field</th><th>Correct value</th><th>What a naive split produces</th></tr></thead>
+      <tbody>
+        <tr><td><code>"Doe, Jane"</code></td><td>Doe, Jane</td><td>Two columns</td></tr>
+        <tr><td><code>"She said ""hi"""</code></td><td>She said "hi"</td><td>Stray quotes</td></tr>
+        <tr><td>A quoted field containing a newline</td><td>One multi-line value</td><td>Two broken rows</td></tr>
+        <tr><td><code>,,</code></td><td>Two empty fields</td><td>Usually collapsed to one</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Delimiter detection</h2>
+    <p>
+      The parser checks the first rows for the separator that gives a consistent column count, and it
+      recognises comma, tab, semicolon and pipe. This matters:
+    </p>
+    <ul>
+      <li>Data copied from a spreadsheet is tab-separated, not comma-separated.</li>
+      <li>Excel in a locale where the comma is the decimal separator exports semicolon-separated files and still calls them CSV.</li>
+      <li>Log and database exports often use a pipe.</li>
+    </ul>
+    <p>The detected delimiter shows next to the input, so you can see a wrong guess before you copy.</p>
+
+    <h2>Getting the header right</h2>
+    <p>
+      A GFM table always shows its first row as a header; the format has no headerless table. If your
+      CSV starts with data, turn off <strong>first row is a header</strong> in the output options. The
+      tool then generates a <code>Column 1</code>, <code>Column 2</code> header and keeps all your rows.
+      If your CSV has two header rows, merge them in the grid first.
+    </p>
+
+    <h2>Alignment for numeric columns</h2>
+    <p>
+      Right-aligned numbers make a data table much easier to read: the digits line up by place value,
+      and a reader can compare sizes at a glance. Click the alignment button of a column to cycle left,
+      centre and right. This writes the colon markers into the separator row. Use left for text, right
+      for numbers and dates, and centre seldom.
+    </p>
+
+    <h2>Edit before you export</h2>
+    <p>
+      The parsed CSV goes into an editable grid before it becomes Markdown. You can delete columns you do
+      not need, fix a typo, remove an empty last row, and set alignment before any output is generated.
+      This is usually faster than cleaning the CSV first, and much faster than fixing the Markdown
+      later.
+    </p>
+
+    <h2>Large files</h2>
+    <p>
+      There is no row limit and no upload, so the limit is the number of input fields your browser can
+      render. A few thousand rows is fine; a hundred thousand is not, and for that size a script is
+      better than a web page. For mid-sized files, paste the header and a sample, get the shape right,
+      then convert the full file with <a href="/csv-to-json">CSV to JSON</a> or a spreadsheet.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="em-to-px">
+  <DevFormatCssUnits client:load from="em" to="px" />
+  <Fragment slot="explainer">
+    <h2>The formula depends on the parent</h2>
+    <pre><code>px = em × parent font size
+
+Parent 16px:  1.25em = 20px
+Parent 14px:  1.25em = 17.5px
+Parent 20px:  1.25em = 25px</code></pre>
+    <p>
+      This is the practical difference from rem: the same em value means different things in different
+      places, so &ldquo;what is 1.25em?&rdquo; has no answer without context. Set the parent field above to
+      the real computed size to get a useful number.
+    </p>
+
+    <h2>Finding the parent font size</h2>
+    <ol>
+      <li>Open devtools and select the element.</li>
+      <li>Switch to the <strong>Computed</strong> panel, not Styles, which shows the declared value.</li>
+      <li>Read <code>font-size</code>. This is a resolved pixel value after all inheritance.</li>
+      <li>For a <code>font-size</code> declared in em, select the parent element and read its computed size.</li>
+    </ol>
+
+    <h2>The two-bases problem</h2>
+    <p>
+      One rule can use two different bases at the same time, and almost everyone gets this wrong once.
+    </p>
+    <pre><code>/* Parent computes to 16px */
+.badge &#123;
+  font-size: 0.75em;   /* 0.75 × 16 = 12px   (parent's size) */
+  padding: 0.5em;      /* 0.5  × 12 = 6px    (this element's size) */
+&#125;</code></pre>
+    <p>
+      The padding is 6px, not 8px, because <code>font-size</code> resolves first, and the other properties
+      of the element resolve against the result. If the spacing of a component is smaller than you
+      expected, this is almost always the cause.
+    </p>
+
+    <h2>Common em values at a 16px parent</h2>
+    <table>
+      <thead><tr><th>em</th><th>px</th><th>Where you see it</th></tr></thead>
+      <tbody>
+        <tr><td>0.5</td><td>8</td><td>Gap between an icon and its label</td></tr>
+        <tr><td>0.625</td><td>10</td><td>Vertical padding on a compact button</td></tr>
+        <tr><td>0.75</td><td>12</td><td>Badge and caption text</td></tr>
+        <tr><td>0.875</td><td>14</td><td>Secondary text</td></tr>
+        <tr><td>1</td><td>16</td><td>Same as the surrounding text: icons, inline spacing</td></tr>
+        <tr><td>1.25</td><td>20</td><td>Sub-heading, wide horizontal padding</td></tr>
+        <tr><td>1.5</td><td>24</td><td>Heading, or a large spacing step</td></tr>
+        <tr><td>2</td><td>32</td><td>Section heading</td></tr>
+      </tbody>
+    </table>
+
+    <h2>em inside a media query</h2>
+    <p>
+      A special case: inside <code>@media</code>, em is always relative to the initial font size of the
+      browser (the default or the size the user chose), never to a font size you declared. So
+      <code>@media (min-width: 48em)</code> applies at 768px for a default user and at 960px for a user
+      whose default is 20px, which is usually the behaviour you want. It is also not affected by a project
+      that sets <code>html &#123; font-size: 62.5% &#125;</code>, so em breakpoints are more robust than rem
+      breakpoints in such projects.
+    </p>
+
+    <h2>Auditing an existing component</h2>
+    <p>
+      Converting the em values of a component to px checks that it is internally consistent. If the
+      padding, gap and radius all fall on the same spacing grid at the base size, the component scales
+      cleanly. If one of them is 6.5px, someone adjusted it by eye, and it will look wrong at a different
+      size.
+    </p>
+  </Fragment>
+</ToolLayout>

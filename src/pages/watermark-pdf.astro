@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WatermarkPdf from '@/components/tools/pdf/WatermarkPdf.tsx'
+---
+
+<ToolLayout slug="watermark-pdf">
+  <WatermarkPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to watermark a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above.</li>
+        <li>
+          Choose <strong>Text</strong> and type the wording, such as DRAFT, CONFIDENTIAL, a client name or a
+          date, or switch to <strong>Image</strong> and drop in a PNG or JPEG logo.
+        </li>
+        <li>
+          Set opacity, rotation, size, colour and position. Turn on tiling to repeat the mark across
+          the whole page.
+        </li>
+        <li>Check the live preview, choose which pages to mark, then press <strong>Apply</strong>.</li>
+      </ol>
+      <p>
+        The preview is a real render of the page, with the watermark drawn on top with the same geometry as
+        the export, so the saved file has the position, angle and coverage you see.
+      </p>
+    </section>
+
+    <section>
+      <h2>Recommended PDF watermark settings</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col">Look</th>
+              <th scope="col">Text</th>
+              <th scope="col">Size / angle</th>
+              <th scope="col">Opacity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Classic diagonal draft</td>
+              <td class="font-mono">DRAFT</td>
+              <td>60-80 pt, 45°, centred</td>
+              <td class="tabular-nums">15-25%</td>
+            </tr>
+            <tr>
+              <td>Discreet corner stamp</td>
+              <td class="font-mono">Internal use only</td>
+              <td>9-11 pt, 0°, bottom left</td>
+              <td class="tabular-nums">55-70%</td>
+            </tr>
+            <tr>
+              <td>Anti-copy tiling</td>
+              <td class="font-mono">name@example.com</td>
+              <td>14-18 pt, 30°, tiled, 40 pt gap</td>
+              <td class="tabular-nums">8-12%</td>
+            </tr>
+            <tr>
+              <td>Logo on every page</td>
+              <td>PNG with transparency</td>
+              <td>20-40% scale, 0°, top right</td>
+              <td class="tabular-nums">60-100%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Light grey at 15% usually keeps the text below more readable than red at 15%, because coloured
+        watermarks compete with body text. If the document will be printed in black and white, check that the
+        mark is still visible at your chosen opacity.
+      </p>
+    </section>
+
+    <section>
+      <h2>Over the content or behind it?</h2>
+      <p>
+        <strong>Over</strong> adds the watermark to the end of the page's content stream, so it is always
+        visible. This is the standard behaviour and the right choice for a DRAFT stamp.
+      </p>
+      <p>
+        <strong>Behind</strong> must rebuild the file: each original page is embedded as a single object, the
+        watermark is drawn first and the page is drawn on top. Text stays sharp, but the rebuild flattens
+        interactive items: links, form fields and comments become part of the page content. On scanned pages
+        it has no visible effect, because the opaque white background of the scan hides anything below it.
+      </p>
+    </section>
+
+    <section>
+      <h2>What a watermark can and cannot do</h2>
+      <p>
+        A watermark discourages casual reuse and shows the status of a document at a glance. It is not a
+        security control: it is ordinary page content, and anyone with a full PDF editor can try to remove it.
+        To trace copies per recipient, tile a low-opacity recipient name across the page. That is much harder
+        to remove than a single central stamp, because each tile must be removed without damage to the text
+        below.
+      </p>
+      <p>
+        Text watermarks use the fonts built into every PDF reader, which cover the WinAnsi character set:
+        Latin letters, digits and common punctuation. Chinese, Japanese, Arabic, Cyrillic and emoji need an
+        embedded font file. Make those into a transparent PNG and use image mode.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

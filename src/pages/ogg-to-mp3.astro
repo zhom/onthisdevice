@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="ogg-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".ogg,.oga,.opus,.ogv,audio/ogg"
+    sourceLabel="OGG"
+    sourceHint="Vorbis or Opus inside an Ogg container: game audio, Wikipedia clips, voice notes, Linux recordings"
+    target="mp3"
+    defaultBitrate="192"
+    formatNote="Ogg files hold either Vorbis or Opus, and the extension does not say which. Both are decoded here, so you do not need to check first."
+  />
+  <Fragment slot="explainer">
+    <h2>Ogg is a container, not a codec</h2>
+    <p>
+      People often confuse this. <code>.ogg</code> describes the wrapper. The audio inside is usually
+      Vorbis, but since about 2015 it is more and more often Opus. <code>.oga</code> is the formally
+      correct extension for Ogg audio, and <code>.ogv</code> is Ogg video. The filename does not tell
+      you what the decoder will find.
+    </p>
+    <p>
+      So "my Ogg file won't open" has many different causes. A player that supports Vorbis may not
+      support Opus in the same container. This OGG to MP3 converter decodes both, and the few Ogg FLAC
+      files in use, so you do not need to know which you have.
+    </p>
+
+    <h2>Where Ogg files come from</h2>
+    <ul>
+      <li>Games: Vorbis was the default soundtrack format for a generation of PC games, because it is patent-free and had no licensing fee, unlike MP3 at the time.</li>
+      <li>Wikipedia and Wikimedia Commons: their audio is Ogg on principle, because the projects require freely licensed, patent-free formats.</li>
+      <li>Spotify: streams are Ogg Vorbis, so offline caches and some third-party rips come in this format.</li>
+      <li>Linux desktops: GNOME Sound Recorder, the default export of some audio editors, and many system sounds.</li>
+      <li>Messaging apps: Telegram voice notes are Opus in Ogg, usually named <code>.ogg</code>.</li>
+    </ul>
+
+    <h2>Matching the bitrate</h2>
+    <p>
+      MP3 is an older and less efficient codec, so you cannot compare the bitrate numbers directly. MP3
+      needs a little more bitrate for the same perceived quality.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Source</th><th>Approximate bitrate</th><th>MP3 setting</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Vorbis quality 3</td><td>112 kbps</td><td>128 kbps</td></tr>
+          <tr><td>Vorbis quality 5 (common default)</td><td>160 kbps</td><td>192 kbps</td></tr>
+          <tr><td>Vorbis quality 8</td><td>256 kbps</td><td>256–320 kbps</td></tr>
+          <tr><td>Spotify high-quality stream</td><td>320 kbps Vorbis</td><td>320 kbps</td></tr>
+          <tr><td>Opus voice note</td><td>24–64 kbps</td><td>128 kbps is plenty</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A higher bitrate than recommended recovers nothing, because the information the Vorbis encoder
+      discarded is gone. It only makes a bigger file. A much lower bitrate adds a second round of lossy
+      artefacts to the first, and the result starts to sound watery.
+    </p>
+
+    <h2>What happens to the tags</h2>
+    <p>
+      Ogg stores metadata as Vorbis comments: free-form <code>KEY=value</code> pairs with no fixed
+      schema. MP3 uses ID3, which has a fixed set of frames. FFmpeg maps the standard fields (title,
+      artist, album, date, track number, genre) onto ID3v2.3 automatically. Custom Vorbis comments from
+      a game or a ripper have no ID3 equivalent and are dropped. Embedded cover art survives in most
+      layouts, but not all.
+    </p>
+
+    <h2>Should you convert at all?</h2>
+    <p>
+      Only if a device or app cannot read Ogg. Vorbis is slightly better than MP3 at the same bitrate,
+      and Opus is much better at low bitrates, so each conversion loses a little quality. If your phone,
+      car and computer all play Ogg (most modern ones do), keep the originals. Convert for the one
+      device that needs MP3, not the whole library.
+    </p>
+
+    <h2>Batch conversion without a meter</h2>
+    <p>
+      Select a whole folder of game audio or a Telegram export. The queue takes up to fifty files at a
+      time, converts them one after another with a progress row each, and gives one ZIP at the end.
+      Nothing is uploaded, so there is no daily limit, and the only size limit is your own memory.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      For WhatsApp, Signal and Discord audio, <a href="/opus-to-mp3">Opus to MP3</a> is the same
+      converter with Opus-focused guidance. For lossless libraries,
+      see <a href="/flac-to-mp3">FLAC to MP3</a>. To combine several clips first, use the
+      <a href="/audio-joiner">audio joiner</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

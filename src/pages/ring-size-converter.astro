@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeSizeConverter from '@/components/tools/units/UnitsLifeSizeConverter.tsx'
+---
+
+<ToolLayout slug="ring-size-converter">
+  <UnitsLifeSizeConverter client:load mode="ring" />
+  <Fragment slot="explainer">
+    <h2>Each ring size is one measurement</h2>
+    <p>
+      Ring sizing, unlike shoe and clothing sizing, has a physical basis that all systems share: the inside
+      diameter of the band. The national size systems are labels for that diameter.
+    </p>
+    <ul>
+      <li>US and Canada: a numeric scale where each full size adds 0.8128 mm of diameter (about 2.55 mm of circumference).</li>
+      <li>UK, Ireland, Australia: letters, about two per US size, starting at A.</li>
+      <li>EU / ISO 8653: the inside circumference in millimetres. A US 7 is 54.4 mm, so it is a European 54.</li>
+      <li>Japan and China: their own numeric scale, from about 1 to 27.</li>
+    </ul>
+    <p>
+      Circumference is diameter times &pi;, so conversion between the diameter and circumference columns is
+      exact. Conversion between the national labels is a lookup, which the ring size converter chart on this
+      page gives.
+    </p>
+
+    <h2>Two reliable ways to measure ring size at home</h2>
+    <h3>Measure a ring you already own</h3>
+    <p>
+      This is the most accurate home method, because a finished ring is easier to measure than a soft,
+      changing finger. Calibrate the on-screen sizer with a bank card: every ID-1 payment card is exactly
+      85.60 mm wide, which lets the page calculate how many pixels your display uses per millimetre. Then put
+      the ring over the circle. The inside edge of the band must just touch the line.
+    </p>
+    <h3>Print the strip</h3>
+    <p>
+      The printable sizer below the tool draws its circles in real millimetres. Print at exactly 100% scale,
+      with "fit to page" and "shrink oversized pages" turned off. Then check the print with a bank card. If
+      the card outline is not 85.6 mm wide on the paper, the scale is wrong and so are the circles.
+    </p>
+
+    <h2>Why string does not work</h2>
+    <p>
+      Many people wrap string or paper around a finger and measure it, and the result is usually a half to a
+      full size wrong. String stretches, paper compresses, and neither has to pass over the knuckle. A ring
+      must clear the knuckle and then sit comfortably on a narrower part of the finger. A circumference
+      measurement at the base of the finger cannot capture both limits.
+    </p>
+
+    <h2>Fingers change size</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Factor</th><th scope="col">Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Temperature</td><td>Up to half a size smaller when cold, larger when hot</td></tr>
+        <tr><td>Time of day</td><td>Largest in the late afternoon and evening</td></tr>
+        <tr><td>Salt, alcohol, heat</td><td>Temporary swelling, often a quarter to half a size</td></tr>
+        <tr><td>Exercise</td><td>Hands swell during and after; measure at rest</td></tr>
+        <tr><td>Pregnancy</td><td>Often a full size or more, usually reversing afterwards</td></tr>
+        <tr><td>Band width</td><td>A band over 6 mm wide fits tighter; size up a quarter to a half</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Measure two or three times on different days at a normal temperature and use the middle reading. If you
+      are between sizes, size up. A ring that will not come off is a worse problem than one that is slightly
+      loose, and a jeweller can size a loose ring down or fit it with beads.
+    </p>
+
+    <h2>Buying a ring as a surprise</h2>
+    <p>
+      Borrow a ring the person already wears on the same finger and measure it. Note the finger: the ring
+      finger and the middle finger are usually a size apart. If you cannot borrow one, US 6&ndash;6.5 and US
+      9&ndash;10 are the most common women&apos;s and men&apos;s sizes. Most jewellers resize once for free
+      within a set period; ask before you buy.
+    </p>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      The page computes the chart, the calibration and the printable strip. Your measurements stay on your
+      device.
+    </p>
+  </Fragment>
+</ToolLayout>

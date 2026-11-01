@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="oz-to-cups">
+  <UnitsLifeKitchenConverter client:load mode="oz-to-cups" />
+  <Fragment slot="explainer">
+    <h2>&quot;Ounces&quot; means two different things</h2>
+    <p>
+      For oz to cups, the answer depends on what your recipe means, so this page gives both answers at
+      once.
+    </p>
+    <ul>
+      <li>
+        Fluid ounces measure volume. Eight of them make one US cup, by definition. Milk, water, stock,
+        juice and oil in American recipes are almost always fluid ounces.
+      </li>
+      <li>
+        Weight ounces measure mass: 28.35 g each. Flour, sugar, butter, chocolate and cheese in British
+        and professional recipes are weight ounces, and the number of cups depends on the ingredient.
+      </li>
+    </ul>
+    <p>
+      Eight ounces of water is a cup both ways, because for water the two readings are almost the same.
+      Eight ounces of flour is one cup by volume and almost two by weight. The water case causes all
+      the confusion.
+    </p>
+
+    <h2>How to tell which your recipe means</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Clue</th><th scope="col">Almost certainly</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>American recipe, liquid ingredient</td><td>Fluid ounces (volume)</td></tr>
+        <tr><td>American recipe, solid ingredient</td><td>Weight ounces</td></tr>
+        <tr><td>British recipe of any age</td><td>Weight ounces</td></tr>
+        <tr><td>Written &quot;fl oz&quot;</td><td>Volume, explicitly</td></tr>
+        <tr><td>A can or packet size</td><td>What the label says. Check it</td></tr>
+        <tr><td>Cheese, chocolate, pasta</td><td>Weight, always</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The eight-ounce cup, and where it breaks</h2>
+    <p>
+      "A cup is 8 ounces" is true for US fluid ounces and a US customary cup, and false for all others.
+      A metric cup is 8.45 US fluid ounces. An imperial cup is 10 imperial fluid ounces. An 8 oz block
+      of cream cheese is a weight, and it is about a cup only because cream cheese has about the density
+      of water. That is a coincidence, not a rule.
+    </p>
+
+    <h2>Cans, cartons and the &quot;oz&quot; on the label</h2>
+    <p>
+      US packaging uses both. A 15 oz can of beans is a weight (425 g). A 12 fl oz can of soda is a
+      volume (355 mL). A 14 fl oz can of coconut milk is a volume, and a 14 oz can of condensed milk is
+      a weight. The letters "fl" are the only difference, and they are printed small.
+    </p>
+
+    <h2>The coffee cup is not a cup</h2>
+    <p>
+      Drip coffee makers measure in 5 fl oz "cups", a convention from the size of a teacup. So a
+      twelve-cup carafe holds 60 fl oz: seven and a half real cups, or 1.77 litres. Coffee scoops are
+      also their own unit, usually 2 tablespoons.
+    </p>
+
+    <h2>What this page computes</h2>
+    <p>
+      For the volume reading, ounces are multiplied by 29.5735 mL and divided by your chosen cup
+      size. For the weight reading, ounces are multiplied by 28.349523125 g and divided by the grams
+      per cup of the ingredient you selected. The working panel shows both calculations with your
+      numbers, so you can see which assumption gave which answer.
+    </p>
+  </Fragment>
+</ToolLayout>

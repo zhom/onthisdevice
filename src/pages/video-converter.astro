@@ -1,0 +1,114 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoConverter from '@/components/tools/media/VideoConverter.tsx'
+---
+
+<ToolLayout slug="video-converter">
+  <VideoConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert a video file</h2>
+    <ol>
+      <li>Drop your video onto the box above, or click it to browse. MP4, MOV, MKV, WebM, AVI, MPEG and 3GP all work.</li>
+      <li>Choose an output format: <strong>MP4 (H.264)</strong> for something that plays everywhere, <strong>WebM (VP9)</strong> for a smaller file, or <strong>GIF</strong> for a silent animation.</li>
+      <li>Pick a quality target and, for a smaller file, a lower resolution. The tool only scales videos down, never up.</li>
+      <li>Press convert. The first run downloads the FFmpeg engine once (10 MB); after that it is cached and starts at once.</li>
+      <li>Preview the result in the page and download it.</li>
+    </ol>
+
+    <h2>Which video format and codec to choose</h2>
+    <p>
+      A video file has two parts: the container (MP4, MKV, WebM), which holds the streams, and the codec (H.264,
+      VP9, AV1), which compresses the pictures. Most compatibility problems come from the codec, not the
+      container.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Output</th>
+            <th>Codecs</th>
+            <th>Plays on</th>
+            <th>Encode speed</th>
+            <th>Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MP4</td>
+            <td>H.264 + AAC</td>
+            <td>Everything since about 2008</td>
+            <td>Fast</td>
+            <td>Sharing, editing, uploading anywhere</td>
+          </tr>
+          <tr>
+            <td>WebM</td>
+            <td>VP9 + Opus</td>
+            <td>All modern browsers; poor native support on older TVs and iOS apps</td>
+            <td>5-10× slower</td>
+            <td>Web pages where bandwidth matters</td>
+          </tr>
+          <tr>
+            <td>GIF</td>
+            <td>256-colour palette, no audio</td>
+            <td>Everything, including email</td>
+            <td>Fast</td>
+            <td>Short silent loops, documentation, chat</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What the quality setting does</h2>
+    <p>
+      Here both H.264 and VP9 use CRF (constant rate factor). CRF fixes the perceived quality and lets the
+      bitrate change: a static interview scene uses few bits, a handheld action shot uses many. So the output
+      size cannot be predicted exactly before encoding.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Preset</th>
+            <th>H.264 CRF</th>
+            <th>VP9 CRF</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>High quality</td>
+            <td>18</td>
+            <td>26</td>
+            <td>Indistinguishable from the source on close inspection</td>
+          </tr>
+          <tr>
+            <td>Balanced</td>
+            <td>23</td>
+            <td>33</td>
+            <td>The usual choice: small file, no obvious artefacts</td>
+          </tr>
+          <tr>
+            <td>Small file</td>
+            <td>28</td>
+            <td>40</td>
+            <td>Visible softening in detailed or fast-moving shots</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why convert video in the browser</h2>
+    <p>
+      This page runs FFmpeg, compiled to WebAssembly, inside your own tab. Your laptop is slower than a rented
+      encoding server, so long videos take longer. In exchange, the footage stays on your device, the only size
+      limit is your own memory, and the tool works on a plane.
+    </p>
+
+    <h2>Practical limits</h2>
+    <ul>
+      <li>Memory: WebAssembly in a browser is limited to about 2 GB, and it holds both the input and the output. Files up to about 500 MB work well.</li>
+      <li>Speed: the tool uses the single-threaded FFmpeg core, which needs no special server headers. Expect about 0.3-1× real time for H.264 on a modern laptop.</li>
+      <li>Hardware encoders: browsers do not give WebAssembly access to them, so encoding uses only the CPU. A faster preset is the main way to save time.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DiffCheckerCode from '@/components/tools/dev/DiffCheckerCode.tsx'
+---
+
+<ToolLayout slug="diff-checker-code">
+  <DiffCheckerCode client:load />
+  <Fragment slot="explainer">
+    <h2>How to compare two versions of a file</h2>
+    <ol>
+      <li>Paste the original on the left and the changed version on the right. Give each a file name if you will export a patch.</li>
+      <li>Choose <strong>Unified</strong> for a git-style view with both sets of line numbers, or <strong>Side by side</strong> to see the two files aligned.</li>
+      <li>Turn on the ignore options to filter out reformatting noise. Trailing whitespace is ignored by default, because it is almost never a real change.</li>
+      <li>Copy the unified patch, or download it as a <code>.patch</code> file for <code>git apply</code>.</li>
+    </ol>
+
+    <h2>Unified or side-by-side?</h2>
+    <p>
+      Unified is denser and matches the view in a pull request or a terminal, so it is better for
+      reviewing a change you already understand. Side by side is better when lines were rewritten, not
+      added or removed: you read the before and after on one row and do not need to look for the matching
+      pair a screen away. Both views show line numbers for both files, so you can quote a finding
+      precisely.
+    </p>
+
+    <h2>How the diff is computed</h2>
+    <p>
+      The comparison uses the Myers O(ND) algorithm over lines, from the same family as the git default.
+      It finds the longest common subsequence of the two files, which is the diff with the fewest
+      inserted and deleted lines. For this reason the hunks match your version control, and the patch
+      output applies cleanly.
+    </p>
+    <p>
+      The code diff checker runs in your browser, so you can compare proprietary or unreleased source
+      without sending it to a server.
+    </p>
+
+    <h2>The ignore options</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>What it does</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Trailing whitespace</td><td>Removes spaces and tabs at the end of a line before comparing</td><td>Almost always: editors add and remove these invisibly</td></tr>
+        <tr><td>Leading whitespace</td><td>Removes indentation before comparing</td><td>After a re-indent, or when code moved into a new block</td></tr>
+        <tr><td>Repeated spaces and tabs</td><td>Collapses runs of whitespace to one space</td><td>After a formatter changed alignment padding</td></tr>
+        <tr><td>Letter case</td><td>Compares case-insensitively</td><td>Comparing SQL, config keys or generated identifiers</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      The ignore options affect only matching. The lines shown, copied and exported are always the
+      originals, so a patch made with whitespace ignored still contains the real bytes.
+    </p>
+
+    <h2>Reading a unified patch</h2>
+    <p>
+      A unified diff is made of hunks, each with a header such as <code>@@ -12,7 +12,9 @@</code>. This
+      means: from line 12 of the original, seven lines are covered; from line 12 of the new file, nine
+      lines are covered. In the hunk, a leading space marks an unchanged context line, <code>-</code> a
+      removed line and <code>+</code> an added one.
+    </p>
+    <p>
+      Context lines make a patch robust. Three lines on each side (the git default) let the patch apply
+      even if the surrounding file moved a little. Zero context gives the smallest and most fragile patch;
+      ten is useful when a reviewer must see the whole function.
+    </p>
+
+    <h2>Applying the patch</h2>
+    <p>
+      Download the file, then run <code>git apply changes.patch</code> from the repository root. If the
+      paths in the header do not match your working tree, change the file-name fields above before you
+      export, or apply with <code>patch -p1 &lt; changes.patch</code>. <code>git apply --check</code> tells
+      you if the patch will apply cleanly, without changes to any file.
+    </p>
+
+    <h2>Which diff tool do you want?</h2>
+    <p>
+      This page compares lines and is made for source code. For prose, where one paragraph is one very
+      long line and you want to see changed words, the text diff checker gives a much more readable
+      result. For structured data, format both sides with the JSON formatter (with key sorting on) before
+      the diff, so ordering differences do not hide the real change.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WordToPdf from '@/components/tools/pdf-convert/WordToPdf.tsx'
+---
+
+<ToolLayout slug="word-to-pdf">
+  <WordToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a Word document to PDF</h2>
+    <ol>
+      <li>Drop a <code>.docx</code> file onto the box above. Mammoth unzips and reads it in this tab.</li>
+      <li>Check the structure counts: words, headings, paragraphs and list items found in the document.</li>
+      <li>Choose the page size, typeface, body text size and margin. Headings scale automatically from the body size.</li>
+      <li>Press <strong>Create PDF</strong>, then download. Change a setting and press Rebuild to try another layout.</li>
+    </ol>
+
+    <h2>What the Word to PDF conversion keeps</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Element</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Paragraphs</td><td>Preserved, wrapped and paginated</td></tr>
+          <tr><td>Headings 1–6</td><td>Preserved, set in bold at a proportional size</td></tr>
+          <tr><td>Bold and italic runs</td><td>Preserved, including bold italic</td></tr>
+          <tr><td>Inline code and monospaced runs</td><td>Preserved as Courier</td></tr>
+          <tr><td>Bullet and numbered lists</td><td>Preserved, including nesting and hanging indents</td></tr>
+          <tr><td>Blockquotes</td><td>Preserved, indented with a vertical rule</td></tr>
+          <tr><td>Horizontal rules</td><td>Preserved</td></tr>
+          <tr><td>Tables</td><td>Redrawn with proportional columns and a bold header row; merged cells are lost</td></tr>
+          <tr><td>Images, charts, shapes</td><td>Skipped; the count is shown before you export</td></tr>
+          <tr><td>Headers, footers, footnotes, page numbers from Word</td><td>Not carried over; this tool can add its own page numbers</td></tr>
+          <tr><td>Columns, text boxes, fields, comments, tracked changes</td><td>Not carried over</td></tr>
+          <tr><td>Fonts, colours, highlighting</td><td>Replaced by your chosen standard typeface in black</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the PDF is typeset again</h2>
+    <p>
+      When Word exports a PDF, it uses its own layout engine and the fonts installed on your computer, and
+      copies the document glyph for glyph. A browser has neither. This tool reads the document's structure and
+      sets it again: Mammoth parses the OOXML into semantic HTML, the tool turns that into typesetting
+      instructions, and pdf-lib lays them out with real font metrics for word wrapping and pagination.
+    </p>
+    <p>
+      The result is a tidy, readable PDF with selectable text and the same content as the original. It is not
+      pixel-identical. When exact layout matters, as for a signed contract or a designed brochure, use Word's
+      own <strong>Save as PDF</strong>. For a clean PDF of a document's content without an upload, use this
+      tool.
+    </p>
+
+    <h2>Fonts and non-Latin text</h2>
+    <p>
+      The three typefaces here, Helvetica, Times and Courier, are among the PDF standard's base 14 fonts, so they
+      are not embedded in the file. Every reader already has them. This keeps the output small (often under
+      100 KB for a long document) and makes it look the same everywhere.
+    </p>
+    <p>
+      The cost is character coverage: those fonts use WinAnsi encoding, which covers Western European
+      alphabets. Greek, Cyrillic, Hebrew, Arabic, Devanagari, CJK and emoji cannot be drawn. The converter
+      transliterates what it can, by removing diacritics and mapping typographic dashes and quotes, and reports
+      how many characters it replaced with a question mark, so you know whether the output is usable.
+    </p>
+
+    <h2>Only .docx, not .doc</h2>
+    <p>
+      The modern <code>.docx</code> format is a ZIP of XML parts that a browser can read. The legacy
+      <code>.doc</code> format is a different binary structure from Word 97, and no browser library reads it
+      reliably. If you have a <code>.doc</code>, open it in a word processor and save it as <code>.docx</code>
+      first. The tool detects the old format and tells you.
+    </p>
+    <p>
+      To convert the other way, use <a href="/pdf-to-word">PDF to Word</a>. For plain text or Markdown, use
+      <a href="/text-to-pdf">Text to PDF</a> and <a href="/markdown-to-pdf">Markdown to PDF</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

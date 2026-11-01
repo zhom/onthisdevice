@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="temperature-converter">
+  <UnitConverter client:load dimension="temperature" from="c" to="f" />
+  <Fragment slot="explainer">
+    <h2>How to convert a temperature</h2>
+    <ol>
+      <li>Type the temperature into either field. Negative values work with a normal minus sign, and the tool also reads the typographic minus that comes with text pasted from a document.</li>
+      <li>Pick the two scales: Celsius and Fahrenheit at the top, then the absolute scales (Kelvin and Rankine), then Réaumur.</li>
+      <li>The formula panel shows the exact expression with your own number in it, for homework or a report.</li>
+    </ol>
+    <p>
+      Temperature conversion is not a simple multiplication. Celsius and Fahrenheit have different zero points
+      as well as different degree sizes, so each conversion has a scaling step and a shift. For this reason
+      "multiply by 1.8" alone gives the wrong answer, and the temperature converter always shows the offset.
+    </p>
+
+    <h2>Temperature conversion formulas</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Conversion</th><th>Formula</th><th>Check</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Celsius to Fahrenheit</td><td>°F = °C × 9/5 + 32</td><td>100 °C = 212 °F</td></tr>
+          <tr><td>Fahrenheit to Celsius</td><td>°C = (°F − 32) × 5/9</td><td>98.6 °F = 37 °C</td></tr>
+          <tr><td>Celsius to Kelvin</td><td>K = °C + 273.15</td><td>0 °C = 273.15 K</td></tr>
+          <tr><td>Kelvin to Celsius</td><td>°C = K − 273.15</td><td>310.15 K = 37 °C</td></tr>
+          <tr><td>Fahrenheit to Rankine</td><td>°R = °F + 459.67</td><td>32 °F = 491.67 °R</td></tr>
+          <tr><td>Celsius to Réaumur</td><td>°Ré = °C × 4/5</td><td>100 °C = 80 °Ré</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the tool refuses temperatures below absolute zero</h2>
+    <p>
+      Absolute zero is −273.15 °C, −459.67 °F, or 0 K: the point at which a system has the least possible
+      thermal energy. No lower temperature exists. If you enter a colder value, the converter tells you, and
+      does not return a negative Kelvin value that could get into a spreadsheet and a printed report.
+    </p>
+    <p>
+      All conversions go through Kelvin internally, so the check works for every pair of scales.
+    </p>
+
+    <h2>Common temperatures in Celsius, Fahrenheit and Kelvin</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>What</th><th>Celsius</th><th>Fahrenheit</th><th>Kelvin</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Absolute zero</td><td>−273.15</td><td>−459.67</td><td>0</td></tr>
+          <tr><td>Where the scales cross</td><td>−40</td><td>−40</td><td>233.15</td></tr>
+          <tr><td>Freezing point of water</td><td>0</td><td>32</td><td>273.15</td></tr>
+          <tr><td>Comfortable room</td><td>21</td><td>69.8</td><td>294.15</td></tr>
+          <tr><td>Human body</td><td>37</td><td>98.6</td><td>310.15</td></tr>
+          <tr><td>Fever threshold</td><td>38</td><td>100.4</td><td>311.15</td></tr>
+          <tr><td>Boiling water at sea level</td><td>100</td><td>212</td><td>373.15</td></tr>
+          <tr><td>Moderate oven</td><td>180</td><td>356</td><td>453.15</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Oven temperatures and gas marks</h2>
+    <p>
+      Recipes are the most common reason to convert temperatures. British gas marks go up in 25 °F steps from
+      gas mark 1 at 275 °F (140 °C). In the usual baking range, gas 3 is 160 °C or 325 °F, gas 4 is 180 °C or
+      350 °F, gas 6 is 200 °C or 400 °F, and gas 7 is 220 °C or 425 °F.
+    </p>
+    <p>
+      Fan or convection ovens are hotter at the same setting, so most recipes tell you to lower a conventional
+      temperature by 20 °C, or about 35 °F, with a fan. This is a rule of thumb about ovens, not a unit
+      conversion, so the converter does not apply it.
+    </p>
+  </Fragment>
+</ToolLayout>

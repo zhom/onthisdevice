@@ -1,0 +1,131 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResizeVideo from '@/components/tools/media/ResizeVideo.tsx'
+---
+
+<ToolLayout slug="resize-video">
+  <ResizeVideo client:load />
+  <Fragment slot="explainer">
+    <h2>How to resize a video</h2>
+    <ol>
+      <li>Drop the video in. The tool reads its current resolution from the file.</li>
+      <li>Pick a preset such as 1080p, 720p or 480p. Presets keep the original aspect ratio, so the tool calculates the width.</li>
+      <li>Choose <strong>Custom size…</strong> when you need an exact frame, then decide whether to letterbox, crop or stretch to reach it.</li>
+      <li>Change the quality under advanced options if the default CRF 23 does not suit you.</li>
+      <li>Press <strong>Resize video</strong> and download the result.</li>
+    </ol>
+
+    <h2>Standard video resolutions</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>16:9 size</th>
+            <th>Pixels per frame</th>
+            <th>Relative encoding cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>4K UHD (2160p)</td>
+            <td>3840 × 2160</td>
+            <td>8.3 M</td>
+            <td>4× of 1080p</td>
+          </tr>
+          <tr>
+            <td>QHD (1440p)</td>
+            <td>2560 × 1440</td>
+            <td>3.7 M</td>
+            <td>1.8×</td>
+          </tr>
+          <tr>
+            <td>Full HD (1080p)</td>
+            <td>1920 × 1080</td>
+            <td>2.1 M</td>
+            <td>1× (reference)</td>
+          </tr>
+          <tr>
+            <td>HD (720p)</td>
+            <td>1280 × 720</td>
+            <td>0.9 M</td>
+            <td>0.44×</td>
+          </tr>
+          <tr>
+            <td>SD (480p)</td>
+            <td>854 × 480</td>
+            <td>0.4 M</td>
+            <td>0.20×</td>
+          </tr>
+          <tr>
+            <td>Mobile (360p)</td>
+            <td>640 × 360</td>
+            <td>0.23 M</td>
+            <td>0.11×</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Letterbox, crop or stretch?</h2>
+    <p>
+      These options apply only when the target frame has a different shape from the source.
+    </p>
+    <ul>
+      <li><strong>Fit inside and pad</strong> (letterbox) keeps the whole picture and fills the gap with bars. The filter chain is <code>scale=W:H:force_original_aspect_ratio=decrease</code> followed by <code>pad</code>. It is the safest default and the right choice for footage you did not shoot.</li>
+      <li><strong>Fill and crop</strong> scales the picture until it covers the frame, then trims the overflow equally from both sides. Use it to turn 16:9 into a 9:16 vertical clip when the subject is centred. When the subject is off centre, it gets cut.</li>
+      <li><strong>Stretch</strong> forces the picture into the frame and distorts it. Use it only to correct footage that was squashed to begin with, such as anamorphic material with a broken aspect flag.</li>
+    </ul>
+
+    <h2>Common video sizes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Where it is going</th>
+            <th>Aspect</th>
+            <th>Size to enter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vertical short-form video</td>
+            <td>9:16</td>
+            <td>1080 × 1920</td>
+          </tr>
+          <tr>
+            <td>Square social post</td>
+            <td>1:1</td>
+            <td>1080 × 1080</td>
+          </tr>
+          <tr>
+            <td>Landscape social / web hero</td>
+            <td>16:9</td>
+            <td>1280 × 720</td>
+          </tr>
+          <tr>
+            <td>Email or docs embed</td>
+            <td>16:9</td>
+            <td>854 × 480</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why widths and heights must be even</h2>
+    <p>
+      H.264 and VP9 store colour information at half the resolution of brightness (the 4:2:0 chroma
+      layout), so each chroma sample covers a 2 × 2 block of pixels. An odd dimension leaves a half-block
+      the encoder cannot represent, and the encoder refuses the job. The tool rounds each value you type
+      down to the nearest even number.
+    </p>
+
+    <h2>Resizing always re-encodes</h2>
+    <p>
+      A new pixel grid means each frame is decoded, rescaled with a Lanczos filter and encoded again.
+      There is no lossless shortcut, so pick CRF 18-21 if the result must look identical to the source.
+      If you only need a smaller file and not a specific resolution, <a href="/compress-video">compress
+      video</a> has finer controls.
+    </p>
+  </Fragment>
+</ToolLayout>

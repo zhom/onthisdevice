@@ -1,0 +1,169 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PregnancyDueDateCalculator from '@/components/tools/health/PregnancyDueDateCalculator.tsx'
+---
+
+<ToolLayout slug="pregnancy-due-date-calculator">
+  <PregnancyDueDateCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the due date calculator</h2>
+    <ol>
+      <li>
+        Pick the dating method you have the best information for. If you have had an early scan, use
+        the ultrasound option. It is the most accurate.
+      </li>
+      <li>Enter the date. For the last-period method, also set your usual cycle length.</li>
+      <li>
+        Read your estimated due date, how many weeks and days pregnant you are today, and which
+        trimester you are in.
+      </li>
+      <li>Scroll the milestone table for the dates of scans, tests and term windows.</li>
+    </ol>
+    <p>
+      Every date is calculated in your browser. Nothing you type is transmitted, stored or logged
+      anywhere, and closing the tab discards it.
+    </p>
+
+    <h2>The four dating methods</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Method</th>
+            <th scope="col">Calculation</th>
+            <th scope="col">Accuracy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Last menstrual period (Naegele's rule)</td>
+            <td>LMP + 280 days, adjusted for cycle length</td>
+            <td>±1–2 weeks; depends on regular cycles and an accurate recalled date</td>
+          </tr>
+          <tr>
+            <td>Conception or ovulation date</td>
+            <td>Conception + 266 days</td>
+            <td>±3–5 days if ovulation was tracked properly</td>
+          </tr>
+          <tr>
+            <td>IVF transfer</td>
+            <td>Transfer + 280 − 14 − embryo age in days</td>
+            <td>The most precise of all. Embryo age is known exactly</td>
+          </tr>
+          <tr>
+            <td>Dating ultrasound</td>
+            <td>Scan date + (280 − gestational age at scan)</td>
+            <td>±5 days in the first trimester, widening later in pregnancy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Naegele's rule and the 28-day assumption</h3>
+    <p>
+      Franz Naegele's rule, published in 1812, adds 280 days to the first day of the last menstrual
+      period. Buried inside it are two assumptions: that your cycle is 28 days, and that you ovulated
+      on day 14. Neither holds for everybody. A 35-day cycle usually means ovulation around day 21, so
+      the true due date is about a week later than the textbook rule gives. This calculator adjusts by
+      the difference between your cycle length and 28 days.
+    </p>
+
+    <h3>Why IVF dates are exact</h3>
+    <p>
+      In a normal cycle, nobody knows exactly when fertilisation happened. In IVF the clinic does.
+      Gestational age is conventionally counted from two weeks before conception, so the calculation
+      is transfer date + 280 − 14 − the embryo's age. That gives 261 days after a day-5 blastocyst
+      transfer, 263 after a day-3 transfer, and 260 after a day-6 transfer.
+    </p>
+
+    <h3>When a scan disagrees with your dates</h3>
+    <p>
+      A first-trimester scan measures crown-rump length, which varies very little between healthy
+      embryos at the same age. That makes it more reliable than a remembered period date. Standard
+      obstetric guidance is to re-date the pregnancy when an early ultrasound differs from the LMP
+      estimate by more than about five to seven days. After 22 weeks, scan dating becomes much less
+      precise because growth rates diverge, and the earlier estimate is usually kept.
+    </p>
+
+    <h2>Understanding gestational age</h2>
+    <p>
+      Gestational age counts from the first day of your last period, about two weeks before
+      conception actually occurred. It is a historical convention from when the period date was the
+      only knowable landmark, and it is why you are already described as "four weeks pregnant" when a
+      test first turns positive, despite the embryo being about two weeks old.
+    </p>
+    <p>
+      Ages are written as weeks + days, so "12+4" means twelve weeks and four days. Fetal age
+      (post-conception age) is always two weeks less than gestational age.
+    </p>
+
+    <h2>Trimesters</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Trimester</th>
+            <th scope="col">Weeks</th>
+            <th scope="col">What is going on</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>First</td>
+            <td>0+0 to 13+6</td>
+            <td>All major organ systems form. Nausea and fatigue peak around weeks 8–10 and usually ease by 14.</td>
+          </tr>
+          <tr>
+            <td>Second</td>
+            <td>14+0 to 27+6</td>
+            <td>The anatomy scan, first felt movements, and for most people the most comfortable stretch.</td>
+          </tr>
+          <tr>
+            <td>Third</td>
+            <td>28+0 to birth</td>
+            <td>Rapid fetal growth and weight gain, more frequent monitoring, and preparation for birth.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Term definitions</h2>
+    <p>
+      The American College of Obstetricians and Gynecologists replaced the single "term" label with
+      four categories in 2013, because outcomes differ measurably across them:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Label</th>
+            <th scope="col">Gestational age</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Preterm</td><td>Before 37+0</td></tr>
+          <tr><td>Early term</td><td>37+0 to 38+6</td></tr>
+          <tr><td>Full term</td><td>39+0 to 40+6</td></tr>
+          <tr><td>Late term</td><td>41+0 to 41+6</td></tr>
+          <tr><td>Post term</td><td>42+0 and beyond</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How likely is the due date?</h2>
+    <p>
+      Only about 4 percent of babies are born on their estimated date, and roughly 80 percent arrive
+      within the two weeks either side of it. For a first pregnancy the most common arrival point is
+      several days <em>after</em> 40 weeks; subsequent pregnancies tend to run slightly shorter. The
+      due date is best understood as the middle of a distribution, not a deadline.
+    </p>
+
+    <h2>What this calculator cannot do</h2>
+    <p>
+      It works from dates alone. It cannot account for irregular cycles you have not measured,
+      multiple pregnancies (twins are usually delivered earlier), medical conditions affecting
+      gestation length, or a planned induction or caesarean. Your midwife or doctor will set the date
+      your care actually follows, and if they have re-dated you after a scan, use their number.
+    </p>
+  </Fragment>
+</ToolLayout>

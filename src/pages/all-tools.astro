@@ -1,0 +1,134 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import ToolCard from '@/components/site/ToolCard.astro'
+import Icon from '@/components/site/Icon.tsx'
+import { CATEGORIES, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+
+const sections = CATEGORIES.map((category) => ({ category, tools: toolsByCategory(category.id) })).filter(
+  (s) => s.tools.length > 0,
+)
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const pageUrl = new URL('/all-tools', SITE).href
+
+const title = `All ${TOOL_COUNT} tools | onthisdevice`
+const description = `Every tool on onthisdevice in one list: PDF, image, video, data, text, developer, security and calculator tools. Each one runs in your browser.`
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumbs`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/` },
+      { '@type': 'ListItem', position: 2, name: 'All tools', item: pageUrl },
+    ],
+  },
+  {
+    '@type': 'ItemList',
+    '@id': `${pageUrl}#tools`,
+    name: 'Every tool on onthisdevice',
+    numberOfItems: TOOL_COUNT,
+    itemListElement: sections.flatMap((section) =>
+      section.tools.map((tool) => ({
+        '@type': 'ListItem',
+        name: tool.title,
+        url: new URL(`/${tool.slug}`, SITE).href,
+      })),
+    ),
+  },
+]
+
+const catLink =
+  'block rounded-md px-2.5 py-1.5 text-[0.875rem] whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground aria-[current=true]:font-[650] aria-[current=true]:text-foreground focus-visible:outline-2 focus-visible:outline-ring'
+---
+
+<BaseLayout title={title} description={description} canonicalPath="/all-tools" jsonLd={jsonLd}>
+  <Container class="pt-10 sm:pt-14">
+    <h1 class="t-title">All tools</h1>
+    <p class="t-lead mt-3 max-w-2xl">
+      {TOOL_COUNT} tools for files, media, text and numbers. Each one runs in your browser.
+    </p>
+  </Container>
+
+  <div class="sticky top-[calc(4rem+env(safe-area-inset-top))] z-30 mt-6 bg-background" data-filter-bar>
+    <Container class="py-3">
+      <form role="search" action="/all-tools" method="get" class="flex flex-col gap-x-4 gap-y-2 sm:flex-row sm:items-center">
+        <label for="tool-filter" class="sr-only">Filter tools</label>
+        <div class="relative w-full sm:max-w-md">
+          <Icon
+            name="Search"
+            className="pointer-events-none absolute top-1/2 left-3.5 size-[1.125rem] -translate-y-1/2 text-muted-foreground"
+          />
+          <input
+            id="tool-filter"
+            name="q"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Filter tools"
+            class="h-11 w-full rounded-lg border border-input bg-background pr-3 pl-10 text-[0.9375rem] text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+          />
+        </div>
+        <p data-filter-count role="status" aria-live="polite" class="num shrink-0 px-1 text-[0.875rem] text-muted-foreground">
+          {TOOL_COUNT} tools
+        </p>
+      </form>
+      <nav aria-label="Categories" class="-mx-4 mt-2 overflow-x-auto px-2 [scrollbar-width:none] sm:-mx-2.5 sm:px-0 lg:overflow-visible">
+        <ul class="flex w-max items-center lg:w-auto lg:flex-wrap">
+          <li><a href="#tools" data-cat="" aria-current="true" class={catLink}>All</a></li>
+          {
+            sections.map(({ category }) => (
+              <li>
+                <a href={`#s-${category.slug}`} data-cat={category.slug} aria-current="false" class={catLink}>
+                  {category.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </Container>
+  </div>
+
+  <Container class="pt-8 pb-24" id="tools">
+    <div data-empty hidden class="py-16">
+      <p class="text-[1.25rem] font-[650]">No tool matches</p>
+      <p class="mt-1 text-[0.9375rem] text-muted-foreground">Try fewer words, or what the tool does: merge, compress, convert.</p>
+      <button type="button" data-filter-clear class="mt-4 text-[0.9375rem] font-[650] underline decoration-1 underline-offset-[0.22em]">
+        Show all tools
+      </button>
+    </div>
+
+    <div data-sections class="flex flex-col gap-14">
+      {
+        sections.map(({ category, tools }) => (
+          <section id={`s-${category.slug}`} data-section={category.slug} class="scroll-mt-48">
+            <h2 class="t-h2 flex items-baseline gap-3">
+              <a href={categoryHref(category)} class="hover:underline hover:decoration-1 hover:underline-offset-[0.18em]">
+                {category.title}
+              </a>
+              <span class="num text-[0.875rem] font-normal text-muted-foreground" data-section-count>
+                {tools.length}
+              </span>
+            </h2>
+            <ul class="mt-4 grid gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {tools.map((tool) => (
+                <li data-tool={tool.slug}>
+                  <ToolCard tool={tool} compact />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </Container>
+</BaseLayout>
+
+<script>
+  import { initToolFilter } from '@/components/site/search/tool-filter'
+  initToolFilter()
+</script>

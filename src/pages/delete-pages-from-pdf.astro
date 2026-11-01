@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DeletePdfPages from '@/components/tools/pdf/DeletePdfPages.tsx'
+---
+
+<ToolLayout slug="delete-pages-from-pdf">
+  <DeletePdfPages client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to delete pages from a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above and wait for the thumbnails.</li>
+        <li>
+          Click each page you want to remove. Marked pages are dimmed, struck through and outlined in
+          red. You can also type the pages in the range box, for example
+          <code class="font-mono">2, 5-9, 20-</code>.
+        </li>
+        <li>The counter shows how many pages remain. It never lets you delete all pages.</li>
+        <li>Press <strong>Delete</strong> and download the trimmed document.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Quick selections that save time</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[520px]">
+          <thead>
+            <tr>
+              <th scope="col">Goal</th>
+              <th scope="col">Fastest route</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Drop the blank backs of a duplex scan</td>
+              <td>Click <strong>Even</strong>, then deselect the backs that have content</td>
+            </tr>
+            <tr>
+              <td>Keep only the first chapter</td>
+              <td>Type <code class="font-mono">15-</code> in the range box</td>
+            </tr>
+            <tr>
+              <td>Remove a cover and a back page</td>
+              <td>Type <code class="font-mono">1, last</code></td>
+            </tr>
+            <tr>
+              <td>Keep a few scattered pages</td>
+              <td>Select those pages, then click <strong>Invert</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Does deleting a page really remove the content?</h2>
+      <p>
+        Yes. The remaining pages are copied into a new document; the deleted pages are not only hidden.
+        Their text and images are not in the output, so nobody can recover them by scrolling, searching or
+        examining the file. A redaction box drawn over content is different: it leaves the text below it in
+        place, which is a well-known way to leak information.
+      </p>
+      <p>
+        Resources shared with the remaining pages, such as an embedded font, are still copied. This is
+        expected, because fonts are not private content.
+      </p>
+    </section>
+
+    <section>
+      <h2>Delete, extract or split?</h2>
+      <ul>
+        <li>Delete pages when most of the document stays and a few pages go.</li>
+        <li>Extract pages when only a few pages stay, or when their order matters.</li>
+        <li>Split when you want several documents from one, not one trimmed file.</li>
+      </ul>
+      <p>
+        All three run in your browser, and none of them changes the file you dropped in. Each gives you a
+        new document to download.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

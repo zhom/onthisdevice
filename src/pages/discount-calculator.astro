@@ -1,0 +1,136 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DiscountCalculator from '@/components/tools/everyday/DiscountCalculator.tsx'
+---
+
+<ToolLayout slug="discount-calculator">
+  <DiscountCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the discount calculator</h2>
+    <ol>
+      <li>
+        <strong>Apply discount</strong>: enter the ticket price, then one or more discounts. Each
+        discount can be a percentage or a fixed amount, and they stack in the order you list them.
+      </li>
+      <li>
+        <strong>Find original</strong>: you know what you paid and the discount, and you want the
+        price before the sale. Useful for expense claims, insurance replacement values and checking a
+        "was" price.
+      </li>
+      <li>
+        <strong>Find % off</strong>: you have the old price and the new price and want the percentage.
+      </li>
+    </ol>
+    <p>
+      Each mode shows the working, so you can check the arithmetic.
+    </p>
+
+    <h2>The discount formulas</h2>
+    <p>
+      <strong>saving = price × discount% ÷ 100</strong><br />
+      <strong>sale price = price × (1 − discount% ÷ 100)</strong><br />
+      <strong>original price = paid ÷ (1 − discount% ÷ 100)</strong><br />
+      <strong>discount% = (original − sale) ÷ original × 100</strong>
+    </p>
+    <p>
+      Remember the multiplication form. 35% off means you pay 65%, so multiply by 0.65; you do not need to
+      calculate the saving and subtract it.
+    </p>
+
+    <h2>Stacked discounts never add up</h2>
+    <p>
+      A rail marked "30% off, extra 20% off at the till" is not 50% off. The second discount applies to the
+      reduced price:
+    </p>
+    <p>
+      <strong>$100 × 0.70 = $70, then $70 × 0.80 = $56</strong>: an effective 44% off, not 50%.
+    </p>
+    <p>
+      To stack percentage discounts, multiply the remaining fractions:
+    </p>
+    <p><strong>effective fraction = (1 − d₁) × (1 − d₂) × …</strong></p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Stacked discounts</th>
+            <th scope="col">Sum of the percentages</th>
+            <th scope="col">Actual discount</th>
+            <th scope="col">$100 becomes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>20% + 10%</td><td>30%</td><td>28%</td><td>$72.00</td></tr>
+          <tr><td>30% + 20%</td><td>50%</td><td>44%</td><td>$56.00</td></tr>
+          <tr><td>40% + 25%</td><td>65%</td><td>55%</td><td>$45.00</td></tr>
+          <tr><td>50% + 20% + 10%</td><td>80%</td><td>64%</td><td>$36.00</td></tr>
+          <tr><td>70% + 30%</td><td>100%</td><td>79%</td><td>$21.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      For percentage discounts the order does not matter, because multiplication is commutative. It does
+      matter with a fixed-amount coupon: "$20 off, then 25% off" is not the same as "25% off, then $20
+      off". List them in the order the till applies them, and the step table shows the difference.
+    </p>
+
+    <h2>Working backwards is a division, not a subtraction</h2>
+    <p>
+      If you paid $63 after 30% off, the original was <strong>63 ÷ 0.70 = $90</strong>. Adding 30% to $63
+      gives $81.90, which is wrong, because the 30% was measured against the larger original price. For
+      the same reason, a 20% discount needs a 25% increase to undo it:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Discount taken</th>
+            <th scope="col">Increase needed to return to the original</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10%</td><td>11.1%</td></tr>
+          <tr><td>20%</td><td>25.0%</td></tr>
+          <tr><td>25%</td><td>33.3%</td></tr>
+          <tr><td>33.3%</td><td>50.0%</td></tr>
+          <tr><td>50%</td><td>100.0%</td></tr>
+          <tr><td>75%</td><td>300.0%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where sales tax fits</h2>
+    <p>
+      In the United States and in almost all VAT regimes, tax is charged on what you pay, so a discount
+      also reduces the tax. This is the default here. The switch is for the rare cases (some manufacturer
+      rebates and some vehicle purchases in a few states) where tax is charged on the price before the
+      discount.
+    </p>
+
+    <h2>Reading a sale sign honestly</h2>
+    <ul>
+      <li>
+        "Up to 70% off" means at least one item is 70% off. Most of the rail is nearer the bottom of the
+        range.
+      </li>
+      <li>
+        "Buy one get one free" is 50% off when you want two items and 0% off when you want one.
+      </li>
+      <li>
+        "Buy one get one half price" is 25% off the pair.
+      </li>
+      <li>
+        "3 for 2" is 33.3% off, and only if you needed three.
+      </li>
+      <li>
+        A "was" price has meaning only if the item really sold at that price. Use the reverse mode to
+        check if the "was" price agrees with the percentage claimed.
+      </li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      The prices you type stay in this tab. The calculator is plain JavaScript with no network access.
+    </p>
+  </Fragment>
+</ToolLayout>

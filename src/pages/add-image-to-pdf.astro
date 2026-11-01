@@ -1,0 +1,111 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="add-image-to-pdf">
+  <PdfEditOverlayEditor client:load mode="image" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Putting a picture on a PDF page</h2>
+      <ol>
+        <li>Drop the PDF in, then go to the page that needs the image.</li>
+        <li>Press <strong>Image</strong> and choose the file. It appears in the middle of the page at a medium size.</li>
+        <li>Drag it into position and drag the corner handle to resize. You control the aspect ratio: drag proportionally to prevent distortion.</li>
+        <li>To put it behind the text as a watermark, lower the opacity in the panel.</li>
+        <li>Apply and download.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Formats, and what happens to each</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col">Input</th>
+              <th scope="col">What the tool does</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>PNG</td>
+              <td>Embedded byte-for-byte</td>
+              <td>Transparency kept, no quality loss</td>
+            </tr>
+            <tr>
+              <td>JPEG</td>
+              <td>Embedded byte-for-byte</td>
+              <td>Original compression kept, not re-encoded</td>
+            </tr>
+            <tr>
+              <td>WebP, GIF, BMP</td>
+              <td>Decoded by the browser, re-encoded as PNG</td>
+              <td>Looks the same, slightly larger</td>
+            </tr>
+            <tr>
+              <td>SVG</td>
+              <td>Rasterised at its natural size, then embedded as PNG</td>
+              <td>Becomes a bitmap. For sharp print, export it at 3× size first</td>
+            </tr>
+            <tr>
+              <td>HEIC</td>
+              <td>Only Safari can decode it</td>
+              <td>Convert to JPEG on the device that took it, then come back</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Sizing an image so it prints sharply</h2>
+      <p>
+        PDF measures in points, at 72 points to the inch. A logo printed two inches wide uses 144
+        points on the page. Print needs about 300 pixels per inch of final size, so that logo should
+        be about 600 pixels wide. A 4000-pixel photograph in the same 144 points adds several
+        megabytes and looks the same.
+      </p>
+      <p>
+        The reverse also happens. A 200-pixel logo stretched to two inches prints at 100 DPI and looks
+        soft, but it looks sharp on a screen, where the page shows at about 96 DPI. This is why a logo
+        can look good on screen and fuzzy on paper.
+      </p>
+    </section>
+
+    <section>
+      <h2>Common jobs</h2>
+      <ul>
+        <li>
+          Company logo on a letterhead: place it once on page 1, top left, about 120–180 points wide.
+          Use a PNG with a transparent background so it works on coloured stationery.
+        </li>
+        <li>
+          Approval stamp: photograph or scan the stamp, remove the paper in an image editor, and place
+          it at 60–80% opacity so the text below shows through a little, as with a real ink stamp.
+        </li>
+        <li>
+          Photograph on an application form: size it to the printed box. The panel shows the position
+          of the object in points as you drag.
+        </li>
+        <li>
+          Chart from a spreadsheet: export it as PNG at twice the size you need, then scale it down
+          here. Screenshots of charts usually print badly.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Related routes</h2>
+      <p>
+        To put the same mark on every page with tiling, rotation and opacity controls, use
+        <a href="/watermark-pdf">Watermark PDF</a>. To make a PDF from images, use
+        <a href="/images-to-pdf">Images to PDF</a> or <a href="/jpg-to-pdf">JPG to PDF</a>. To place a
+        signature with a drawing pad and a transparent-background helper, use
+        <a href="/sign-pdf">Sign PDF</a>.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,165 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnixTimestampConverter from '@/components/tools/datetime/UnixTimestampConverter.tsx'
+---
+
+<ToolLayout slug="unix-timestamp-converter">
+  <UnixTimestampConverter client:load />
+  <Fragment slot="explainer">
+    <h2>What a Unix timestamp is</h2>
+    <p>
+      A Unix timestamp, also called epoch time or POSIX time, is the number of seconds since 1 January 1970 at
+      00:00:00 UTC, not counting leap seconds. It is a single integer with no time zone, calendar or formatting,
+      so databases, log files, JWTs, HTTP caches and APIs use it. Two systems on opposite sides of the world
+      read the same value the same way.
+    </p>
+    <p>
+      Negative values are valid and mean "before 1970": −86400 is 31 December 1969. Fractional values are common
+      in Python and JavaScript, which store sub-second precision in the decimal part or in a larger unit.
+    </p>
+
+    <h2>Seconds, milliseconds, microseconds and nanoseconds</h2>
+    <p>
+      The same instant can be written with different precision, and the number of digits is the only reliable
+      clue. The automatic detection uses it:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Digits</th>
+            <th>Unit</th>
+            <th>Example</th>
+            <th>Typical source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>10</td>
+            <td>Seconds</td>
+            <td>1755345600</td>
+            <td>Unix tools, PHP, Go, Ruby, JWT exp and iat claims</td>
+          </tr>
+          <tr>
+            <td>13</td>
+            <td>Milliseconds</td>
+            <td>1755345600000</td>
+            <td>JavaScript Date.now, Java, Kafka, MongoDB</td>
+          </tr>
+          <tr>
+            <td>16</td>
+            <td>Microseconds</td>
+            <td>1755345600000000</td>
+            <td>Postgres internal timestamps, Chrome traces</td>
+          </tr>
+          <tr>
+            <td>19</td>
+            <td>Nanoseconds</td>
+            <td>1755345600000000000</td>
+            <td>Go time.UnixNano, Prometheus, InfluxDB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Detection is a heuristic: a 10-digit value can in principle be milliseconds from 1970. If a converted date
+      looks wrong, such as 1970 when you expected last week, or the year 55000, set the unit manually.
+    </p>
+
+    <h2>The output formats</h2>
+    <ul>
+      <li>
+        ISO 8601: the interchange standard, e.g. 2026-08-16T14:05:07+02:00. It sorts correctly as plain text, so
+        use it in filenames and log lines. The Z suffix means an offset of zero.
+      </li>
+      <li>
+        RFC 2822 / HTTP date: the email and HTTP header format, e.g. Sat, 16 Aug 2026 12:05:07 GMT. This tool
+        always gives it in UTC, as the HTTP specification requires.
+      </li>
+      <li>
+        Relative time: "3 days ago", "in 4 hours", in your browser's locale rules, so it reads naturally in your
+        language.
+      </li>
+      <li>
+        Local time: the same instant in the IANA time zone you pick, with the correct daylight-saving offset for
+        that date.
+      </li>
+    </ul>
+
+    <h2>Timestamps have no timezone</h2>
+    <p>
+      This causes many debugging problems. The number 1755345600 does not "mean" 14:00 in Berlin or 08:00 in New
+      York. It is one instant, and those are two ways to display it. If a stored timestamp seems several hours
+      off, the bug is almost always in the formatting layer or in a local-time parse on input, not in the
+      timestamp.
+    </p>
+
+    <h2>The year 2038 problem</h2>
+    <p>
+      A signed 32-bit integer that counts seconds runs out on 19 January 2038 at 03:14:07 UTC, and then wraps to
+      December 1901. Modern systems use 64-bit time, and JavaScript numbers safely hold milliseconds up to the
+      year 275760, so values after 2038 convert correctly here. The problem remains in embedded firmware, old
+      filesystems and legacy C code.
+    </p>
+
+    <h2>Leap seconds</h2>
+    <p>
+      Unix time ignores leap seconds by design: every day is exactly 86,400 seconds. During a leap second the
+      same Unix value is used twice, or the clock is smeared over several hours. So a Unix timestamp is not a
+      true count of SI seconds since 1970; it is off by the number of leap seconds added since then. The
+      arithmetic stays simple and matches what your database reports.
+    </p>
+
+    <h2>Getting the current timestamp elsewhere</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Language or tool</th>
+            <th>Seconds</th>
+            <th>Milliseconds</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Shell</td>
+            <td>date +%s</td>
+            <td>date +%s%3N</td>
+          </tr>
+          <tr>
+            <td>JavaScript</td>
+            <td>Math.floor(Date.now() / 1000)</td>
+            <td>Date.now()</td>
+          </tr>
+          <tr>
+            <td>Python</td>
+            <td>int(time.time())</td>
+            <td>int(time.time() * 1000)</td>
+          </tr>
+          <tr>
+            <td>PostgreSQL</td>
+            <td>SELECT extract(epoch FROM now())::bigint</td>
+            <td>multiply by 1000</td>
+          </tr>
+          <tr>
+            <td>MySQL</td>
+            <td>SELECT UNIX_TIMESTAMP()</td>
+            <td>SELECT UNIX_TIMESTAMP(NOW(3)) * 1000</td>
+          </tr>
+          <tr>
+            <td>Go</td>
+            <td>time.Now().Unix()</td>
+            <td>time.Now().UnixMilli()</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Batch mode</h2>
+    <p>
+      Paste a column from a log file, a CSV or a query result, one value per line or comma separated. The Unix
+      timestamp converter converts up to 2,000 values at once, each with its detected unit, and you can copy the
+      table or download it as CSV. It marks each value it cannot read and converts the rest.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,103 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CropVideo from '@/components/tools/media/CropVideo.tsx'
+---
+
+<ToolLayout slug="crop-video">
+  <CropVideo client:load />
+  <Fragment slot="explainer">
+    <h2>Cropping is not the same as resizing</h2>
+    <p>
+      <strong>Cropping</strong> removes the parts of the frame outside your rectangle: the subject
+      keeps its size, and the picture gets smaller. <strong>Resizing</strong> keeps the whole frame
+      and scales it, so nothing is lost but everything gets smaller. Crop to change the shape of a
+      video or to cut something from the edge of the frame. Use <a href="/resize-video">resize video</a>
+      when the file must have a lower resolution.
+    </p>
+
+    <h2>Social presets, and the dimensions behind them</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Preset</th>
+            <th>Where it is used</th>
+            <th>Typical export size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>9:16</td>
+            <td>TikTok, Instagram Reels, YouTube Shorts, Stories</td>
+            <td>1080×1920</td>
+          </tr>
+          <tr>
+            <td>1:1</td>
+            <td>Instagram feed square, LinkedIn, older Facebook posts</td>
+            <td>1080×1080</td>
+          </tr>
+          <tr>
+            <td>4:5</td>
+            <td>Instagram portrait, the largest shape the feed allows</td>
+            <td>1080×1350</td>
+          </tr>
+          <tr>
+            <td>16:9</td>
+            <td>YouTube, Vimeo, presentations, most screens</td>
+            <td>1920×1080</td>
+          </tr>
+          <tr>
+            <td>4:3</td>
+            <td>iPad, older displays, some documentation tools</td>
+            <td>1440×1080</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A preset locks the shape of the rectangle and fits the largest version of it inside your frame, so
+      you only drag it to the subject. The exported file has the real dimensions of the crop: a real
+      vertical video, not a horizontal one with black bars.
+    </p>
+
+    <h2>Removing black bars</h2>
+    <p>
+      Letterboxing becomes part of a file when a widescreen clip is exported into a 4:3 frame, or a
+      vertical phone video is put in a horizontal timeline. The bars are real pixels, so the only way to
+      remove them is to crop them.
+    </p>
+    <p>
+      The <strong>Remove black bars</strong> button runs the FFmpeg <code>cropdetect</code> filter over
+      the first seconds of the clip. It measures how far the near-black area goes from each edge and
+      suggests a rectangle. A clip that fades in from black, or one with a dark first shot, can give a
+      wrong result, so check the edges in the preview before you export.
+    </p>
+
+    <h2>Cropping without a mouse</h2>
+    <p>
+      You can use the whole tool from the keyboard. The four number fields set the crop in exact source
+      pixels, which is also the most precise method. The rectangle can take focus: press Tab to reach
+      it, then the arrow keys move it one pixel, Shift with an arrow moves it ten, and Alt with an arrow
+      resizes it. The accessible name of the rectangle always gives the current position and size, so
+      screen reader users get the same information as the visual overlay.
+    </p>
+
+    <h2>Why the numbers are always even</h2>
+    <p>
+      H.264 stores colour at half the resolution of brightness (4:2:0 chroma subsampling), so a frame
+      with an odd width or height cannot be encoded. The tool rounds the crop down by a pixel and shows
+      the number it will use, so you do not get an FFmpeg error.
+    </p>
+
+    <h2>What the export costs</h2>
+    <p>
+      Cropping changes the picture, so the video is re-encoded. Unlike trimming or re-wrapping, there
+      is no lossless path. The default CRF 23 looks clean for sharing. If you will edit the clip
+      further, choose the high quality preset, because each re-encode adds loss. The soundtrack is
+      re-encoded to AAC 192 kbps, so the result is a clean MP4 from any source container.
+    </p>
+    <p>
+      There is no watermark and no length limit, and the video is not uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

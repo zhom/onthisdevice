@@ -1,0 +1,157 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureSheetToPdf from '@/components/tools/pdf-convert/PdfSecureSheetToPdf.tsx'
+---
+
+<ToolLayout slug="excel-to-pdf">
+  <PdfSecureSheetToPdf client:load source="excel" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>What this produces</h2>
+      <p>
+        The tool renders the values of your workbook as a clean, paginated table. It is not a screenshot
+        of Excel and does not copy its styling. Column widths come from the cell contents, the first row
+        can repeat as a header on each page, and long cells wrap and are not cut off.
+      </p>
+      <p>
+        This suits the usual reasons to convert a spreadsheet: to send a table that the recipient can read
+        but not edit, or to attach it where only PDFs are accepted.
+      </p>
+    </section>
+
+    <section>
+      <h2>What it deliberately does not reproduce</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">Here</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Cell fills, fonts, borders</td>
+              <td>Not carried over</td>
+              <td>
+                An accurate style engine is a full spreadsheet application. Print to PDF from Excel if you
+                need the exact look
+              </td>
+            </tr>
+            <tr>
+              <td>Charts and images</td>
+              <td>Not included</td>
+              <td>They are drawing objects, not cell data</td>
+            </tr>
+            <tr>
+              <td>Formulas</td>
+              <td>Cached results only</td>
+              <td>Nothing is recalculated; you get what the file stores</td>
+            </tr>
+            <tr>
+              <td>Merged cells</td>
+              <td>Value in the top-left cell, blanks elsewhere</td>
+              <td>The file stores the merge that way</td>
+            </tr>
+            <tr>
+              <td>Print areas and page breaks</td>
+              <td>Ignored</td>
+              <td>Row height and paper size control pagination</td>
+            </tr>
+            <tr>
+              <td>Hidden rows and columns</td>
+              <td>Included</td>
+              <td>Check for them before you share sensitive data</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cached values, and why that is the honest answer</h2>
+      <p>
+        An .xlsx file stores two things for each formula cell: the formula and the value Excel last
+        calculated for it. This tool prints the stored value. It does not evaluate <code>VLOOKUP</code>,
+        <code>XLOOKUP</code>, <code>SUMIFS</code> or any other formula.
+      </p>
+      <p>
+        This is almost always what you want, because it is what the workbook says today. The exception is a
+        file written by a script or an export library that did not store the cached values: those cells are
+        blank. If you see unexpected blanks, open the workbook in Excel or LibreOffice, save it once, and
+        convert again.
+      </p>
+    </section>
+
+    <section>
+      <h2>Making a wide table fit</h2>
+      <p>Try these in order:</p>
+      <ol>
+        <li>
+          Keep fit-to-width on. Column widths are measured from the content, then scaled proportionally so
+          the whole table fits inside the margins. Nothing is cut off at the page edge.
+        </li>
+        <li>
+          Switch to landscape. An A4 page goes from 523 to 770 usable points, 47 per cent more.
+        </li>
+        <li>
+          Reduce the font size. The slider goes down to 5 pt. At 6 pt a table is still readable on paper
+          and easy to read on screen.
+        </li>
+        <li>
+          Use A3. It has about twice the area of A4, and most office printers can shrink it to A4 if
+          necessary.
+        </li>
+        <li>
+          Delete the columns you do not need to send. This is almost always the real fix.
+        </li>
+      </ol>
+      <p>
+        One very wide column cannot squeeze the others: each column is limited to 45 per cent of the usable
+        width before scaling, so a free-text notes field wraps and leaves room for the columns next to it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Fonts, and the character limitation</h2>
+      <p>
+        All PDF readers include the same fourteen standard fonts, so a document that uses them needs no
+        embedded font data and stays very small. These fonts use WinAnsi encoding, which covers Western
+        European alphabets, including English, French, German, Spanish, Italian, Nordic and Portuguese.
+      </p>
+      <p>
+        Greek, Cyrillic, Hebrew, Arabic, Devanagari, Chinese, Japanese and Korean have no glyphs in those
+        fonts. To render them, the tool would have to embed a Unicode font fetched from a server, and this
+        site never does that. Unsupported characters therefore become a question mark, and the result
+        reports <strong>the exact number of replacements</strong>, so you know immediately and not after
+        you send the file.
+      </p>
+    </section>
+
+    <section>
+      <h2>Multiple sheets</h2>
+      <p>
+        For workbooks with several sheets, a picker appears. Choose one, or all of them. With "all sheets",
+        each table has its sheet name in bold above it and starts on the page where the previous one ended,
+        with no forced page break, so small lookup tables do not each use a whole page.
+      </p>
+      <p>
+        Sheets with no rows are skipped, so there are no empty pages.
+      </p>
+    </section>
+
+    <section>
+      <h2>Related conversions</h2>
+      <ul>
+        <li><a href="/csv-to-pdf">CSV to PDF</a>: the same renderer, for a plain text file.</li>
+        <li><a href="/excel-to-csv">Excel to CSV</a>: when a script will read the data.</li>
+        <li><a href="/pdf-to-excel">PDF to Excel</a>: the reverse direction, by column clustering.</li>
+        <li>
+          <a href="/compress-pdf">Compress PDF</a>: if the document must be smaller.
+        </li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

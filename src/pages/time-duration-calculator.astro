@@ -1,0 +1,141 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TimeDurationCalculator from '@/components/tools/datetime/TimeDurationCalculator.tsx'
+---
+
+<ToolLayout slug="time-duration-calculator">
+  <TimeDurationCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>Three ways to calculate time durations</h2>
+    <ul>
+      <li>
+        <strong>Add / subtract</strong> combines two durations, for example a 2:30 drive plus a 1:45 stopover, or
+        subtracts a break from a shift.
+      </li>
+      <li>
+        <strong>Sum a list</strong> totals a week of pasted timesheet entries in HH:MM:SS and in decimal hours.
+      </li>
+      <li>
+        <strong>Convert units</strong> shows one duration in hours, minutes, seconds, days and weeks.
+      </li>
+    </ul>
+
+    <h2>Accepted input formats</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>You type</th>
+            <th>It means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>7:30</td>
+            <td>7 hours 30 minutes</td>
+          </tr>
+          <tr>
+            <td>7:30:45</td>
+            <td>7 hours 30 minutes 45 seconds</td>
+          </tr>
+          <tr>
+            <td>90</td>
+            <td>90 minutes (a bare number means minutes)</td>
+          </tr>
+          <tr>
+            <td>1h 30m</td>
+            <td>1 hour 30 minutes</td>
+          </tr>
+          <tr>
+            <td>1.5h</td>
+            <td>1 hour 30 minutes</td>
+          </tr>
+          <tr>
+            <td>2d 4h</td>
+            <td>2 days 4 hours</td>
+          </tr>
+          <tr>
+            <td>09:15-17:45</td>
+            <td>8 hours 30 minutes (a clock range)</td>
+          </tr>
+          <tr>
+            <td>22:00-06:00</td>
+            <td>8 hours (ranges can cross midnight)</td>
+          </tr>
+          <tr>
+            <td>-0:30</td>
+            <td>Minus 30 minutes (deducts an unpaid break)</td>
+          </tr>
+          <tr>
+            <td>Mon: 08:00-16:00</td>
+            <td>8 hours (a label before a colon is ignored)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Decimal hours versus HH:MM</h2>
+    <p>
+      Payroll systems, invoices and project trackers almost always use decimal hours; clocks and rosters use hours
+      and minutes. Mixing them up is a common and costly mistake: 7:15 is 7.25 hours, not 7.15. Each total on
+      this page appears in both forms.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Minutes</th>
+            <th>Decimal</th>
+            <th>Minutes</th>
+            <th>Decimal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>5</td><td>0.083</td><td>35</td><td>0.583</td></tr>
+          <tr><td>10</td><td>0.167</td><td>40</td><td>0.667</td></tr>
+          <tr><td>15</td><td>0.25</td><td>45</td><td>0.75</td></tr>
+          <tr><td>20</td><td>0.333</td><td>50</td><td>0.833</td></tr>
+          <tr><td>25</td><td>0.417</td><td>55</td><td>0.917</td></tr>
+          <tr><td>30</td><td>0.5</td><td>60</td><td>1.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      To convert by hand, divide the minutes by 60. To go back, multiply the decimal part by 60: 6.4 hours is 6
+      hours and 0.4 × 60 = 24 minutes.
+    </p>
+
+    <h2>Totalling a timesheet</h2>
+    <p>
+      Paste one entry per line. You can mix ranges, plain durations and labelled lines: the time duration
+      calculator parses each line separately and lists any line it cannot read, so no line becomes zero without
+      notice. Use a negative entry such as <code>-0:30</code> to remove an unpaid break, and add a comment after a
+      hash for notes in the same block.
+    </p>
+    <p>
+      Totals continue past 24 hours, so a full week shows as 42:15, not 18:15. In a spreadsheet you need the
+      square-bracket format to stop the total from resetting at midnight.
+    </p>
+
+    <h2>Rounding rules for billing</h2>
+    <p>
+      Many contracts round each entry before totalling. The three common conventions are:
+    </p>
+    <ul>
+      <li>Nearest 6 minutes (0.1 hour): standard in legal billing.</li>
+      <li>Nearest 15 minutes (0.25 hour): common in trades and consulting.</li>
+      <li>Nearest minute: more and more the default for software-tracked time.</li>
+    </ul>
+    <p>
+      Rounding each entry and then summing gives a different answer from summing and then rounding; use the
+      method your contract specifies. This calculator sums exactly and leaves the rounding to you.
+    </p>
+
+    <h2>Negative results</h2>
+    <p>
+      Subtracting a longer duration gives a negative total with a leading minus; it does not wrap to a positive
+      number. This suits flexitime balances, budget overruns and "hours remaining" tracking, where the sign has
+      a meaning.
+    </p>
+  </Fragment>
+</ToolLayout>

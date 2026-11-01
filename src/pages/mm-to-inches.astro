@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="mm-to-inches">
+  <UnitsLifePairConverter client:load spec="mm-to-inches" />
+  <Fragment slot="explainer">
+    <h2>The shop-floor conversion</h2>
+    <p>
+      You convert mm to inches at a bench, with a metric drawing in one hand and an imperial tape in
+      the other. It is one division: <strong>divide by 25.4</strong>. The inch is defined as exactly
+      25.4 mm, so 25.4 mm is exactly one inch, 12.7 mm is exactly half an inch, and 6.35 mm is exactly
+      a quarter.
+    </p>
+    <p>
+      This page also gives fractions, because you cannot find a decimal inch on a rule. It shows three
+      fraction columns at once, at 1/64, 1/32 and 1/16, so you can pick the resolution your tools can
+      hold.
+    </p>
+
+    <h2>Metric and imperial drill and fastener sizes</h2>
+    <p>
+      Metric and imperial hardware are close enough to interchange and far enough apart to ruin a
+      thread. The important pairs:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Imperial</th><th scope="col">Exact mm</th><th scope="col">Nearest metric</th><th scope="col">Difference</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1/8 in</td><td>3.175 mm</td><td>3 mm</td><td>0.175 mm undersize</td></tr>
+        <tr><td>3/16 in</td><td>4.7625 mm</td><td>5 mm</td><td>0.24 mm oversize</td></tr>
+        <tr><td>1/4 in</td><td>6.35 mm</td><td>6.5 mm</td><td>0.15 mm oversize</td></tr>
+        <tr><td>5/16 in</td><td>7.9375 mm</td><td>8 mm</td><td>0.06 mm oversize</td></tr>
+        <tr><td>3/8 in</td><td>9.525 mm</td><td>9.5 mm</td><td>0.025 mm undersize</td></tr>
+        <tr><td>1/2 in</td><td>12.7 mm</td><td>13 mm</td><td>0.3 mm oversize</td></tr>
+      </tbody>
+    </table>
+    <p>
+      A 5/16 in bolt in an 8 mm hole is a clearance fit by 0.06 mm, which is fine. A 1/2 in bolt in a
+      13 mm hole rattles. In the other direction, a metric bolt in an imperial hole can seize.
+    </p>
+
+    <h2>Sheet, wire and material thicknesses</h2>
+    <p>
+      Sheet metal and plywood are the classic trap, because the nominal name is not the measurement.
+      "Half-inch" plywood is usually 12 mm (0.472 in), not 12.7 mm, and 18 mm sheet is 0.709 in, not the
+      3/4 in (19.05 mm) it is sold as. Always convert the measured thickness, never the label.
+    </p>
+    <p>
+      For fine work, one thousandth of an inch (a "thou" or "mil") is 0.0254 mm. A 0.05 mm feeler gauge
+      is about two thou.
+    </p>
+
+    <h2>How the fraction snapping works</h2>
+    <p>
+      The converter multiplies your millimetre value by the chosen denominator, rounds to the nearest
+      whole number of those units, then reduces the fraction. 20 mm is 0.7874 in. At sixty-fourths
+      that is 50.4 sixty-fourths, which rounds to 50/64 and reduces to 25/32. When the snap changed the
+      value, the result has an "approximate" label, so you know if a figure is exact or practical.
+    </p>
+
+    <h2>A printable reference</h2>
+    <p>
+      The table in the tool covers common daily values, with decimal inches next to the fraction you
+      cut to. The page prints on one sheet, for the inside of a toolbox lid. It also works with the
+      Wi-Fi off, because the whole conversion is in the page.
+    </p>
+  </Fragment>
+</ToolLayout>

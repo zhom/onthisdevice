@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXmlJson from '@/components/tools/dev/DevFormatXmlJson.tsx'
+---
+
+<ToolLayout slug="xml-to-json">
+  <DevFormatXmlJson client:load direction="xml-to-json" />
+  <Fragment slot="explainer">
+    <h2>There is no single correct XML to JSON mapping</h2>
+    <p>
+      XML and JSON have different data models. XML has attributes, ordered children of mixed types, mixed
+      content, namespaces, comments and processing instructions. JSON has objects, arrays and four scalar
+      types. Each converter makes its own choices, so the same XML file gives different JSON in different
+      tools.
+    </p>
+    <p>
+      This tool shows its choices, and tells you during conversion when something cannot be represented
+      exactly.
+    </p>
+
+    <h2>The three decisions you control</h2>
+    <h3>Attributes</h3>
+    <p>
+      <code>&lt;item id="1"&gt;Widget&lt;/item&gt;</code> has two pieces of data, and the attribute has no
+      obvious place in JSON. Here attribute keys get a prefix, which gives
+      <code>&#123;"item": &#123;"@id": "1", "#text": "Widget"&#125;&#125;</code>. Without a prefix, an attribute
+      called <code>id</code> and a child element called <code>id</code> would collide, and one would be lost
+      without warning. Change the prefix to <code>$</code>, <code>_</code> or what your consumer expects.
+    </p>
+    <h3>Single elements versus arrays</h3>
+    <p>
+      This causes production bugs. <code>&lt;items&gt;&lt;item/&gt;&lt;item/&gt;&lt;/items&gt;</code> becomes an
+      array; <code>&lt;items&gt;&lt;item/&gt;&lt;/items&gt;</code> becomes a single object. Code that calls
+      <code>items.item.map(…)</code> works for a week and crashes on the day a customer has exactly one order.
+      List element names in the <strong>always arrays</strong> field, and they are arrays whatever their
+      count in the document.
+    </p>
+    <h3>Scalar coercion</h3>
+    <p>
+      XML has no types: every attribute and text node is a string. Turning <code>"42"</code> into
+      <code>42</code> is convenient but wrong for values that only look numeric: postcodes, phone numbers,
+      version strings, account numbers with leading zeros, ISBNs. So coercion is off by default. Turn it on
+      only when you know the shape of your data.
+    </p>
+
+    <h2>What JSON cannot represent</h2>
+    <table>
+      <thead><tr><th>XML feature</th><th>In JSON</th><th>Consequence</th></tr></thead>
+      <tbody>
+        <tr><td>Mixed content</td><td>Text collected into one key</td><td>The position of the text relative to sibling elements is lost</td></tr>
+        <tr><td>Order between differently-named siblings</td><td>Object keys</td><td>Grouped by name; the original interleaving is gone</td></tr>
+        <tr><td>Namespaces</td><td>Prefixed names or stripped</td><td>Two elements from different namespaces with the same local name collide if you strip</td></tr>
+        <tr><td>Comments</td><td>Dropped, or a <code>#comment</code> key</td><td>Off by default</td></tr>
+        <tr><td>Processing instructions and DOCTYPE</td><td>Dropped</td><td>Not representable</td></tr>
+        <tr><td>CDATA</td><td>Ordinary text</td><td>Correct: CDATA is lexical, not semantic</td></tr>
+      </tbody>
+    </table>
+    <p>When your document has mixed content or interleaved siblings, a note under the output names the problem.</p>
+
+    <h2>Namespaces: strip or keep?</h2>
+    <p>
+      If you keep them, you get keys such as <code>"soap:Envelope"</code> and <code>"dc:title"</code>. They are
+      awkward in JavaScript (you cannot write <code>obj.soap:Envelope</code>) but unambiguous. If you strip
+      them, you get <code>"Envelope"</code> and <code>"title"</code>, which are easy to use until a document
+      mixes two namespaces that both define <code>title</code>. Strip for a document you control; keep for
+      documents from an external system.
+    </p>
+
+    <h2>The reverse direction</h2>
+    <p>
+      The swap button changes the tool to <a href="/json-to-xml">JSON to XML</a> and uses the current output as
+      the new input, so you can check the round trip. The result is not byte-identical, because attribute
+      order, whitespace and dropped comments change, but the data stays the same.
+    </p>
+  </Fragment>
+</ToolLayout>

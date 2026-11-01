@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImage from '@/components/tools/image-edit/CompressImage.tsx'
+---
+
+<ToolLayout slug="compress-image">
+  <CompressImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to compress an image</h2>
+    <ol>
+      <li>Drop in one or more photos. Nothing is uploaded; the encoder runs on your CPU.</li>
+      <li>Pick a mode. <strong>By quality</strong> gives a 1–100 dial. <strong>By target file size</strong> lets you enter “200 KB”, and the tool finds the quality.</li>
+      <li>Optionally limit the width. For a web page, this usually saves the most.</li>
+      <li>Press <strong>Compress</strong>, then drag the divider in the before/after view to check the result at full size before you download.</li>
+    </ol>
+
+    <h2>How the target-size search works</h2>
+    <p>
+      No formula converts “quality 74” into “183 KB”: the size depends on the content of the image. Flat
+      graphics compress very well; foliage, water and film grain hardly compress. So the tool measures.
+      It encodes at full quality first, and stops if that fits. If not, it runs a binary search: encode
+      at the midpoint of the range, keep the result and raise the floor if it fits, or lower the
+      ceiling if it does not. Ten rounds narrow the quality range to about a tenth of a percent, much
+      finer than the eye can see, and you get the highest result that fits.
+    </p>
+    <p>
+      PNG is lossless, so it has no quality parameter to search. In target-size mode, the search uses the
+      scale factor and reduces the pixel dimensions until the file fits. For photographs, JPEG or WebP
+      output almost always looks better.
+    </p>
+
+    <h2>Quality settings, and what they actually cost</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Quality</th><th>Typical size vs original</th><th>What you see</th></tr></thead>
+        <tbody>
+          <tr><td>95–100</td><td>60–90%</td><td>Visually lossless; wasteful for the web</td></tr>
+          <tr><td>85–94</td><td>25–45%</td><td>No visible artefacts even at pixel level</td></tr>
+          <tr><td>75–84</td><td>12–25%</td><td>The web sweet spot: no visible difference at normal size</td></tr>
+          <tr><td>60–74</td><td>8–15%</td><td>Slight softening in fine texture; fine for thumbnails</td></tr>
+          <tr><td>40–59</td><td>5–10%</td><td>Visible ringing on hard edges, banding in skies</td></tr>
+          <tr><td>Below 40</td><td>3–6%</td><td>Obvious 8 × 8 blocking; only for placeholders</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Choosing a format</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Format</th><th>Best for</th><th>Transparency</th><th>Relative size</th></tr></thead>
+        <tbody>
+          <tr><td>JPEG</td><td>Photographs, anything with smooth gradients</td><td>No</td><td>Baseline</td></tr>
+          <tr><td>WebP</td><td>Almost everything on the modern web</td><td>Yes</td><td>25–35% smaller than JPEG</td></tr>
+          <tr><td>PNG</td><td>Screenshots, logos, flat colour, sharp text</td><td>Yes</td><td>Much larger for photos</td></tr>
+          <tr><td>AVIF</td><td>Maximum compression when encode time does not matter</td><td>Yes</td><td>Up to 50% smaller than JPEG</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Getting the most out of a photo budget</h2>
+    <ul>
+      <li>Resize before you compress. A 4000 px photo shown in an 800 px column has 25× more pixels than it needs. Limit the width first; the quality dial then has much less work.</li>
+      <li>Remove the metadata. EXIF blocks, embedded colour profiles and camera thumbnails can add 20–80 KB to each file. The <a href="/remove-exif-data">EXIF remover</a> clears them, and this tool also drops them when it re-encodes.</li>
+      <li>Judge at 100%. The comparison slider shows both images at the same on-screen size. Zoom the page to 100% before you decide if an artefact matters.</li>
+      <li>Never compress a compressed file again. Each JPEG generation adds to the errors of the previous one. Always start from the highest-quality original you have.</li>
+    </ul>
+
+    <h2>Repeated compression and why it degrades</h2>
+    <p>
+      JPEG splits the image into 8 × 8 blocks, converts each to frequency coefficients and quantises
+      them. Each decode and re-encode quantises coefficients that were already rounded, so errors add
+      up: edges get halos, flat areas get blotches, and colour bleeds across block boundaries. The same
+      JPEG saved ten times at quality 80 looks much worse than the original saved once at quality 40.
+      Keep your originals.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="text-to-hex">
+  <DevEncodeRadixText client:load radix="hex" direction="encode" />
+  <Fragment slot="explainer">
+    <h2>What the text to hex converter shows</h2>
+    <p>
+      Type or paste text and each byte appears as two hex digits. The character-set switch sets what a
+      &ldquo;byte&rdquo; is: UTF-8, which files and networks use, or single-byte Latin-1, which an old ASCII
+      table describes.
+    </p>
+
+    <h2>Choosing an output format</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Format</th><th>Looks like</th><th>Use it for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Space-separated</td><td><code>48 65 6c 6c 6f</code></td><td>Documentation, protocol notes, code review</td></tr>
+          <tr><td>Continuous</td><td><code>48656c6c6f</code></td><td>Config values, API fields, checksum comparison</td></tr>
+          <tr><td>0x prefixed</td><td><code>0x48 0x65 0x6c</code></td><td>C, Python and shell literals</td></tr>
+          <tr><td>One per line</td><td>a column of pairs</td><td>Diffing two payloads side by side</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Counting bytes, not characters</h2>
+    <p>
+      The counter under the output is the figure to use when a field has a byte limit: a database
+      <code>VARCHAR</code>, an SMS segment, a QR code payload, a DNS label. In UTF-8:
+    </p>
+    <ul>
+      <li>ASCII letters, digits and punctuation: 1 byte each.</li>
+      <li>Latin accents, Greek, Cyrillic, Hebrew, Arabic: 2 bytes.</li>
+      <li>Chinese, Japanese, Korean, most symbols: 3 bytes.</li>
+      <li>Emoji and rarer scripts: 4 bytes, and composite emoji several times that.</li>
+    </ul>
+    <p>
+      A 20-character name in Japanese is 60 bytes. A single family emoji can be more than 25. So
+      &ldquo;maximum 100 characters&rdquo; and &ldquo;maximum 100 bytes&rdquo; are very different limits.
+    </p>
+
+    <h2>Finding the invisible difference</h2>
+    <p>
+      The most common use of this page is to compare two strings that look identical but behave differently:
+      a config value that does not match, a password that is rejected, a CSV column that does not join. Hex
+      shows the difference:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Looks like</th><th>Actually is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>a space</td><td><code>C2 A0</code> non-breaking space, not <code>20</code></td></tr>
+          <tr><td>a hyphen</td><td><code>E2 80 93</code> en dash, not <code>2D</code></td></tr>
+          <tr><td>a quote</td><td><code>E2 80 9C</code> smart quote, not <code>22</code></td></tr>
+          <tr><td>nothing at all</td><td><code>EF BB BF</code> BOM, or <code>E2 80 8B</code> zero-width space</td></tr>
+          <tr><td>a line break</td><td><code>0D 0A</code>, not <code>0A</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Dumping a file</h2>
+    <p>
+      Drop a file into the panel below the converter to see its bytes. The panel shows the first 512&nbsp;KB,
+      enough to identify a file header, check for a BOM or find where a file was truncated. For a full dump
+      of a large file, use <code>xxd</code> or a hex editor.
+    </p>
+
+    <h2>Hex is not encryption</h2>
+    <p>
+      Hex is a display format. Anyone can convert it back in one step, also on this page. A password or token
+      encoded as hex is still stored in plain text.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,122 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="sign-pdf">
+  <PdfEditOverlayEditor client:load mode="sign" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Sign a PDF without sending it anywhere</h2>
+      <p>
+        The documents you sign are often the ones you least want to upload: an employment contract, an
+        NDA, a tenancy agreement, a power of attorney, a settlement.
+      </p>
+      <p>
+        This browser tab opens the PDF, draws your signature on a canvas and assembles the signed copy.
+        There is no server the file could go to. To confirm, open your network inspector, or disconnect
+        from the internet before you start.
+      </p>
+    </section>
+
+    <section>
+      <h2>Three ways to make a signature</h2>
+      <ul>
+        <li>
+          <strong>Draw</strong> gives the best result on a touchscreen or with a stylus. Sign large: the
+          drawing is trimmed to the ink and scaled down when placed. A large signature reduced looks sure;
+          a small one enlarged looks unsteady.
+        </li>
+        <li>
+          <strong>Type</strong> writes your name in a handwriting font already installed on your system,
+          then converts it to a transparent image. It is quick, and the better option if you only have a
+          mouse.
+        </li>
+        <li>
+          <strong>Upload</strong>: sign a white sheet of paper with a dark pen, photograph it in good
+          light, and drop the photo in. Leave "make the paper transparent" on. It fades near-white pixels,
+          so only the ink goes onto the PDF.
+        </li>
+      </ul>
+      <p>
+        The signature exists only in this tab's memory. It is not saved to a library or to local storage,
+        and it is gone when you close the tab.
+      </p>
+    </section>
+
+    <section>
+      <h2>Visual signature or digital signature?</h2>
+      <p>
+        These are different things, but people often use the two terms for the same thing.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-[640px]">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Visual signature (this tool)</th>
+              <th scope="col">Digital signature (PAdES, eIDAS, DSC)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>What it is</td>
+              <td>An image of your signature drawn onto the page</td>
+              <td>A cryptographic hash of the document signed with your private key</td>
+            </tr>
+            <tr>
+              <td>Proves</td>
+              <td>Intent to sign</td>
+              <td>Identity, plus that the file has not changed since signing</td>
+            </tr>
+            <tr>
+              <td>Needs</td>
+              <td>Nothing</td>
+              <td>A certificate from a certificate authority, and usually a timestamp service</td>
+            </tr>
+            <tr>
+              <td>Accepted for</td>
+              <td>Most contracts, forms, consents and letters</td>
+              <td>Court filings, tender submissions, some tax and land registries</td>
+            </tr>
+            <tr>
+              <td>Possible in a browser with no server</td>
+              <td>Yes</td>
+              <td>No: there is no certificate store and no timestamp authority</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Under the US ESIGN Act, the EU's eIDAS regulation and the UK's Electronic Communications Act, an
+        electronic signature is generally valid where the signer intended to sign. A drawn or typed
+        signature on the document meets that test. If the other party asks for a certificate-based
+        signature, you need desktop signing software with a certificate token, or a service that issues
+        certificates. This is not legal advice.
+      </p>
+    </section>
+
+    <section>
+      <h2>Placing the signature</h2>
+      <ol>
+        <li>Go to the signature page before you create the signature. The tool places it on the page you are looking at.</li>
+        <li>Drag it so its baseline sits on the printed line and slightly overhangs the ends. A signature that fits neatly inside a box looks printed.</li>
+        <li>Make it about two-thirds the width of the line. A signature that fills the whole line is usually too big.</li>
+        <li>Add the date with the <strong>Text</strong> tool in the date field, and your initials on each page that asks for them.</li>
+        <li>Apply, download, and check the result in a PDF reader before you send it.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Signing a form and keeping it fillable</h2>
+      <p>
+        The signature is page content and does not change the form dictionary, so an AcroForm PDF stays
+        fillable after signing. To stop others from changing the answers, run the signed file through
+        <a href="/flatten-pdf">Flatten PDF</a>, which merges the fields into the page. To fill the form
+        first, use <a href="/fill-pdf-form">Fill Out PDF Forms</a>. If it has no fields, type onto it with
+        <a href="/add-text-to-pdf">Add Text to PDF</a>.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

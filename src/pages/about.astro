@@ -1,0 +1,174 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import Glyph from '@/components/site/Glyph.astro'
+import { hasPage } from '@/components/site/pages'
+import { CATEGORIES, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const pageUrl = new URL('/about', SITE).href
+
+const categories = CATEGORIES.map((c) => ({ category: c, count: toolsByCategory(c.id).filter(hasPage).length })).filter(
+  (c) => c.count > 0,
+)
+
+const principles: { title: string; body: string }[] = [
+  {
+    title: 'Local by design',
+    body: 'The site has no upload endpoint, so your file has nowhere to go. Each tool reads your file with the browser File API and works on it in this tab.',
+  },
+  {
+    title: 'Fast',
+    body: 'Pages are static HTML with a small island of JavaScript. Large codecs load only when you use them, and long jobs show real progress.',
+  },
+  {
+    title: 'One job per tool',
+    body: 'Each tool solves one problem, with sensible defaults, advanced options behind a disclosure, clear error messages, and output you can always download or copy.',
+  },
+  {
+    title: 'No paywall',
+    body: 'There is no paid watermark removal, daily quota, required account or advert, and no paid upgrade.',
+  },
+]
+
+const stack: { label: string; value: string }[] = [
+  { label: 'Pages', value: 'Astro 7, output as static HTML' },
+  { label: 'Interactive parts', value: 'React 19 islands, loaded only where needed' },
+  { label: 'Heavy processing', value: 'WebAssembly: pdf-lib, pdf.js, jSquash codecs, FFmpeg' },
+  { label: 'Cryptography', value: 'The browser’s own WebCrypto' },
+  { label: 'Backend', value: 'None. There is no API, no database and no account system.' },
+]
+---
+
+<BaseLayout
+  title="About onthisdevice: tools that never upload your files"
+  description={`Why onthisdevice exists, how its ${TOOL_COUNT} browser-only tools are built, and what local processing changes for your files and your privacy.`}
+  canonicalPath="/about"
+  jsonLd={[
+    {
+      '@type': 'AboutPage',
+      '@id': `${pageUrl}#page`,
+      name: 'About onthisdevice',
+      url: pageUrl,
+      isPartOf: { '@id': `${SITE.origin}/#website` },
+      about: { '@id': `${SITE.origin}/#organization` },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumbs`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/` },
+        { '@type': 'ListItem', position: 2, name: 'About', item: pageUrl },
+      ],
+    },
+  ]}
+>
+  <Container size="narrow" class="pt-12 sm:pt-20">
+    <h1 class="t-title enter max-w-3xl text-foreground">Tools that leave your files on your device</h1>
+    <p class="t-lead enter mt-6 max-w-2xl" style="--i:1">
+      onthisdevice is a set of {TOOL_COUNT} free tools for small jobs: merge a PDF, shrink a photo, hide a name in a
+      screenshot, convert a spreadsheet, work out a mortgage. All the work happens in your browser, on the device you
+      are using.
+    </p>
+  </Container>
+
+  <Container size="narrow" class="pt-16 sm:pt-20">
+    <div class="grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,17rem)] lg:gap-16">
+      <div class="max-w-2xl text-[1rem] leading-7 text-muted-foreground">
+        <h2 class="t-h2 text-foreground">Why this exists</h2>
+        <p class="mt-4">
+          A typical online converter uploads your document to a server in a country you did not choose, puts it in a
+          job queue, and promises to delete it later. Many also ask you to sign in, wait, or pay to remove a
+          watermark from your own file.
+        </p>
+        <p class="mt-4">
+          Browsers no longer need a server for this work. JavaScript engines and WebAssembly can read a PDF, encode a
+          JPEG, run FFmpeg or hash a file faster than most connections can upload it.
+        </p>
+        <p class="mt-4">
+          So this site has no upload. Each page is static, and each calculation runs on your processor. Your files stay
+          with you, there are no usage limits, and the site has almost no running costs to recover with a paywall.
+        </p>
+
+        <h2 class="t-h2 mt-14 text-foreground">How to check</h2>
+        <p class="mt-4">You can check this yourself in about fifteen seconds:</p>
+        <ol class="mt-4 list-decimal space-y-2 pl-5 marker:font-[600] marker:text-foreground">
+          <li>Open any tool page and open your browser’s developer tools.</li>
+          <li>Go to the Network tab and clear it.</li>
+          <li>Drop in a file and run the tool. You see requests for code and WebAssembly modules, and none that carries your file.</li>
+          <li>Turn off your network and run it again. The page and its engine are already loaded, so it still works.</li>
+        </ol>
+
+        <h2 class="t-h2 mt-14 text-foreground">What is not built</h2>
+        <p class="mt-4">
+          Features that need a server are left out: live currency rates, IP lookups, cloud storage, short share links,
+          account sync. A feature that works only by sending your data somewhere is not built.
+        </p>
+
+        <h2 class="t-h2 mt-14 text-foreground">What it costs</h2>
+        <p class="mt-4">
+          Nothing, and there is no premium tier. Static files are cheap to serve, and your 400 MB video costs the site
+          nothing to process because your laptop does the work. The site has no ads, affiliate links, analytics
+          scripts or email capture. The <a href="/privacy" class="link font-[600]">privacy page</a> lists what is not
+          collected.
+        </p>
+      </div>
+
+      <aside class="lg:pt-1">
+        <h2 class="t-h3 text-foreground">How it is built</h2>
+        <dl class="mt-4 space-y-4">
+          {
+            stack.map((row) => (
+              <div>
+                <dt class="text-[0.875rem] font-[600] text-foreground">{row.label}</dt>
+                <dd class="mt-0.5 text-[0.875rem] leading-relaxed text-muted-foreground">{row.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <h2 class="t-h3 mt-10 text-foreground">Works offline</h2>
+        <p class="mt-2 text-[0.875rem] leading-relaxed text-muted-foreground">
+          A tool page keeps working without a connection once it has loaded. Only the first use of a large module,
+          such as the FFmpeg core, needs the network.
+        </p>
+      </aside>
+    </div>
+  </Container>
+
+  <Container size="narrow" class="pt-20 sm:pt-28">
+    <div class="grid gap-x-10 gap-y-10 sm:grid-cols-2">
+      {
+        principles.map((principle) => (
+          <div>
+            <h2 class="t-h3 text-foreground">{principle.title}</h2>
+            <p class="mt-2 max-w-md text-[0.9375rem] leading-relaxed text-pretty text-muted-foreground">{principle.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </Container>
+
+  {
+    categories.length > 0 && (
+      <Container size="narrow" class="pt-20 sm:pt-28">
+        <h2 class="t-h2 text-foreground">What is in the toolbox</h2>
+        <p class="mt-2 text-[1rem] text-muted-foreground">
+          {TOOL_COUNT} tools in {categories.length} categories.
+        </p>
+        <ul class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((item) => (
+            <li>
+              <a href={categoryHref(item.category)} class="row-link items-center py-2.5">
+                <Glyph id={item.category.id} still class="size-5 text-foreground" />
+                <span class="flex min-w-0 items-baseline gap-2">
+                  <span class="truncate text-[0.9375rem] font-[620] text-foreground">{item.category.title}</span>
+                  <span class="num text-[0.8125rem] text-muted-foreground">{item.count}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Container>
+    )
+  }
+</BaseLayout>

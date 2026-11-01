@@ -1,0 +1,126 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyMarginMarkup from '@/components/tools/finance/CalcMoneyMarginMarkup.tsx'
+---
+
+<ToolLayout slug="profit-margin-calculator">
+  <CalcMoneyMarginMarkup client:load variant="margin" />
+
+  <Fragment slot="explainer">
+    <h2>The margin formula</h2>
+    <pre><code>gross profit  = selling price − cost
+gross margin % = gross profit ÷ selling price × 100</code></pre>
+    <p>
+      The denominator is the <strong>selling price</strong>. That is the whole definition, and it is
+      what separates margin from markup: margin asks "what fraction of the money I took did I keep?",
+      markup asks "how much did I add to what I paid?"
+    </p>
+    <p>
+      Sell for 100 after you paid 62, and you keep 38 of each 100 that comes through the till: a 38%
+      gross margin. To go the other way and price for a target margin, divide the cost by one minus
+      the margin: 62 ÷ 0.62 = 100.
+    </p>
+
+    <h2>Gross, operating and net margin</h2>
+    <p>
+      "Profit margin" means three different things depending on how far down the income statement you
+      are. Only the first is a per-product number, and only the first is what this page computes.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[520px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Margin</th>
+            <th>Revenue minus…</th>
+            <th>Used for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Gross</strong></td>
+            <td>direct cost of goods sold</td>
+            <td>Pricing a product, comparing lines</td>
+          </tr>
+          <tr>
+            <td><strong>Operating</strong></td>
+            <td>COGS plus operating expenses</td>
+            <td>Judging how efficiently the business runs</td>
+          </tr>
+          <tr>
+            <td><strong>Net</strong></td>
+            <td>everything, including interest and tax</td>
+            <td>What the owners actually keep</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A shop can run a 55% gross margin and a 2% net margin quite comfortably. The gap is rent, wages
+      and everything else that does not vary with the individual sale.
+    </p>
+
+    <h2>What counts as cost of goods</h2>
+    <ul>
+      <li>In: the item itself, inbound freight, import duty, packaging, per-unit manufacturing labour.</li>
+      <li>Usually in for e-commerce: payment-processing fees and marketplace commission, because they scale exactly with each sale.</li>
+      <li>Out: rent, salaried staff, software subscriptions, marketing, insurance. These are operating expenses and belong below the gross line.</li>
+    </ul>
+    <p>
+      Be consistent. Whether you put card fees in COGS matters far less than whether you put them in
+      the same place every month, because margin is only useful as a trend.
+    </p>
+
+    <h2>Typical gross margins by sector</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[380px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Sector</th>
+            <th style="text-align:right">Typical gross margin</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Grocery retail</td><td style="text-align:right">20–28%</td></tr>
+          <tr><td>General merchandise retail</td><td style="text-align:right">30–45%</td></tr>
+          <tr><td>Restaurant food</td><td style="text-align:right">60–70%</td></tr>
+          <tr><td>Restaurant drinks</td><td style="text-align:right">70–80%</td></tr>
+          <tr><td>Apparel and accessories</td><td style="text-align:right">50–65%</td></tr>
+          <tr><td>Professional services</td><td style="text-align:right">50–70%</td></tr>
+          <tr><td>Software (SaaS)</td><td style="text-align:right">70–85%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      Broad industry ranges for orientation only, not a benchmark to be measured against. The
+      comparison that matters is your own margin last quarter.
+    </p>
+
+    <h2>Why a small margin change matters more than a small volume change</h2>
+    <p>
+      Gross profit changes linearly with volume and with margin, but a price rise carries no
+      extra cost, while extra volume does. Raising prices 5% on a 30% margin lifts gross profit by
+      about 17%, because the whole increase is profit. Selling 5% more units lifts it by 5%. That
+      asymmetry is why margin is where operators look first.
+    </p>
+    <p>
+      The reverse is equally sharp: a 5% discount off a 30% margin gives away a sixth of the profit on
+      every unit sold, and you need roughly 20% more volume to stand still.
+    </p>
+
+    <h2>Margin, discounts and tax</h2>
+    <p>
+      Two rules keep margin correct. Calculate it on the net price, before VAT, GST or sales tax,
+      because that money was never yours. And calculate it on the actual price
+      after discounts, not the list price, because a 20%-off promotion on a 40% margin item leaves a
+      25% margin, and averaging a promotional month against list prices hides exactly the problem you
+      are looking for.
+    </p>
+
+    <h2>Runs entirely in your browser</h2>
+    <p>
+      Cost prices and margins are competitive information. This page never sends them anywhere: there
+      is no server, no analytics and no third-party request, and the bulk pricing table and its CSV,
+      Excel and PDF exports are all produced locally. It works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

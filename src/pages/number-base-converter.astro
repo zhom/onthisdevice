@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import NumberBaseConverter from '@/components/tools/dev/NumberBaseConverter.tsx'
+---
+
+<ToolLayout slug="number-base-converter">
+  <NumberBaseConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert between bases</h2>
+    <ol>
+      <li>Enter the number and select its base. The number base converter removes prefixes such as <code>0x</code>, <code>0b</code> and <code>0o</code> automatically, and ignores underscores or spaces used as digit separators.</li>
+      <li>Binary, octal, decimal, hexadecimal and base 36 show at once. Add any other base from 2 to 36 in the extra field.</li>
+      <li>Pick a register width to see the two's-complement representation the hardware stores.</li>
+      <li>Use the bitwise calculator for AND, OR, XOR, NOT and the three shift operators, evaluated at that width.</li>
+    </ol>
+
+    <h2>Why BigInt matters here</h2>
+    <p>
+      JavaScript numbers are IEEE-754 doubles, which hold integers exactly only up to 2<sup>53</sup> − 1
+      (about 9.007 quadrillion). Above that, values round without a warning: a converter built on
+      <code>parseInt</code> turns a 64-bit database identifier or a 256-bit hash into a nearby but wrong
+      number. All calculations on this page use <code>BigInt</code>, so a 512-bit value converts digit for
+      digit with no loss.
+    </p>
+
+    <h2>Base reference</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Base</th><th>Name</th><th>Digits</th><th>Where you meet it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2</td><td>Binary</td><td>0-1</td><td>Bit flags, masks, hardware registers</td></tr>
+        <tr><td>8</td><td>Octal</td><td>0-7</td><td>Unix file permissions (<code>chmod 755</code>)</td></tr>
+        <tr><td>10</td><td>Decimal</td><td>0-9</td><td>Everything human</td></tr>
+        <tr><td>16</td><td>Hexadecimal</td><td>0-9, a-f</td><td>Memory addresses, colours, hashes, byte dumps</td></tr>
+        <tr><td>32</td><td>Base32</td><td>0-9, a-v</td><td>Case-insensitive identifiers</td></tr>
+        <tr><td>36</td><td>Base36</td><td>0-9, a-z</td><td>Short URL slugs and compact ids</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Hexadecimal is popular because 16 is 2<sup>4</sup>: each hex digit maps to exactly four bits, and
+      conversion to binary is a lookup with no arithmetic. Two hex digits are exactly one byte, so hex dumps
+      are grouped in pairs.
+    </p>
+
+    <h2>Two's complement in one paragraph</h2>
+    <p>
+      Computers store negative integers with the top bit reserved, and the negative of a value is "flip each
+      bit, then add one". In eight bits, <code>0000 0001</code> is 1 and <code>1111 1111</code> is −1. Then
+      ordinary binary addition works for both signs with no special case, so almost all processors use it.
+      The panel above shows the results: the range is asymmetric (−128 to +127 in eight bits, because zero
+      takes a slot on the positive side), and the same bit pattern reads as 255 unsigned or −1 signed.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Width</th><th>Unsigned range</th><th>Signed range</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>8-bit</td><td>0 … 255</td><td>−128 … 127</td></tr>
+        <tr><td>16-bit</td><td>0 … 65,535</td><td>−32,768 … 32,767</td></tr>
+        <tr><td>32-bit</td><td>0 … 4,294,967,295</td><td>−2,147,483,648 … 2,147,483,647</td></tr>
+        <tr><td>64-bit</td><td>0 … 18,446,744,073,709,551,615</td><td>−9,223,372,036,854,775,808 … 9,223,372,036,854,775,807</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>The bitwise operators</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Operator</th><th>Symbol</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>AND</td><td><code>a &amp; b</code></td><td>Test a flag, or mask off unwanted bits: <code>value &amp; 0xFF</code> keeps the low byte</td></tr>
+        <tr><td>OR</td><td><code>a | b</code></td><td>Set a flag without disturbing the others</td></tr>
+        <tr><td>XOR</td><td><code>a ^ b</code></td><td>Toggle a flag. Also finds which bits differ between two values</td></tr>
+        <tr><td>NOT</td><td><code>~a</code></td><td>Build an inverse mask</td></tr>
+        <tr><td>Shift left</td><td><code>a &lt;&lt; n</code></td><td>Multiply by 2<sup>n</sup>. Build a mask with <code>1 &lt;&lt; n</code></td></tr>
+        <tr><td>Arithmetic shift right</td><td><code>a &gt;&gt; n</code></td><td>Divide a signed value by 2<sup>n</sup>, keeping the sign</td></tr>
+        <tr><td>Logical shift right</td><td><code>a &gt;&gt;&gt; n</code></td><td>Divide an unsigned value, filling with zeros from the left</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      JavaScript's own bitwise operators convert their operands to 32-bit signed integers, so
+      <code>2 ** 40 | 0</code> gives 0 in a browser console. The calculator here works at the width you
+      choose, so its answers can differ from a quick check in devtools.
+    </p>
+
+    <h2>Fractions</h2>
+    <p>
+      The tool converts a fractional part exactly, as a rational number, with no floating-point step.
+      <code>0.1</code> in decimal becomes the repeating expansion <code>0.0001100110011…</code> in binary.
+      That is why <code>0.1 + 0.2</code> is not <code>0.3</code> in any language that uses binary floating
+      point. Output stops after 20 fractional digits.
+    </p>
+  </Fragment>
+</ToolLayout>

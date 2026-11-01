@@ -1,0 +1,68 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-zod-schema">
+  <DevFormatJsonCode client:load target="zod" />
+  <Fragment slot="explainer">
+    <h2>Why a schema beats an interface at a boundary</h2>
+    <p>
+      A TypeScript interface is a compile-time assertion. Write
+      <code>const user = await res.json() as User</code> and the compiler believes you. At runtime, nothing
+      is checked. When the API drops a field, the failure shows as
+      <code>Cannot read properties of undefined</code> in an unrelated place, minutes or days later.
+    </p>
+    <p>
+      A Zod schema is a runtime check that also gives the static type. <code>userSchema.parse(data)</code>
+      throws at once, at the boundary, with a path to the bad field. <code>z.infer&lt;typeof userSchema&gt;</code>
+      gives the same <code>User</code> type you would write by hand. One definition gives both.
+    </p>
+
+    <h2>What the generator emits</h2>
+    <ul>
+      <li>One <code>z.object(&#123;…&#125;)</code> per distinct nested shape, named after the key that holds it.</li>
+      <li><code>.optional()</code> on keys that were absent from some records.</li>
+      <li><code>.nullable()</code> where a null was observed alongside another type.</li>
+      <li><code>z.number().int()</code> for values that were whole numbers, <code>z.number()</code> where any sample was fractional.</li>
+      <li><code>z.array(…)</code> with the merged element schema, or <code>z.unknown()</code> if the array was empty.</li>
+      <li>A final <code>z.infer</code> type alias for the root.</li>
+    </ul>
+    <p>
+      The JSON to Zod generator declares child schemas before the schemas that reference them, so the file
+      compiles without reordering. It imports only <code>zod</code>.
+    </p>
+
+    <h2>Tightening the generated schema</h2>
+    <p>
+      The output has the correct structure but loose meaning, because no sample can show intent. Add these
+      refinements by hand:
+    </p>
+    <table>
+      <thead><tr><th>Generated</th><th>Better</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>z.string()</code> for an email</td><td><code>z.string().email()</code></td><td>Catches malformed addresses at the boundary</td></tr>
+        <tr><td><code>z.string()</code> for a status</td><td><code>z.enum(['open','closed','pending'])</code></td><td>Turns an unexpected value into an error, and narrows the type</td></tr>
+        <tr><td><code>z.string()</code> for a timestamp</td><td><code>z.string().datetime()</code> or <code>z.coerce.date()</code></td><td>Validates the format, or gives you a Date</td></tr>
+        <tr><td><code>z.number()</code> for a quantity</td><td><code>z.number().int().nonnegative()</code></td><td>Encodes the real constraint</td></tr>
+        <tr><td><code>z.object(&#123;…&#125;)</code></td><td><code>.strict()</code></td><td>Rejects unknown keys instead of stripping them</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Handling failures well</h2>
+    <p>
+      At a network boundary, use <code>safeParse</code>, not <code>parse</code>. It returns a discriminated
+      union and does not throw, so you can log <code>result.error.issues</code> (with the exact path,
+      expected type and received type) and show the user a clear message, not a stack trace. In a React
+      app, <code>z.treeifyError</code> maps the issues onto form fields directly.
+    </p>
+
+    <h2>Schema drift</h2>
+    <p>
+      A runtime schema mostly catches changes made by other people. A provider renames
+      <code>created_at</code> to <code>createdAt</code>, starts to return an ID as a number, or drops a
+      field they thought nobody used. With a schema at the boundary, you get one clear error that names
+      the field. Without one, you get a support ticket about a blank column.
+    </p>
+  </Fragment>
+</ToolLayout>

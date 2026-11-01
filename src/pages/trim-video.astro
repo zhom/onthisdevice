@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TrimVideo from '@/components/tools/media/TrimVideo.tsx'
+---
+
+<ToolLayout slug="trim-video">
+  <TrimVideo client:load />
+  <Fragment slot="explainer">
+    <h2>How to trim a video</h2>
+    <ol>
+      <li>Drop the video in. It appears in a normal player at once.</li>
+      <li>Drag the start and end handles, or scrub the player to the right moment and press <strong>Set here</strong>.</li>
+      <li>For frame-level precision, type a timecode such as <code>1:23.50</code> into the start or end field.</li>
+      <li>Leave the mode on <strong>Lossless</strong> unless you need the cut to land on an exact frame.</li>
+      <li>Press <strong>Trim video</strong>, preview the clip and download it.</li>
+    </ol>
+
+    <h2>Lossless copy versus frame-exact re-encode</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Lossless (stream copy)</th>
+            <th>Frame-exact (re-encode)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Quality</td>
+            <td>Identical to the source, bit for bit</td>
+            <td>One extra lossy generation</td>
+          </tr>
+          <tr>
+            <td>Speed</td>
+            <td>Seconds, regardless of length</td>
+            <td>Roughly real time, sometimes slower</td>
+          </tr>
+          <tr>
+            <td>Cut accuracy</td>
+            <td>Snaps back to the nearest keyframe</td>
+            <td>Exactly the frame you chose</td>
+          </tr>
+          <tr>
+            <td>Output format</td>
+            <td>Same container as the input</td>
+            <td>MP4 (H.264 + AAC)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why a lossless cut can start early</h2>
+    <p>
+      Modern codecs store only a few complete pictures, called keyframes or I-frames. Each other frame is stored
+      as a difference from its neighbours and cannot be decoded alone. When FFmpeg copies a stream without
+      re-encoding, the clip must start at a keyframe; otherwise the first second would be a smear of
+      half-decoded blocks.
+    </p>
+    <p>
+      Cameras and screen recorders usually put a keyframe every 1-10 seconds, so a lossless cut can start up to
+      that much before the point you picked. If the first frame matters, such as a music cue, a punchline or a
+      slide change, use frame-exact mode, which re-encodes.
+    </p>
+
+    <h2>Keyboard and accessibility notes</h2>
+    <ul>
+      <li>Tab to either slider handle and use the left/right arrow keys to nudge it; Home and End jump to the ends.</li>
+      <li>The start and end fields accept <code>ss</code>, <code>m:ss</code>, <code>m:ss.ss</code> and <code>h:mm:ss.ss</code>.</li>
+      <li>Progress, errors and the finished-clip announcement are all exposed as polite live regions for screen readers.</li>
+    </ul>
+
+    <h2>Typical uses</h2>
+    <ul>
+      <li>Cutting silence from the start and end of a screen recording before you share it.</li>
+      <li>Taking a highlight from a long match or stream, without a 2 GB upload.</li>
+      <li>Meeting evidence: clip the important 30 seconds from an hour-long recording that must stay on your laptop.</li>
+      <li>Preparing clips for an editor: a lossless cut keeps the original codec, so your editing software imports it without another generation of loss.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

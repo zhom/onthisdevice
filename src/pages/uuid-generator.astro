@@ -1,0 +1,90 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UuidGenerator from '@/components/tools/dev/UuidGenerator.tsx'
+---
+
+<ToolLayout slug="uuid-generator">
+  <UuidGenerator client:load />
+  <Fragment slot="explainer">
+    <h2>How to generate UUIDs</h2>
+    <ol>
+      <li>Pick <strong>v4</strong> for pure randomness or <strong>v7</strong> for identifiers that sort by creation time.</li>
+      <li>Set how many you need, up to 1000 at a time.</li>
+      <li>Choose the formatting: hyphens on or off, upper or lower case, braces for a Microsoft-style GUID.</li>
+      <li>Pick a layout (one per line, comma separated, or a JSON array), then copy or download the batch.</li>
+      <li>Use the <strong>Validate</strong> tab to check an existing identifier and read its version, variant and embedded timestamp.</li>
+    </ol>
+
+    <h2>The anatomy of a UUID</h2>
+    <p>
+      A UUID is 128 bits, written as 32 hexadecimal digits in five groups: <code>8-4-4-4-12</code>. Two
+      positions are reserved. The first digit of the third group is the version, and the first digit of the
+      fourth group encodes the variant. The other bits depend on the version.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Version</th><th>How it is built</th><th>Sortable</th><th>Good for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>v1</td><td>100-nanosecond timestamp plus the machine MAC address</td><td>Poorly: the timestamp bytes are in the wrong order</td><td>Legacy systems</td></tr>
+        <tr><td>v3 / v5</td><td>MD5 / SHA-1 of a namespace plus a name</td><td>No</td><td>Deterministic ids derived from a stable name</td></tr>
+        <tr><td>v4</td><td>122 random bits</td><td>No</td><td>The general-purpose default</td></tr>
+        <tr><td>v6</td><td>v1 with the timestamp bytes reordered</td><td>Yes</td><td>Migrating away from v1 while keeping ordering</td></tr>
+        <tr><td>v7</td><td>48-bit Unix millisecond timestamp, then randomness</td><td>Yes</td><td>Database primary keys</td></tr>
+        <tr><td>v8</td><td>Whatever you define, within the version and variant bits</td><td>Depends</td><td>Custom schemes</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>v4 or v7 for a database primary key?</h2>
+    <p>
+      This is the important choice. A v4 UUID is uniformly random, so consecutive inserts go to random positions
+      in a B-tree index. Pages split all the time, the working set no longer fits in memory, and write
+      throughput falls as the table grows. The effect is worst in storage engines that cluster rows by primary
+      key, such as InnoDB.
+    </p>
+    <p>
+      A v7 UUID puts the millisecond timestamp in the high bits, so new rows go to the right-hand edge of the
+      index, as with an auto-increment integer. It keeps the UUID properties: generated client-side, globally
+      unique, with no coordination between services.
+    </p>
+    <p>
+      The cost is disclosure. A v7 identifier tells anyone who sees it when the record was created, to the
+      millisecond, and lets them order two records in time. For an invoice id that is fine. For a
+      password-reset token or an unlisted share link, use v4, or better a dedicated random token, because a
+      UUID's dashes and version bits waste six characters of entropy.
+    </p>
+
+    <h2>How likely is a collision?</h2>
+    <p>
+      A v4 UUID has 122 random bits. By the birthday bound you must generate about 2.7 × 10<sup>18</sup> of them
+      for a 50% chance of one duplicate: about 85 years at a billion per second. In practice the real risk is a
+      broken random source, such as a virtual machine cloned with a fixed seed or a library that falls back to
+      <code>Math.random</code>. This page always uses <code>crypto.getRandomValues</code>.
+    </p>
+    <p>
+      Within one millisecond, the v7 generator increments a 12-bit counter in place of new random middle bits,
+      so a batch of 1000 generated in the same instant is still strictly ordered.
+    </p>
+
+    <h2>UUID formats</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Form</th><th>Example</th><th>Where</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Canonical</td><td><code>0195c1f4-1b2c-7a3d-9e4f-5a6b7c8d9e0f</code></td><td>RFC 9562, JSON, most APIs</td></tr>
+        <tr><td>Braced</td><td><code>&#123;0195C1F4-1B2C-7A3D-9E4F-5A6B7C8D9E0F&#125;</code></td><td>Windows registry, COM, .NET <code>Guid</code></td></tr>
+        <tr><td>Compact</td><td><code>0195c1f41b2c7a3d9e4f5a6b7c8d9e0f</code></td><td>URLs, file names, cache keys</td></tr>
+        <tr><td>Nil</td><td><code>00000000-0000-0000-0000-000000000000</code></td><td>A defined "no value" placeholder</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Always compare UUIDs case-insensitively: the standard says generators must write lower case and parsers
+      must accept both, and much Microsoft tooling writes upper case.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,45 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RemoveMetadata from '@/components/tools/redact/docs/RemoveMetadata.tsx'
+---
+
+<ToolLayout slug="remove-metadata">
+  <RemoveMetadata client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to remove metadata from files</h2>
+    <ol>
+      <li>Drop one file or many: JPEG, PNG, WebP or HEIC photos, PDFs, Word, Excel and PowerPoint files, MP4 and MOV videos.</li>
+      <li>The tool lists each file with the metadata it found and what is left after cleaning.</li>
+      <li>Download the clean files one by one, or all in one ZIP file.</li>
+    </ol>
+
+    <h2>What is removed</h2>
+    <ul>
+      <li>Photos: EXIF (camera, lens, serial number, dates, GPS location, the embedded thumbnail), XMP, IPTC, comments and data after the image. By default the color profile and the rotation stay, so the photo looks the same.</li>
+      <li>PDF: the document properties (title, author, subject, keywords, creator, producer, dates) and XMP metadata. The pages are not changed. The file is written again, which also drops earlier versions kept by incremental saves.</li>
+      <li>Word, Excel and PowerPoint: author, last editor, company, manager, comments field, keywords, revision count, editing time and custom properties. Names on comments and tracked changes become "Author". The content is not changed.</li>
+      <li>MP4 and MOV: user data and metadata (location, title, author, device make and model, software), XMP and the creation dates.</li>
+    </ul>
+
+    <h2>Lossless metadata removal</h2>
+    <p>
+      Photos and videos are not encoded again. The tool rewrites the file container without the metadata blocks and copies
+      the image or video data byte for byte, so the quality does not change. In videos the metadata is overwritten in
+      place, so the file keeps its exact size and structure.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>All of it. The page reads and writes the files with its own code, so there is no extra download.</p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>Open the Network tab in your browser's developer tools before you drop the files. No request carries them.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Metadata is not the only thing that can identify you. Faces, street signs and screens in a photo stay. Use the other redaction tools for those.</li>
+      <li>Encrypted PDFs must be unlocked first.</li>
+      <li>The text of a document is not changed. Names in the text stay. Use the PDF or text redactors for those.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,90 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="energy-converter">
+  <UnitConverter client:load dimension="energy" from="kcal" to="kj" />
+  <Fragment slot="explainer">
+    <h2>How to convert an energy value</h2>
+    <ol>
+      <li>Type into either field. Nutrition labels, electricity bills and physics homework use the same control.</li>
+      <li>Pick your units from the SI group, the nutrition and heat group, the electrical group, or the mechanical and atomic units.</li>
+      <li>The formula panel shows the exact factor with your number in it, so you can copy the working and not only the answer.</li>
+    </ol>
+
+    <h2>Calories, kilocalories and the capital C</h2>
+    <p>
+      The word "calorie" has two meanings, and they differ by a factor of a thousand. The small calorie is
+      the energy needed to warm one gram of water by one degree Celsius: exactly 4.184 joules. The
+      kilocalorie is a thousand of those, and nutrition labels mean it when they print "Calories" with a
+      capital C.
+    </p>
+    <p>
+      A 500-Calorie meal contains 500 kcal, which is 2,092 kJ, or 2,092,000 J. European labels usually
+      give both kJ and kcal; divide the kJ figure by 4.184 to get the number used in the US. As a rough
+      mental conversion, divide kJ by 4 and subtract 5 %.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Food</th><th>kcal</th><th>kJ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Apple</td><td>95</td><td>397</td></tr>
+          <tr><td>Slice of bread</td><td>80</td><td>335</td></tr>
+          <tr><td>Can of cola</td><td>139</td><td>582</td></tr>
+          <tr><td>Chocolate bar (50 g)</td><td>260</td><td>1,088</td></tr>
+          <tr><td>Adult daily intake guideline</td><td>2,000–2,500</td><td>8,368–10,460</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Kilowatt-hours and the electricity bill</h2>
+    <p>
+      A kilowatt-hour is one kilowatt used for one hour: 1,000 W × 3,600 s = 3,600,000 joules. Your meter
+      counts it and your tariff prices it. Power is a rate and energy is an amount, so a conversion between
+      them needs a time: a 2 kW heater that runs for three hours uses 6 kWh.
+    </p>
+    <p>
+      Useful reference points: 1 kWh is 3,412 BTU, 860 kcal, or 3.6 MJ. A typical UK home uses about
+      2,700 kWh of electricity a year; a US home uses about 10,500 kWh. An electric car uses about 15 to
+      20 kWh per 100 km.
+    </p>
+
+    <h2>BTU, therms and heating</h2>
+    <p>
+      US heating and air conditioning use British thermal units: the energy to raise one pound of water by
+      one degree Fahrenheit, which the international definition fixes at 1,055.05585262 J. Gas bills use
+      therms, which are exactly 100,000 BTU, or about 29.3 kWh.
+    </p>
+    <p>
+      To compare gas and electricity prices, convert therms. Gas at 1.20 per therm is 4.1 cents per kWh of
+      heat, and a typical electricity price is several times higher. This is the economic case for heat
+      pumps, which move three or four units of heat per unit of electricity they use.
+    </p>
+
+    <h2>Reference: energy at different scales</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Quantity</th><th>In joules</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>One electronvolt</td><td>1.602 × 10⁻¹⁹ J</td></tr>
+          <tr><td>Lifting an apple one metre</td><td>1 J</td></tr>
+          <tr><td>One food Calorie (kcal)</td><td>4,184 J</td></tr>
+          <tr><td>AA alkaline battery</td><td>about 10,000 J</td></tr>
+          <tr><td>One kilowatt-hour</td><td>3,600,000 J</td></tr>
+          <tr><td>Litre of petrol burned</td><td>about 34,200,000 J</td></tr>
+          <tr><td>Electric car battery (60 kWh)</td><td>216,000,000 J</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The range covers nearly thirty orders of magnitude, so the energy converter changes to scientific
+      notation automatically at the extremes. You can also force plain decimal or scientific output with the
+      number-format control.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,88 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioMicrophoneTest from '@/components/tools/media/GifAudioMicrophoneTest.tsx'
+---
+
+<ToolLayout slug="microphone-test">
+  <GifAudioMicrophoneTest client:load />
+  <Fragment slot="explainer">
+    <h2>What a good result looks like</h2>
+    <p>
+      Speak at your normal volume. In this microphone test, the level bar should stay between 40% and
+      80% and move with your voice. The waveform should show clear peaks and troughs, not a flat line
+      or a solid block. Then run the five-second loop. If you hear yourself clearly, each link in the
+      chain works: microphone, driver, browser permission, encoder and speakers.
+    </p>
+    <p>
+      Noise suppression, echo cancellation and automatic gain are off on purpose. Those algorithms can
+      make a plausible signal from a broken one, or gate a very quiet microphone into silence, and a
+      test that gives false results is worse than no test.
+    </p>
+
+    <h2>The meter is flat: check these in order</h2>
+    <ol>
+      <li>Hardware mute: headset inline controls, the mute button on a USB microphone, the F4 key on many laptops, and the physical switch on some webcams. This is by far the most common cause.</li>
+      <li>Wrong device: when you connect headphones, the default input often changes to the headset microphone, which may point at your chest. Try each entry in the device list here.</li>
+      <li>Operating-system privacy setting. Windows: Settings → Privacy and security → Microphone, and check the global toggle and the "let desktop apps access" toggle below it. macOS: System Settings → Privacy and Security → Microphone, and tick your browser.</li>
+      <li>Input volume. Windows: Sound settings → the device → Input volume. macOS: Sound → Input. A slider at zero looks the same as broken hardware.</li>
+      <li>Another program uses the microphone: Zoom, Teams, Discord, OBS and Skype can take exclusive access on Windows. Quit them fully, because several keep running in the system tray.</li>
+      <li>Browser permission: click the padlock or microphone icon in the address bar. If you blocked access once, the browser remembers and does not ask again.</li>
+      <li>The port: a 3.5 mm headset in a headphone-only jack gives audio out and nothing in. Laptops with a single combo jack need a headset with a four-pole TRRS plug.</li>
+    </ol>
+
+    <h2>It works here but not in my meeting app</h2>
+    <p>
+      If the meter moves on this page, the microphone, its driver and the operating system are all
+      fine. The problem is in the other application, and it is almost always device selection.
+    </p>
+    <ul>
+      <li>Zoom: Settings → Audio → Microphone. Use "Test Mic" there too, and check that "Automatically adjust microphone volume" does not work against you.</li>
+      <li>Microsoft Teams: the three-dot menu → Settings → Devices. Teams often selects a monitor’s built-in microphone by default.</li>
+      <li>Discord: User Settings → Voice and Video. Check the input device, then the input sensitivity slider. Automatic sensitivity is often wrong. Switch to manual with the threshold well to the left to fix most "nobody can hear me" reports.</li>
+      <li>Google Meet and other browser apps use the same browser permission model as this page. If it works here, grant it there through the address-bar icon.</li>
+    </ul>
+
+    <h2>Reading the level meter properly</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>What you see</th><th>What it means</th><th>What to do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Bar never leaves zero</td><td>No signal at all reaching the browser</td><td>Work through the checklist above</td></tr>
+          <tr><td>Bar twitches under 10%</td><td>Signal present but much too quiet</td><td>Raise the input gain, move closer, and check that you use the correct microphone</td></tr>
+          <tr><td>Bar sits at 40–80% on speech</td><td>Healthy</td><td>Nothing</td></tr>
+          <tr><td>Bar stays at 100%</td><td>Clipping: the top of the waveform is cut flat</td><td>Lower the input gain or move back. Clipping cannot be fixed later</td></tr>
+          <tr><td>Bar moves steadily with nobody speaking</td><td>Constant background noise</td><td>Find the fan or air conditioner. Use a directional or headset mic</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the device names are missing</h2>
+    <p>
+      Before you give a page microphone access, browsers hide device labels on purpose. The list of
+      hardware on your machine is a strong fingerprinting signal. After you allow access once, the real
+      names appear. Firefox and Safari are stricter about this than Chrome.
+    </p>
+
+    <h2>Nothing is transmitted, and you can check it</h2>
+    <p>
+      Open your browser’s developer tools, switch to the Network tab, and run the whole test with the
+      five-second recording. There are no requests. Or switch off Wi-Fi first and run it: everything
+      still works.
+    </p>
+    <p>
+      This is a static site with no backend, and its Content-Security-Policy allows no third-party
+      origin in <code>connect-src</code>. The analysis runs in the Web Audio API. The five-second clip
+      is a Blob in this tab’s memory, which plays from there and is discarded on reload.
+    </p>
+
+    <h2>Next steps</h2>
+    <p>
+      If the microphone works and you want to record, the <a href="/voice-recorder">voice recorder</a>
+      has pause and resume, no time limit and MP3 or WAV export. To check the camera for a video call,
+      use the <a href="/webcam-test">webcam test</a>, which measures the real delivered frame rate and
+      the resolution.
+    </p>
+  </Fragment>
+</ToolLayout>

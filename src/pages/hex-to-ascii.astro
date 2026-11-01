@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="hex-to-ascii">
+  <DevEncodeRadixText client:load radix="hex" direction="decode" asciiFlavour />
+  <Fragment slot="explainer">
+    <h2>Strictly one byte per character</h2>
+    <p>
+      This hex to ASCII converter uses the classic reading by default: each pair of hex digits is one
+      character code from the ASCII table. Textbooks, embedded protocol documentation, CTF puzzles and
+      legacy systems use this reading. The hex-to-text page uses UTF-8 by default, where one character
+      can span up to four bytes.
+    </p>
+
+    <h2>The ASCII ranges worth memorising</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Hex range</th><th>Decimal</th><th>Contents</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>00–1F</td><td>0–31</td><td>Control codes: 09 tab, 0A line feed, 0D carriage return, 1B escape</td></tr>
+          <tr><td>20</td><td>32</td><td>Space</td></tr>
+          <tr><td>21–2F</td><td>33–47</td><td>Punctuation: <code>!"#$%&amp;'()*+,-./</code></td></tr>
+          <tr><td>30–39</td><td>48–57</td><td>Digits 0–9 (the digit is the low nibble)</td></tr>
+          <tr><td>41–5A</td><td>65–90</td><td>A–Z</td></tr>
+          <tr><td>61–7A</td><td>97–122</td><td>a–z, exactly 0x20 above the capitals</td></tr>
+          <tr><td>7F</td><td>127</td><td>Delete</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Two patterns come from that layout. The ASCII code of a digit is <code>3</code> followed by the
+      digit, so <code>37</code> is <code>7</code>. Case is a single bit: <code>41</code> is
+      <code>A</code> and <code>61</code> is <code>a</code>. Add or subtract 0x20 to change it.
+    </p>
+
+    <h2>Bytes above 7F</h2>
+    <p>
+      True ASCII stops at 7F. A higher byte depends on the encoding of the source:
+    </p>
+    <ul>
+      <li>Latin-1 and Windows-1252 use one byte per character: <code>E9</code> is <code>é</code>.</li>
+      <li>In UTF-8, the byte is part of a multi-byte sequence: <code>C3 A9</code> is <code>é</code>.</li>
+      <li>In another code page, the same byte has a different meaning.</li>
+      <li>The data may be binary and not text.</li>
+    </ul>
+    <p>
+      If your decoded output looks like <code>Ã©</code> or <code>â€™</code>, you are reading UTF-8
+      bytes one at a time. Switch the character set.
+    </p>
+
+    <h2>Working with hex dumps</h2>
+    <p>
+      A dump from <code>xxd</code>, <code>hexdump -C</code> or Wireshark has three columns: an
+      offset, the hex bytes, and an ASCII rendering with dots for unprintable characters. Only the
+      middle column is data. If you paste the offsets too, they decode as extra characters, and each
+      line of the decoded string starts with wrong characters.
+    </p>
+
+    <h2>Control characters in the output</h2>
+    <p>
+      Bytes below 0x20 have no visible glyph, so a decoded string that has them can look shorter than
+      it is or break across lines. Often you decode to find exactly these: a stray <code>0D</code>, an
+      embedded <code>1B</code> escape sequence, or a <code>00</code> terminator in what should be plain
+      text.
+    </p>
+  </Fragment>
+</ToolLayout>

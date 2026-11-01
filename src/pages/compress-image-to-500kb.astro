@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-500kb">
+  <CompressImageToTarget client:load targetKb={500} inputLabel="Drop the photos that need to fit a 500 KB limit" />
+
+  <Fragment slot="explainer">
+    <h2>500 KB: small enough to send, big enough to look right</h2>
+    <p>
+      At half a megabyte, most 12-megapixel phone photos get a quality of 82–90, which is above the
+      point where compression artefacts become visible at normal viewing size. This makes 500 KB the
+      practical limit for files you send to other people: email attachments, forum and marketplace
+      listings, insurance claims, estate agent uploads and support tickets.
+    </p>
+
+    <h2>Email attachment arithmetic</h2>
+    <p>
+      Mail servers apply their limit to the encoded message, not to your files. Attachments are
+      base64-encoded in transit, which adds about 33%, plus the message body and headers. A “25 MB
+      limit” is thus about 18 MB of real files:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Mail limit</th><th>Usable payload</th><th>Photos at 500 KB</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10 MB (many corporate gateways)</td><td>≈ 7.5 MB</td><td>15</td></tr>
+          <tr><td>20 MB (Outlook / Microsoft 365)</td><td>≈ 15 MB</td><td>30</td></tr>
+          <tr><td>25 MB (Gmail)</td><td>≈ 18 MB</td><td>36</td></tr>
+          <tr><td>50 MB</td><td>≈ 37 MB</td><td>74</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The limit of the recipient also applies, and it is usually the smaller of the two. If you are not
+      sure, split a large set across two messages so that none bounces.
+    </p>
+
+    <h2>Will 500 KB hurt the photo?</h2>
+    <p>
+      Seldom at normal sizes. The damage shows in three places: smooth gradients such as a clear sky
+      can get faint banding, hard high-contrast edges can get a thin halo, and fine repeating texture
+      (fabric weave, foliage, gravel) softens first. If your image is mostly one of these, expand the
+      search table in the result and check the quality the tool chose. Above 85, there is no problem.
+    </p>
+
+    <h2>Keeping full resolution</h2>
+    <p>
+      At a 500 KB target, the quality search almost always succeeds alone, so the pixel dimensions do
+      not change. To guarantee this, turn off “Shrink if quality is not enough”. You then get the
+      smallest file the quality search can make, with a warning if it missed the target. This matters
+      for insurance and claims photos, where cropping or resizing can weaken the evidence.
+    </p>
+
+    <h2>Sending many photos at once</h2>
+    <p>
+      Drop in the whole set. Each photo gets its own search to 500 KB, and “Download all as .zip” makes
+      one archive to attach. This also stops mail clients from compressing or rotating your images
+      again. There is no limit on the number of photos, because the work runs on your machine.
+    </p>
+
+    <h2>Privacy matters for this size of file too</h2>
+    <p>
+      Files of 500 KB are often holiday photos, house interiors, damaged vehicles, injuries and
+      documents. Nothing here is uploaded: the decode, the search and the encode run in this tab. The
+      exported file also has no EXIF data, so it does not contain the GPS coordinates of your home.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/compress-image-to-1mb">1 MB</a> ·
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

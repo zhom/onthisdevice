@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CombineImages from '@/components/tools/image-edit/CombineImages.tsx'
+---
+
+<ToolLayout slug="merge-images-side-by-side">
+  <CombineImages client:load defaultLayout="horizontal" />
+
+  <Fragment slot="explainer">
+    <h2>Making a clean before-and-after</h2>
+    <p>
+      To merge images side by side for a comparison, the two panels must be the same height and the
+      join must be clear. Two settings do this: set height matching to
+      <strong>Scale all to the smallest</strong> so neither photo is enlarged, and add a gap of about 1%
+      of the total width, in a colour that is in neither image. Without the gap, viewers see one wide
+      photograph and miss the comparison.
+    </p>
+
+    <h2>Step by step</h2>
+    <ol>
+      <li>Drop in the “before” image first, then the “after”. The order runs left to right, and you can drag the chips to swap them.</li>
+      <li>Leave the direction on <strong>Side by side</strong>.</li>
+      <li>Set height matching. <strong>Scale all to the smallest</strong> is the safe default. Use “largest” only if you need a specific output width.</li>
+      <li>Add a gap (10–20 px is usually right) and pick a background colour.</li>
+      <li>Export PNG for screenshots and documents, JPG for photographs.</li>
+    </ol>
+
+    <h2>Two photos, two different heights</h2>
+    <p>
+      Naive mergers get this case wrong. There are three sensible answers, and the tool makes you pick
+      one:
+    </p>
+    <ul>
+      <li>Scale to match. Both panels get exactly the same height, the join is invisible, and no padding is needed. This is almost always correct for a comparison.</li>
+      <li>Pad the shorter one. Both keep native resolution. The shorter image sits in a band of background colour, positioned by the alignment control (top, centre or bottom).</li>
+      <li>Crop first. This tool does not crop. If the two shots differ in framing and not in scale, crop them to the same aspect with <a href="/crop-image">Crop Image</a> before you merge. That gives a much better comparison than scaling.</li>
+    </ul>
+
+    <h2>Common uses</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Use</th><th>Suggested settings</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Before / after renovation or repair</td><td>Match to smallest, 16 px white gap, centre alignment</td></tr>
+          <tr><td>Design A/B comparison</td><td>Match to smallest, 24 px mid-grey gap, PNG export</td></tr>
+          <tr><td>Product colourways</td><td>Match to smallest, 0 px gap, transparent background, PNG</td></tr>
+          <tr><td>Two-page scan of a document</td><td>Match to largest, 4 px gap, white background, then set 300 DPI</td></tr>
+          <tr><td>Wide banner from several photos</td><td>Match to smallest, 0 px gap, JPG at quality 85</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>More than two images</h2>
+    <p>
+      Add a third and fourth image and the row grows. Above about four, the result is very wide and
+      each panel is too small to read on a phone. Then switch the direction to <strong>Grid</strong>:
+      two rows of three are much easier to read than one row of six on a 360 px screen.
+    </p>
+
+    <h2>Resolution and quality</h2>
+    <p>
+      The preview is scaled to fit your screen. The export is composited at full resolution from the
+      original bitmaps, so the output is as sharp as your inputs. Downscaling uses a Lanczos-quality
+      filter, which keeps fine detail much better than the browser's default smoothing. Nothing is
+      uploaded, so there is no per-file size cap and no queue. If the gap looks wrong, change it and
+      export again in a second.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/combine-images">Combine Images</a> is the same engine with all three layouts,
+      <a href="/photo-collage-maker">Photo Collage Maker</a> starts on a grid, and
+      <a href="/add-text-to-image">Add Text to Image</a> labels the two panels “Before” and “After”.
+    </p>
+  </Fragment>
+</ToolLayout>

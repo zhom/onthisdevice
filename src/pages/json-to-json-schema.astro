@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-json-schema">
+  <DevFormatJsonCode client:load target="json-schema" />
+  <Fragment slot="explainer">
+    <h2>What JSON Schema is for</h2>
+    <p>
+      JSON Schema describes the shape of JSON in a language-independent way, so the same document works
+      everywhere: Ajv in Node, python-jsonschema, Go&rsquo;s santhosh-tekuri/jsonschema, OpenAPI request
+      and response definitions, VS Code&rsquo;s editor completion for config files, and form generators
+      such as JSON Forms and RJSF. To write one by hand for an existing payload is slow. To generate the
+      JSON Schema skeleton from a sample and then refine it is much faster.
+    </p>
+
+    <h2>Draft 2020-12</h2>
+    <p>
+      The output declares <code>$schema: "https://json-schema.org/draft/2020-12/schema"</code>. That is
+      the current release and the default in Ajv 8 and modern Python tooling. For an earlier draft, the
+      differences are small: draft-07 uses <code>definitions</code> in place of <code>$defs</code>, and
+      an array-valued <code>items</code> in place of <code>prefixItems</code> for tuple typing. Output from
+      a plain sample has neither.
+    </p>
+
+    <h2>The inference rules</h2>
+    <ul>
+      <li>Whole numbers become <code>"type": "integer"</code>, fractional ones <code>"number"</code>. A field that was sometimes each becomes <code>"number"</code>.</li>
+      <li>A key present in all merged samples of an object goes into <code>required</code>. A key present in only some does not.</li>
+      <li>Each object gets <code>additionalProperties: false</code>, because a schema from a sample should be strict by default. An unexpected key is the drift you want to catch.</li>
+      <li>Arrays get an <code>items</code> schema from the merged element type. An empty array yields an empty schema, which matches anything.</li>
+      <li>A value that was sometimes null becomes a type array, e.g. <code>"type": ["string", "null"]</code>.</li>
+      <li>Mixed non-scalar types become <code>anyOf</code>.</li>
+    </ul>
+
+    <h2>What you have to add by hand</h2>
+    <p>
+      Add all keywords that encode intent, because no example can show it:
+    </p>
+    <table>
+      <thead><tr><th>Keyword</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td><code>title</code>, <code>description</code></td><td>Documentation. Editors surface these as hover text and form generators as labels.</td></tr>
+        <tr><td><code>format</code></td><td><code>email</code>, <code>uri</code>, <code>date-time</code>, <code>uuid</code>, <code>ipv4</code>. In 2020-12, format is annotation-only by default. Ajv needs <code>ajv-formats</code> to enforce it.</td></tr>
+        <tr><td><code>enum</code> / <code>const</code></td><td>Fixed value sets. The most useful addition, and inference can never make it.</td></tr>
+        <tr><td><code>minimum</code>, <code>maximum</code>, <code>minLength</code>, <code>pattern</code></td><td>Range and shape constraints.</td></tr>
+        <tr><td><code>examples</code>, <code>default</code></td><td>Documentation and tooling hints.</td></tr>
+        <tr><td><code>$defs</code> + <code>$ref</code></td><td>Define a repeated shape once, not inline three times.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Refactoring repeated shapes</h2>
+    <p>
+      The generator puts nested objects inline and does not write <code>$defs</code>, because an inline
+      schema is easier to read and to compare with the sample. If the same shape appears in several
+      places, move it into <code>$defs</code> once and replace the copies with
+      <code>&#123;"$ref": "#/$defs/Address"&#125;</code>. This is a simple edit and makes the schema
+      easier to maintain.
+    </p>
+
+    <h2>Validating with the result</h2>
+    <p>
+      This page does not validate a document against a schema. That needs a full validator and belongs
+      in your build. The usual next step is Ajv: <code>const validate = ajv.compile(schema)</code>, then
+      <code>validate(data)</code> and read <code>validate.errors</code>. In Python, use
+      <code>jsonschema.validate(instance, schema)</code>. Both report the failing instance path.
+    </p>
+  </Fragment>
+</ToolLayout>

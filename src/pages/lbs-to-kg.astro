@@ -1,0 +1,66 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="lbs-to-kg">
+  <UnitsLifePairConverter client:load spec="lbs-to-kg" />
+  <Fragment slot="explainer">
+    <h2>Multiply by 0.45359237</h2>
+    <p>
+      To convert lbs to kg, multiply by the definition: one avoirdupois pound is exactly 0.45359237 kg.
+      Nobody measured that number. Six countries agreed it in 1959, and it has not changed.
+    </p>
+    <p>
+      The mental shortcut is to halve: 150 lb is about 75 kg. That is 10% high. Halve, then subtract a
+      tenth: 75 minus 7.5 is 67.5, against a true 68.04. Close enough for a suitcase.
+    </p>
+
+    <h2>Entering stone and pounds</h2>
+    <p>
+      British weights are two numbers. Type <code>11 st 4 lb</code> and the page reads 158 lb and
+      converts it to 71.67 kg. You can also type plain pounds or decimal stone, and the page shows which
+      reading it used. The stone-and-pounds readout below the result repeats your entry, so you can see
+      a transposed digit at once.
+    </p>
+
+    <h2>Reference points</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Pounds</th><th scope="col">Kilograms</th><th scope="col">Stone and pounds</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>100</td><td>45.36</td><td>7 st 2 lb</td></tr>
+        <tr><td>120</td><td>54.43</td><td>8 st 8 lb</td></tr>
+        <tr><td>140</td><td>63.50</td><td>10 st 0 lb</td></tr>
+        <tr><td>150</td><td>68.04</td><td>10 st 10 lb</td></tr>
+        <tr><td>160</td><td>72.57</td><td>11 st 6 lb</td></tr>
+        <tr><td>180</td><td>81.65</td><td>12 st 12 lb</td></tr>
+        <tr><td>200</td><td>90.72</td><td>14 st 4 lb</td></tr>
+        <tr><td>250</td><td>113.40</td><td>17 st 12 lb</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Medicine runs on kilograms</h2>
+    <p>
+      Paediatric and anaesthetic dosing is per kilogram, so hospitals record weight in kilograms, also in
+      countries that use pounds. A pound figure converted and rounded before dosing is a known source of
+      error. The standard fix is to weigh in kilograms directly. For a medical form, use the unconverted
+      measurement where you can.
+    </p>
+
+    <h2>Baggage, shipping and the tonne</h2>
+    <p>
+      A 50 lb US baggage limit is 22.68 kg, slightly under the 23 kg used almost everywhere else. For
+      freight, a metric tonne is 1,000 kg (2,204.6 lb), a US short ton is 2,000 lb (907.18 kg) and a UK
+      long ton is 2,240 lb (1,016.05 kg). The three units differ by up to 12%, so always check which ton
+      a quote means.
+    </p>
+
+    <h2>Not the troy pound</h2>
+    <p>
+      Precious metals use troy weight, where a pound is 12 troy ounces and 373.24 g, not 453.59 g. If
+      your figure came from a bullion dealer, this page is the wrong tool.
+    </p>
+  </Fragment>
+</ToolLayout>

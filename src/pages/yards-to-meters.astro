@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="yards-to-meters">
+  <UnitsLifePairConverter client:load spec="yards-to-meters" />
+  <Fragment slot="explainer">
+    <h2>Yards and metres are close, but not equal</h2>
+    <p>
+      A yard is 0.9144 m. A metre is 1.0936 yd. They are close enough that people treat them as the same, and
+      different enough that this costs money: a metre is about 3.37 inches longer than a yard, or about 9% over
+      ten units.
+    </p>
+    <p>
+      The 9% matters most with fabric. If you order "five yards" of a cloth sold and priced per metre, you pay
+      for five metres: 4.57 m that you wanted and 43 cm that you did not.
+    </p>
+
+    <h2>Exact relationships</h2>
+    <ul>
+      <li>1 yard = 3 feet = 36 inches = 0.9144 m exactly</li>
+      <li>1 metre = 1.0936133 yd = 39.3700787 in</li>
+      <li>10 yd = 9.144 m &middot; 100 yd = 91.44 m &middot; 1,760 yd = 1 mile = 1,609.344 m</li>
+    </ul>
+    <p>
+      Like the foot, the yard has been defined in terms of the metre since 1959, so these figures are exact.
+    </p>
+
+    <h2>Yards and metres in sport</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Distance</th><th scope="col">Metric equivalent</th><th scope="col">Note</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>100 yd sprint</td><td>91.44 m</td><td>Replaced by the 100 m in international athletics in 1977</td></tr>
+        <tr><td>American football field</td><td>91.44 m between goal lines</td><td>109.73 m including both end zones</td></tr>
+        <tr><td>440 yd</td><td>402.34 m</td><td>The old quarter mile, now the 400 m</td></tr>
+        <tr><td>25 yd pool</td><td>22.86 m</td><td>Short-course yards times are not comparable to short-course metres</td></tr>
+        <tr><td>Golf: 150 yd marker</td><td>137.16 m</td><td>Metric courses mark 137 m or round to 140 m</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Fabric, turf and topsoil</h2>
+    <p>
+      Dressmaking fabric is usually 45 in (114 cm) or 60 in (152 cm) wide, and the length is sold by the yard or
+      metre. When a pattern gives yardage for a 45 in fabric and your shop has 150 cm, you need less length,
+      not more. Convert the yardage first, then adjust for width.
+    </p>
+    <p>
+      Rolled turf is usually sold per square metre in Europe and per square yard or per roll in the US. A square
+      yard is 0.836 m&sup2;, so a "50 square yard" order is 41.8 m&sup2;. A cubic yard of topsoil or concrete is
+      0.7646 m&sup3;: the cube of the ratio, not the ratio.
+    </p>
+
+    <h2>A quick yards to metres rule</h2>
+    <p>
+      Yards to metres: subtract about 9%. 100 yd is 91 m, 50 yd is 46 m, 20 yd is 18 m. Metres to yards: add
+      about a tenth. Both are within half a percent of the exact answer, which is enough to judge a distance
+      but not to buy material.
+    </p>
+  </Fragment>
+</ToolLayout>

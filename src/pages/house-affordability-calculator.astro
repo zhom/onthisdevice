@@ -1,0 +1,124 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyAffordability from '@/components/tools/finance/CalcMoneyAffordability.tsx'
+---
+
+<ToolLayout slug="house-affordability-calculator">
+  <CalcMoneyAffordability client:load />
+
+  <Fragment slot="explainer">
+    <h2>How a lender decides what you can borrow</h2>
+    <p>
+      A lender takes your gross monthly income and applies two limits to it. The front-end ratio caps
+      the housing payment alone. The back-end ratio caps the housing payment plus all your other debt
+      payments. The lower of the two is your limit, and this house affordability calculator shows which
+      one it is.
+    </p>
+    <p>
+      The conventional benchmark is 28/36. FHA underwriting is looser, around 31/43. The Qualified
+      Mortgage rule caps the back-end ratio at 43% for most loans that lenders want to keep saleable.
+      The comparison table above applies each of these to your income.
+    </p>
+
+    <h2>Why the housing figure is PITI, not the mortgage payment</h2>
+    <p>
+      Lenders test the full cost of the home, not only the loan:
+    </p>
+    <ul>
+      <li>Principal and interest: the mortgage payment.</li>
+      <li>
+        Taxes: property tax, usually a percentage of assessed value, collected monthly into escrow.
+      </li>
+      <li>Insurance: homeowners cover, required for the life of the loan.</li>
+      <li>
+        PMI: private mortgage insurance, charged while the loan is more than 80% of value. It protects
+        the lender, not you.
+      </li>
+      <li>
+        HOA or condo fees: not part of the mortgage, but counted in full because you pay them each
+        month.
+      </li>
+    </ul>
+    <p>
+      This matters most in high-tax areas. A 1.1% property tax rate on a 400,000 house is 367 a month.
+      That is more than a fifth of the total housing payment, and it moves your maximum price by tens of
+      thousands.
+    </p>
+
+    <h2>What existing debt really costs you</h2>
+    <p>
+      Car finance and student loans reduce your limit through the back-end ratio. Each 100 of monthly
+      debt payment removes 100 of housing allowance. At a 6.25% thirty-year rate, with property tax,
+      insurance and PMI counted, that is about 15,000 of purchase price.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Monthly debt payments</th>
+            <th style="text-align:right">Housing allowance left (36% back-end)</th>
+            <th style="text-align:right">Approx. price impact</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>0</td><td style="text-align:right">full 28% front-end applies</td><td style="text-align:right">0</td></tr>
+          <tr><td>200</td><td style="text-align:right">−200</td><td style="text-align:right">−30,000</td></tr>
+          <tr><td>400</td><td style="text-align:right">−400</td><td style="text-align:right">−60,000</td></tr>
+          <tr><td>700</td><td style="text-align:right">−700</td><td style="text-align:right">−105,000</td></tr>
+          <tr><td>1,000</td><td style="text-align:right">−1,000</td><td style="text-align:right">−150,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      Rough figures at 6.25% over 30 years with a 10% deposit and typical tax, insurance and PMI. To pay
+      off a car loan before you apply often increases your budget more than any other step.
+    </p>
+
+    <h2>Lenders count minimum payments, not balances</h2>
+    <p>
+      A 12,000 card balance with a 240 minimum counts as 240, not 12,000. This has two results. If you
+      pay a card down and keep it open, the minimum falls and your ratio improves. If you consolidate
+      short-term debt into a longer term, the monthly payment falls and the ratio improves, but the total
+      owed stays the same and you pay more interest overall.
+    </p>
+    <p>
+      Lenders do not count utilities, groceries, childcare, commuting, phone bills, pension
+      contributions, or other costs that are not credit obligations. So a lender's maximum is a ceiling,
+      not a recommendation.
+    </p>
+
+    <h2>How the maximum price is solved</h2>
+    <p>
+      There is no closed-form answer, because property tax and PMI both depend on the price. A higher
+      price means a larger loan, which raises the interest, the tax and the PMI together. So the
+      calculator uses bisection. It halves the search interval between the down payment and a very large
+      number, again and again, and tests if the PITI fits inside both caps. After sixty iterations the
+      answer is accurate to well under one unit of currency. The working panel shows the test at the
+      final price.
+    </p>
+
+    <h2>What this does not include</h2>
+    <ul>
+      <li>
+        Closing costs: usually 2% to 5% of the price in the US, plus stamp duty or land transfer tax
+        elsewhere. You pay these from your cash, not the loan.
+      </li>
+      <li>
+        Reserves: many lenders want several months of PITI left in the bank after closing.
+      </li>
+      <li>
+        Maintenance: a common rule of thumb is 1% of the property value a year, and you must pay it.
+      </li>
+      <li>
+        Rate movement: a one-point rise in rates cuts buying power by about 10%. Run the numbers again
+        when you get your rate lock quote.
+      </li>
+    </ul>
+
+    <h2>Why this page has no form</h2>
+    <p>
+      This page has no lead form and no account. Your income and debts stay in this browser tab, and the
+      page also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

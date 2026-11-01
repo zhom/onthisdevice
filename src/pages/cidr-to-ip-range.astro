@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeSubnet from '@/components/tools/dev/DevEncodeSubnet.tsx'
+---
+
+<ToolLayout slug="cidr-to-ip-range">
+  <DevEncodeSubnet client:load mode="cidr-range" />
+  <Fragment slot="explainer">
+    <h2>Expanding a block</h2>
+    <p>
+      A CIDR block is a starting address plus a prefix length. The prefix fixes the leading bits, and
+      all combinations of the remaining bits are inside the block. The range always starts at the
+      network address and ends at the broadcast address.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Block</th><th>First address</th><th>Last address</th><th>Count</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>10.0.0.0/8</td><td>10.0.0.0</td><td>10.255.255.255</td><td>16,777,216</td></tr>
+          <tr><td>172.16.0.0/12</td><td>172.16.0.0</td><td>172.31.255.255</td><td>1,048,576</td></tr>
+          <tr><td>192.168.0.0/16</td><td>192.168.0.0</td><td>192.168.255.255</td><td>65,536</td></tr>
+          <tr><td>100.64.0.0/10</td><td>100.64.0.0</td><td>100.127.255.255</td><td>4,194,304</td></tr>
+          <tr><td>169.254.0.0/16</td><td>169.254.0.0</td><td>169.254.255.255</td><td>65,536</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      People often get 172.16.0.0/12 wrong. It ends at 172.31.255.255, not 172.16.255.255. With twelve
+      fixed bits, the low nibble of the second octet is free, which gives 172.16 to 172.31.
+    </p>
+
+    <h2>Address range or host range?</h2>
+    <p>
+      The tool shows both, and they have different uses. A firewall rule, a route table entry or a
+      security-group source needs the full address range, including the network and broadcast
+      addresses. A DHCP pool or a static-allocation plan needs the host range, which excludes both. If
+      you mix them up, the allocation can overlap the gateway.
+    </p>
+
+    <h2>Prefix lengths worth recognising</h2>
+    <ul>
+      <li><code>/32</code>: exactly one address. The usual way to name a single host in a rule.</li>
+      <li><code>/31</code>: two addresses, both usable, for point-to-point links (RFC 3021).</li>
+      <li><code>/30</code>: four addresses, two usable. The traditional point-to-point size.</li>
+      <li><code>/24</code>: the classic &ldquo;one office LAN&rdquo;.</li>
+      <li><code>/0</code>: everything. <code>0.0.0.0/0</code> is the default route, and in a security group it means the entire internet.</li>
+    </ul>
+
+    <h2>Dotted masks are accepted too</h2>
+    <p>
+      Older equipment, and Cisco configuration in particular, writes the full mask:
+      <code>192.168.1.0 255.255.255.0</code>. Type <code>192.168.1.0/255.255.255.0</code> here and the
+      tool converts it. It rejects a non-contiguous mask such as <code>255.0.255.0</code> with an
+      explanation: a valid mask is always a run of ones followed by a run of zeros, so it can be written
+      as a prefix length.
+    </p>
+
+    <h2>Wildcard masks are the other way round</h2>
+    <p>
+      Cisco access lists use a wildcard mask, which is the inverse: <code>0.0.0.255</code> where the
+      subnet mask is <code>255.255.255.0</code>. A zero bit means &ldquo;must match&rdquo; and a one bit
+      means &ldquo;don't care&rdquo;. The breakdown above shows the wildcard for your block, so you can
+      paste it into an ACL.
+    </p>
+
+    <h2>Building allowlists</h2>
+    <p>
+      Vendors publish their egress addresses as CIDR blocks, and your firewall may need a range or an
+      explicit list. Expand the block here to see how many addresses you will trust. Check this number
+      before you approve a <code>/16</code> that looked small in the ticket.
+    </p>
+  </Fragment>
+</ToolLayout>

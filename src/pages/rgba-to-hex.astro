@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatColor from '@/components/tools/dev/DevFormatColor.tsx'
+---
+
+<ToolLayout slug="rgba-to-hex">
+  <DevFormatColor client:load from="rgba" to="hex" />
+  <Fragment slot="explainer">
+    <h2>Alpha as a fourth hex pair</h2>
+    <p>
+      An eight-digit hex code is <code>#RRGGBBAA</code>: the three colour channels, then opacity as a byte.
+      To convert RGBA alpha to hex, multiply it by 255 and round.
+    </p>
+    <table>
+      <thead><tr><th>Alpha (0–1)</th><th>Percent</th><th>Hex</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>0%</td><td><code>00</code></td></tr>
+        <tr><td>0.05</td><td>5%</td><td><code>0d</code></td></tr>
+        <tr><td>0.1</td><td>10%</td><td><code>1a</code></td></tr>
+        <tr><td>0.2</td><td>20%</td><td><code>33</code></td></tr>
+        <tr><td>0.25</td><td>25%</td><td><code>40</code></td></tr>
+        <tr><td>0.5</td><td>50%</td><td><code>80</code></td></tr>
+        <tr><td>0.6</td><td>60%</td><td><code>99</code></td></tr>
+        <tr><td>0.75</td><td>75%</td><td><code>bf</code></td></tr>
+        <tr><td>0.9</td><td>90%</td><td><code>e6</code></td></tr>
+        <tr><td>1</td><td>100%</td><td><code>ff</code></td></tr>
+      </tbody>
+    </table>
+    <p>
+      Four-digit shorthand <code>#RGBA</code> works like three-digit shorthand: each digit is doubled, so
+      <code>#f008</code> is <code>#ff000088</code>.
+    </p>
+
+    <h2>Alpha is an instruction, not a colour</h2>
+    <p>
+      <code>rgba(0, 0, 0, 0.5)</code> is not a specific grey. It means &ldquo;blend black half and half with
+      what is behind me&rdquo;. On white it renders as <code>#808080</code>; on a dark surface it is almost
+      black. That suits an overlay or a shadow, and does not suit a token that must look the same everywhere.
+    </p>
+    <p>
+      For one fixed colour, composite it yourself. Over a known background, blend each channel linearly:
+    </p>
+    <pre><code>result = foreground × alpha + background × (1 - alpha)
+
+rgba(37, 99, 235, 0.2) over #ffffff:
+  r = 37  × 0.2 + 255 × 0.8 = 211
+  g = 99  × 0.2 + 255 × 0.8 = 224
+  b = 235 × 0.2 + 255 × 0.8 = 251
+
+  #d3e0fb, an opaque colour that looks the same on any background</code></pre>
+
+    <h2>Where 8-digit hex is useful</h2>
+    <ul>
+      <li>Design tokens: one string holds the whole value, so a token file stays a flat map of names to strings.</li>
+      <li>Values for designers: design tools accept and show eight-digit hex directly.</li>
+      <li>Shadows and borders: <code>box-shadow: 0 1px 2px #0000000f</code> is shorter than the <code>rgba()</code> form and easier to scan in a list of shadows.</li>
+    </ul>
+    <p>
+      Avoid it where a person must reason about the opacity. <code>rgba(0, 0, 0, 0.06)</code> shows
+      &ldquo;6%&rdquo;; <code>#0000000f</code> does not.
+    </p>
+
+    <h2>Browser support</h2>
+    <p>
+      All major browsers have supported eight-digit hex since 2016. For a very old embedded webview or an
+      email client, use <code>rgba()</code>, which all clients understand. Both give exactly the same colour.
+    </p>
+  </Fragment>
+</ToolLayout>

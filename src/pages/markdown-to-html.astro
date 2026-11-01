@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MarkdownToHtml from '@/components/tools/data/MarkdownToHtml.tsx'
+---
+
+<ToolLayout slug="markdown-to-html">
+  <MarkdownToHtml client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert Markdown to HTML</h2>
+    <ol>
+      <li>Type or paste Markdown on the left, or drop a <code>.md</code> file. The preview renders as you type.</li>
+      <li>Choose the flavour. GitHub-flavoured Markdown adds tables, task lists, strikethrough and autolinks to CommonMark.</li>
+      <li>Switch to the HTML tab to see the sanitised markup, with indentation if you want it.</li>
+      <li>Turn on <strong>Full HTML document</strong> for a complete, styled page, not a fragment to paste into a template.</li>
+    </ol>
+
+    <h2>Markdown syntax reference</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Markdown</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">HTML</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="border-b px-3 py-2"><code># Title</code></td><td class="border-b px-3 py-2"><code>&lt;h1&gt;Title&lt;/h1&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>**bold**</code></td><td class="border-b px-3 py-2"><code>&lt;strong&gt;bold&lt;/strong&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>_italic_</code></td><td class="border-b px-3 py-2"><code>&lt;em&gt;italic&lt;/em&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>~~struck~~</code></td><td class="border-b px-3 py-2"><code>&lt;del&gt;struck&lt;/del&gt;</code> (GFM)</td></tr>
+          <tr><td class="border-b px-3 py-2"><code>[text](url)</code></td><td class="border-b px-3 py-2"><code>&lt;a href="url"&gt;text&lt;/a&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>![alt](src)</code></td><td class="border-b px-3 py-2"><code>&lt;img src="src" alt="alt"&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>`code`</code></td><td class="border-b px-3 py-2"><code>&lt;code&gt;code&lt;/code&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Triple backticks</td><td class="border-b px-3 py-2"><code>&lt;pre&gt;&lt;code&gt;…&lt;/code&gt;&lt;/pre&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>&gt; quote</code></td><td class="border-b px-3 py-2"><code>&lt;blockquote&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>- item</code></td><td class="border-b px-3 py-2"><code>&lt;ul&gt;&lt;li&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>1. item</code></td><td class="border-b px-3 py-2"><code>&lt;ol&gt;&lt;li&gt;</code></td></tr>
+          <tr><td class="border-b px-3 py-2"><code>- [x] done</code></td><td class="border-b px-3 py-2">Checked checkbox item (GFM)</td></tr>
+          <tr><td class="border-b px-3 py-2">Pipe table</td><td class="border-b px-3 py-2"><code>&lt;table&gt;</code> with alignment (GFM)</td></tr>
+          <tr><td class="border-b px-3 py-2"><code>---</code></td><td class="border-b px-3 py-2"><code>&lt;hr&gt;</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What the sanitiser removes</h2>
+    <p>
+      Markdown allows raw HTML, so a converted document can contain anything the author wrote, including a
+      script tag. Each result passes through an allowlist sanitiser before you see or download it. Elements
+      outside the allowlist (<code>script</code>, <code>style</code>, <code>iframe</code>,
+      <code>object</code>, <code>form</code> and others) are dropped, all <code>on*</code> attributes are
+      removed, and URLs are checked so <code>javascript:</code> cannot stay in an <code>href</code>. Links
+      that open in a new tab get <code>rel="noopener noreferrer"</code>. When the sanitiser removes
+      something, the tool tells you how much.
+    </p>
+
+    <h2>Line breaks: the most requested option</h2>
+    <p>
+      In standard Markdown a single newline is whitespace, so two lines of prose join into one paragraph. To
+      force a break, end a line with two spaces or a backslash. GitHub comments, Slack and most chat tools
+      treat each newline as a <code>&lt;br&gt;</code>, so pasted text often renders differently than you
+      expect. The <strong>Single newline = &lt;br&gt;</strong> toggle switches between the two behaviours.
+    </p>
+
+    <h2>Fragment or full document?</h2>
+    <p>
+      The default output is a fragment: headings, paragraphs and lists with no wrapper, ready for a
+      template, an email builder or a CMS field. Switch on <strong>Full HTML document</strong> and you get a
+      doctype, <code>&lt;meta charset&gt;</code> and viewport tags, a <code>&lt;title&gt;</code> you control,
+      and an embedded stylesheet for line length, spacing, code blocks and tables, with a
+      <code>prefers-color-scheme</code> dark variant. Save it as <code>.html</code> and it opens correctly
+      from disk as a finished page.
+    </p>
+
+    <h2>Heading anchors</h2>
+    <p>
+      Each heading gets a slugified <code>id</code>: “Getting started” becomes
+      <code>id="getting-started"</code>, so you can link to <code>#getting-started</code> from a table of
+      contents or another page. Duplicate headings get numbers, so no two ids are the same.
+    </p>
+
+    <h2>Private and offline</h2>
+    <p>
+      The Markdown to HTML conversion uses marked in this tab, so drafts, release notes and internal
+      documentation stay on your device. The page also works offline. For the other direction, use
+      <a href="/html-to-markdown">HTML to Markdown</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

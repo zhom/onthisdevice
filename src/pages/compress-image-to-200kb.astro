@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-200kb">
+  <CompressImageToTarget client:load targetKb={200} inputLabel="Drop the images that need to come in under 200 KB" />
+
+  <Fragment slot="explainer">
+    <h2>200 KB is the web-performance sweet spot</h2>
+    <p>
+      Most page-speed guidance agrees: keep each image under about 200 KB and the whole page under one
+      or two megabytes. At 200 KB a full-width hero photo still looks very good, and on a mid-range
+      mobile connection it loads in less than a second. Above that, you pay for detail nobody looks at.
+      Largest Contentful Paint, the Core Web Vital that fails most often, is usually this image.
+    </p>
+
+    <h2>Resize before you compress</h2>
+    <p>
+      This gives the largest gain, and people often skip it. A 4000 px photo shown in an 800 px column
+      has twenty-five times more pixels than the layout can show. Limit the width first with the field
+      in the options. The quality search then has much less work, and the same 200 KB gives a much
+      sharper image. As a starting point:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Placement</th><th>Sensible max width</th><th>Typical size at quality 80</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Full-width hero</td><td>1920 px</td><td>180–300 KB</td></tr>
+          <tr><td>Content column image</td><td>1200 px</td><td>90–160 KB</td></tr>
+          <tr><td>Card or listing thumbnail</td><td>600 px</td><td>25–50 KB</td></tr>
+          <tr><td>Avatar</td><td>200 px</td><td>6–12 KB</td></tr>
+          <tr><td>Email newsletter image</td><td>1200 px</td><td>100–180 KB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Metadata is a bigger share than you think</h2>
+    <p>
+      A camera JPEG has an EXIF block, often an embedded colour profile, and a full JPEG thumbnail of
+      itself. Together these often add 20–80 KB, up to 40% of a 200 KB budget, for data that no browser
+      shows. This tool re-encodes from raw pixels, so it drops all of it. To see the metadata first, use
+      the <a href="/image-metadata-viewer">metadata viewer</a>. To remove only the metadata and keep the
+      pixels, use <a href="/remove-exif-data">Remove EXIF Data</a>.
+    </p>
+
+    <h2>JPEG, WebP or AVIF for the web?</h2>
+    <ul>
+      <li>WebP: supported by all current browsers, usually 25–35% smaller than JPEG at the same quality. The default choice for a modern site.</li>
+      <li>JPEG: universal, including email clients and older CMS previews. Use it when you do not control where the image is shown.</li>
+      <li>PNG: only for screenshots, logos, charts and flat colour. A photo saved as PNG is often ten times larger than necessary.</li>
+    </ul>
+
+    <h2>Batch a whole gallery</h2>
+    <p>
+      Drop in the whole folder. Each image gets its own search to the 200 KB target, with its own
+      progress row, and “Download all as .zip” puts the results in one file. There is no file cap and
+      no daily quota, because the encoding runs on your CPU. For a large gallery, also set the width
+      limit: each attempt then encodes fewer pixels, and the run is several times faster.
+    </p>
+
+    <h2>Checking your work</h2>
+    <p>
+      The result card shows the byte count, the dimensions and the quality the search chose. If the
+      quality is 90 or above, your target is generous and you can go lower. If it is under 55, the image
+      is too large for the budget: crop or resize it, and do not accept the artefacts. Local processing
+      gives you this feedback without another upload.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/compress-image-to-500kb">500 KB</a> ·
+      <a href="/compress-image-to-1mb">1 MB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

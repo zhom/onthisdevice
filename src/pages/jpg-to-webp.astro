@@ -1,0 +1,67 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JpgToWebp from '@/components/tools/image-convert/JpgToWebp.tsx'
+---
+
+<ToolLayout slug="jpg-to-webp">
+  <JpgToWebp client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert JPG to WebP</h2>
+    <ol>
+      <li>Drop your JPG or JPEG files above. To optimise a site, drop the whole folder at once.</li>
+      <li>Set the quality slider. 80 is the standard start point. The before and after size of each file shows if you can go lower.</li>
+      <li>Compare the numbers. Each file shows its original size, its WebP size and the percentage change, so you can find the rare image that gets larger.</li>
+      <li>Download the files one by one, or all of them as one ZIP.</li>
+    </ol>
+
+    <h2>How much you actually save</h2>
+    <p>
+      The common figure for JPG to WebP is "25–34% smaller than JPEG", from Google's own study of libwebp
+      against libjpeg at matched SSIM. That number is fairly accurate in practice, but the spread is wide and
+      depends almost fully on image content:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Content</th>
+            <th align="left">Typical saving at matched quality</th>
+            <th align="left">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Skies, gradients, studio backdrops</td><td>35–50%</td><td>Smooth regions are where WebP is strongest</td></tr>
+          <tr><td>Portraits and product shots</td><td>25–35%</td><td>The typical case; matches the headline figure</td></tr>
+          <tr><td>Landscape with dense foliage</td><td>10–20%</td><td>High-frequency detail is expensive in any codec</td></tr>
+          <tr><td>Film grain or high-ISO noise</td><td>0–10%, occasionally larger</td><td>Noise is incompressible; check the before/after figures</td></tr>
+          <tr><td>Already heavily compressed JPEG</td><td>varies</td><td>Re-encoding artefacts costs bits. Raise quality to 85</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>About re-encoding a lossy file</h2>
+    <p>
+      JPG to WebP decodes one lossy image and encodes it with a second lossy codec. In theory that adds damage.
+      In practice there is no problem at quality 80 or above, because the JPEG artefacts are low-contrast and
+      WebP spends very few bits on them.
+    </p>
+    <p>
+      Repeated round trips do matter. If you have the original camera file or the export from your editor,
+      convert that to WebP, not an already-compressed web JPEG. One lossy generation is always better than two.
+    </p>
+
+    <h2>Using WebP on a real website</h2>
+    <ul>
+      <li>Serve WebP with a JPEG fallback through a picture element, or let your CDN negotiate on the Accept header. All current browsers accept WebP, but the fallback costs nothing.</li>
+      <li>Keep your JPEG originals. WebP is a delivery format, not an archive format.</li>
+      <li>Resize before you compress. A 4000 px photo reduced to the 1200 px it displays at saves many more bytes than any codec choice.</li>
+      <li>Set explicit width and height attributes so the layout does not shift while images load.</li>
+    </ul>
+    <p>
+      For smaller files, <a href="/image-to-avif">AVIF</a> is usually another 20–30% below WebP, with much slower
+      encoding. In the other direction, <a href="/webp-to-jpg">WebP to JPG</a> gives compatibility with older
+      software, and the <a href="/image-converter">universal image converter</a> handles mixed batches.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfToJpg from '@/components/tools/pdf-convert/PdfToJpg.tsx'
+---
+
+<ToolLayout slug="pdf-to-jpg">
+  <PdfToJpg client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a PDF to JPG</h2>
+    <ol>
+      <li>Drop your PDF onto the box above, or click it to pick a file. pdf.js opens the document in this tab, and it is not uploaded.</li>
+      <li>Choose a resolution. 150 DPI is the sensible default; pick 300 DPI if the images will be printed or run through OCR.</li>
+      <li>Set the JPG quality if you need smaller files. Anything from 85 to 92 is visually indistinguishable from the maximum on a page render.</li>
+      <li>Press <strong>Convert to JPG</strong>. Each page appears in the gallery as it finishes, so you can start checking results before the document is done.</li>
+      <li>Download the whole set as a ZIP, or grab individual pages with the download button on each thumbnail.</li>
+    </ol>
+
+    <h2>Which DPI should you pick?</h2>
+    <p>
+      A PDF stores pages in points, where 72 points equal one inch. Rendering at
+      a given DPI simply multiplies that grid: 300 DPI means each inch of the page
+      becomes 300 pixels. The trade-off is file size, which grows with the square
+      of the resolution.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>DPI</th>
+            <th>A4 page (px)</th>
+            <th>US Letter (px)</th>
+            <th>Megapixels</th>
+            <th>Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>72</td>
+            <td>595 × 842</td>
+            <td>612 × 792</td>
+            <td>0.5 MP</td>
+            <td>Thumbnails, quick previews, email attachments</td>
+          </tr>
+          <tr>
+            <td>150</td>
+            <td>1240 × 1754</td>
+            <td>1275 × 1650</td>
+            <td>2.2 MP</td>
+            <td>Reading on screen, slide decks, web pages</td>
+          </tr>
+          <tr>
+            <td>300</td>
+            <td>2480 × 3508</td>
+            <td>2550 × 3300</td>
+            <td>8.7 MP</td>
+            <td>Printing, OCR input, archival copies</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Higher is not automatically better. Rendering cannot invent detail: if the
+      page contains a 150 DPI scan, requesting 300 DPI just doubles the pixels
+      and adds no information. Vector pages (made by Word, LaTeX, InDesign or a
+      browser's print dialog) do get sharper, because the
+      text and lines are re-drawn at the higher resolution.
+    </p>
+
+    <h2>When JPG is the right choice</h2>
+    <p>
+      JPG uses lossy compression tuned for photographs. It is excellent for pages
+      that are mostly images and poor for pages that are mostly text at low
+      quality settings, where you will see faint "ringing" halos around letters.
+      For text-heavy pages that must stay pristine, use
+      <a href="/pdf-to-png">PDF to PNG</a>. It is lossless, but the file is much
+      larger.
+    </p>
+    <p>Typical reasons people rasterise a PDF page:</p>
+    <ul>
+      <li>To post a page online where a PDF viewer would be clumsy: a menu, a flyer, a certificate.</li>
+      <li>To put a page into a slide deck or document that cannot embed PDFs cleanly.</li>
+      <li>To flatten a form, so the fields, annotations and layers become a fixed picture.</li>
+      <li>To feed OCR software, which usually wants 300 DPI images, not a PDF.</li>
+      <li>To send a preview of one page without the whole document.</li>
+    </ul>
+
+    <h2>What stays on your device</h2>
+    <p>
+      Everything. pdf.js parses the PDF in a web worker, each page is drawn on an
+      HTML canvas, and the browser encodes the canvas to JPG. No part of the file is
+      sent, and there is no queue. If you disconnect from the network after this
+      page has loaded, the tool still works, which shows that nothing is uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoToGif from '@/components/tools/media/VideoToGif.tsx'
+---
+
+<ToolLayout slug="video-to-gif">
+  <VideoToGif client:load />
+  <Fragment slot="explainer">
+    <h2>How to turn a video into a GIF</h2>
+    <ol>
+      <li>Drop a video in. The tool selects the first six seconds, a good length for most GIFs.</li>
+      <li>Drag the two handles to the exact moment you want, or play the video and press <strong>Set here</strong> to move a handle to the playhead.</li>
+      <li>Choose a frame rate and width. 12 fps at 480 px is a good balance between smoothness and file size.</li>
+      <li>Leave the two-pass palette on unless speed matters more; it improves quality more than any other setting.</li>
+      <li>Press <strong>Create GIF</strong>, check the preview, and download.</li>
+    </ol>
+
+    <h2>Why GIFs are large, and how to make them smaller</h2>
+    <p>
+      A GIF stores each frame as its own palettised image with only simple LZW compression. It has no motion
+      prediction, so unlike H.264 it cannot say "this frame is the previous one shifted slightly". So the file
+      size is roughly proportional to width × height × frames. These settings control it:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Lever</th>
+            <th>Change</th>
+            <th>Effect on size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Length</td>
+            <td>10 s → 5 s</td>
+            <td>Halves it. The most effective and least visible change.</td>
+          </tr>
+          <tr>
+            <td>Width</td>
+            <td>640 → 480 px</td>
+            <td>Roughly −45%, because area scales with the square.</td>
+          </tr>
+          <tr>
+            <td>Frame rate</td>
+            <td>24 → 12 fps</td>
+            <td>Halves the frame count; looks fine for most screen captures.</td>
+          </tr>
+          <tr>
+            <td>Dithering</td>
+            <td>Sierra2 → none</td>
+            <td>Around −20%, at the cost of visible colour banding.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What the two-pass palette does</h2>
+    <p>
+      GIF allows at most 256 colours per frame. A simple converter maps your video onto a generic web palette,
+      which turns skin tones grey-green and gradients into stripes. The two-pass method used here is better:
+    </p>
+    <ol>
+      <li>Pass one, <code>palettegen</code>: FFmpeg scans each frame in your selected range and builds a 256-colour palette from the colours in the clip. It gives more weight to colours that change between frames (<code>stats_mode=diff</code>), so moving subjects keep their colours and the static background does not take over the palette.</li>
+      <li>Pass two, <code>paletteuse</code>: each frame is mapped onto that custom palette with error-diffusion dithering, which hides the remaining quantisation as fine noise in place of hard bands.</li>
+    </ol>
+    <p>
+      It takes about twice the encoding time and is worth it in almost every case. The exact filter chain is
+      <code>fps=N,scale=W:-2:flags=lanczos</code> followed by the palette filters.
+    </p>
+
+    <h2>Dithering options compared</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Look</th>
+            <th>Use when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sierra2 4A</td>
+            <td>Fine, natural grain</td>
+            <td>Default; photographic or filmed content</td>
+          </tr>
+          <tr>
+            <td>Bayer</td>
+            <td>Ordered cross-hatch pattern</td>
+            <td>Flat UI colours; compresses better than error diffusion</td>
+          </tr>
+          <tr>
+            <td>Floyd–Steinberg</td>
+            <td>Smooth gradients, slightly noisier</td>
+            <td>Sunsets, skies, soft lighting</td>
+          </tr>
+          <tr>
+            <td>None</td>
+            <td>Hard colour edges</td>
+            <td>Screenshots, logos, line art; smallest files</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When not to use a GIF</h2>
+    <p>
+      For clips longer than about ten seconds, an MP4 or WebM is five to twenty times smaller at better
+      quality, and chat apps, wikis and social networks now play short muted videos inline. Use GIF when the
+      destination requires it, such as email signatures, some documentation systems and old forums. For other
+      cases, use the <a href="/video-converter">video converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

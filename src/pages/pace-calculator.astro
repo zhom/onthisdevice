@@ -1,0 +1,149 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PaceCalculator from '@/components/tools/health/PaceCalculator.tsx'
+---
+
+<ToolLayout slug="pace-calculator">
+  <PaceCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the pace calculator</h2>
+    <ol>
+      <li>
+        Choose what you want to solve for: pace from a distance and time, a finish time from a target
+        pace, or how far you covered at a known pace.
+      </li>
+      <li>
+        Pick a standard distance or enter your own. Metric and imperial paces are shown side by side
+        either way.
+      </li>
+      <li>
+        Fill in the other two values. The results update as you type, so there is no calculate button.
+      </li>
+      <li>
+        Use the split table to plan a race, and the equivalent-times table to see what the performance
+        predicts at other distances.
+      </li>
+    </ol>
+
+    <h2>Pace, speed and how they relate</h2>
+    <p>
+      Pace is time per unit of distance, and speed is distance per unit of time. They are reciprocals.
+      Runners think in pace, because you can hold a target pace.
+    </p>
+    <ul>
+      <li><strong>Pace (min/km) = total time in minutes ÷ distance in km</strong></li>
+      <li><strong>Pace (min/mile) = pace per km × 1.609344</strong></li>
+      <li><strong>Speed (km/h) = 60 ÷ pace in min/km</strong></li>
+      <li><strong>Speed (mph) = 60 ÷ pace in min/mile</strong></li>
+    </ul>
+    <p>
+      A quick mental conversion: to go from min/km to min/mile, add about 60 percent. 5:00/km becomes
+      roughly 8:00/mile (exactly 8:03). 6:00/km becomes about 9:39/mile.
+    </p>
+
+    <h2>Common pace to speed conversions</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Pace / km</th>
+            <th scope="col">Pace / mile</th>
+            <th scope="col">km/h</th>
+            <th scope="col">mph</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>3:00</td><td>4:50</td><td>20.0</td><td>12.4</td></tr>
+          <tr><td>3:30</td><td>5:38</td><td>17.1</td><td>10.6</td></tr>
+          <tr><td>4:00</td><td>6:26</td><td>15.0</td><td>9.3</td></tr>
+          <tr><td>4:30</td><td>7:15</td><td>13.3</td><td>8.3</td></tr>
+          <tr><td>5:00</td><td>8:03</td><td>12.0</td><td>7.5</td></tr>
+          <tr><td>5:30</td><td>8:51</td><td>10.9</td><td>6.8</td></tr>
+          <tr><td>6:00</td><td>9:39</td><td>10.0</td><td>6.2</td></tr>
+          <tr><td>6:30</td><td>10:28</td><td>9.2</td><td>5.7</td></tr>
+          <tr><td>7:00</td><td>11:16</td><td>8.6</td><td>5.3</td></tr>
+          <tr><td>8:00</td><td>12:52</td><td>7.5</td><td>4.7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Target paces for common goal times</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Goal</th>
+            <th scope="col">Distance</th>
+            <th scope="col">Pace / km</th>
+            <th scope="col">Pace / mile</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Sub-20 5K</td><td>5 km</td><td>3:59</td><td>6:26</td></tr>
+          <tr><td>Sub-25 5K</td><td>5 km</td><td>4:59</td><td>8:02</td></tr>
+          <tr><td>Sub-30 5K</td><td>5 km</td><td>5:59</td><td>9:39</td></tr>
+          <tr><td>Sub-45 10K</td><td>10 km</td><td>4:29</td><td>7:14</td></tr>
+          <tr><td>Sub-50 10K</td><td>10 km</td><td>4:59</td><td>8:02</td></tr>
+          <tr><td>Sub-2:00 half</td><td>21.0975 km</td><td>5:41</td><td>9:09</td></tr>
+          <tr><td>Sub-1:45 half</td><td>21.0975 km</td><td>4:58</td><td>8:00</td></tr>
+          <tr><td>Sub-1:30 half</td><td>21.0975 km</td><td>4:16</td><td>6:52</td></tr>
+          <tr><td>Sub-4:00 marathon</td><td>42.195 km</td><td>5:41</td><td>9:09</td></tr>
+          <tr><td>Sub-3:30 marathon</td><td>42.195 km</td><td>4:58</td><td>8:00</td></tr>
+          <tr><td>Sub-3:00 marathon</td><td>42.195 km</td><td>4:16</td><td>6:52</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The pace for a sub-two-hour half marathon and a sub-four-hour marathon is the same: 5:41/km.
+      Sub-1:45 half and sub-3:30 marathon both need 4:58/km. Double the distance at the same pace and
+      the time exactly doubles, which is much harder than it looks.
+    </p>
+
+    <h2>Predicting race times across distances</h2>
+    <p>
+      Pete Riegel's 1977 formula is the standard method:
+    </p>
+    <p><strong>T₂ = T₁ × (D₂ ÷ D₁)<sup>1.06</sup></strong></p>
+    <p>
+      The exponent of 1.06 makes it realistic. At 1.00, double the distance would double the time. At
+      1.06, double the distance costs about 4.2 percent more than double the time, because pace must
+      drop as distance grows.
+    </p>
+    <p>
+      It works best when the two distances are within a factor of about four, and when you trained for
+      the longer one. A marathon predicted from a 5K on 5K mileage is much too fast: marathon
+      performance depends on fuelling, durability and long-run volume that a 5K cannot measure. A 10K
+      predicted from a half marathon is usually accurate to within a minute.
+    </p>
+
+    <h2>Even splits, negative splits and the wall</h2>
+    <p>
+      The split table on this page assumes even pacing. That is the correct default: almost all
+      distance world records were set with even or slightly negative splits, and a start that is too
+      fast is the most common reason for a bad race.
+    </p>
+    <p>
+      A negative split means the second half is faster than the first. In practice, run the first two
+      or three kilometres 5 to 10 seconds per kilometre slower than target, then hold target pace, and
+      use what is left in the last quarter. It feels too slow at the start, but it almost always gives a
+      faster finish time.
+    </p>
+    <p>
+      In the marathon, "the wall" at about 30–32 km is mostly glycogen depletion. Even pacing plus 30 to
+      60 g of carbohydrate per hour from the start moves it much later, and often removes it.
+    </p>
+
+    <h2>What moves your real pace</h2>
+    <ul>
+      <li>Hills: about 12–20 seconds per kilometre slower per 1 percent of uphill gradient, and about half that back on the way down. Rolling courses are always slower than flat ones.</li>
+      <li>Heat: above about 15 °C, expect to lose 2 to 5 percent on marathon pace, more if humidity is high.</li>
+      <li>Wind: a headwind costs much more than the same tailwind gives back. Run behind someone if you can.</li>
+      <li>Altitude: above 1,500 m, endurance pace drops noticeably until you acclimatise, which takes two to three weeks.</li>
+      <li>Surface: trail and soft ground can cost 30 to 60 seconds per kilometre against tarmac at the same effort.</li>
+    </ul>
+    <p>
+      So pace is a plan, not a promise. Run the first half on effort, compare it with the split table,
+      and adjust.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,126 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TipCalculator from '@/components/tools/everyday/TipCalculator.tsx'
+---
+
+<ToolLayout slug="tip-calculator">
+  <TipCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the tip calculator</h2>
+    <ol>
+      <li>Type the amount printed on the check. Commas and a currency symbol are both fine.</li>
+      <li>
+        Pick a tip percentage: tap a preset, or drag the slider for other values. The results update as you
+        move it.
+      </li>
+      <li>
+        Set the number of people. The plus and minus buttons are large enough to use with one hand.
+      </li>
+      <li>
+        Optional: turn on <strong>tip on the pre-tax subtotal</strong> and enter your sales tax rate to tip on
+        the food and not on the tax.
+      </li>
+      <li>
+        Optional: choose a rounding mode so the total or each person's share is a whole number.
+      </li>
+    </ol>
+    <p>
+      The result panel shows the tip, the total, the per-person share and a cent-exact table, so the shares
+      always add up to the bill. Copy the summary to paste into a group chat.
+    </p>
+
+    <h2>The tip formula</h2>
+    <p>Tipping is two multiplications and one addition:</p>
+    <p>
+      tip = bill × tip% ÷ 100<br />
+      total = bill + tip<br />
+      per person = total ÷ people
+    </p>
+    <p>
+      On a $68.40 bill at 18%: 68.40 × 0.18 = $12.31 tip, for an $80.71 total. Split two ways, that is about
+      $40.36 each. The two shares differ by one cent, and the table shows who pays it.
+    </p>
+
+    <h3>Tipping before or after tax</h3>
+    <p>
+      Etiquette guides generally say to tip on the pre-tax subtotal, because sales tax is money the restaurant
+      collects for the state, not revenue for the service. The difference is small. On a $100 subtotal with
+      8.25% tax, a 20% tip on the pre-tax figure is $20.00 and a 20% tip on the $108.25 total is $21.65, $1.65
+      more. For the strict version, the tip calculator removes the tax for you.
+    </p>
+
+    <h2>How much to tip, by situation</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Situation</th>
+            <th scope="col">Customary US tip</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sit-down restaurant</td>
+            <td>18–20%</td>
+            <td>15% for adequate service, 25% for exceptional service or a large party</td>
+          </tr>
+          <tr>
+            <td>Bar, per drink</td>
+            <td>$1–2 a drink, or 20% on a tab</td>
+            <td>More for a complex cocktail than for a bottled beer</td>
+          </tr>
+          <tr>
+            <td>Food delivery</td>
+            <td>15–20%, minimum $3–5</td>
+            <td>Delivery fees usually go to the platform, not the driver</td>
+          </tr>
+          <tr>
+            <td>Coffee shop / counter service</td>
+            <td>0–15%</td>
+            <td>Optional; the prompt on the card reader is not an obligation</td>
+          </tr>
+          <tr>
+            <td>Taxi or rideshare</td>
+            <td>10–15%</td>
+            <td>Round up to the next whole amount for short trips</td>
+          </tr>
+          <tr>
+            <td>Hairdresser or barber</td>
+            <td>15–20%</td>
+            <td>Tip the person who did the work, not the salon</td>
+          </tr>
+          <tr>
+            <td>Hotel housekeeping</td>
+            <td>$3–5 a night</td>
+            <td>Left daily, because the person changes between days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      These are United States norms. Other countries differ greatly: service is generally included in Japan
+      and much of continental Europe, where rounding up or leaving 5–10% is already generous, and in some
+      countries a tip can be unwelcome.
+    </p>
+
+    <h2>Quick mental maths for tips</h2>
+    <ul>
+      <li>10%: move the decimal point one place left. $46.80 becomes $4.68.</li>
+      <li>20%: take 10% and double it. $9.36 on the same bill.</li>
+      <li>15%: take 10%, then add half of it. $4.68 + $2.34 = $7.02.</li>
+      <li>
+        18%: take 20% and subtract a tenth of that. $9.36 − $0.94 ≈ $8.42, the exact value to the cent.
+      </li>
+      <li>
+        Double the tax: a rough shortcut in states where tax is close to 9%, which gives about 18%.
+      </li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      The bill amount, the number of people and the other inputs stay in your browser's memory and are gone
+      when you close the tab.
+    </p>
+  </Fragment>
+</ToolLayout>

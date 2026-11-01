@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeMorse from '@/components/tools/text/DevEncodeMorse.tsx'
+---
+
+<ToolLayout slug="nato-phonetic-alphabet-translator">
+  <DevEncodeMorse client:load mode="nato" />
+  <Fragment slot="explainer">
+    <h2>Why a spelling alphabet exists</h2>
+    <p>
+      Over a phone line, a radio or in a noisy room, whole groups of letters sound the same. B, C, D,
+      E, G, P, T and V share the same vowel sound. F and S are almost identical without the high
+      frequencies. M and N are impossible to tell apart. A booking reference read letter by letter often
+      fails, and nobody notices: both sides think they agreed.
+    </p>
+    <p>
+      The NATO phonetic alphabet replaces each letter with a word that cannot be confused with any other
+      word in the set, even when the sound is very poor. That is a stronger rule than &ldquo;starts with
+      the right letter&rdquo;, so the list looks arbitrary.
+    </p>
+
+    <h2>Alfa, not Alpha. Juliett, not Juliet.</h2>
+    <p>
+      Two spellings in the ICAO list look like typos but are correct. Alfa avoids &ldquo;ph&rdquo;,
+      which speakers of many languages do not read as an F sound. Juliett has a double T so that French
+      speakers do not treat the final T as silent. Both were deliberate choices when the alphabet was
+      standardised in 1956, and the input here accepts both spellings.
+    </p>
+
+    <h2>Aviation number pronunciation</h2>
+    <p>
+      Numbers get the same treatment in aviation and maritime use, for the same reason:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Digit</th><th>Spoken</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>3</td><td>Tree</td><td>The &ldquo;th&rdquo; sound does not survive a radio</td></tr>
+          <tr><td>4</td><td>Fower</td><td>Two clear syllables, unlike &ldquo;for&rdquo;</td></tr>
+          <tr><td>5</td><td>Fife</td><td>Distinguishes it from &ldquo;fire&rdquo;</td></tr>
+          <tr><td>9</td><td>Niner</td><td>Avoids collision with the German &ldquo;nein&rdquo;</td></tr>
+          <tr><td>.</td><td>Decimal</td><td>&ldquo;Point&rdquo; is easily lost</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Toggle it on in the tool to see your text spelled the way a controller would read it.</p>
+
+    <h2>It is not the only spelling alphabet</h2>
+    <p>
+      UK and US police forces use their own lists, which differ enough to cause confusion. Financial
+      call centres often use first names. If you read something critical to a person who may use a
+      different list, say &ldquo;NATO alphabet&rdquo; first, or read both, as in &ldquo;B for
+      Bravo&rdquo;, which always works.
+    </p>
+
+    <h2>Practical uses</h2>
+    <ul>
+      <li>Read a reference to a call centre: booking codes, policy numbers, case IDs.</li>
+      <li>Dictate a licence plate or postcode to emergency services or a delivery driver.</li>
+      <li>Read a serial number from hardware to a support engineer.</li>
+      <li>Confirm an email address letter by letter, where one wrong character means the mail never arrives.</li>
+      <li>Amateur radio, where it is standard practice for callsigns.</li>
+    </ul>
+
+    <h2>Decoding back to text</h2>
+    <p>
+      The swap button reverses the direction: paste a list of code words and get the original string.
+      Words that are not in the ICAO alphabet come back as a question mark, not a guess, so you can see
+      where a transcription failed.
+    </p>
+  </Fragment>
+</ToolLayout>

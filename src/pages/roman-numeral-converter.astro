@@ -1,0 +1,158 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RomanNumeralConverter from '@/components/tools/everyday/RomanNumeralConverter.tsx'
+---
+
+<ToolLayout slug="roman-numeral-converter">
+  <RomanNumeralConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the Roman numeral converter</h2>
+    <ol>
+      <li>
+        <strong>Number → Roman</strong>: type a whole number from 1 to 3,999,999. The result has the correct
+        overline for values above 3,999, and an ASCII-safe version in parentheses that you can paste
+        anywhere.
+      </li>
+      <li>
+        <strong>Roman → Number</strong>: type or paste a numeral. The converter reads overlines, macrons and
+        the (MMM) parenthesis convention, and explains any non-standard spelling.
+      </li>
+    </ol>
+    <p>
+      Both directions show a step table with the value of each symbol.
+    </p>
+
+    <h2>The seven symbols</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Symbol</th>
+            <th scope="col">Value</th>
+            <th scope="col">Origin of the letter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>I</td><td>1</td><td>A single tally mark</td></tr>
+          <tr><td>V</td><td>5</td><td>An open hand with five fingers</td></tr>
+          <tr><td>X</td><td>10</td><td>Two hands, or a crossed tally</td></tr>
+          <tr><td>L</td><td>50</td><td>An adapted Etruscan character</td></tr>
+          <tr><td>C</td><td>100</td><td>Latin centum</td></tr>
+          <tr><td>D</td><td>500</td><td>Half of the old symbol for 1,000</td></tr>
+          <tr><td>M</td><td>1000</td><td>Latin mille</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The rules of standard notation</h2>
+    <ul>
+      <li>
+        Add left to right. Symbols are written from largest to smallest and their values are added:
+        MCLXVI = 1,000 + 100 + 50 + 10 + 5 + 1 = 1,166.
+      </li>
+      <li>
+        Subtract when a smaller symbol comes first. Only six pairs are valid: IV (4),
+        IX (9), XL (40), XC (90), CD (400) and CM (900). I can precede only V and X, X only L and C, C
+        only D and M.
+      </li>
+      <li>
+        I, X, C and M repeat at most three times. IIII becomes IV; XXXX becomes XL.
+      </li>
+      <li>
+        V, L and D never repeat. VV would be X, so it is never written.
+      </li>
+      <li>
+        There is no zero and there are no fractions. The Romans wrote fractions with a separate duodecimal
+        system of dots and symbols, and used the word nulla for nothing.
+      </li>
+    </ul>
+    <p>
+      The converter applies all of these rules. If you type IIX, it tells you that the standard spelling is
+      VIII.
+    </p>
+
+    <h2>Numbers above 3,999: the vinculum</h2>
+    <p>
+      With M as the largest symbol, plain notation stops at MMMCMXCIX (3,999). Above that, the Romans drew a
+      bar (a vinculum) over a numeral to multiply it by 1,000:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Value</th>
+            <th scope="col">With an overline</th>
+            <th scope="col">ASCII form</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>4,000</td><td><span style="text-decoration: overline">IV</span></td><td>(IV)</td></tr>
+          <tr><td>5,000</td><td><span style="text-decoration: overline">V</span></td><td>(V)</td></tr>
+          <tr><td>10,000</td><td><span style="text-decoration: overline">X</span></td><td>(X)</td></tr>
+          <tr><td>50,000</td><td><span style="text-decoration: overline">L</span></td><td>(L)</td></tr>
+          <tr><td>100,000</td><td><span style="text-decoration: overline">C</span></td><td>(C)</td></tr>
+          <tr><td>1,000,000</td><td><span style="text-decoration: overline">M</span></td><td>(M)</td></tr>
+          <tr>
+            <td>3,999,999</td>
+            <td><span style="text-decoration: overline">MMMCMXCIX</span>CMXCIX</td>
+            <td>(MMMCMXCIX)CMXCIX</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A bar is easily lost in plain text, email and code, so the same value is often written with
+      parentheses. This converter writes and reads both forms. 3,999,999 is the practical limit of the
+      single-bar system. A double bar for millions existed but was never standardised.
+    </p>
+
+    <h2>Years in Roman numerals</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Year</th>
+            <th scope="col">Roman numeral</th>
+            <th scope="col">Year</th>
+            <th scope="col">Roman numeral</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1900</td><td>MCM</td><td>2000</td><td>MM</td></tr>
+          <tr><td>1969</td><td>MCMLXIX</td><td>2010</td><td>MMX</td></tr>
+          <tr><td>1984</td><td>MCMLXXXIV</td><td>2020</td><td>MMXX</td></tr>
+          <tr><td>1990</td><td>MCMXC</td><td>2024</td><td>MMXXIV</td></tr>
+          <tr><td>1999</td><td>MCMXCIX</td><td>2025</td><td>MMXXV</td></tr>
+          <tr><td>2001</td><td>MMI</td><td>2026</td><td>MMXXVI</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A year is converted as one whole number, so film copyright lines and building cornerstones read
+      MCMLXXXIV, not one numeral per digit.
+    </p>
+
+    <h2>Where Roman numerals are still used</h2>
+    <ul>
+      <li>Clock and watch faces, where IIII for 4 is a design tradition and not correct notation</li>
+      <li>Book front matter, chapter and act numbers, and legal outline levels</li>
+      <li>Monarchs, popes and dynastic names, such as Elizabeth II and Louis XIV</li>
+      <li>Super Bowls, Olympiads and other numbered events</li>
+      <li>Film and television copyright dates, historically to make the year less obvious at a glance</li>
+      <li>Building cornerstones, monuments and memorial inscriptions</li>
+    </ul>
+
+    <h2>Reading a numeral quickly</h2>
+    <p>
+      Work left to right and compare each symbol with the one after it. If it is greater than or equal
+      to the next, add it; if it is smaller, subtract it. MCMXCIV: M (add 1,000), C before M (subtract
+      100), M (add 1,000), X before C (subtract 10), C (add 100), I before V (subtract 1), V (add 5) →
+      1,000 + 900 + 90 + 4 = 1,994.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      The conversion runs in your browser as you type.
+    </p>
+  </Fragment>
+</ToolLayout>

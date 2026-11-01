@@ -1,0 +1,126 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RandomNumberGenerator from '@/components/tools/generators/RandomNumberGenerator.tsx'
+---
+
+<ToolLayout slug="random-number-generator">
+  <RandomNumberGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the random number generator</h2>
+    <ol>
+      <li>Set the minimum and maximum. Both ends are included, so 1 to 6 can give a 1 or a 6.</li>
+      <li>Choose how many numbers you want, up to ten thousand at a time.</li>
+      <li>Turn on “no repeats” for a raffle or a lottery draw. Leave it off for dice, simulations and anything where each draw must be independent.</li>
+      <li>Sort the output if you need it in order, then copy it as a list or a comma-separated line, or download it as a text file.</li>
+      <li>The Dice and Coin tabs use the same generator for the two most common requests.</li>
+    </ol>
+
+    <h2>Where the randomness comes from</h2>
+    <p>
+      Each value comes from <code>crypto.getRandomValues</code>, the browser’s cryptographically secure
+      pseudo-random generator. The operating system seeds it from entropy such as timing jitter, hardware
+      sources and interrupt noise. Browsers use the same generator for encryption keys and session tokens.
+    </p>
+    <p>
+      Many web generators use <code>Math.random()</code>. It is a fast pseudo-random algorithm
+      (xorshift128+ in V8) with an internal state that is not secret and is not reseeded. It is good
+      enough to shuffle a carousel and unsuitable for a prize draw: a person who sees enough output can
+      reconstruct the state and predict the next values.
+    </p>
+
+    <h2>The modulo bias</h2>
+    <p>
+      The obvious way to get a number in a range is to take a random integer and apply the remainder
+      operator. This is slightly wrong. Suppose a generator gives 0–255 and you want 0–99:
+    </p>
+    <pre><code>value % 100
+
+value 0–55   →  0–55 can each be produced 3 ways  (v, v+100, v+200)
+value 56–99  →  56–99 can each be produced 2 ways (v, v+100)
+
+Low results are 50% more likely than high ones.</code></pre>
+    <p>
+      The fix is rejection sampling: discard each value in the unbalanced tail and draw again. This tool
+      computes the largest multiple of the range that fits in 2³², rejects any value at or above it, and
+      then takes the remainder. The cost is an occasional extra draw, and each number in your range is
+      exactly as likely as every other. Decimals use a full 53-bit mantissa built from two 32-bit words;
+      most implementations use 32 bits.
+    </p>
+
+    <h2>Random numbers with or without repeats</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Repeats allowed</th>
+            <th>No repeats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Statistical model</td><td>Sampling with replacement</td><td>Sampling without replacement</td></tr>
+          <tr><td>Physical analogue</td><td>Rolling a die repeatedly</td><td>Drawing tickets from a hat</td></tr>
+          <tr><td>Each draw independent</td><td>Yes</td><td>No: earlier draws change the odds</td></tr>
+          <tr><td>Maximum count</td><td>Unlimited</td><td>The size of the range</td></tr>
+          <tr><td>Use for</td><td>Dice, simulations, test data, coin flips</td><td>Lotteries, raffles, team picking, seating plans</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When the request is dense, such as 40 different numbers from 1 to 50, rejection sampling spends
+      most of its time finding numbers it already has. In that case the tool uses a partial Fisher–Yates
+      shuffle over the whole range, which makes the draw in a single pass at any density.
+    </p>
+
+    <h2>Common ranges</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Range</th>
+            <th>Count</th>
+            <th>Repeats</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Coin flip</td><td>1–2</td><td>1</td><td>Allowed</td></tr>
+          <tr><td>Standard die</td><td>1–6</td><td>1</td><td>Allowed</td></tr>
+          <tr><td>Percentage roll</td><td>1–100</td><td>1</td><td>Allowed</td></tr>
+          <tr><td>UK Lotto</td><td>1–59</td><td>6</td><td>No repeats</td></tr>
+          <tr><td>Powerball main numbers</td><td>1–69</td><td>5</td><td>No repeats</td></tr>
+          <tr><td>EuroMillions main numbers</td><td>1–50</td><td>5</td><td>No repeats</td></tr>
+          <tr><td>Pick a winner from 480 entrants</td><td>1–480</td><td>1</td><td>Either</td></tr>
+          <tr><td>Randomise a 24-person seating plan</td><td>1–24</td><td>24</td><td>No repeats</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Running a draw people will trust</h2>
+    <p>
+      Disputes are usually about the process around the generator. These steps help:
+    </p>
+    <ul>
+      <li>Fix the rules before you draw. Publish the range, the number of winners and the tie-break rule in advance.</li>
+      <li>Number the entrants first, in a list you can show afterwards, then draw index numbers in place of names.</li>
+      <li>Record the draw. A screen recording of the range being set and the button being pressed answers most objections.</li>
+      <li>Decide the redraw rule in advance: what happens if a winner is ineligible, or if the same number comes up twice.</li>
+      <li>Keep the output. This page stores nothing, so download the text file at the time.</li>
+    </ul>
+
+    <h2>Dice and coins</h2>
+    <p>
+      The Dice tab rolls any number of dice from d4 to d100 with an optional modifier, shows each die and
+      keeps the last twenty rolls. Each die is an independent draw from the same secure generator, so it is
+      fairer than a physical die. Injection-moulded plastic dice have measurable bias from the hollow pips
+      and from mould draft.
+    </p>
+    <p>
+      The Coin tab flips up to a thousand times and reports the head and tail counts and the longest run.
+      In a hundred fair flips, a run of six or seven identical results is normal, and no such run would be
+      suspicious. People asked to fake a random sequence almost never write a run that long, and this is
+      how such fakes are detected.
+    </p>
+  </Fragment>
+</ToolLayout>

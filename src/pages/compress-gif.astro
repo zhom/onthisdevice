@@ -1,0 +1,124 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioCompressGif from '@/components/tools/media/GifAudioCompressGif.tsx'
+---
+
+<ToolLayout slug="compress-gif">
+  <GifAudioCompressGif client:load mode="compress" />
+  <Fragment slot="explainer">
+    <h2>How the exact-size search works</h2>
+    <p>
+      This GIF compressor searches for the best setting that fits your target size. An upload service
+      pays a round trip and a server encode for each attempt, so it usually runs one and gives you a
+      "quality" slider. Here the encoding runs on your processor, so the tool can try several.
+    </p>
+    <ol>
+      <li>The tool defines a ladder of thirteen settings, from "full size, 256 colours" down to "18% size, 5 fps, 16 colours". Each rung changes resolution, frame rate and palette together, because a change to only one of them wastes quality.</li>
+      <li>The tool encodes the middle rung and measures the result.</li>
+      <li>If the file is too big, it discards the better half of the ladder; if it is small enough, it discards the worse half. Then it repeats.</li>
+      <li>After about four encodes, it has the highest-quality rung that fits, and you download that file. The list of attempts and their byte counts shows the working.</li>
+    </ol>
+
+    <h2>The three levers, and what each one costs</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Lever</th>
+            <th>Typical change</th>
+            <th>Size effect</th>
+            <th>What you lose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Resolution</td>
+            <td>480 → 340 px wide</td>
+            <td>About −50%</td>
+            <td>Fine detail and small text become unreadable</td>
+          </tr>
+          <tr>
+            <td>Frame rate</td>
+            <td>24 → 12 fps</td>
+            <td>About −50%</td>
+            <td>Fast motion judders; most screen captures look unchanged</td>
+          </tr>
+          <tr>
+            <td>Palette</td>
+            <td>256 → 64 colours</td>
+            <td>−25% to −40%</td>
+            <td>Gradients band; flat graphics often look identical</td>
+          </tr>
+          <tr>
+            <td>Dithering</td>
+            <td>Sierra2 → Bayer</td>
+            <td>−15% to −25%</td>
+            <td>A visible cross-hatch pattern instead of fine grain</td>
+          </tr>
+          <tr>
+            <td>Length</td>
+            <td>10 s → 5 s</td>
+            <td>−50%, exactly</td>
+            <td>Half the clip: trim it before you compress</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This tool cannot change the length for you, and length is the most effective of the five levers.
+      If a GIF must fit a hard limit, cutting three seconds from the start usually works better than any
+      quality reduction.
+    </p>
+
+    <h2>The limits people are actually fighting</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Destination</th><th>Limit</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Discord (free)</td><td>10 MB per attachment</td><td>Use the 8 MB preset for headroom; Nitro raises it substantially</td></tr>
+          <tr><td>Discord / Slack custom emoji</td><td>256 KB and 128 KB, at 128 px</td><td>Resize first, then compress; see <a href="/resize-gif">Resize GIF</a></td></tr>
+          <tr><td>Email attachment</td><td>Commonly 10 MB, often 2 MB in practice</td><td>Corporate gateways strip or reject files far below the advertised limit</td></tr>
+          <tr><td>Forum avatar or signature</td><td>Often 256 KB or 512 KB</td><td>Often with a pixel cap as well</td></tr>
+          <tr><td>WordPress and most CMSs</td><td>2 MB default upload cap</td><td>Set by PHP, not by the CMS itself</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why dithering choice matters when chasing a byte target</h2>
+    <p>
+      Dithering hides colour banding by spreading error across neighbouring pixels. Error-diffusion
+      methods such as Sierra 2-4A and Floyd–Steinberg look the most natural, but the noise they add is
+      almost random, and LZW compression cannot compress random data. Bayer dithering uses a fixed
+      repeating matrix: it looks slightly more artificial and compresses much better, because the
+      pattern repeats. When you are 15% over a hard limit, Bayer often closes the gap without a change
+      to the resolution.
+    </p>
+
+    <h2>What "optimising" actually removes</h2>
+    <p>
+      Even without a size target, re-encoding usually makes a GIF noticeably smaller. Most GIFs were
+      exported by tools that used a generic palette and stored each frame in full. This tool builds a
+      palette from your clip with <code>stats_mode=diff</code>, which gives more weight to the colours
+      that change between frames, so a static background does not take colours from a moving subject.
+      FFmpeg also stores inter-frame differences where it can.
+    </p>
+
+    <h2>Nothing is uploaded, and you can check</h2>
+    <p>
+      Each encode in the search runs in this tab, in FFmpeg compiled to WebAssembly and served from this
+      site, not from a third-party CDN. Open the developer tools of your browser, go to the Network tab,
+      and compress a GIF: after the one-time engine download there are no requests. You can also turn
+      off Wi-Fi and compress.
+    </p>
+
+    <h2>When to give up on GIF</h2>
+    <p>
+      If the smallest rung of the ladder still misses your target, the animation is too long or too
+      detailed for the format. GIF has no motion prediction: a ten-second clip is ten seconds of full
+      images. <a href="/gif-to-mp4">GIF to MP4</a> usually gives a file five to twenty times smaller at
+      better quality, and all modern platforms play a short muted video inline like a GIF.
+    </p>
+  </Fragment>
+</ToolLayout>

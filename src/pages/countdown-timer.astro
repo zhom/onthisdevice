@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CountdownTimer from '@/components/tools/datetime/CountdownTimer.tsx'
+---
+
+<ToolLayout slug="countdown-timer">
+  <CountdownTimer client:load />
+  <Fragment slot="explainer">
+    <h2>How to set up a countdown</h2>
+    <ol>
+      <li>Pick the target date and time, or tap a preset such as "In 24 hours" or an upcoming holiday.</li>
+      <li>Give it a name if you want the label to say "Launch day" instead of "Time remaining".</li>
+      <li>
+        Check the timezone. The countdown targets a specific instant, so a 09:00 kickoff in New York is stored as
+        that exact moment and shows correctly for everyone, everywhere.
+      </li>
+      <li>
+        Copy the shareable link. The link contains all the data of the countdown.
+      </li>
+    </ol>
+
+    <h2>How the shareable link works</h2>
+    <p>
+      The target instant, the timezone and the event name are encoded in the fragment of the URL, the part after
+      the hash. Browsers never send a fragment to a server, so the link works with no account, database or
+      tracking, and the page makes no network requests. Bookmark it, paste it into a chat, or put it in a
+      calendar invite. Anyone who opens it sees the same countdown to the same moment.
+    </p>
+    <p>
+      The target is an absolute instant, not a wall-clock time, so a colleague in another country sees the
+      correct remaining time automatically, with no time-zone arithmetic.
+    </p>
+
+    <h2>Why the countdown cannot drift</h2>
+    <p>
+      A simple countdown subtracts one second per tick, which adds error when the browser throttles a background
+      tab, the device sleeps, or a frame is dropped. This countdown timer calculates the remaining time from the
+      system clock on each update. After eight hours in a background tab, it is still exact to the millisecond
+      when you switch back.
+    </p>
+
+    <h2>The alarm</h2>
+    <p>
+      When you turn on the alarm, it plays a short test tone. This satisfies the browser rule that audio must
+      start from a user action, so the alarm can sound later without being blocked. At zero, the tone plays three
+      times. Some browsers throttle timers in background tabs and can delay it by a few seconds, so keep the tab
+      visible if the exact second matters. The visual "time's up" state always appears, with or without audio.
+    </p>
+
+    <h2>Good uses for a countdown</h2>
+    <ul>
+      <li>Launches and releases: share one link so the whole team sees the same deadline.</li>
+      <li>Exams and applications: a visible day count motivates more than a diary entry.</li>
+      <li>Auctions, sales and ticket drops: where the exact minute matters across timezones.</li>
+      <li>Cooking and workouts: set it a few hours ahead and leave the tab open.</li>
+      <li>Personal milestones: weddings, trips, retirements, the end of a notice period.</li>
+    </ul>
+
+    <h2>Reading the numbers</h2>
+    <p>
+      The four blocks are one duration split into parts, not four separate counters: 2 days 03:15:40 means two
+      whole days plus three hours, fifteen minutes and forty seconds, a total of about 51.26 hours. The totals
+      below give the same span in seconds and hours, so you can paste it somewhere.
+    </p>
+    <p>
+      After the target passes, the display continues and counts up. This is useful for "time since launch" or
+      "days since the incident" dashboards. Leave the tab open on a spare screen and it keeps counting.
+    </p>
+
+    <h2>Daylight saving and the target instant</h2>
+    <p>
+      The target is stored as an instant, so a daylight-saving change between now and then does not move it. If
+      you set 09:00 in a zone that will be on summer time by the target date, the countdown ends at 09:00 local
+      time on that date. The tool applies the offset of the target day, not the offset of today.
+    </p>
+  </Fragment>
+</ToolLayout>

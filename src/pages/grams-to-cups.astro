@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="grams-to-cups">
+  <UnitsLifeKitchenConverter client:load mode="grams-to-cups" />
+  <Fragment slot="explainer">
+    <h2>There is no universal grams-per-cup</h2>
+    <p>
+      Search for "how many grams in a cup" and you get 128, 240 or another single number. Each is wrong
+      for almost all ingredients, because a cup measures volume and a gram measures mass. To convert grams
+      to cups you need the density, and density is a property of the ingredient.
+    </p>
+    <p>One US customary cup (236.6 mL) holds:</p>
+    <ul>
+      <li>237 g of water</li>
+      <li>197 g of granulated sugar</li>
+      <li>123 g of spooned all-purpose flour</li>
+      <li>111 g of grated cheddar</li>
+      <li>84 g of cocoa powder</li>
+      <li>30 g of raw spinach leaves</li>
+    </ul>
+    <p>
+      The heaviest is nearly eight times the lightest, so this converter asks for the ingredient first.
+    </p>
+
+    <h2>The flour problem</h2>
+    <p>
+      This matters most for flour, and the variation comes from how you fill the cup. Flour spooned
+      lightly into the cup and levelled off is about 125 g. A cup dipped into the bag compacts it to
+      nearly 145 g. That is a <strong>16% difference</strong> in the main structural ingredient of a
+      bake, and the most common reason a recipe that works for its author gives dry cookies for others.
+    </p>
+    <p>
+      The ingredient picker lists both versions. If a recipe does not say which method it used, assume
+      spooned. That is the convention in American food publishing.
+    </p>
+
+    <h2>Which cup are you holding?</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Cup</th><th scope="col">Volume</th><th scope="col">Where</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>US customary</td><td>236.588 mL</td><td>American recipes, measuring cup sets</td></tr>
+        <tr><td>US legal</td><td>240 mL</td><td>Nutrition labelling, some modern cookbooks</td></tr>
+        <tr><td>Metric</td><td>250 mL</td><td>Australia, New Zealand, some of Canada</td></tr>
+        <tr><td>Imperial</td><td>284.131 mL</td><td>Pre-metric British books</td></tr>
+        <tr><td>Japanese (gou-based)</td><td>200 mL</td><td>Japanese rice cookers and recipes</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Smallest to largest is a 20% spread. The selector at the top of the tool changes all numbers on
+      the page, including the reference tables.
+    </p>
+
+    <h2>Where the density numbers come from</h2>
+    <p>
+      Each ingredient is stored as grams per 240 mL, the reference most published US charts use. Other
+      cup sizes, tablespoons, teaspoons and millilitres come from that by volume. So the page stays
+      consistent: switch to Australian cups and the tablespoon figures change with it.
+    </p>
+    <p>
+      These are typical values for a normally handled ingredient. Grind, humidity, brand and how firmly
+      you pack the cup all change them, so each ingredient with a large handling difference is listed
+      twice.
+    </p>
+
+    <h2>Our recommendation</h2>
+    <p>
+      Buy a digital scale. A volume measurement of a solid estimates its weight from an assumed packing
+      density. A scale removes the assumption, uses one bowl instead of five cups, and costs less than a
+      cake tin. Recipes are still written in cups, but cups are accurate only for liquids.
+    </p>
+  </Fragment>
+</ToolLayout>

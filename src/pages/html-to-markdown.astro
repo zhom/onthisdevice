@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import HtmlToMarkdown from '@/components/tools/data/HtmlToMarkdown.tsx'
+---
+
+<ToolLayout slug="html-to-markdown">
+  <HtmlToMarkdown client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert HTML to Markdown</h2>
+    <ol>
+      <li>Paste the HTML (a fragment or a whole page), or drop an <code>.html</code> file.</li>
+      <li>Leave <strong>Body only</strong> on, so the tool ignores the <code>&lt;head&gt;</code> and its scripts and styles.</li>
+      <li>Set the style options to match your project’s Markdown conventions.</li>
+      <li>Copy or download the <code>.md</code>. The conversion runs again each time you change an option.</li>
+    </ol>
+
+    <h2>Style options and what they produce</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Option</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Choices</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">Heading style</td>
+            <td class="border-b px-3 py-2">ATX / setext</td>
+            <td class="border-b px-3 py-2"><code>## Title</code> or <code>Title</code> with <code>---</code> underneath</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Bullet marker</td>
+            <td class="border-b px-3 py-2"><code>-</code> / <code>*</code> / <code>+</code></td>
+            <td class="border-b px-3 py-2">The character for each unordered item</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Code blocks</td>
+            <td class="border-b px-3 py-2">Fenced / indented</td>
+            <td class="border-b px-3 py-2">Triple backticks or four-space indentation</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Fence characters</td>
+            <td class="border-b px-3 py-2"><code>```</code> / <code>~~~</code></td>
+            <td class="border-b px-3 py-2">Use tildes when the code contains backticks</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Emphasis</td>
+            <td class="border-b px-3 py-2"><code>_</code> / <code>*</code> and <code>**</code> / <code>__</code></td>
+            <td class="border-b px-3 py-2">Some linters require one. Underscores are the common default</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Link style</td>
+            <td class="border-b px-3 py-2">Inline / reference</td>
+            <td class="border-b px-3 py-2"><code>[text](url)</code> or <code>[text][1]</code> with URLs collected at the end</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Horizontal rule</td>
+            <td class="border-b px-3 py-2"><code>---</code> / <code>***</code> / <code>___</code></td>
+            <td class="border-b px-3 py-2">All render the same. Pick what your linter wants</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Tables, task lists and strikethrough</h2>
+    <p>
+      Plain Markdown has none of these. GitHub-flavoured Markdown has all three, and each has its own
+      toggle here. A <code>&lt;table&gt;</code> becomes a pipe table with the first row as the header, and
+      <code>align</code> attributes go into the divider row. A list item whose first child is a checkbox
+      becomes <code>- [x]</code> or <code>- [ ]</code>. <code>&lt;del&gt;</code> and <code>&lt;s&gt;</code>
+      become <code>~~text~~</code>. Turn them off when the destination reads only CommonMark.
+    </p>
+
+    <h2>Why some HTML stays as HTML</h2>
+    <p>
+      Markdown is a small language. It has no syntax for a <code>&lt;details&gt;</code> disclosure, a
+      definition list, a superscript or a cell that spans two columns. The HTML to Markdown converter keeps
+      those elements as inline HTML, which is legal in a Markdown document and renders correctly almost
+      everywhere. For strictly plain Markdown, remove those elements from the source first.
+    </p>
+
+    <h2>Pasting a whole web page</h2>
+    <p>
+      With <strong>Body only</strong> on, the tool parses the input as a document and converts only the body
+      content. It ignores the title, meta tags, inline styles and analytics snippets. Two caveats:
+    </p>
+    <ul>
+      <li>View-source is different from the page you see. Content that JavaScript adds is not in the HTML you copied, so it is not in the Markdown. Copy from the browser’s element inspector.</li>
+      <li>Navigation is included. Menus, cookie banners and footers are body content. For a clean result, paste only the <code>&lt;article&gt;</code> or <code>&lt;main&gt;</code> element.</li>
+    </ul>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Move a CMS or blog export into Markdown files for a static site.</li>
+      <li>Turn a rich-text email or a Google Doc export into repository documentation.</li>
+      <li>Reduce pasted rich text to plain structural markup before you commit it.</li>
+      <li>Edit in Markdown, then publish as HTML with <a href="/markdown-to-html">Markdown to HTML</a>.</li>
+    </ul>
+
+    <h2>Runs entirely in your browser</h2>
+    <p>
+      Turndown and the browser’s own HTML parser do the work in this tab, so draft posts, intranet pages and
+      client documents stay on your machine. The tool also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

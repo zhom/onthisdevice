@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="bold-text-generator">
+  <DevEncodeFancyText
+    client:load
+    sample="Now hiring"
+    featured={['bold', 'sans-bold', 'bold-italic', 'script-bold', 'fraktur-bold']}
+  />
+  <Fragment slot="explainer">
+    <h2>Bold where there is no bold button</h2>
+    <p>
+      LinkedIn posts, Instagram bios, Twitter/X, Facebook, most form fields and many internal tools
+      store your text as plain text. They have no bold button, because there is no place to store the
+      formatting. Unicode bold uses characters that are already drawn heavy, so the weight is part of
+      the text.
+    </p>
+
+    <h2>Which bold to pick</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Style</th><th>Sample</th><th>Best for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sans-serif bold</td><td>𝗛𝗲𝗮𝗱𝗹𝗶𝗻𝗲</td><td>Social posts: it matches the interface font, so it looks deliberate</td></tr>
+          <tr><td>Serif bold</td><td>𝐇𝐞𝐚𝐝𝐥𝐢𝐧𝐞</td><td>A more formal, print-like feel</td></tr>
+          <tr><td>Bold italic</td><td>𝑯𝒆𝒂𝒅𝒍𝒊𝒏𝒆</td><td>One emphasised phrase, not a whole line</td></tr>
+          <tr><td>Bold script</td><td>𝓗𝓮𝓪𝓭𝓵𝓲𝓷𝓮</td><td>Decorative names and profile flourishes</td></tr>
+          <tr><td>Bold fraktur</td><td>𝕳𝖊𝖆𝖉𝖑𝖎𝖓𝖊</td><td>Gothic branding; hard to read at small sizes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Sans-serif bold is the correct default for almost all social platforms, because it has the same
+      weight and shape as the UI text around it. Serif bold looks pasted in on a sans-serif feed.
+    </p>
+
+    <h2>Do numbers bold?</h2>
+    <p>
+      Only in some sets. Unicode has bold digits in the serif and sans-serif bold blocks, so
+      &ldquo;50% off&rdquo; becomes fully bold there. The italic, script and fraktur blocks have no
+      digits, so numbers stay at normal weight, which looks like a mistake. Check the preview before
+      you post text with figures.
+    </p>
+
+    <h2>Use it sparingly, and here is why</h2>
+    <p>
+      Screen readers often read mathematical bold letters one at a time, so a fully bold post can be
+      unusable for a blind reader. Search and hashtag indexing often skips these characters, so people
+      may not find a bold keyword. Several platforms now rank posts lower when they use these
+      characters heavily.
+    </p>
+    <p>
+      Make one line bold (a headline, a job title, or one call to action) and keep the body in ordinary
+      text. This keeps the emphasis, the accessibility and the search results.
+    </p>
+
+    <h2>LinkedIn specifics</h2>
+    <p>
+      Bold Unicode works in posts, comments, the headline field and the About section. It does not work
+      in the name field, which LinkedIn validates, and it is against the LinkedIn name policy. A
+      recruiter who searches for a job title does not find a bold one, so keep a plain-text version on
+      the profile.
+    </p>
+
+    <h2>Nothing leaves your browser</h2>
+    <p>
+      The bold text generator converts character codes as you type, in this tab. Drafts such as an
+      announcement, a resignation post or a job ad that is not yet public stay on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

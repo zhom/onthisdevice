@@ -1,0 +1,117 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyHourlySalary from '@/components/tools/finance/CalcMoneyHourlySalary.tsx'
+---
+
+<ToolLayout slug="hourly-to-salary-calculator">
+  <CalcMoneyHourlySalary client:load />
+
+  <Fragment slot="explainer">
+    <h2>Hourly to salary in one line</h2>
+    <p>
+      Annual salary = hourly rate × hours per week × paid weeks per year. At the standard 40 hours and
+      52 weeks that is <strong>2,080 hours</strong>. Multiply an hourly rate by 2,080 for the annual
+      salary, and divide an annual salary by 2,080 for the hourly rate.
+    </p>
+    <p>
+      A mental shortcut: double the hourly rate and add three zeros. 25 an hour → 50,000 a year. It is
+      exact at 2,000 hours and about 4% low at 2,080, which is close enough to check a job advert.
+    </p>
+
+    <h2>The mistake everyone makes with monthly pay</h2>
+    <p>
+      A month is not four weeks. It averages 4.348 weeks, so weekly pay × 4 is about 8% too low: about a
+      month's pay a year. The monthly figure is always the annual salary divided by twelve, as above.
+    </p>
+    <p>
+      Fortnightly pay has the same problem. Twenty-six fortnightly packets do not divide evenly into
+      twelve months, so two months each year have three pay dates. Budget on the monthly average, not
+      on the pay dates.
+    </p>
+
+    <h2>Semi-monthly and bi-weekly are not the same</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Schedule</th>
+            <th style="text-align:right">Packets a year</th>
+            <th style="text-align:right">On a 52,000 salary</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Weekly</td><td style="text-align:right">52</td><td style="text-align:right">1,000.00</td></tr>
+          <tr><td>Bi-weekly (every two weeks)</td><td style="text-align:right">26</td><td style="text-align:right">2,000.00</td></tr>
+          <tr><td>Semi-monthly (twice a month)</td><td style="text-align:right">24</td><td style="text-align:right">2,166.67</td></tr>
+          <tr><td>Monthly</td><td style="text-align:right">12</td><td style="text-align:right">4,333.33</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The annual total is the same. Only the cheque size and the timing differ. Confusing bi-weekly and
+      semi-monthly is a common payroll error, and the 8.3% difference looks like a pay cut.
+    </p>
+
+    <h2>Paid holiday, unpaid time off, and the weeks field</h2>
+    <p>
+      Leave <strong>weeks per year at 52</strong> if your holiday is paid. A salaried employee gets pay
+      for all fifty-two weeks, worked or not, so the hourly equivalent of a salary uses 2,080 hours for
+      any amount of leave.
+    </p>
+    <p>
+      So a salary with more paid leave is worth more per hour worked. To compare two offers, use the
+      hours you will actually work. The unpaid-days field does this for contractors and hourly staff who
+      get no pay for days off.
+    </p>
+
+    <h2>Comparing an hourly contract with a salaried job</h2>
+    <p>
+      The same rate does not make the same offer. A contractor at 60 an hour and an employee at 124,800
+      look identical on this page, but they differ:
+    </p>
+    <ul>
+      <li>
+        Unpaid time off: four weeks of holiday and ten public holidays is about 240 hours, or 12% of
+        the year.
+      </li>
+      <li>
+        Employer payroll taxes: a self-employed contractor usually pays both halves.
+      </li>
+      <li>
+        Benefits: health cover, pension matching, sick pay, parental leave and insurance are all
+        compensation.
+      </li>
+      <li>
+        Utilisation: very few contractors bill 100% of available hours, and unbilled weeks are unpaid.
+      </li>
+    </ul>
+    <p>
+      As a rule of thumb, a contract rate must be 25–40% above the salaried hourly equivalent to be
+      comparable. To model it here, reduce weeks per year and add the unpaid days you expect.
+    </p>
+
+    <h2>Overtime</h2>
+    <p>
+      Enter overtime hours separately. They are paid at a multiple of the base rate and added to the
+      base year. So the base hourly rate stays correct: with 5 hours a week at time and a half, the
+      annual total goes up but the base rate does not. Use the base rate to compare offers.
+    </p>
+    <p>
+      Legal rules differ. US federal law (the FLSA) requires time and a half above 40 hours in a week
+      for non-exempt employees. California adds a daily rule. Most of Europe sets overtime by contract
+      and collective agreement. Set the multiplier to match your own arrangement.
+    </p>
+
+    <h2>Everything here is gross</h2>
+    <p>
+      The page applies no tax. Take-home pay depends on country, state or province, filing status,
+      pension contributions, student loan plan and other details that this page does not ask for. Use
+      these figures as the top line and use your local tax calculator for the rest.
+    </p>
+
+    <h2>Nothing is transmitted</h2>
+    <p>
+      The arithmetic and the exports run in your browser, and the page also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

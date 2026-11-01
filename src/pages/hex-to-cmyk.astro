@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatColor from '@/components/tools/dev/DevFormatColor.tsx'
+---
+
+<ToolLayout slug="hex-to-cmyk">
+  <DevFormatColor client:load from="hex" to="cmyk" />
+  <Fragment slot="explainer">
+    <h2>The HEX to CMYK formula and its limits</h2>
+    <p>
+      This is the naive, device-independent HEX to CMYK conversion. Design software uses the same
+      arithmetic when colour management is off.
+    </p>
+    <pre><code>#2563eb → r=0.145 g=0.388 b=0.922 (normalised)
+
+K = 1 - max(r, g, b)        = 1 - 0.922 = 0.078 → 7.8%
+C = (1 - r - K) / (1 - K)   = 0.844 → 84.4%
+M = (1 - g - K) / (1 - K)   = 0.577 → 57.7%
+Y = (1 - b - K) / (1 - K)   = 0.000 → 0%
+
+cmyk(84.4%, 57.7%, 0%, 7.8%)</code></pre>
+    <p>
+      The formula does not know the paper, the ink set, the press, the dot gain or the colour profile. A
+      real conversion is a lookup through an ICC profile that encodes all of those. Use these numbers as
+      a start point and an approximation, not as artwork values.
+    </p>
+
+    <h2>Why K exists</h2>
+    <p>
+      In theory, 100% cyan plus 100% magenta plus 100% yellow absorbs all light and gives black. In
+      practice it gives a muddy dark brown, uses three times the ink, soaks the paper until it cockles,
+      and takes much longer to dry. So black is printed with its own plate (the K in CMYK, for
+      &ldquo;key&rdquo;) and subtracted from the other three. That is why the formula computes K first.
+    </p>
+    <p>
+      For body text, use 100% K only. Four-colour black on small text shows registration fringes if the
+      plates are a fraction of a millimetre out.
+    </p>
+
+    <h2>Out-of-gamut colours</h2>
+    <p>
+      sRGB and CMYK cover different regions of visible colour. sRGB includes bright saturated cyans,
+      greens, oranges and pure blues that no ink combination can print. Those colours are &ldquo;out of
+      gamut&rdquo;: the conversion returns the closest printable colour, which is duller and often has a
+      different hue.
+    </p>
+    <table>
+      <thead><tr><th>Screen colour</th><th>What happens in print</th></tr></thead>
+      <tbody>
+        <tr><td>Vivid RGB blue <code>#0000ff</code></td><td>Comes out noticeably purple</td></tr>
+        <tr><td>Bright green <code>#00ff00</code></td><td>Loses most of its intensity</td></tr>
+        <tr><td>Neon orange, hot pink</td><td>Flattens considerably</td></tr>
+        <tr><td>Anything fluorescent</td><td>Needs a spot ink. CMYK cannot print it</td></tr>
+      </tbody>
+    </table>
+    <p>
+      No arithmetic can fix this. It is a physical limit of subtractive ink on reflective paper compared
+      with additive light on a display.
+    </p>
+
+    <h2>Total ink coverage</h2>
+    <p>
+      The sum of the four percentages is the total area coverage. Most commercial presses cap it at
+      240–320%, by paper stock. Above the cap, the sheet does not dry correctly and offsets onto the next
+      one. If your converted values sum above 300%, ask the printer first. A rich black is usually
+      about 60/40/40/100, which is 240%, and not 100/100/100/100.
+    </p>
+
+    <h2>What to send to a printer</h2>
+    <p>
+      Ask the printer first, because the answer varies. Most commercial printers prefer a PDF/X file with
+      a declared output intent, and do the conversion with the correct profile. That gives a better
+      result than a conversion with no profile. Use these numbers to set expectations, to match a brand
+      colour approximately, and to fill in a form field that requires CMYK. For brand colours that must
+      be exact across media, use a spot colour (Pantone).
+    </p>
+  </Fragment>
+</ToolLayout>

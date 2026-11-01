@@ -1,0 +1,41 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AnonymizeChatScreenshot from '@/components/tools/redact/text/AnonymizeChatScreenshot.tsx'
+---
+
+<ToolLayout slug="anonymize-chat-screenshot" width="wide">
+  <AnonymizeChatScreenshot client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop a chat screenshot, or paste one with Ctrl+V or Cmd+V.</li>
+      <li>The tool reads the text and finds the chat name at the top, the sender names above messages, phone numbers, emails, addresses and links. Profile pictures and faces are found too.</li>
+      <li>Uncheck what should stay visible. Drag on the image to cover anything else.</li>
+      <li>Turn on fake names to write a made-up name over each real one, in a matching size, instead of a black box. The same person gets the same fake name everywhere in the image.</li>
+      <li>Make the PNG, then download it or copy it.</li>
+    </ol>
+
+    <h2>Works with light and dark themes</h2>
+    <p>
+      The screenshot is read three ways: as it is, inverted for light text on dark backgrounds, and with colored text
+      darkened, as chat apps color sender names and links. The words from the three readings are merged.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The text reader (about 7 MB), the optional language model for names (about 33 MB) and the face detector (0.2 MB)
+      download once from this site and then work offline. The screenshot never leaves the page.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>Open the Network tab in your browser's developer tools before you drop the screenshot. No request carries the image.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Sender names are found from the layout of common chat apps. An unusual layout can need a box by hand.</li>
+      <li>Names inside the messages are found by the language model. Load it for the best result.</li>
+      <li>Square profile pictures are not found automatically.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

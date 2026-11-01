@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="webm-to-mp4">
+  <VideoRemux
+    client:load
+    from="webm"
+    target="mp4"
+    hint="Screen recordings and Discord clips, converted on your device"
+  />
+  <Fragment slot="explainer">
+    <h2>Why WebM to MP4 needs a full re-encode</h2>
+    <p>
+      Most container conversions on this site are a copy: the compressed data already fits the destination
+      and only the wrapper changes. WebM is different. It holds VP8 or VP9 video and Opus audio, which MP4
+      players do not support. Each frame must be decoded to pixels and re-encoded as H.264, and the audio
+      re-encoded as AAC. There is no shortcut: a WebM file that is only renamed to .mp4 fails on the device
+      that needs MP4.
+    </p>
+    <p>
+      The encode runs on your processor, so there is no queue, size limit or watermark, and no copy of your
+      screen recording stays on a server.
+    </p>
+
+    <h2>How long the conversion takes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Clip length</th>
+            <th>720p screen recording</th>
+            <th>1080p camera footage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>30 seconds</td>
+            <td>15-40 seconds</td>
+            <td>30-60 seconds</td>
+          </tr>
+          <tr>
+            <td>5 minutes</td>
+            <td>3-7 minutes</td>
+            <td>5-12 minutes</td>
+          </tr>
+          <tr>
+            <td>30 minutes</td>
+            <td>20-45 minutes</td>
+            <td>30 minutes to well over an hour</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      These are typical laptop times. Two settings make it much faster: the <strong>small file</strong> quality
+      preset, and a faster encoder preset under advanced options. Screen recordings compress very well because
+      most of the frame does not change between frames, so the faster settings cost little visible quality.
+    </p>
+
+    <h2>The conversion also fixes seeking</h2>
+    <p>
+      A recording made in a browser, by the <a href="/screen-recorder">screen recorder</a> on this site, by a
+      web recording app or by a WebRTC call recorder, comes out of the MediaRecorder API with no duration in
+      the header. The file is complete and plays from the start, but the player does not know its length, so
+      the scrub bar is useless and you cannot drag it. Re-encoding writes a correct header, and the timeline
+      works again. Convert a browser recording before you send it.
+    </p>
+
+    <h2>Where WebM files come from</h2>
+    <ul>
+      <li>Streaming and recording software set to WebM output.</li>
+      <li>Discord clips and downloads.</li>
+      <li>Browser screen and camera recorders, which record WebM natively.</li>
+      <li>Saved web video: YouTube and many other sites send VP9 in WebM to browsers that support it.</li>
+      <li>Telegram and WhatsApp stickers, which are short VP9 WebM animations.</li>
+    </ul>
+
+    <h2>Audio quality</h2>
+    <p>
+      Opus is a better codec than AAC at the same bitrate, so re-encoding costs a little quality in principle.
+      At the 160 kbps AAC this page writes, the difference is inaudible on speech and typical music. If the
+      result is silent, the source had no audio track. The usual cause is a screen recording started without
+      the “share audio” option, and the audio cannot be recovered later.
+    </p>
+
+    <h2>The reverse direction</h2>
+    <p>
+      For a smaller file for a website, use <a href="/mp4-to-webm">MP4 to WebM</a>. If you only need the sound,
+      <a href="/webm-to-mp3">WebM to MP3</a> skips the video work and finishes much faster.
+    </p>
+  </Fragment>
+</ToolLayout>

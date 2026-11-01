@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeSubnet from '@/components/tools/dev/DevEncodeSubnet.tsx'
+---
+
+<ToolLayout slug="ip-range-to-cidr">
+  <DevEncodeSubnet client:load mode="range-cidr" />
+  <Fragment slot="explainer">
+    <h2>Why one range becomes several blocks</h2>
+    <p>
+      A CIDR block has two constraints: its size must be a power of two, and it must start on an
+      address that is a multiple of that size. An arbitrary IP range rarely meets both, so an exact
+      cover needs a sequence of blocks that grow as the alignment improves and shrink again at the end.
+    </p>
+    <pre><code>10.0.0.5 – 10.0.0.16
+
+10.0.0.5/32   1 address   (5 is odd, so only a /32 fits)
+10.0.0.6/31   2 addresses (6 is even)
+10.0.0.8/29   8 addresses (8 is a multiple of 8)
+10.0.0.16/32  1 address   (only one left)
+= 12 addresses, exactly</code></pre>
+    <p>
+      The algorithm is greedy and provably minimal: at each step it takes the largest block that starts
+      at the current address and fits inside the rest of the range.
+    </p>
+
+    <h2>Exact, never approximate</h2>
+    <p>
+      Each block is fully inside the range you gave, and no address outside it is included. The output
+      usually becomes a firewall rule or a security-group entry. A tool that rounded up to the nearest
+      tidy block would grant access to addresses you did not intend.
+    </p>
+    <p>
+      For fewer, larger blocks that cover more than the range, widen the range you type. That way the
+      decision is yours and explicit.
+    </p>
+
+    <h2>Where this conversion is required</h2>
+    <ul>
+      <li>AWS security groups, NACLs and route tables accept CIDR only, not ranges.</li>
+      <li>Azure NSG rules and GCP firewall rules have the same restriction.</li>
+      <li>Kubernetes NetworkPolicy <code>ipBlock</code> fields.</li>
+      <li>nginx <code>allow</code>/<code>deny</code> and Apache <code>Require ip</code>.</li>
+      <li>BGP prefix lists and route filters.</li>
+    </ul>
+    <p>
+      Vendors often send their addresses as &ldquo;203.0.113.10 to 203.0.113.60&rdquo; in an email.
+      This page converts that range to CIDR.
+    </p>
+
+    <h2>Sanity checks before you paste the output</h2>
+    <ol>
+      <li>
+        Count the addresses. The page shows the total. If it is much larger than you expected, one
+        octet is probably wrong.
+      </li>
+      <li>
+        Look for a huge first block. A <code>/8</code> in the list means the range is much wider than
+        intended.
+      </li>
+      <li>
+        Check the boundaries. Ranges in documentation usually include both ends. Some tools treat the
+        last address as exclusive.
+      </li>
+      <li>
+        Use fewer rules where you can. Some platforms limit the number of rules per group, and a poorly
+        aligned range can give a dozen blocks.
+      </li>
+    </ol>
+
+    <h2>Aligning the range makes life easier</h2>
+    <p>
+      If you control the allocation, choose ranges that start on a power-of-two boundary. A range
+      from <code>10.0.0.0</code> to <code>10.0.0.255</code> is one clean <code>/24</code>; the same
+      256 addresses starting at <code>10.0.0.5</code> need eight separate blocks. Aligned ranges keep
+      firewall configuration readable.
+    </p>
+  </Fragment>
+</ToolLayout>

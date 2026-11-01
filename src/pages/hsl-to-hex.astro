@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatColor from '@/components/tools/dev/DevFormatColor.tsx'
+---
+
+<ToolLayout slug="hsl-to-hex">
+  <DevFormatColor client:load from="hsl" to="hex" />
+  <Fragment slot="explainer">
+    <h2>The HSL to HEX conversion</h2>
+    <p>
+      HSL to RGB first finds the chroma (how much colour there is at this lightness). Then it puts the
+      chroma on the correct pair of channels for the 60-degree sector of the wheel that has the hue.
+    </p>
+    <pre><code>hsl(221, 83%, 53%)
+  C = (1 - |2L - 1|) × S     = (1 - 0.06) × 0.83 = 0.780
+  X = C × (1 - |(H/60) mod 2 - 1|)               = 0.078
+  m = L - C/2                                    = 0.140
+
+  H = 221 is in the 180–240 sector → (r,g,b) = (0, X, C)
+  r = (0     + 0.140) × 255 = 36
+  g = (0.078 + 0.140) × 255 = 56
+  b = (0.780 + 0.140) × 255 = 234
+
+  #2438ea</code></pre>
+    <p>
+      All intermediate values stay in floating point and are rounded only at the last step. So a hex code
+      converted to HSL and back returns the original byte.
+    </p>
+
+    <h2>What you can paste</h2>
+    <ul>
+      <li><code>hsl(221, 83%, 53%)</code>: the comma syntax.</li>
+      <li><code>hsl(221 83% 53% / 50%)</code>: the modern space syntax with alpha.</li>
+      <li><code>hsla(221, 83%, 53%, 0.5)</code>: alpha as 0 to 1.</li>
+      <li><code>221 83% 53%</code>: a bare triple with percent signs, as a design token often stores it.</li>
+    </ul>
+    <p>
+      Hue wraps, so 380 is treated as 20 and −40 as 320. Saturation and lightness are clamped to 0–100.
+    </p>
+
+    <h2>Why your hex might differ by one</h2>
+    <p>
+      HSL is continuous and hex is a grid of 16.7 million points, so the conversion snaps to the nearest
+      hex colour. If you round a hue to a whole degree before you convert, a channel can move by one:
+      <code>hsl(220.9, …)</code> and <code>hsl(221, …)</code> are slightly different colours. To get an
+      exact hex value, convert in the other direction and copy the full-precision HSL from the table,
+      not the rounded display value.
+    </p>
+
+    <h2>Storing HSL in a design system</h2>
+    <p>
+      A useful pattern: store the three channel values without the function wrapper in a custom property,
+      then use them where needed.
+    </p>
+    <pre><code>:root &#123;
+  --brand: 221 83% 53%;
+&#125;
+
+.button &#123;
+  background: hsl(var(--brand));
+&#125;
+.button:hover &#123;
+  background: hsl(221 83% 45%);
+&#125;
+.button-tint &#123;
+  background: hsl(var(--brand) / 12%);
+&#125;</code></pre>
+    <p>
+      That gives one source of truth for the hue, and alpha variants, without a preprocessor. The same
+      pattern works with <code>rgb()</code> and space-separated channels.
+    </p>
+
+    <h2>What about oklch?</h2>
+    <p>
+      Oklch is better for scales, because equal lightness steps look equal across different hues, and
+      HSL steps do not. This converter does not output it. A correct sRGB↔Oklab conversion needs a gamma
+      transfer function and a matrix multiply, and a slightly wrong result is worse than none. Convert to
+      hex here, and use a dedicated Oklch tool for wide-gamut work.
+    </p>
+  </Fragment>
+</ToolLayout>

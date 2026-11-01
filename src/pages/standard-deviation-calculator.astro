@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import StandardDeviationCalculator from '@/components/tools/math/StandardDeviationCalculator.tsx'
+---
+
+<ToolLayout slug="standard-deviation-calculator">
+  <StandardDeviationCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the standard deviation calculator</h2>
+    <ol>
+      <li>Paste your numbers. Any separator works: commas, spaces, tabs or one value per line.</li>
+      <li>Choose the sample formula (÷ n − 1) or the population formula (÷ n).</li>
+      <li>Read the standard deviation, then check the deviation table and the step list to see how it was calculated.</li>
+    </ol>
+    <p>
+      The results grid always shows both versions side by side.
+    </p>
+
+    <h2>Sample or population?</h2>
+    <p>
+      This is the only choice you make, and it changes the result:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Sample</th>
+            <th scope="col">Population</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Symbol</td><td>s</td><td>σ (sigma)</td></tr>
+          <tr><td>Divide by</td><td>n − 1</td><td>n</td></tr>
+          <tr><td>Use when</td><td>Your numbers are a subset of a bigger group</td><td>Your numbers are the entire group</td></tr>
+          <tr><td>Typical case</td><td>A survey of 200 customers</td><td>The marks of all 30 pupils in one class, when that class is the whole question</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you are unsure, use the sample formula. Almost all real data is a sample, and division by n − 1
+      reports slightly more spread, which is the safer error.
+    </p>
+
+    <h2>Why n − 1? The Bessel correction</h2>
+    <p>
+      Deviations are measured from the sample mean, and the sample mean is the point that makes the sum of
+      squared deviations as small as possible. Measured from the unknown true population mean, the squares
+      would be larger. Division by n − 1 in place of n increases the result enough to cancel that bias, which
+      gives an unbiased estimate of the population variance. With large n the difference is negligible; with
+      n = 5 the variance differs by 12%.
+    </p>
+
+    <h2>The standard deviation formula, step by step</h2>
+    <ol>
+      <li>Find the mean: x̄ = Σx ÷ n.</li>
+      <li>Subtract the mean from each value to get each deviation, x − x̄.</li>
+      <li>Square each deviation, so that positive and negative distances both count.</li>
+      <li>Add the squares: Σ(x − x̄)².</li>
+      <li>Divide by n − 1 (sample) or n (population) to get the variance.</li>
+      <li>Take the square root, which gives the answer in the original units.</li>
+    </ol>
+    <p>
+      The deviations always sum to zero. This is a useful check, and it is why step 3 exists: without
+      squaring, the positive and negative deviations would cancel and every data set would have a spread of
+      zero.
+    </p>
+
+    <h2>Reading the extra statistics</h2>
+    <ul>
+      <li>Variance is the standard deviation squared. It is in squared units (squared pounds, squared seconds), so reports use the square root.</li>
+      <li>Standard error of the mean is s ÷ √n: how much the sample mean would change if you drew another sample of the same size. Four times the sample size halves it.</li>
+      <li>Coefficient of variation is s ÷ |mean|, as a percentage. Use it to compare the spread of quantities measured in different units.</li>
+      <li>Sum of squares is the raw Σ(x − x̄)² before division. Statistical software reports it often, and every variance formula divides it.</li>
+    </ul>
+
+    <h2>What the dot plot shows</h2>
+    <p>
+      Each value appears as a dot on a number line, with identical values stacked upward. The dashed line marks
+      the mean and the shaded bands cover one and two standard deviations either side of it. For roughly
+      bell-shaped data, expect about 68% of the dots inside the inner band and about 95% inside the outer one
+      (the empirical rule). If the dots are lopsided or clustered at one end, the mean and standard deviation
+      describe the data poorly, and the median with the interquartile range is a better summary.
+    </p>
+
+    <h2>A worked example</h2>
+    <p>
+      Take 2, 4, 4, 4, 5, 5, 7, 9. The mean is 40 ÷ 8 = 5. The deviations are −3, −1, −1, −1, 0, 0, 2, 4 and
+      their squares are 9, 1, 1, 1, 0, 0, 4, 16, summing to 32. The population variance is 32 ÷ 8 = 4, so
+      σ = 2. The sample variance is 32 ÷ 7 ≈ 4.571, so s ≈ 2.138. Paste those eight numbers into the tool and
+      the deviation table shows these rows.
+    </p>
+
+    <h2>Performance and privacy</h2>
+    <p>
+      The tool computes the mean and sum of squares in a single pass, so it handles tens of thousands of values
+      at once. The deviation table shows the first 200 rows to keep the page responsive; the totals row and
+      every headline statistic cover the whole data set. Your data stays on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressPdf from '@/components/tools/pdf/CompressPdf.tsx'
+---
+
+<ToolLayout slug="compress-pdf">
+  <CompressPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to compress a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above.</li>
+        <li>
+          Choose a mode. <strong>Quality presets</strong> render each page again as a JPEG at a set
+          resolution, which gives the large savings. <strong>Lossless clean-up</strong> rebuilds the
+          file structure and does not change the page content.
+        </li>
+        <li>Press <strong>Compress PDF</strong> and watch the per-page progress.</li>
+        <li>Compare the before and after sizes, then download. If the file is not small enough, lower the DPI and run it again.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>What each preset actually does</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col">Preset</th>
+              <th scope="col">Resolution</th>
+              <th scope="col">JPEG quality</th>
+              <th scope="col">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Strong</td>
+              <td class="tabular-nums">72 DPI</td>
+              <td class="tabular-nums">50</td>
+              <td>Screen-only reading, email attachments with a hard size limit</td>
+            </tr>
+            <tr>
+              <td>Recommended</td>
+              <td class="tabular-nums">110 DPI</td>
+              <td class="tabular-nums">62</td>
+              <td>The everyday choice: readable on any screen, still legible printed</td>
+            </tr>
+            <tr>
+              <td>Light</td>
+              <td class="tabular-nums">150 DPI</td>
+              <td class="tabular-nums">80</td>
+              <td>Documents that will be printed or archived</td>
+            </tr>
+            <tr>
+              <td>Lossless clean-up</td>
+              <td>unchanged</td>
+              <td>n/a</td>
+              <td>Text documents where search and copy must keep working</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        An A4 page at 110 DPI is about 900 × 1270 pixels, enough for body text to stay sharp on a laptop
+        screen and on a phone. At 72 DPI it is 595 × 842 pixels, which looks fine at normal zoom but
+        softens small print. Custom mode shows both settings, so you can aim at a specific size.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why some PDFs barely shrink</h2>
+      <p>
+        Images take up most of the size of almost all PDFs. A 40-page report exported from a word
+        processor can be 300 KB in total, because text is stored as a few kilobytes of font references
+        and drawing operators per page, and there is nothing left to remove. One scanned page from a
+        phone camera can be 3 MB alone.
+      </p>
+      <ul>
+        <li>Scans and photos: expect 70-95% smaller with the Recommended preset.</li>
+        <li>Slide decks with photos: usually 50-80% smaller.</li>
+        <li>Text-only documents: a few percent at best, and rasterising them makes the file bigger. Use lossless clean-up.</li>
+        <li>Already-compressed scans: if a scanner already saved JPEGs at 100 DPI, re-encoding gains little and costs quality.</li>
+      </ul>
+      <p>
+        Try greyscale on colour scans of black-and-white originals: removing the chroma channels usually
+        saves another 20-30% with no change to readability.
+      </p>
+    </section>
+
+    <section>
+      <h2>The trade-off, stated plainly</h2>
+      <p>
+        Rasterising cannot be undone. After it, the page is a picture: you cannot select or search the
+        text, links stop working, form fields are flattened, and screen readers cannot read the content.
+        All "extreme compression" options work this way. If any of this matters, keep the original, and
+        use the lossless mode when the document must stay accessible.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

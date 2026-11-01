@@ -1,0 +1,130 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-2mb">
+  <PdfSecureCompressToSize client:load targetBytes={2097152} />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>The target for long documents</h2>
+      <p>
+        At 2 MB, a long document (a thesis chapter, a full set of bank statements, a surveyor's report,
+        a scanned lease with schedules) fits an upload limit and stays readable. Below about 40 pages
+        the budget is comfortable; above that it gets tight, and the tool tells you when it is.
+      </p>
+    </section>
+
+    <section>
+      <h2>The page-count arithmetic</h2>
+      <p>
+        The algorithm depends on one division. Do it in your head before you start:
+      </p>
+      <pre><code>bytes per page ≈ (target − overhead) ÷ pages
+overhead      ≈ 1,200 + 260 × pages</code></pre>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Pages</th>
+              <th scope="col">Budget per page at 2 MB</th>
+              <th scope="col">Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tabular-nums">10</td>
+              <td class="tabular-nums">~209 KB</td>
+              <td>Excellent: near-original quality at 150–200 DPI</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">40</td>
+              <td class="tabular-nums">~52 KB</td>
+              <td>Good. Clean text at about 110 DPI</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">100</td>
+              <td class="tabular-nums">~21 KB</td>
+              <td>Acceptable for reading; small print softens</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">300</td>
+              <td class="tabular-nums">~7 KB</td>
+              <td>Heavily degraded: split the document</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The exact figures for your file, with your numbers, show below the result.
+      </p>
+    </section>
+
+    <section>
+      <h2>Split first, compress second</h2>
+      <p>
+        When the arithmetic above gives less than about 20 KB a page, do not compress harder. Two
+        100-page halves at 2 MB each give each page four times the budget of one 200-page file at 2 MB,
+        and most portals that limit a single attachment accept two.
+      </p>
+      <ul>
+        <li>
+          <a href="/split-pdf">Split PDF</a>: break a document into parts at the page numbers you choose.
+        </li>
+        <li>
+          <a href="/extract-pdf-pages">Extract PDF pages</a>: take out only the range that was
+          requested.
+        </li>
+        <li>
+          <a href="/delete-pages-from-pdf">Delete pages from PDF</a>: remove blank scanner pages,
+          separator sheets and duplicate cover pages before you compress.
+        </li>
+      </ul>
+      <p>
+        Removing four blank pages from a 40-page scan helps more than any quality setting: it gives 10
+        per cent more budget to each remaining page.
+      </p>
+    </section>
+
+    <section>
+      <h2>How long it takes</h2>
+      <p>
+        Each page is rendered once and then encoded up to nine times. Rendering takes most of the time,
+        and it scales with page area at the chosen DPI, not with the size of the source file.
+      </p>
+      <ul>
+        <li>A modern laptop: about 3 to 5 pages per second at 110 DPI.</li>
+        <li>An older laptop or a phone: about 1 page per second.</li>
+        <li>
+          At 200 DPI: about three times slower, because there are three times as many pixels to draw
+          and encode.
+        </li>
+      </ul>
+      <p>
+        The tool reports progress per page, and the Cancel button stops it immediately. The original
+        file does not change, because the tool never writes to it.
+      </p>
+    </section>
+
+    <section>
+      <h2>When 2 MB still is not enough</h2>
+      <p>
+        If the result panel says the target was missed, one of three things is true:
+      </p>
+      <ol>
+        <li>
+          The page count is past the limit. Each page needs a few hundred bytes of structure in
+          addition to its image data. At several hundred pages, that alone comes close to your target.
+        </li>
+        <li>
+          The pages are very large. An A0 poster or an engineering drawing has ten times the area of
+          A4, so it needs ten times the pixels at the same DPI.
+        </li>
+        <li>
+          You forced a high resolution. Set the resolution back to automatic and run it again.
+        </li>
+      </ol>
+    </section>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,65 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="ounces-to-grams">
+  <UnitsLifePairConverter client:load spec="ounces-to-grams" />
+  <Fragment slot="explainer">
+    <h2>The number to remember is 28.35</h2>
+    <p>
+      To convert ounces to grams, use 28.349523125: one avoirdupois ounce in grams. 28.35 is safe for
+      cooking and post. 28 gives a 1.23% error, which is a whole gram at 3 oz and five grams at a
+      pound.
+    </p>
+    <p>
+      The exact value comes from the pound: 0.45359237 kg by definition, divided by sixteen. All figures
+      on this page use it, so extra decimal places are real digits, not noise.
+    </p>
+
+    <h2>The quarter-pound ladder</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Ounces</th><th scope="col">Grams</th><th scope="col">Also known as</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>28.35</td><td>A nutrition-label portion of cheese or nuts</td></tr>
+        <tr><td>2</td><td>56.70</td><td>An eighth of a pound</td></tr>
+        <tr><td>4</td><td>113.40</td><td>A quarter pound. One US stick of butter</td></tr>
+        <tr><td>8</td><td>226.80</td><td>Half a pound</td></tr>
+        <tr><td>12</td><td>340.19</td><td>Three quarters of a pound. A standard US can</td></tr>
+        <tr><td>16</td><td>453.59</td><td>One pound</td></tr>
+        <tr><td>32</td><td>907.18</td><td>Two pounds</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Fractions are the normal input</h2>
+    <p>
+      Older British recipes use halves and quarters of an ounce, and jewellery and spice work uses
+      eighths. Type <code>1/2</code>, <code>3/4</code>, <code>1 1/2</code> or <code>2&frac14;</code>,
+      and the tool reads them directly, so you do not need to convert the fraction to a decimal first.
+    </p>
+
+    <h2>Ounces of liquid do not convert here</h2>
+    <p>
+      If your recipe says "8 oz of milk", it almost certainly means eight fluid ounces (a volume), and
+      this page gives the wrong answer. Eight US fluid ounces of milk is 237 mL, which weighs about
+      244 g, not the 227 g you get when you treat it as weight. In US recipes, liquids are fluid ounces
+      and solids are weight ounces. In British and professional recipes, almost everything is weight.
+    </p>
+
+    <h2>Troy ounces for metals</h2>
+    <p>
+      Gold, silver, platinum and palladium are priced per troy ounce, which is 31.1034768 g. A one troy
+      ounce bar is about 10% heavier than one avoirdupois ounce, and the wrong figure changes a bullion
+      valuation by about a tenth. Twelve troy ounces make a troy pound (373.24 g), not sixteen.
+    </p>
+
+    <h2>Grams are better for cooking</h2>
+    <p>
+      A gram is small enough that you rarely need a fraction, which removes a whole class of error.
+      When a recipe is converted, write the gram figures on the page and stop converting. Each round
+      trip through a rounded ounce figure loses a little more precision.
+    </p>
+  </Fragment>
+</ToolLayout>

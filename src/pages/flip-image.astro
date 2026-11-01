@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FlipImage from '@/components/tools/image-edit/FlipImage.tsx'
+---
+
+<ToolLayout slug="flip-image">
+  <FlipImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to flip an image</h2>
+    <ol>
+      <li>Drop one or more images onto the box above.</li>
+      <li>Turn on <strong>horizontal</strong> to mirror left ↔ right, <strong>vertical</strong> to mirror top ↕ bottom, or both.</li>
+      <li>Check the live preview of the first image, then press <strong>Flip</strong> and download the files or the ZIP.</li>
+    </ol>
+
+    <h2>Flip, mirror, rotate: the difference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Operation</th><th>What happens</th><th>Text readable?</th></tr></thead>
+        <tbody>
+          <tr><td>Flip horizontal</td><td>Reflected across the vertical centre line</td><td>No: reads backwards</td></tr>
+          <tr><td>Flip vertical</td><td>Reflected across the horizontal centre line</td><td>No: upside down and reversed</td></tr>
+          <tr><td>Flip both</td><td>Identical to a 180° rotation</td><td>No: upside down</td></tr>
+          <tr><td><a href="/rotate-image">Rotate 180°</a></td><td>Turned, not reflected</td><td>No: upside down</td></tr>
+          <tr><td><a href="/rotate-image">Rotate 90°</a></td><td>Turned a quarter turn</td><td>Yes, sideways</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The important property is chirality. Another rotation can always undo a rotation; no rotation can
+      undo a single flip. A flip swaps left and right, so a flipped photo of a shop front has unreadable
+      signs, and a flipped portrait has the parting on the wrong side.
+    </p>
+
+    <h2>When flipping is the right tool</h2>
+    <ul>
+      <li>Selfies: phone cameras mirror the front-camera preview like a bathroom mirror, then save the true view. A horizontal flip gives back the version you composed on screen.</li>
+      <li>Scanned negatives and slides: film loaded emulsion side down scans reversed; a horizontal flip corrects it.</li>
+      <li>Layout balance: editors often mirror a subject so it faces into the page and not off the edge.</li>
+      <li>Iron-on transfers and heat-press printing: mirror these before printing, so they read correctly after application.</li>
+      <li>Sprite sheets and game art: make a left-facing version from a right-facing one.</li>
+      <li>Documents scanned upside down: flip both axes, which is the same as a 180° rotation.</li>
+    </ul>
+
+    <h2>Is any quality lost?</h2>
+    <p>
+      No. A flip only moves pixels: each value is copied without change to a new position, with no
+      interpolation, averaging or rounding. The exported file is pixel-identical to a mirrored copy of the
+      original. The only exception is the encode step: JPEG in and JPEG out means one more compression.
+      Export PNG or WebP for a perfect round trip, or keep the quality at 90 or more, where the difference is
+      invisible.
+    </p>
+
+    <h2>A note on text and logos</h2>
+    <p>
+      A flip reverses all writing in the frame. If the image has a logo, a licence plate, a street sign or a
+      watermark that must stay legible, flip the background separately and add the text afterwards. The
+      <a href="/watermark-image">watermark tool</a> can put it on the flipped result the correct way round.
+    </p>
+  </Fragment>
+</ToolLayout>

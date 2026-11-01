@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JpgToPdf from '@/components/tools/pdf-convert/JpgToPdf.tsx'
+---
+
+<ToolLayout slug="jpg-to-pdf">
+  <JpgToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert JPG images to a PDF</h2>
+    <ol>
+      <li>Drop your photos onto the box above, or click to browse. Select as many as you need. Your device decodes them, and they are not uploaded.</li>
+      <li>Put them in order. Drag a card to another position, or use the arrow buttons on each card, which also work with the keyboard.</li>
+      <li>Choose a page size. <strong>Auto</strong> gives each page the exact shape of its image. A4 or Letter gives all pages the same dimensions.</li>
+      <li>For a fixed page size, set the orientation, margin and fit mode.</li>
+      <li>Press <strong>Create PDF</strong>, then download. Change an option and press <strong>Rebuild</strong> to try again without adding the images again.</li>
+    </ol>
+
+    <h2>Fit modes, in plain terms</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>What it does</th>
+            <th>Side effect</th>
+            <th>Use it when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Fit</td>
+            <td>Scales the image down until it fits inside the margins</td>
+            <td>White space on the shorter side</td>
+            <td>Almost always. Nothing is lost or distorted</td>
+          </tr>
+          <tr>
+            <td>Fill</td>
+            <td>Scales up until the page is fully covered</td>
+            <td>The edges that overflow are cropped</td>
+            <td>You want edge-to-edge pages and can lose the borders</td>
+          </tr>
+          <tr>
+            <td>Stretch</td>
+            <td>Forces the image to the exact page box</td>
+            <td>The aspect ratio changes. People look wider or thinner</td>
+            <td>Rarely. Only when the source already has the correct shape</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Page size reference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Page size</th>
+            <th>Millimetres</th>
+            <th>Inches</th>
+            <th>PDF points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A5</td><td>148 × 210</td><td>5.83 × 8.27</td><td>421 × 595</td></tr>
+          <tr><td>A4</td><td>210 × 297</td><td>8.27 × 11.69</td><td>595 × 842</td></tr>
+          <tr><td>A3</td><td>297 × 420</td><td>11.69 × 16.54</td><td>842 × 1191</td></tr>
+          <tr><td>Letter</td><td>216 × 279</td><td>8.5 × 11</td><td>612 × 792</td></tr>
+          <tr><td>Legal</td><td>216 × 356</td><td>8.5 × 14</td><td>612 × 1008</td></tr>
+          <tr><td>Tabloid</td><td>279 × 432</td><td>11 × 17</td><td>792 × 1224</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Is the image quality reduced?</h2>
+    <p>
+      No. A JPG is already compressed with a codec that PDF supports natively, so
+      the tool copies the file's bytes into the document. There is no decode and
+      re-encode step, so there is no generation loss. The page is as sharp as the
+      original photo, and the PDF is about the sum of the input file sizes.
+    </p>
+    <p>
+      There is one exception. Phone cameras often store a photo sideways and add an
+      EXIF orientation tag that tells viewers to rotate it. PDF has no equivalent
+      tag, so that image would show on its side. When the tool finds a rotated tag,
+      it applies the rotation and saves again at quality 94. The result looks the
+      same, but it is technically a re-encode.
+    </p>
+
+    <h2>What people use this for</h2>
+    <ul>
+      <li>Expense claims: a folder of receipt photos becomes one PDF that finance systems accept.</li>
+      <li>Applications and ID: passport, licence and certificate scans in one attachment.</li>
+      <li>Portfolios and proofs: a set of images as one paginated, printable document.</li>
+      <li>Homework and handouts: photographed pages that a teacher can annotate.</li>
+      <li>Archiving: a shoot in one file with consistent page dimensions.</li>
+    </ul>
+    <p>
+      The JPG to PDF conversion runs in your browser, so documents with names,
+      addresses, card numbers or medical details are not sent to a third party. For
+      a mixed batch of formats, use <a href="/images-to-pdf">Images to PDF</a>, which
+      also accepts PNG and WebP.
+    </p>
+  </Fragment>
+</ToolLayout>

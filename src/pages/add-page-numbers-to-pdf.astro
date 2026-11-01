@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AddPageNumbers from '@/components/tools/pdf/AddPageNumbers.tsx'
+---
+
+<ToolLayout slug="add-page-numbers-to-pdf">
+  <AddPageNumbers client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to add page numbers to a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above. Page one appears in the live preview.</li>
+        <li>Pick one of the six positions. The three bottom positions are usual for reports.</li>
+        <li>
+          Set the format, the first number, the pages to number, and the type settings: font, size,
+          weight, colour and margin.
+        </li>
+        <li>Step through a few pages in the preview to make sure the number does not overlap your content.</li>
+        <li>Press <strong>Add numbers</strong> and download.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Numbering a document with a cover page</h2>
+      <p>
+        The two important fields are <strong>Pages to number</strong> and
+        <strong>First number</strong>. They are independent of each other.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col">You want</th>
+              <th scope="col">Pages to number</th>
+              <th scope="col">First number</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Number everything</td>
+              <td class="font-mono">(empty)</td>
+              <td class="font-mono">1</td>
+              <td>Page 1 reads "1"</td>
+            </tr>
+            <tr>
+              <td>Skip the cover, start at 1</td>
+              <td class="font-mono">2-</td>
+              <td class="font-mono">1</td>
+              <td>Physical page 2 reads "1"</td>
+            </tr>
+            <tr>
+              <td>Skip the cover, keep true numbering</td>
+              <td class="font-mono">2-</td>
+              <td class="font-mono">2</td>
+              <td>Physical page 2 reads "2"</td>
+            </tr>
+            <tr>
+              <td>Continue a previous volume</td>
+              <td class="font-mono">(empty)</td>
+              <td class="font-mono">148</td>
+              <td>Page 1 reads "148"</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Formats and the custom pattern</h2>
+      <p>
+        There are three presets: <code class="font-mono">7</code>,
+        <code class="font-mono">7/24</code> and <code class="font-mono">Page 7 of 24</code>. The
+        custom pattern accepts any text plus three placeholders:
+      </p>
+      <ul>
+        <li><code class="font-mono">{'{n}'}</code>: the printed number, counting from your first number</li>
+        <li><code class="font-mono">{'{total}'}</code>: the last number that will be printed</li>
+        <li><code class="font-mono">{'{p}'}</code>: the physical page number in the file</li>
+      </ul>
+      <p>
+        For example, <code class="font-mono">Exhibit A, {'{n}'} of {'{total}'}</code> and
+        <code class="font-mono">ACME-2026-{'{n}'}</code> both work. This is enough for simple
+        Bates-style numbering on an exhibit bundle.
+      </p>
+    </section>
+
+    <section>
+      <h2>Choosing size and margin</h2>
+      <p>
+        PDF measurements are in points: 72 points to an inch, about 28.35 to a centimetre. The default
+        of 11 pt text at 28 pt from the edge puts the number about one centimetre inside the trim,
+        like most word-processor footers. Increase the margin if your document already has a footer
+        rule. The position is measured from the edges of each page, so documents with mixed page sizes
+        stay tidy; check the preview on a landscape or A3 page.
+      </p>
+      <p>
+        The tool reads the rotation flag of each page and places the number relative to the page as the
+        reader sees it. A sideways scan gets an upright number in the correct corner.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

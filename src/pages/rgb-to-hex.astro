@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatColor from '@/components/tools/dev/DevFormatColor.tsx'
+---
+
+<ToolLayout slug="rgb-to-hex">
+  <DevFormatColor client:load from="rgb" to="hex" />
+  <Fragment slot="explainer">
+    <h2>Converting RGB to hex by hand</h2>
+    <p>
+      Each channel is one byte. Divide it by 16: the whole-number result is the first hex digit and the
+      remainder is the second, with 10 to 15 written as a to f.
+    </p>
+    <pre><code>rgb(37, 99, 235)
+  37  → 37 ÷ 16 = 2 remainder 5   → 25
+  99  → 99 ÷ 16 = 6 remainder 3   → 63
+  235 → 235 ÷ 16 = 14 remainder 11 → eb
+
+  #2563eb</code></pre>
+    <p>
+      Useful reference points: 0 is <code>00</code>, 128 is <code>80</code> and 255 is <code>ff</code>.
+      Each multiple of 17 gives a repeated digit (17 → <code>11</code>, 34 → <code>22</code>, …, 255 →
+      <code>ff</code>), and these are the only channel values you can write in shorthand.
+    </p>
+
+    <h2>Input formats the RGB to hex converter accepts</h2>
+    <ul>
+      <li><code>rgb(37, 99, 235)</code>: the classic comma syntax.</li>
+      <li><code>rgb(37 99 235)</code>: the modern space syntax, with <code>/ 50%</code> for alpha.</li>
+      <li><code>rgba(37, 99, 235, 0.5)</code>: alpha from 0 to 1.</li>
+      <li><code>rgb(15%, 39%, 92%)</code>: percentage channels, multiplied by 2.55.</li>
+      <li><code>37, 99, 235</code> or <code>37 99 235</code>: a bare triple, as copied from a design tool.</li>
+    </ul>
+    <p>Values outside 0–255 are clamped, as a browser does, and not rejected.</p>
+
+    <h2>Why hex is still the default in design tools</h2>
+    <p>
+      Hex and <code>rgb()</code> are functionally identical: the browser resolves both to the same three
+      bytes. Hex is six characters in place of eighteen, selects as one token on a double-click in most
+      editors, pastes cleanly into a spreadsheet cell or a chat message, and works in the colour field of
+      every design tool. <code>#2563eb</code> tells a developer exactly which colour you mean; &ldquo;the
+      blue&rdquo; does not.
+    </p>
+
+    <h2>Precision and rounding</h2>
+    <p>
+      Whole-number channels convert exactly: 0–255 maps one-to-one onto <code>00</code>–<code>ff</code>, so
+      hex → rgb → hex always returns the byte you started with. Two inputs are rounded. A percentage channel
+      is multiplied by 2.55 and rounded, so 39% becomes 99, not 99.45. An alpha of 0.5 becomes
+      <code>80</code>, which is 128/255 or 50.2%. Neither difference is visible, but it is why an alpha you
+      convert back and forth can return as 0.502.
+    </p>
+
+    <h2>Shorthand, and when not to use it</h2>
+    <p>
+      Three-digit hex exists only when each channel has two identical digits. It saves three characters and
+      is harder to compare: <code>#24c</code> is harder to compare with <code>#2563eb</code> at a glance than
+      <code>#2244cc</code> is. In a design-token file, use the full form so all values line up in the same
+      column.
+    </p>
+  </Fragment>
+</ToolLayout>

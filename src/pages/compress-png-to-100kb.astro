@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-png-to-100kb">
+  <CompressImageToTarget client:load targetKb={100} fixedFormat="png" inputLabel="Drop the PNG files you need at 100 KB" />
+
+  <Fragment slot="explainer">
+    <h2>PNG has no quality dial, and that changes everything</h2>
+    <p>
+      In JPEG, one number trades fidelity for bytes. PNG cannot do that: it is lossless, so each pixel
+      comes back exactly as it went in, and there is no setting to lower. Only two things can change:
+      the number of pixels and the number of distinct colours. For this reason, with PNG output this
+      tool does a binary search of the scale factor, not a quality value, and reports the final
+      dimensions.
+    </p>
+
+    <h2>Is PNG the right format for your image?</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Content</th><th>Keep as PNG?</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Screenshot of an interface</td><td>Yes</td><td>Sharp text and flat panels compress losslessly to very little; JPEG would add rings around each letter</td></tr>
+          <tr><td>Logo, icon, line art</td><td>Yes</td><td>Few colours, hard edges: the ideal case for PNG, and alpha is kept</td></tr>
+          <tr><td>Chart or diagram</td><td>Yes</td><td>Large flat fills, sharp lines</td></tr>
+          <tr><td>Photograph saved as PNG</td><td>No</td><td>Often ten times larger than the same picture as a JPEG with no visible difference</td></tr>
+          <tr><td>Photo with transparency</td><td>Use WebP</td><td>Keeps the alpha channel but compresses the photo lossily</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If your PNG is a photograph, change the output format to JPG or WebP in the options. This one
+      change usually takes a 3 MB file under 100 KB with no resizing.
+    </p>
+
+    <h2>Why PNG files get so big</h2>
+    <p>
+      PNG predicts each pixel from its neighbours and compresses the differences with Deflate. This
+      works very well on flat colour and repeated patterns, and almost not at all on photographic
+      noise, where each pixel differs slightly from its neighbours. A lossless codec can hardly
+      compress a camera photo, which is the reason lossy formats exist.
+    </p>
+
+    <h2>Getting a real PNG under 100 KB</h2>
+    <ul>
+      <li>Reduce the dimensions. The search does this automatically; half the area gives about half the bytes. For a screenshot, export at 1× instead of Retina 2×; that is often enough.</li>
+      <li>Crop the chrome. Screenshots often include frame that you do not need. Removing it saves bytes and makes the image clearer.</li>
+      <li>Use fewer colours. Gradients, drop shadows and blur effects add thousands of unique colours to regions that would be flat, and PNG must encode each transition.</li>
+      <li>Check for a hidden photo. A screenshot with a photographic hero image is a photo to the encoder.</li>
+    </ul>
+
+    <h2>Transparency</h2>
+    <p>
+      PNG and WebP both have an alpha channel; JPEG does not. If your image has transparent regions and
+      you change the output to JPG, those regions become solid, which is almost never correct for a
+      logo. WebP has alpha support plus lossy compression, so a transparent product shot can go under
+      100 KB and stay sharp.
+    </p>
+
+    <h2>What the search shows you</h2>
+    <p>
+      There is no quality axis, so the attempt table lists scale percentages: 100%, then 55%, then 77%,
+      until it finds the largest size that fits. The last row gives the final dimensions. If they are
+      much smaller than you need, change the format; do not continue to shrink.
+    </p>
+
+    <h2>Local, lossless and unlimited</h2>
+    <p>
+      Resizing uses a Lanczos3 filter, and a WebAssembly PNG encoder in your browser does all encoding.
+      Nothing is uploaded, there is no per-file limit, and you can try as often as you like. This
+      matters here, because the right balance between dimensions and format usually takes two or three
+      attempts.
+    </p>
+
+    <h2>Related</h2>
+    <p>
+      <a href="/compress-jpeg-to-100kb">Compress a JPEG to 100 KB</a> ·
+      <a href="/png-to-jpg">PNG to JPG</a> ·
+      <a href="/png-to-webp">PNG to WebP</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

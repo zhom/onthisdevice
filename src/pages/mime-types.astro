@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatReference from '@/components/tools/dev/DevFormatReference.tsx'
+---
+
+<ToolLayout slug="mime-types">
+  <DevFormatReference client:load dataset="mime" />
+  <Fragment slot="explainer">
+    <h2>What a MIME type is and where it comes from</h2>
+    <p>
+      A MIME type (formally a media type) is a two-part label, <code>type/subtype</code>, that tells a
+      client what a stream of bytes is. On the web it comes in the <code>Content-Type</code> response
+      header, and that header is the only authoritative signal. The file extension is a hint for the
+      server, not for the browser. A file called <code>photo.png</code> served as
+      <code>text/plain</code> shows as gibberish.
+    </p>
+    <p>
+      Types are registered with IANA. A type that starts with <code>x-</code> or <code>vnd.</code> is
+      unregistered or vendor-specific, such as <code>image/x-icon</code> or
+      <code>application/vnd.rar</code>. So those two prefixes appear often in the list.
+    </p>
+
+    <h2>The five that break things most often</h2>
+    <table>
+      <thead><tr><th>Wrong</th><th>Right</th><th>Symptom</th></tr></thead>
+      <tbody>
+        <tr><td><code>image/jpg</code></td><td><code>image/jpeg</code></td><td>Some strict clients refuse the image. <code>image/jpg</code> has never existed</td></tr>
+        <tr><td><code>audio/mp3</code></td><td><code>audio/mpeg</code></td><td>Playback fails in Safari and some Android browsers</td></tr>
+        <tr><td><code>text/plain</code> for JS</td><td><code>text/javascript</code></td><td>Script refused under <code>X-Content-Type-Options: nosniff</code></td></tr>
+        <tr><td><code>application/octet-stream</code> for wasm</td><td><code>application/wasm</code></td><td><code>instantiateStreaming</code> throws</td></tr>
+        <tr><td>No <code>charset</code> on <code>text/html</code></td><td><code>text/html; charset=utf-8</code></td><td>Accented characters render as mojibake</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Content sniffing, and why nosniff exists</h2>
+    <p>
+      In the past, browsers guessed the type from the first bytes when the header looked wrong. That
+      guess is a security hole: an uploaded file declared as <code>text/plain</code> but sniffed as
+      <code>text/html</code> becomes stored cross-site scripting.
+    </p>
+    <p>
+      <code>X-Content-Type-Options: nosniff</code> turns the guessing off. It is the correct header to
+      send. It is also why a MIME type that used to &ldquo;work&rdquo; stops after a security review: the
+      browser hid the misconfiguration, and now it does not. Serve the correct type and the problem is
+      gone permanently.
+    </p>
+
+    <h2>The charset parameter</h2>
+    <ul>
+      <li>For <code>text/*</code>, always add it. The historical default is not UTF-8, and without the parameter older browsers and some tools use Latin-1.</li>
+      <li>For <code>application/json</code>, never add it. The JSON specification fixes the encoding as UTF-8 and defines no charset parameter. Some strict parsers reject a request that has one.</li>
+      <li>For binary types, it does not apply. There is no text to decode.</li>
+    </ul>
+
+    <h2>Uploads: never trust the client&rsquo;s type</h2>
+    <p>
+      The browser sets the <code>Content-Type</code> on a multipart upload from the file extension, and
+      an attacker can set it to anything. Validate on the server: read the file&rsquo;s magic bytes
+      (<code>%PDF</code>, <code>\x89PNG</code>, <code>PK\x03\x04</code> for zip-based files including
+      .docx and .xlsx) and find the type yourself. Then serve user content from a separate origin with
+      <code>Content-Disposition: attachment</code> where you can.
+    </p>
+
+    <h2>Forcing a download</h2>
+    <p>
+      Keep the correct type and add a disposition header:
+    </p>
+    <pre><code>Content-Type: text/csv; charset=utf-8
+Content-Disposition: attachment; filename="report-2026-08.csv"</code></pre>
+    <p>
+      A false label of <code>application/octet-stream</code> also starts a download, but it breaks
+      everything that inspects the type: previewers, virus scanners, and the operating system&rsquo;s
+      choice of application. Use the disposition header.
+    </p>
+
+    <h2>Multipart and the boundary</h2>
+    <p>
+      <code>multipart/form-data</code> is the only type where you must not set the header by hand. It
+      has a <code>boundary</code> parameter that must match the delimiter in the body, and the HTTP
+      client generates both together. If you set <code>Content-Type: multipart/form-data</code> by hand
+      on a <code>fetch</code> with a <code>FormData</code> body, the generated boundary is lost and the
+      server sees an empty form. This is one of the most common upload bugs.
+    </p>
+  </Fragment>
+</ToolLayout>

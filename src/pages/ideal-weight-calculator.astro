@@ -1,0 +1,162 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import IdealWeightCalculator from '@/components/tools/health/IdealWeightCalculator.tsx'
+---
+
+<ToolLayout slug="ideal-weight-calculator">
+  <IdealWeightCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use this calculator</h2>
+    <ol>
+      <li>Choose metric or imperial and enter your height. Height is the only required input.</li>
+      <li>
+        Add your current weight to see your distance from each estimate and your BMI.
+      </li>
+      <li>
+        Pick a frame size to apply the Hamwi ±10 percent allowance. If you are not sure, leave it on
+        medium.
+      </li>
+      <li>
+        Compare all four formulas with the healthy BMI band on the single scale. Note the spread between
+        them.
+      </li>
+    </ol>
+
+    <h2>The four formulas</h2>
+    <p>
+      All four ideal weight formulas have the same structure: a base weight at 5 feet (152.4 cm), plus a
+      fixed amount for each inch above that. Only the base and the slope differ.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Formula</th>
+            <th scope="col">Year</th>
+            <th scope="col">Men</th>
+            <th scope="col">Women</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Hamwi</td>
+            <td>1964</td>
+            <td>48.0 kg + 2.7 kg per inch over 5 ft</td>
+            <td>45.5 kg + 2.2 kg per inch over 5 ft</td>
+          </tr>
+          <tr>
+            <td>Devine</td>
+            <td>1974</td>
+            <td>50.0 kg + 2.3 kg per inch over 5 ft</td>
+            <td>45.5 kg + 2.3 kg per inch over 5 ft</td>
+          </tr>
+          <tr>
+            <td>Robinson</td>
+            <td>1983</td>
+            <td>52.0 kg + 1.9 kg per inch over 5 ft</td>
+            <td>49.0 kg + 1.7 kg per inch over 5 ft</td>
+          </tr>
+          <tr>
+            <td>Miller</td>
+            <td>1983</td>
+            <td>56.2 kg + 1.41 kg per inch over 5 ft</td>
+            <td>53.1 kg + 1.36 kg per inch over 5 ft</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The slopes differ, so the formulas cross over. Miller has the highest base and the shallowest
+      slope, so it gives the highest result for short people and the lowest for tall people. Hamwi is
+      the opposite. At about 5 ft 8 in, all four are within a few kilograms of each other.
+    </p>
+
+    <h2>Where these formulas came from, and what they are for</h2>
+    <p>
+      None of them was made to give a personal goal. B. J. Devine published his in 1974 to standardise
+      gentamicin dosing. An antibiotic dose based on total body weight is too high for people with a lot
+      of fat, because fat has poor blood flow and holds little of a water-soluble drug. Robinson and
+      Miller later fitted the same Metropolitan Life insurance data again. Hamwi's rule came from the
+      1964 American Diabetes Association guidance for diabetes meal planning.
+    </p>
+    <p>
+      Ideal body weight is still used every day in clinical practice, for:
+    </p>
+    <ul>
+      <li>Weight-based drug dosing, particularly aminoglycoside antibiotics and chemotherapy</li>
+      <li>Setting tidal volumes in mechanical ventilation (6–8 ml per kg of predicted body weight)</li>
+      <li>Estimating baseline nutritional requirements in hospital</li>
+    </ul>
+    <p>
+      They are not a target. They contain no information about muscle, frame or body fat, and the
+      insurance data came from mid-20th-century American populations.
+    </p>
+
+    <h2>Ideal weight at common heights</h2>
+    <p>Average of the four formulas, alongside the healthy BMI range for comparison.</p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Height</th>
+            <th scope="col">Men (average of 4)</th>
+            <th scope="col">Women (average of 4)</th>
+            <th scope="col">Healthy BMI range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1.55 m · 5 ft 1 in</td><td>53.5 kg</td><td>48.7 kg</td><td>44 – 60 kg</td></tr>
+          <tr><td>1.60 m · 5 ft 3 in</td><td>57.3 kg</td><td>52.2 kg</td><td>47 – 64 kg</td></tr>
+          <tr><td>1.65 m · 5 ft 5 in</td><td>61.1 kg</td><td>55.8 kg</td><td>50 – 68 kg</td></tr>
+          <tr><td>1.70 m · 5 ft 7 in</td><td>65.0 kg</td><td>59.3 kg</td><td>53 – 72 kg</td></tr>
+          <tr><td>1.75 m · 5 ft 9 in</td><td>68.8 kg</td><td>62.8 kg</td><td>57 – 76 kg</td></tr>
+          <tr><td>1.80 m · 5 ft 11 in</td><td>72.6 kg</td><td>66.4 kg</td><td>60 – 81 kg</td></tr>
+          <tr><td>1.85 m · 6 ft 1 in</td><td>76.5 kg</td><td>69.9 kg</td><td>63 – 85 kg</td></tr>
+          <tr><td>1.90 m · 6 ft 3 in</td><td>80.3 kg</td><td>73.5 kg</td><td>67 – 90 kg</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The formulas are close together, usually within 4 kg, and they are always in the lower half of the
+      healthy BMI range. That comes from their insurance-table origins. It does not show that the upper
+      half of the BMI range is unhealthy.
+    </p>
+
+    <h2>Frame size and why it matters</h2>
+    <p>
+      Skeletal frame varies. Two people of the same height can differ by several kilograms of bone and
+      connective tissue, before muscle or fat. Hamwi's original rule allowed ±10 percent for large and
+      small frames, and this calculator applies it.
+    </p>
+    <p>Two quick ways to estimate your frame:</p>
+    <ul>
+      <li>
+        Wrist test: put your thumb and middle finger around the opposite wrist. If they overlap, your
+        frame is small. If they just touch, it is medium. If they do not meet, it is large.
+      </li>
+      <li>
+        Wrist circumference against height: for a woman under 1.63 m, under 14 cm is
+        small and over 16.5 cm is large. For a man over 1.65 m, under 16.5 cm is small and over 19 cm
+        is large.
+      </li>
+    </ul>
+
+    <h2>A more useful way to think about it</h2>
+    <p>
+      There is no single ideal weight, and to chase one usually does harm. The evidence supports a
+      healthy range, plus a few markers that matter much more than the number on the scale:
+    </p>
+    <ul>
+      <li>A waist under half your height</li>
+      <li>Body fat inside the fitness or athletic bands for your sex</li>
+      <li>Enough muscle to do what you want to do, now and at seventy</li>
+      <li>Blood pressure, lipids and fasting glucose in range</li>
+      <li>A weight you can hold without constant restriction</li>
+    </ul>
+    <p>
+      A person at the top of the healthy BMI range who lifts and walks daily is in better shape than a
+      person who reaches a Devine number through chronic under-eating. Use the range above as a check,
+      then judge yourself on the things that respond to training and habits.
+    </p>
+  </Fragment>
+</ToolLayout>

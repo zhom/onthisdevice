@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BleepAudio from '@/components/tools/redact/audio/BleepAudio.tsx'
+---
+
+<ToolLayout slug="bleep-audio" width="wide">
+  <BleepAudio client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop an audio or video file: MP3, WAV, M4A, OGG, FLAC, MP4, MOV or WebM.</li>
+      <li>Choose the spoken language and press Transcribe. The words appear as they are read.</li>
+      <li>Names, numbers, places and emails are marked as black blocks. Press any word to bleep it or keep it.</li>
+      <li>Add words to the always-bleep list, and choose a tone, silence or noise.</li>
+      <li>Play the file to hear the result, then download WAV or MP3. For a video, download the video with the new sound.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <p>
+      A speech recognition model (Whisper tiny, 33 MB) writes down each word with its start and end time. A second model (21
+      MB) finds names, places and addresses in the transcript, and pattern rules find phone, card and other numbers. The
+      runtime that runs both is 15 MB. All of it downloads once from this site and is kept in your browser, so the tool works
+      offline after the first use.
+    </p>
+    <p>
+      The bleep covers each marked word plus a short margin, because word times can be off by a tenth of a second or more.
+      Make the margin larger if you hear the start or end of a word.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and transcribe a file. You see the model files load from
+      this site the first time, and no request after that. You can also run the tool once, turn off your network and use it
+      again.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The small model makes mistakes, more so with noise, music, accents and several people who talk at once. Read the transcript and listen to the result before you share it.</li>
+      <li>English works best. Other languages are transcribed with less accuracy.</li>
+      <li>A video keeps its picture as it was. Only the sound is written again.</li>
+      <li>The whole file is decoded into memory. Recordings up to about an hour work on a laptop.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

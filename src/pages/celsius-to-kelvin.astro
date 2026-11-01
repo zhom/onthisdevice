@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="celsius-to-kelvin">
+  <UnitsLifePairConverter client:load spec="celsius-to-kelvin" />
+  <Fragment slot="explainer">
+    <h2>Same degree, different zero</h2>
+    <p>
+      Kelvin and Celsius are the only pair of temperature scales with the same degree size. One kelvin
+      is exactly one degree Celsius; only the position of zero differs. The conversion is one addition:
+    </p>
+    <p><strong>K = &deg;C + 273.15</strong></p>
+    <p>
+      There is no multiplication and no fraction. 0 &deg;C is 273.15 K, 25 &deg;C is 298.15 K, and
+      100 &deg;C is 373.15 K.
+    </p>
+
+    <h2>Why 273.15 and not 273</h2>
+    <p>
+      The kelvin was first defined by putting the triple point of water (the one temperature and
+      pressure at which ice, liquid water and vapour coexist) at exactly 273.16 K. The ordinary ice
+      point is 0.01 K below that, at 273.15 K, and Celsius calls that point zero. Since the 2019 SI
+      redefinition, the Boltzmann constant fixes the kelvin, but the numbers were chosen so that
+      nothing changed in practice.
+    </p>
+    <p>
+      You can drop the 0.15 in a school exercise but not in thermodynamics, where absolute temperatures
+      appear in ratios and a 0.05% error propagates.
+    </p>
+
+    <h2>Writing it correctly</h2>
+    <ul>
+      <li>Write <strong>300 K</strong>, not 300 &deg;K. Kelvin is not a degree scale.</li>
+      <li>Say "three hundred kelvin", not "three hundred degrees kelvin".</li>
+      <li>The unit symbol is a capital K; the unit name, when written out, is lower case.</li>
+      <li>You can give temperature differences in K or &deg;C, because the degree size is the same.</li>
+    </ul>
+
+    <h2>Reference points on the absolute scale</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Kelvin</th><th scope="col">Celsius</th><th scope="col">What happens there</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>-273.15</td><td>Absolute zero: you can approach it but not reach it</td></tr>
+        <tr><td>2.7</td><td>-270.45</td><td>The cosmic microwave background</td></tr>
+        <tr><td>77</td><td>-196.15</td><td>Liquid nitrogen boils</td></tr>
+        <tr><td>273.15</td><td>0</td><td>Ice melts</td></tr>
+        <tr><td>293.15</td><td>20</td><td>Room temperature</td></tr>
+        <tr><td>310.15</td><td>37</td><td>Human body temperature</td></tr>
+        <tr><td>373.15</td><td>100</td><td>Water boils at sea level</td></tr>
+        <tr><td>1811</td><td>1537.85</td><td>Iron melts</td></tr>
+        <tr><td>5772</td><td>5498.85</td><td>The Sun&apos;s photosphere</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Where kelvin is compulsory</h2>
+    <p>
+      Use kelvin when temperature appears in a physical law as a ratio or a product: the ideal gas law,
+      the Stefan&ndash;Boltzmann law, blackbody spectra, reaction-rate equations, noise figures in
+      electronics. Two times the absolute temperature of a gas at constant pressure gives two times
+      the volume. Two times the Celsius temperature gives no predictable result, because the Celsius
+      zero is arbitrary.
+    </p>
+    <p>
+      You also see kelvin in lighting: a "2700 K" bulb is warm white and a "6500 K" bulb is daylight.
+      This is a colour temperature (the temperature of a blackbody that radiates that colour), not the
+      temperature of the bulb.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="inches-to-cm">
+  <UnitsLifePairConverter client:load spec="inches-to-cm" />
+  <Fragment slot="explainer">
+    <h2>Multiply by 2.54</h2>
+    <p>
+      To convert inches to cm, multiply by 2.54. 12 in &times; 2.54 = 30.48 cm. 36 in &times; 2.54 =
+      91.44 cm. The factor is exact by international definition, so no error accumulates when you apply
+      it many times.
+    </p>
+
+    <h2>Typing inches the way they are written</h2>
+    <p>
+      Imperial measurements are almost never written as decimals. A cut list says 3/8, a shirt says
+      15 1/2, a doorway says 6&apos;8&quot;. Mistakes happen when you type those again as 0.375, 15.5
+      and 80, so this converter reads all of these directly:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">You type</th><th scope="col">Read as</th><th scope="col">Result</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5.5</td><td>5.5 in</td><td>13.97 cm</td></tr>
+        <tr><td>5 1/2</td><td>5.5 in</td><td>13.97 cm</td></tr>
+        <tr><td>5&frac12;</td><td>5.5 in</td><td>13.97 cm</td></tr>
+        <tr><td>3/8</td><td>0.375 in</td><td>0.9525 cm</td></tr>
+        <tr><td>5&apos;6&quot;</td><td>66 in</td><td>167.64 cm</td></tr>
+        <tr><td>5 ft 6 in</td><td>66 in</td><td>167.64 cm</td></tr>
+      </tbody>
+    </table>
+    <p>
+      When the page recognises a composite entry, it shows how it read it. So a mistyped apostrophe
+      cannot turn five foot six into five and a half inches without a warning.
+    </p>
+
+    <h2>Should you use centimetres or millimetres?</h2>
+    <p>
+      For technical work, use millimetres. Continental European engineering and joinery drawings use
+      whole millimetres, so no decimal point can be lost in a photocopy. CNC, laser and 3D-printing
+      toolchains almost all expect millimetres. So the page shows the millimetre figure next to the
+      centimetre result.
+    </p>
+    <p>
+      Use centimetres for body measurements, clothing, furniture and anything a shop assistant reads
+      out. 40 in is 101.6 cm. A 34 in inside leg is 86.4 cm.
+    </p>
+
+    <h2>Fabric, screens and common mistakes</h2>
+    <p>
+      Fabric is sold by the yard in the US and by the metre almost everywhere else, and a metre is
+      3.37 in longer than a yard. If you order "five yards" of a fabric priced per metre, you get 43 cm
+      more cloth and a bigger bill than you expected.
+    </p>
+    <p>
+      Screen sizes are a diagonal in inches worldwide, even in fully metric countries. A 55 in
+      television is 139.7 cm corner to corner, but only about 121.8 cm wide. Compare the width with your
+      alcove, not the advertised diagonal.
+    </p>
+
+    <h2>Doing a whole list at once</h2>
+    <p>
+      Paste a column of inch measurements into the Batch tab to get centimetres, one per line, with
+      blank lines kept. The Batch tab also reads fractions, so a cut list copied from a plan converts
+      with no retyping. It runs locally.
+    </p>
+  </Fragment>
+</ToolLayout>

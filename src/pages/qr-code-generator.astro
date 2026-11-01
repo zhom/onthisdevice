@@ -1,0 +1,134 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import QrCodeGenerator from '@/components/tools/generators/QrCodeGenerator.tsx'
+---
+
+<ToolLayout slug="qr-code-generator">
+  <QrCodeGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to make a QR code</h2>
+    <ol>
+      <li>Type or paste what the code must contain. A URL is the usual case, and any text works.</li>
+      <li>Set the export size. The PNG has exactly that many pixels; the SVG scales to any size.</li>
+      <li>Choose the colours. Keep the dark modules dark: the contrast readout tells you when they are too light.</li>
+      <li>Raise the error-correction level if you add a logo, or if the printed code can get scuffed.</li>
+      <li>Download the PNG for screens and documents, or the SVG for print and anything that must scale.</li>
+    </ol>
+    <p>
+      The QR code generator makes the symbol in this tab and draws it on a canvas, so there is no rate
+      limit and no watermark. The code holds your text directly, with no redirect service in the middle,
+      so it cannot expire or start to show an advert later.
+    </p>
+
+    <h2>What you can put in a QR code</h2>
+    <p>
+      Phone cameras recognise some URI schemes and act on them. They show all other content as plain
+      text.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>What you want</th>
+            <th>What to encode</th>
+            <th>What the phone does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Open a web page</td><td><code>https://example.com/page</code></td><td>Offers to open the link</td></tr>
+          <tr><td>Call a number</td><td><code>tel:+15551234567</code></td><td>Opens the dialler with the number filled in</td></tr>
+          <tr><td>Send an email</td><td><code>mailto:hi@example.com?subject=Hello&amp;body=Hi</code></td><td>Opens a pre-filled draft</td></tr>
+          <tr><td>Send a text</td><td><code>SMSTO:+15551234567:Message</code></td><td>Opens the messaging app</td></tr>
+          <tr><td>Show a location</td><td><code>geo:48.858370,2.294481</code></td><td>Opens the map at that point</td></tr>
+          <tr><td>Start a video call</td><td><code>https://meet.example.com/room</code></td><td>Opens the meeting link</td></tr>
+          <tr><td>Plain text</td><td><code>Table 14</code></td><td>Displays the text</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Error correction in a QR code</h2>
+    <p>
+      A QR code stores its data with Reed–Solomon error correction, the same family of codes used on
+      compact discs and in deep-space telemetry. Redundant data spread through the symbol lets a decoder
+      rebuild the original when part of it is unreadable. You choose how much redundancy to use:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Level</th>
+            <th>Recoverable</th>
+            <th>Capacity cost</th>
+            <th>Use it for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>L</td><td>~7%</td><td>Smallest symbol</td><td>Clean screens, long payloads such as vCards</td></tr>
+          <tr><td>M</td><td>~15%</td><td>Slightly larger</td><td>Default for most printing</td></tr>
+          <tr><td>Q</td><td>~25%</td><td>Noticeably denser</td><td>Labels, packaging, anything that gets handled</td></tr>
+          <tr><td>H</td><td>~30%</td><td>Densest</td><td>Codes with a centre logo, industrial environments</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Redundancy costs space: at level H the same text needs a physically larger symbol than at level L.
+      A dense, high-correction code printed small can scan worse than a sparse, low-correction one,
+      because the camera cannot resolve the individual modules. Pick the lowest level that survives your
+      environment.
+    </p>
+
+    <h2>Adding a logo without breaking the code</h2>
+    <p>
+      A centre logo works because the decoder treats it as damage and repairs it. Four rules follow:
+    </p>
+    <ul>
+      <li>At level H, cover at most about 28% of the symbol width. More than that is more than the redundancy can rebuild.</li>
+      <li>Cover the centre, never a corner. The three large squares are finder patterns and the small one is an alignment pattern. If you cover one, the scanner cannot find the code.</li>
+      <li>Put a solid plate behind the logo. It gives the decoder a clean damaged region in place of a half-visible module grid.</li>
+      <li>Test on real phones, because decoders differ. Before a print run, scan the final artwork with an iPhone camera, an Android camera and one third-party scanner app.</li>
+    </ul>
+
+    <h2>Choosing a QR code size for print</h2>
+    <p>
+      As a rule of thumb, a QR code must be about one tenth of the distance it is scanned from. It also
+      needs a quiet zone of four modules of blank space on each side, or the decoder cannot tell where the
+      symbol ends.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Scanning distance</th>
+            <th>Minimum symbol size</th>
+            <th>Typical use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>10 cm</td><td>1 cm</td><td>Product label, ticket stub</td></tr>
+          <tr><td>30 cm</td><td>3 cm</td><td>Business card, menu, packaging</td></tr>
+          <tr><td>1 m</td><td>10 cm</td><td>Table tent, shop window, flyer</td></tr>
+          <tr><td>3 m</td><td>30 cm</td><td>Poster, exhibition stand</td></tr>
+          <tr><td>10 m</td><td>1 m</td><td>Billboard, building wrap</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Export the SVG when the code goes to print. It is a few vector paths, so the module edges stay sharp
+      at any size and do not get the soft grey halo of a bitmap scaled up in a layout program.
+    </p>
+
+    <h2>Colour, contrast and materials</h2>
+    <p>
+      Scanners convert the image to black and white before they decode it, so they read the luminance
+      difference and ignore hue. Pale yellow on white has plenty of colour contrast and almost no luminance
+      contrast, and it will not scan. Aim for a ratio of at least 4:1, with the dark modules darker than the
+      background. Inverted codes fail on many Android devices and on nearly all laser-based scanners.
+    </p>
+    <p>
+      The surface matters as much as the colour. Glossy laminates reflect the camera flash, curved bottles
+      distort the module grid, and matte dark paper reduces the contrast. On a difficult surface, raise the
+      error-correction level and print the code larger.
+    </p>
+  </Fragment>
+</ToolLayout>

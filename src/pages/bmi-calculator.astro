@@ -1,0 +1,168 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BmiCalculator from '@/components/tools/health/BmiCalculator.tsx'
+---
+
+<ToolLayout slug="bmi-calculator">
+  <BmiCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to calculate your BMI</h2>
+    <ol>
+      <li>Pick metric or imperial with the unit toggle. This device remembers your choice.</li>
+      <li>Enter your height. In imperial mode there are separate feet and inches boxes.</li>
+      <li>Enter your weight. The conversions show below the box, so you can check them.</li>
+      <li>
+        Read the gauge. The needle points to your score, the highlighted arc is your category, and the
+        healthy weight range for your exact height is next to it.
+      </li>
+    </ol>
+    <p>
+      The BMI calculator runs in JavaScript on this page, so the numbers you type stay in your browser.
+    </p>
+
+    <h2>The BMI formula</h2>
+    <p>
+      Body mass index is weight divided by height squared. In metric units, that is kilograms divided
+      by metres squared:
+    </p>
+    <p><strong>BMI = kg ÷ m²</strong></p>
+    <p>
+      In imperial units, the same relation needs a conversion factor of 703, because pounds and inches
+      are not SI units:
+    </p>
+    <p><strong>BMI = 703 × lb ÷ in²</strong></p>
+    <p>
+      An adult of 1.75 m and 72 kg has a BMI of 72 ÷ (1.75 × 1.75) = 72 ÷ 3.0625 = 23.5. In imperial, the
+      same person is 5 ft 9 in (69 in) and 158.7 lb: 703 × 158.7 ÷ 4,761 = 23.4. The small difference
+      comes from rounding.
+    </p>
+
+    <h2>BMI categories for adults</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">BMI range</th>
+            <th scope="col">What it generally indicates</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Underweight</td>
+            <td>Below 18.5</td>
+            <td>Higher risk of nutrient deficiency, reduced bone density and impaired immunity</td>
+          </tr>
+          <tr>
+            <td>Healthy weight</td>
+            <td>18.5–24.9</td>
+            <td>The band with the lowest all-cause mortality in large population studies</td>
+          </tr>
+          <tr>
+            <td>Overweight</td>
+            <td>25.0–29.9</td>
+            <td>Slightly raised cardiometabolic risk on average, but strongly confounded by muscle mass</td>
+          </tr>
+          <tr>
+            <td>Obesity class I</td>
+            <td>30.0–34.9</td>
+            <td>Clearly raised risk of type 2 diabetes, hypertension and joint problems</td>
+          </tr>
+          <tr>
+            <td>Obesity class II</td>
+            <td>35.0–39.9</td>
+            <td>Substantially raised risk; medical support usually improves outcomes</td>
+          </tr>
+          <tr>
+            <td>Obesity class III</td>
+            <td>40.0 and above</td>
+            <td>Highest statistical risk band, sometimes called severe obesity</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      These cut-offs come from the World Health Organization and apply to adults of any sex aged 20
+      and over. Several Asian countries use lower thresholds (23 for overweight and 27.5 for obesity),
+      because cardiometabolic risk rises at a lower BMI in those populations.
+    </p>
+
+    <h2>Healthy weight ranges by height</h2>
+    <p>
+      The range below is BMI 18.5 to 24.9 converted back into weight. It is wide: at 1.75 m, the bottom
+      and top of "healthy" are more than 20 kg apart.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Height</th>
+            <th scope="col">Healthy weight (metric)</th>
+            <th scope="col">Healthy weight (imperial)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1.55 m · 5 ft 1 in</td><td>44.4–59.8 kg</td><td>98–132 lb</td></tr>
+          <tr><td>1.60 m · 5 ft 3 in</td><td>47.4–63.7 kg</td><td>104–140 lb</td></tr>
+          <tr><td>1.65 m · 5 ft 5 in</td><td>50.4–67.8 kg</td><td>111–149 lb</td></tr>
+          <tr><td>1.70 m · 5 ft 7 in</td><td>53.5–72.0 kg</td><td>118–159 lb</td></tr>
+          <tr><td>1.75 m · 5 ft 9 in</td><td>56.7–76.3 kg</td><td>125–168 lb</td></tr>
+          <tr><td>1.80 m · 5 ft 11 in</td><td>59.9–80.7 kg</td><td>132–178 lb</td></tr>
+          <tr><td>1.85 m · 6 ft 1 in</td><td>63.3–85.2 kg</td><td>140–188 lb</td></tr>
+          <tr><td>1.90 m · 6 ft 3 in</td><td>66.8–89.9 kg</td><td>147–198 lb</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where BMI breaks down</h2>
+    <p>
+      Adolphe Quetelet devised BMI in the 1830s to describe populations, not individuals, and it has
+      only two inputs. It is cheap, reproducible and easy to compare across studies, but it cannot see
+      most of what matters clinically.
+    </p>
+    <ul>
+      <li>
+        Muscle reads as fat. Muscle is denser than adipose tissue, so trained athletes often fall in
+        the "overweight" band with single-digit body fat. On BMI alone, most professional rugby players
+        and sprinters are obese.
+      </li>
+      <li>
+        Fat distribution is invisible. Visceral fat around the organs has much more metabolic risk than
+        subcutaneous fat on the hips and thighs, but BMI cannot tell them apart. A waist measurement
+        can.
+      </li>
+      <li>
+        It is height-biased. For similar body shapes, weight scales closer to height cubed than height
+        squared, so BMI reads slightly high for tall people and low for short people. The Ponderal
+        index in the results uses height cubed and is more stable at the extremes.
+      </li>
+      <li>
+        Age and ethnicity change the meaning. Older adults have less muscle and more fat at the same
+        BMI, and health risk appears at different thresholds in different populations.
+      </li>
+      <li>
+        It is not valid for everyone. Children, pregnant people, and people with significant oedema or
+        an amputation need different tools.
+      </li>
+    </ul>
+
+    <h2>Better checks to run alongside BMI</h2>
+    <p>
+      If your BMI is near a boundary, two more numbers tell you much more than a second decimal place.
+    </p>
+    <ul>
+      <li>
+        Waist-to-height ratio: measure your waist at the navel and divide by your height in the same
+        units. Below 0.5 is the low-risk zone. It works across heights, sexes and ethnic groups better
+        than BMI.
+      </li>
+      <li>
+        Body fat percentage: a tape measure and the US Navy equation give a usable estimate in two
+        minutes, and it separates muscular people from heavy people.
+      </li>
+    </ul>
+    <p>
+      Both calculators are on this site and run on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

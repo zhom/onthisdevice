@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="cooking-converter">
+  <UnitConverter client:load dimension="cooking" from="cup-us" to="g" mode="flour" />
+  <Fragment slot="explainer">
+    <h2>How to convert a recipe measurement</h2>
+    <ol>
+      <li>Pick the ingredient first. Volume-to-volume conversions never change, but cups to grams depends on what is in the cup.</li>
+      <li>Type the quantity into either field. Fractions work: 3/4, 1 1/2 and the single characters ½, ¼ and ⅓, as recipes write them.</li>
+      <li>Choose the units. The list separates volume units from weight units, and labels the US, metric and Australian spoons separately.</li>
+    </ol>
+
+    <h2>Why a cup of flour is not a cup of sugar</h2>
+    <p>
+      A cup is a volume: 236.6 mL in the US, 250 mL in the UK and Australia. A gram is a weight. To
+      convert between them, you need the density of the ingredient, and kitchen ingredients vary very
+      much. A US cup holds 125 g of flour but 340 g of honey: almost three times as much in the same
+      space.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Ingredient</th><th>1 US cup</th><th>1 tbsp</th><th>1 tsp</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Water</td><td>237 g</td><td>14.8 g</td><td>4.9 g</td></tr>
+          <tr><td>Flour, all-purpose (spooned)</td><td>125 g</td><td>7.8 g</td><td>2.6 g</td></tr>
+          <tr><td>Bread flour</td><td>128 g</td><td>8.0 g</td><td>2.7 g</td></tr>
+          <tr><td>Sugar, granulated</td><td>200 g</td><td>12.5 g</td><td>4.2 g</td></tr>
+          <tr><td>Brown sugar, packed</td><td>220 g</td><td>13.8 g</td><td>4.6 g</td></tr>
+          <tr><td>Powdered sugar</td><td>120 g</td><td>7.5 g</td><td>2.5 g</td></tr>
+          <tr><td>Butter</td><td>227 g</td><td>14.2 g</td><td>4.7 g</td></tr>
+          <tr><td>Milk, whole</td><td>244 g</td><td>15.2 g</td><td>5.1 g</td></tr>
+          <tr><td>Vegetable oil</td><td>217 g</td><td>13.6 g</td><td>4.5 g</td></tr>
+          <tr><td>Honey</td><td>340 g</td><td>21.2 g</td><td>7.1 g</td></tr>
+          <tr><td>Rice, white uncooked</td><td>185 g</td><td>11.6 g</td><td>3.9 g</td></tr>
+          <tr><td>Rolled oats</td><td>90 g</td><td>5.6 g</td><td>1.9 g</td></tr>
+          <tr><td>Cocoa powder</td><td>85 g</td><td>5.3 g</td><td>1.8 g</td></tr>
+          <tr><td>Salt, fine table</td><td>288 g</td><td>18.0 g</td><td>6.0 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How accurate are these numbers?</h2>
+    <p>
+      Liquids are exact: water, milk and oil have stable densities, so a millilitre of water is a gram.
+      Powders are not exact, and baking references disagree by up to 15 % on flour. The cause is
+      packing. Flour spooned gently into a cup and levelled with a knife weighs about 125 g; the same
+      cup dipped into the bag and shaken holds 145 g or more. That is a sixth more flour in your cake.
+    </p>
+    <p>
+      This cooking converter uses the spoon-and-level figures that most modern recipe developers use. If
+      the recipe writer scooped, you may need a little more liquid. The real fix is a 10 gram scale,
+      which is why professional recipes use grams.
+    </p>
+
+    <h2>Spoon and cup sizes around the world</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Measure</th><th>US</th><th>UK / metric</th><th>Australia</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Teaspoon</td><td>4.93 mL</td><td>5 mL</td><td>5 mL</td></tr>
+          <tr><td>Tablespoon</td><td>14.79 mL</td><td>15 mL</td><td>20 mL</td></tr>
+          <tr><td>Cup</td><td>236.6 mL</td><td>250 mL</td><td>250 mL</td></tr>
+          <tr><td>Fluid ounce</td><td>29.57 mL</td><td>28.41 mL</td><td>28.41 mL</td></tr>
+          <tr><td>Pint</td><td>473 mL</td><td>568 mL</td><td>568 mL</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The Australian tablespoon causes the most errors: it holds four teaspoons, not three. In a recipe
+      with several tablespoons of a strong ingredient (baking powder, salt, spice), the wrong spoon can
+      ruin the dish, so the list shows it separately.
+    </p>
+
+    <h2>Butter, sticks and the American quarter-pound</h2>
+    <p>
+      US butter is sold in sticks of a quarter pound: 113 g, half a cup, 8 tablespoons, or 4 ounces. The
+      wrapper has tablespoon marks, so you can cut without measuring. In other countries butter comes in
+      200 g or 250 g blocks, and recipes give grams. "Stick" is a unit in the list, so you can convert an
+      American recipe directly.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Butter</th><th>Grams</th><th>Cups</th><th>Tablespoons</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 stick</td><td>113 g</td><td>1/2</td><td>8</td></tr>
+          <tr><td>2 sticks</td><td>227 g</td><td>1</td><td>16</td></tr>
+          <tr><td>4 sticks (1 lb)</td><td>454 g</td><td>2</td><td>32</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </Fragment>
+</ToolLayout>

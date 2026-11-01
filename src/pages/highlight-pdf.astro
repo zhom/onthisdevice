@@ -1,0 +1,110 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="highlight-pdf">
+  <PdfEditOverlayEditor client:load mode="highlight" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>PDF highlighting that behaves like a real marker</h2>
+      <p>
+        A semi-transparent rectangle over text gives a washed-out grey block. It lightens the black
+        letters as much as it tints the white paper, so the passage becomes harder to read.
+      </p>
+      <p>
+        Marker ink filters light. It darkens the paper and leaves black text black. That is multiply
+        blending, and this tool writes it into the PDF. Yellow over white paper gives yellow, and yellow
+        over black type gives black. The passage stays crisp.
+      </p>
+    </section>
+
+    <section>
+      <h2>Choosing a colour</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[600px]">
+          <thead>
+            <tr>
+              <th scope="col">Colour</th>
+              <th scope="col">On screen</th>
+              <th scope="col">Photocopied or printed mono</th>
+              <th scope="col">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Yellow</td>
+              <td>Bright, unmistakable</td>
+              <td>Very light grey. Text stays fully legible</td>
+              <td>Everything, unless you need a second colour</td>
+            </tr>
+            <tr>
+              <td>Green</td>
+              <td>Calm, reads as "approved"</td>
+              <td>Mid grey</td>
+              <td>A second category on a screen-only document</td>
+            </tr>
+            <tr>
+              <td>Blue</td>
+              <td>Cool, low contrast with blue links</td>
+              <td>Dark grey. Can hide small type</td>
+              <td>Screen reading only</td>
+            </tr>
+            <tr>
+              <td>Red</td>
+              <td>Alarming, hard to read over</td>
+              <td>Dark grey</td>
+              <td>Short flags, not passages</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Use about 40% opacity. Lower, it disappears when the page is printed. Higher, even multiply
+        blending starts to compete with the type.
+      </p>
+    </section>
+
+    <section>
+      <h2>Highlighting line by line</h2>
+      <p>
+        Drag one rectangle per line of text. It takes a few seconds longer than one big block, but the
+        highlight looks right: the last line of a paragraph is usually short, and a full-width block over
+        it highlights a lot of empty paper.
+      </p>
+      <p>
+        Cover from just below the baseline to just above the ascenders. A rectangle that goes into the
+        line above is the most common and most visible mistake. Zoom in to 150% or 200% to align it
+        easily.
+      </p>
+    </section>
+
+    <section>
+      <h2>Your text stays searchable</h2>
+      <p>
+        The highlight is a coloured rectangle on the page, so the text under it does not change. Ctrl+F
+        still finds it, a screen reader still reads it, <a href="/pdf-to-text">PDF to Text</a> still
+        extracts it, and the file size barely changes, because a highlight is a few bytes.
+      </p>
+      <p>
+        Tools that flatten the page to an image to "burn in" the highlight destroy the text layer.
+      </p>
+    </section>
+
+    <section>
+      <h2>Studying from a highlighted PDF</h2>
+      <p>
+        For revision, highlight sparingly. If half a page is highlighted, nothing stands out. Use at
+        most one highlight per paragraph, plus a margin note in the <strong>Text</strong> tool that says
+        why it matters. When you come back to the document, read the notes. The highlights show your eye
+        where to look.
+      </p>
+      <p>
+        To print the marked-up copy, check it in grayscale first with
+        <a href="/grayscale-pdf">PDF to Grayscale</a>. That shows how each colour prints on a mono
+        printer before you use paper.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

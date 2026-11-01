@@ -1,0 +1,90 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SplitPdfPagesInHalf from '@/components/tools/pdf/SplitPdfPagesInHalf.tsx'
+---
+
+<ToolLayout slug="split-pdf-pages-in-half">
+  <SplitPdfPagesInHalf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why split PDF pages in half</h2>
+      <p>
+        When you scan an open book on a flatbed scanner, each scan captures two printed pages. A two-up
+        conference handout has two slides on each sheet. In both cases the PDF has half the pages it should,
+        each twice as wide, and it is hard to read on a phone, an e-reader or a tablet in portrait.
+      </p>
+      <p>
+        Split each sheet down the middle, and a 180-page spread scan becomes a 360-page document that fits any
+        screen and prints one page to a sheet.
+      </p>
+    </section>
+
+    <section>
+      <h2>Finding the spine automatically</h2>
+      <p>
+        Press <strong>Find the spine</strong> and this tab renders the page in the preview at low resolution.
+        The tool counts the dark pixels in each pixel column, which gives an ink-density profile across the
+        width of the page. The gutter between two printed pages is the emptiest column near the middle, so
+        the cut goes at the lowest point of that profile inside the central third.
+      </p>
+      <p>
+        If the profile has no clear minimum, as with a full-bleed photo or a table across the spread, the
+        tool tells you, and you place the line by hand.
+      </p>
+    </section>
+
+    <section>
+      <h2>Gutter trim for a dark inner edge</h2>
+      <p>
+        A book pressed onto a scanner glass curves away near the spine. The curve shows as a grey-to-black
+        band a few millimetres wide down the inner edge of both halves. After splitting, the band is at the
+        edge of a page, where it is more visible.
+      </p>
+      <p>
+        Set <strong>Trim at the cut</strong> to 3–8 mm to remove that band from both halves. The trim is
+        symmetrical around the split line, so the two pages keep the same width. Start small: too much trim
+        cuts into the inner margin of the text.
+      </p>
+    </section>
+
+    <section>
+      <h2>Reading order</h2>
+      <p>
+        For Latin-script books the left half of a spread comes first. For Arabic, Hebrew, Japanese manga and
+        traditional Chinese, the right half comes first. If you switch the reading order, the tool writes the
+        two halves in the opposite sequence. The cut stays the same, so you can change this later without a
+        new cut.
+      </p>
+      <p>
+        The same setting works for a top-and-bottom split: you choose whether the top or the bottom half
+        comes first, which matters for two-up handouts printed in a column.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why the file does not double in size</h2>
+      <p>
+        The tool makes each half by embedding the source page with a clipping box, without re-rendering it.
+        Both halves point at the same scan image inside the PDF; only the clipping instructions are new. A
+        400 MB book scan becomes a document with twice the page count, about the same file size and exactly
+        the original resolution.
+      </p>
+      <p>
+        Pages with a rotation flag also work: the tool maps the cut you draw on screen back through the
+        rotation, and the halves come out the right way up.
+      </p>
+    </section>
+
+    <section>
+      <h2>Workflow for a whole book</h2>
+      <ol>
+        <li>Split the spreads here. Leave &ldquo;only split wide pages&rdquo; on so the cover stays whole.</li>
+        <li>Check the first and last spread, because scanners often shift alignment over a long run.</li>
+        <li>If some pages are upside down, fix them with <a href="/rotate-pdf">Rotate PDF</a>.</li>
+        <li>If the scan captured the scanner glass edges, trim the outer edges with <a href="/crop-pdf">Crop PDF</a>.</li>
+        <li>Make the file smaller for a reader with <a href="/compress-pdf">Compress PDF</a>.</li>
+      </ol>
+    </section>
+  </Fragment>
+</ToolLayout>

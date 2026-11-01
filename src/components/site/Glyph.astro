@@ -1,0 +1,47 @@
+---
+/**
+ * A category's pixel glyph (data in src/lib/glyphs.ts, motion in
+ * motion.css). It animates while it is on screen; `still` draws frame 0 only.
+ * `offset` (seconds) shifts the loop so glyphs in a list change one by one.
+ */
+import { GLYPH_SIZE, glyphCells } from '@/lib/glyphs'
+import { cn } from '@/lib/utils'
+
+interface Props {
+  id: string
+  class?: string
+  still?: boolean
+  offset?: number
+  label?: string
+}
+
+const { id, class: className, still = false, offset = 0, label } = Astro.props
+const cells = glyphCells(id)
+---
+
+<svg
+  viewBox={`0 0 ${GLYPH_SIZE} ${GLYPH_SIZE}`}
+  class={cn('glyph shrink-0 fill-current', className)}
+  data-glyph={still ? undefined : id}
+  style={offset ? `--t:${offset.toFixed(2)}s` : undefined}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+>
+  {
+    cells
+      .filter((c) => !still || c.mask & 1)
+      .map((c) => (
+        <rect
+          x={c.x + 0.09}
+          y={c.y + 0.09}
+          width="0.82"
+          height="0.82"
+          rx="0.1"
+          class={still || c.mask === 15 ? undefined : cn('g', `gm${c.mask}`, !(c.mask & 1) && 'o')}
+          style={still || c.mask === 15 ? undefined : `--x:${c.x}`}
+        />
+      ))
+  }
+</svg>

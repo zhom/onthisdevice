@@ -1,0 +1,149 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureToSheet from '@/components/tools/pdf-convert/PdfSecureToSheet.tsx'
+---
+
+<ToolLayout slug="pdf-to-excel">
+  <PdfSecureToSheet client:load format="xlsx" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How table detection works here</h2>
+      <p>
+        A PDF stores no table. What it stores is text fragments at coordinates, and a table is
+        simply the pattern where those fragments line up vertically. The extraction has three steps:
+      </p>
+      <ol>
+        <li>
+          Lines. Every glyph run on a page is grouped by its baseline, so text at
+          the same height becomes one row.
+        </li>
+        <li>
+          Cells. Within a row, a horizontal gap more than about four space-widths
+          wide is treated as a column separator rather than a word space. That single threshold is
+          what turns "Invoice 4021 Acme Ltd 1,240.00" into three cells.
+        </li>
+        <li>
+          Columns. The starting x position of every cell on the page goes into a
+          histogram. Positions within the snapping tolerance of each other collapse into one column,
+          and each cell is then assigned to the column it is nearest to. Columns that end up empty
+          in every row are dropped.
+        </li>
+      </ol>
+      <p>
+        This is deliberately geometry-only. It does not look for ruled lines, because a great many
+        real tables (bank statements, payroll runs, database report exports) have no ruling, and the
+        ones that do are already well aligned.
+      </p>
+    </section>
+
+    <section>
+      <h2>The snapping slider is the control that matters</h2>
+      <p>
+        Everything else is automatic; this one number is worth understanding. It is the tolerance,
+        in PostScript points (1/72 inch), for treating two cell start positions as the same column.
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Symptom</th>
+              <th scope="col">Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>One logical column appears as two or three</td>
+              <td>Raise the tolerance. The values do not start at identical x positions</td>
+            </tr>
+            <tr>
+              <td>Two columns are merging into one cell</td>
+              <td>Lower the tolerance</td>
+            </tr>
+            <tr>
+              <td>Right-aligned numbers scatter across columns</td>
+              <td>
+                Raise the tolerance. Right-aligned figures start at different x positions by
+                definition, which is the hardest case for a start-position histogram
+              </td>
+            </tr>
+            <tr>
+              <td>Everything lands in one column</td>
+              <td>
+                The page probably has no table. The gaps between fields are ordinary word spaces
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The preview re-extracts as soon as you release the slider, so tuning it is a two-second
+        loop.
+      </p>
+    </section>
+
+    <section>
+      <h2>One worksheet per page</h2>
+      <p>
+        Each PDF page becomes its own sheet, named "Page 1", "Page 2" and so on. That is the right
+        default for the most common source (a multi-page statement or report where each page has
+        its own header row), and it keeps the pages separate if the column layout changes partway
+        through the document.
+      </p>
+      <p>
+        To stack them into one continuous table, open the workbook and copy the sheets together, or
+        use <a href="/pdf-to-csv">PDF to CSV</a>, which writes every page into a single file with a
+        blank line between them.
+      </p>
+    </section>
+
+    <section>
+      <h2>Digitally generated PDFs only, and why</h2>
+      <p>
+        If a PDF was produced by scanning, its pages are photographs. There is no text to cluster,
+        no coordinates to histogram and nothing this tool can do. It will tell you that plainly
+        rather than returning an empty workbook.
+      </p>
+      <p>
+        Reading a scan requires OCR, and we do not ship it. The engines small enough to run in a
+        browser make character-level errors that are very bad in a spreadsheet. A misread digit in a
+        column of figures is worse than no figures, because it looks correct. If your
+        source is a scan, ask the issuer for the original export; banks, payroll systems and
+        accounting packages nearly always have one.
+      </p>
+    </section>
+
+    <section>
+      <h2>Check before you trust</h2>
+      <p>
+        Extraction from a document format that never intended to be extracted from is a heuristic,
+        not a guarantee. Before using the numbers for anything that matters:
+      </p>
+      <ul>
+        <li>Compare the row count in the preview against the source page.</li>
+        <li>Check the first and last row of each page, where the headers and totals are.</li>
+        <li>
+          Sum a column in Excel and compare it against the total printed in the PDF. If they match,
+          the extraction is almost certainly clean.
+        </li>
+        <li>
+          Watch for cells that ran together; they show as two values with a space between them.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>The confidentiality point</h2>
+      <p>
+        The documents people convert with this kind of tool are bank statements, payroll runs,
+        invoices, medical billing and internal reports. An upload puts a copy on infrastructure you do
+        not control, kept for as long as that service's policy says. That is a promise, not a fact.
+      </p>
+      <p>
+        Everything on this page runs in your browser: pdf.js reads the text layer, the clustering is
+        plain JavaScript, and the .xlsx is assembled and zipped in the same tab. Open the network
+        panel while you convert, or switch off Wi-Fi first. Nothing changes.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

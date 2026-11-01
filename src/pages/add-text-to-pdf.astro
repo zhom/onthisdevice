@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="add-text-to-pdf">
+  <PdfEditOverlayEditor client:load mode="text" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Typing onto a PDF that has no form fields</h2>
+      <p>
+        Many forms are pictures of paper: a scan, a fax, or an export from a design tool that had no
+        interactive fields. There is nothing to click into, so the usual advice is to print the form,
+        fill it by hand and scan it back. That takes a printer and gives a worse result.
+      </p>
+      <p>
+        With this tool, you click where a value goes, type it, position it, and download a PDF with
+        real, selectable text on the printed line.
+      </p>
+    </section>
+
+    <section>
+      <h2>Getting text onto the line, exactly</h2>
+      <ol>
+        <li>Zoom to 200% with the plus button so you can see the printed rule clearly.</li>
+        <li>Click just above the line, near where the first letter goes.</li>
+        <li>Type into the text box in the panel below. Press Enter for a second line.</li>
+        <li>
+          With the object focused, tap the arrow keys. Each press moves it one point (1/72 inch), and
+          Shift with an arrow moves ten. Two or three presses usually move text from "floating" to
+          "written on the line".
+        </li>
+        <li>Match the size to the surrounding print: 10 pt for most forms, 11–12 pt for large-print forms, 8–9 pt for dense tables.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Which font to pick</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[600px]">
+          <thead>
+            <tr>
+              <th scope="col">The form looks like</th>
+              <th scope="col">Choose</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Arial or Helvetica</td>
+              <td>Helvetica</td>
+              <td>Metrically near-identical to Arial; the default for government forms</td>
+            </tr>
+            <tr>
+              <td>Times New Roman or a book face</td>
+              <td>Times Roman</td>
+              <td>Same proportions, same look at small sizes</td>
+            </tr>
+            <tr>
+              <td>Typewritten or monospaced</td>
+              <td>Courier</td>
+              <td>Fixed pitch, lines up in boxed character grids</td>
+            </tr>
+            <tr>
+              <td>Handwritten original</td>
+              <td>Times Italic</td>
+              <td>Softer than a sans face; or draw it with <a href="/edit-pdf">Edit PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        All eight faces are among the fourteen fonts that each PDF reader must have built in. Nothing
+        is embedded, the file grows only by the bytes of your text, and it renders the same on all
+        devices.
+      </p>
+    </section>
+
+    <section>
+      <h2>The character-set limit, stated plainly</h2>
+      <p>
+        The built-in fonts cover WinAnsi, the Western European set: A–Z, digits, punctuation, and
+        accented Latin letters such as é, ñ, ü, ç and å. It does not include Polish ł, Turkish ğ, Greek,
+        Cyrillic, Hebrew, Arabic, Devanagari, Chinese, Japanese or Korean, or the curly quotes that
+        some word processors insert automatically.
+      </p>
+      <p>
+        The tool does not write a file in which those characters become blanks. It names the
+        unsupported character and stops. As a workaround, render the text as a transparent PNG in an
+        image editor and place it with <a href="/add-image-to-pdf">Add Image to PDF</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>Filling a boxed character grid</h2>
+      <p>
+        Forms with one small box per character (common on visa, bank and tax forms) need Courier and
+        some arithmetic. To measure the pitch of the boxes, place a character in the first and last box
+        of a run and read the coordinates in the panel. Divide the distance by the number of boxes to
+        get the spacing. Then place each character as its own text object at that spacing. This takes
+        time, but a scanner can read the result, which is often not true of handwriting.
+      </p>
+    </section>
+
+    <section>
+      <h2>If the PDF does have fields</h2>
+      <p>
+        Try <a href="/fill-pdf-form">Fill Out PDF Forms</a> first. It detects AcroForm fields, shows an
+        input on each one, and saves an editable or a flattened copy. This is faster and more reliable
+        than free text on a real form. Come back here when that tool reports no fields.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

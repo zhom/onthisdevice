@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-1mb">
+  <CompressImageToTarget client:load targetKb={1024} inputLabel="Drop the large photos that need to fit 1 MB" />
+
+  <Fragment slot="explainer">
+    <h2>A megabyte is enough for almost anything</h2>
+    <p>
+      At 1 MB you can usually keep all pixels of a 24-megapixel photograph at a quality setting in the
+      seventies or eighties. Use this target when the file must stay large: a CMS upload limit, a print
+      preview, a photo competition entry, a portfolio submission. For a web page, 200 KB is the better
+      target.
+    </p>
+
+    <h2>Bytes are not the same question as print quality</h2>
+    <p>
+      A common mistake: someone is told that a print needs “at least 1 MB” and thinks a bigger file
+      gives a better print. A printer needs pixels. The guide is 240–300 pixels per printed inch:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Print size</th><th>Pixels needed at 300 DPI</th><th>Megapixels</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>6 × 4 in</td><td>1800 × 1200</td><td>2.2 MP</td></tr>
+          <tr><td>A5</td><td>1748 × 2480</td><td>4.3 MP</td></tr>
+          <tr><td>A4</td><td>2480 × 3508</td><td>8.7 MP</td></tr>
+          <tr><td>A3</td><td>3508 × 4961</td><td>17.4 MP</td></tr>
+          <tr><td>Poster, viewed at a distance</td><td>150 DPI is fine</td><td>Quarter of the above</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Compression to 1 MB does not change these numbers, because the pixel count stays the same unless
+      the quality search fails. Compare the dimensions in the result card with the table, then set the
+      DPI tag with <a href="/change-image-dpi">Change Image DPI</a> so your printer uses the intended
+      physical size.
+    </p>
+
+    <h2>When the search resizes anyway</h2>
+    <p>
+      Very large or very detailed images (45-megapixel raw exports, panoramas, dense foliage) can be
+      over 1 MB even at low quality. The tool then starts its second pass, searches the pixel scale, and
+      reports the percentage it used. If resolution matters more than the byte target, turn the
+      fallback off. You then get the smallest full-resolution file and a note that the target was not
+      met.
+    </p>
+
+    <h2>Reading the working</h2>
+    <p>
+      Expand “Show the search” to see each encode: quality, scale and size, marked as fitting or too
+      large. For a 1 MB target on a typical photo, the first attempt at quality 92 usually fits. The
+      tool then stops and gives you that highest-quality file, with no further compression.
+    </p>
+
+    <h2>Format notes at this size</h2>
+    <ul>
+      <li>JPEG is the correct default for photographs that go anywhere other than your own website.</li>
+      <li>WebP saves about a third of the bytes, so at this size you keep a noticeably higher quality setting. All modern browsers read it; some desktop print software does not.</li>
+      <li>PNG is useful for screenshots, charts and scans of line art. These compress losslessly to well under a megabyte, and JPEG would add ringing around each edge.</li>
+    </ul>
+
+    <h2>MB, MiB and the safety margin</h2>
+    <p>
+      The tool counts 1 MB as 1024 KB (1,048,576 bytes) and aims 2% under it. The output thus satisfies
+      both the 1024-based definition of your operating system and the 1,000,000-byte definition of some
+      upload validators. The result always shows the exact byte count.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-500kb">500 KB</a> ·
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

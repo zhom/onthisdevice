@@ -1,0 +1,166 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TdeeCalculator from '@/components/tools/health/TdeeCalculator.tsx'
+---
+
+<ToolLayout slug="tdee-calculator">
+  <TdeeCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to work out your TDEE</h2>
+    <ol>
+      <li>Enter sex, height, weight and age so the calculator can estimate your basal rate.</li>
+      <li>
+        Choose an activity level. Read the descriptions, not only the labels: most errors come from this
+        step.
+      </li>
+      <li>
+        Optionally add your body fat percentage to change the BMR formula from Mifflin-St Jeor to
+        Katch-McArdle.
+      </li>
+      <li>
+        Read your maintenance number, then pick a target from the goal table to lose, keep or gain weight.
+      </li>
+    </ol>
+
+    <h2>What TDEE is made of</h2>
+    <p>
+      Total daily energy expenditure is all the energy your body uses in 24 hours. It has four parts:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Component</th>
+            <th scope="col">Share of TDEE</th>
+            <th scope="col">What it is</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Basal metabolic rate (BMR)</td>
+            <td>60–70%</td>
+            <td>Keeping you alive at complete rest</td>
+          </tr>
+          <tr>
+            <td>Thermic effect of food (TEF)</td>
+            <td>about 10%</td>
+            <td>Digesting and storing what you eat; protein costs the most, about 20–30% of its own calories</td>
+          </tr>
+          <tr>
+            <td>Non-exercise activity (NEAT)</td>
+            <td>15–30%</td>
+            <td>Walking, fidgeting, standing, housework, commuting; the most variable component</td>
+          </tr>
+          <tr>
+            <td>Exercise activity (EAT)</td>
+            <td>0–15%</td>
+            <td>Deliberate training; usually smaller than people expect</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      NEAT is the most variable part. Between two people of the same size it can differ by 2,000 kcal a day,
+      and it falls without notice when you diet: you sit more, take the lift and gesture less. This is a
+      large part of why weight loss slows faster than the arithmetic predicts.
+    </p>
+
+    <h2>TDEE activity multipliers</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Level</th>
+            <th scope="col">Multiplier</th>
+            <th scope="col">What it looks like</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Sedentary</td>
+            <td>1.2</td>
+            <td>Desk job, drive everywhere, under 5,000 steps, no training</td>
+          </tr>
+          <tr>
+            <td>Lightly active</td>
+            <td>1.375</td>
+            <td>Desk job plus 1–3 workouts a week, or 7,000–10,000 steps a day</td>
+          </tr>
+          <tr>
+            <td>Moderately active</td>
+            <td>1.55</td>
+            <td>3–5 real training sessions a week, or a job on your feet all day</td>
+          </tr>
+          <tr>
+            <td>Very active</td>
+            <td>1.725</td>
+            <td>Hard training 6–7 days a week, or manual work plus regular sessions</td>
+          </tr>
+          <tr>
+            <td>Extra active</td>
+            <td>1.9</td>
+            <td>Two sessions a day, or an athlete in a heavy block, or heavy labour plus training</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you are between two levels, pick the lower one. An overestimate of activity is the most common
+      reason a calculated deficit gives no weight loss.
+    </p>
+
+    <h2>Two mistakes that break the number</h2>
+    <p>
+      Counting exercise twice: the multiplier already includes your training. If you add the 600 kcal your
+      watch reported for a run on top of a 1.55 multiplier, you count the same run twice. Fitness trackers
+      also over-report exercise burn by 20 to 90 percent, depending on the device and the activity, so the
+      error is larger still.
+    </p>
+    <p>
+      Calories you did not log: cooking oil, the milk in three coffees, a few bites while you cook dinner. In
+      controlled studies, free-living adults under-report their intake by 20 percent on average, without
+      intent. If a deficit does not work, this is usually the reason, more often than metabolism.
+    </p>
+
+    <h2>How to find your real TDEE</h2>
+    <p>
+      An equation gives a first estimate. The empirical method takes three weeks and is much more accurate:
+    </p>
+    <ol>
+      <li>Weigh yourself every morning, after the bathroom, before eating. Log all seven days.</li>
+      <li>Log everything you eat, weighed where practical, without changing your habits.</li>
+      <li>
+        After 14 to 21 days, compare the first and last seven-day weight averages. If weight is flat,
+        your average intake is your TDEE.
+      </li>
+      <li>
+        If it changed, adjust: each kilogram of change per week equals about 1,100 kcal a day of surplus or
+        deficit (about 7,700 kcal per kilogram ÷ 7 days), or about 500 kcal a day for each pound per week.
+      </li>
+    </ol>
+    <p>
+      After that, recalculate when your weight changes by about 5 percent, because maintenance changes with
+      it.
+    </p>
+
+    <h2>Choosing a target from your TDEE</h2>
+    <ul>
+      <li>
+        Fat loss: 10 to 25 percent below maintenance. Twenty percent suits most people. A deficit larger
+        than 25 percent for long periods costs muscle, training quality and adherence.
+      </li>
+      <li>
+        Maintenance: useful between diet phases. Two to four weeks at maintenance after a long cut restores
+        appetite hormones and training performance.
+      </li>
+      <li>
+        Muscle gain: 5 to 15 percent above maintenance. Beginners can build muscle near maintenance.
+        Experienced lifters need the surplus but gain more slowly, so a larger surplus mostly adds fat.
+      </li>
+    </ul>
+    <p>
+      With a target, use the macro calculator to turn it into grams of protein, carbohydrate and fat, and the
+      calorie calculator to estimate how long a goal weight will take.
+    </p>
+  </Fragment>
+</ToolLayout>

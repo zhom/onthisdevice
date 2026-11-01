@@ -1,0 +1,100 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import QuadraticEquationSolver from '@/components/tools/math/QuadraticEquationSolver.tsx'
+---
+
+<ToolLayout slug="quadratic-equation-solver">
+  <QuadraticEquationSolver client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the quadratic equation solver</h2>
+    <p>
+      Rearrange your equation into the form ax² + bx + c = 0, then enter the three coefficients. If your
+      equation is 2x² + 5x = 12, first move everything to one side: 2x² + 5x − 12 = 0, so a = 2, b = 5
+      and c = −12. A missing term has a coefficient of zero: x² − 9 = 0 has b = 0.
+    </p>
+    <p>
+      The solver updates as you type. It shows the discriminant, both roots, the vertex, the axis of symmetry,
+      the factored form, the completed-square form and a graph drawn to scale.
+    </p>
+
+    <h2>The quadratic formula</h2>
+    <p>
+      x = ( −b ± √(b² − 4ac) ) ÷ 2a
+    </p>
+    <p>
+      The formula comes from completing the square on the general equation. For this reason the solver
+      shows the vertex form as one of its steps: both are the same algebra.
+    </p>
+
+    <h2>What the discriminant tells you</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Discriminant Δ = b² − 4ac</th>
+            <th scope="col">Roots</th>
+            <th scope="col">The graph</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Δ &gt; 0</td><td>Two distinct real roots</td><td>Crosses the x-axis twice</td></tr>
+          <tr><td>Δ = 0</td><td>One repeated real root</td><td>Touches the x-axis at the vertex</td></tr>
+          <tr><td>Δ &lt; 0</td><td>Two complex conjugate roots</td><td>Never meets the x-axis</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If Δ is a perfect square and a, b and c are integers, the roots are rational and the quadratic
+      factors over the integers. If Δ is positive but not a perfect square, the roots are irrational and
+      contain a surd.
+    </p>
+
+    <h2>Vertex, axis of symmetry and completing the square</h2>
+    <p>
+      Each parabola is symmetric about the vertical line x = −b ÷ 2a. That line passes through the vertex, so
+      h = −b ÷ 2a and k = f(h). Rewriting the equation as a(x − h)² + k is “completing the square”, and it
+      shows both values. When a is positive the parabola opens upward and k is the minimum value of the
+      expression; when a is negative it opens downward and k is the maximum. Quadratic optimisation problems,
+      such as maximum revenue or the maximum height of a projectile, are solved this way.
+    </p>
+
+    <h2>Complex roots</h2>
+    <p>
+      When Δ is negative, √Δ is an imaginary number, and the two solutions are p ± qi with
+      p = −b ÷ 2a and q = √(−Δ) ÷ 2|a|. For real coefficients they always come as a conjugate pair. Their sum
+      is still −b/a and their product is still c/a, both real, which is a good check. “No solution” is
+      correct only if the question is restricted to real numbers. The solver gives the complex pair and
+      says so.
+    </p>
+
+    <h2>Vieta’s formulas as a check</h2>
+    <p>
+      For any quadratic, the two roots satisfy r₁ + r₂ = −b ÷ a and r₁ × r₂ = c ÷ a. The results grid shows
+      both. If roots you found by factoring fail these two identities, the factorisation is wrong.
+    </p>
+
+    <h2>Worked examples</h2>
+    <ul>
+      <li>x² − 3x − 10 = 0: Δ = 9 + 40 = 49, a perfect square, so x = (3 ± 7) ÷ 2 = 5 or −2, and the equation factors as (x − 5)(x + 2).</li>
+      <li>x² + 4x + 4 = 0: Δ = 16 − 16 = 0, so there is one repeated root at x = −2 and the factored form is (x + 2)².</li>
+      <li>x² + x + 1 = 0: Δ = 1 − 4 = −3, so the roots are −0.5 ± 0.8660i and the parabola is entirely above the x-axis.</li>
+      <li>2x² − 4x − 6 = 0: you can divide by 2 first. x² − 2x − 3 = 0 gives x = 3 or −1, the same answer the solver reports.</li>
+    </ul>
+
+    <h2>When a = 0</h2>
+    <p>
+      With no x² term the equation is linear, and the quadratic formula divides by zero. The solver detects
+      this, solves bx + c = 0 and tells you why. If a and b are both zero, there is no solution or every
+      value of x is a solution, depending on c. The tool says which.
+    </p>
+
+    <h2>Accuracy</h2>
+    <p>
+      Roots are computed in double-precision floating point and shown to ten significant digits. When b² is
+      much larger than 4ac, the standard formula loses precision on one root through cancellation. At that
+      scale, compute one root with the formula and the other as c ÷ (a·r₁). The calculation runs in your
+      browser.
+    </p>
+  </Fragment>
+</ToolLayout>

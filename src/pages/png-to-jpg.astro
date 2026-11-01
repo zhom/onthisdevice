@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PngToJpg from '@/components/tools/image-convert/PngToJpg.tsx'
+---
+
+<ToolLayout slug="png-to-jpg">
+  <PngToJpg client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert PNG to JPG</h2>
+    <ol>
+      <li>Drop one or more PNG files onto the box above, or click it to browse. Whole folders are fine: the tool queues them and converts them one after another.</li>
+      <li>Pick a background colour. JPEG cannot store transparency, so every see-through pixel has to be painted with something. White suits most documents; black or a brand colour suits images destined for a dark page.</li>
+      <li>Set the quality slider. 85 is a safe default for photographs; drop to 70–75 when you need the smallest possible upload.</li>
+      <li>Check the before and after size next to each file, then save the JPG, or download the whole batch as one ZIP.</li>
+    </ol>
+    <p>
+      Everything runs in this tab. The PNG is decoded to raw pixels, composited over your chosen background,
+      and re-encoded with MozJPEG compiled to WebAssembly. No file is uploaded, so there is no queue, no size
+      cap imposed by a server and no copy of your image left behind on someone else's disk.
+    </p>
+
+    <h2>What actually changes when a PNG becomes a JPG</h2>
+    <p>
+      PNG and JPEG solve different problems. PNG is lossless: it stores every pixel exactly, keeps a full alpha
+      channel, and compresses by finding repetition, which works very well on flat colour and badly on
+      photographs. JPEG is lossy: it converts the image to a frequency representation and discards the
+      high-frequency detail your eye is least sensitive to, which works brilliantly on photographs and badly on
+      text and hard edges.
+    </p>
+    <p>Three concrete consequences of the conversion:</p>
+    <ul>
+      <li>Transparency disappears. There is no alpha channel in a baseline JPEG. Transparent pixels become the background colour you picked, permanently.</li>
+      <li>Sharp edges soften. Around black-on-white text and thin lines you will see faint halos, called ringing. This is inherent to the codec, not to the encoder used here.</li>
+      <li>Metadata is dropped. The output is rebuilt from pixels, so EXIF, XMP and IPTC blocks, including GPS coordinates and camera serial numbers, are not kept.</li>
+    </ul>
+
+    <h2>Choosing a quality value</h2>
+    <p>
+      Indicative results for a 1920 × 1080 photograph that starts as a 3.2 MB PNG. Your own numbers will differ
+      with image content (noise and fine texture cost many more bytes than smooth sky), but the ranking holds.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Quality</th>
+            <th align="left">Typical size</th>
+            <th align="left">What you would notice</th>
+            <th align="left">Good for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>95</td><td>~900 KB</td><td>Nothing, even when pixel-peeping</td><td>Archival, print, further editing</td></tr>
+          <tr><td>85</td><td>~380 KB</td><td>Nothing at normal viewing size</td><td>The default for almost everything</td></tr>
+          <tr><td>75</td><td>~230 KB</td><td>Slight softening in fine texture</td><td>Web pages, email attachments</td></tr>
+          <tr><td>60</td><td>~150 KB</td><td>Visible blocking in flat areas</td><td>Thumbnails, previews</td></tr>
+          <tr><td>40</td><td>~95 KB</td><td>Obvious artefacts</td><td>Placeholder images only</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When you should keep the PNG</h2>
+    <ul>
+      <li>Screenshots and UI captures. They are mostly flat colour and text, which PNG compresses better <em>and</em> reproduces exactly. A JPG screenshot is often larger and always uglier.</li>
+      <li>Logos, icons and line art. Same reason, plus you usually need the transparency.</li>
+      <li>Anything you will edit again. Each JPEG save re-quantises the image; repeated cycles compound the damage.</li>
+      <li>Images with soft shadows over varied backgrounds. Flattening onto a single colour will show a visible rectangle wherever the page background differs.</li>
+    </ul>
+    <p>
+      If your goal is a smaller file rather than JPEG specifically, <a href="/png-to-webp">PNG to WebP</a> is
+      almost always the better trade: it keeps transparency, keeps edges sharp, and still beats JPEG on size.
+      To go from PNG to any other format, or to convert a mixed set of files at once, use the universal
+      <a href="/image-converter">image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatReference from '@/components/tools/dev/DevFormatReference.tsx'
+---
+
+<ToolLayout slug="html-entity-reference">
+  <DevFormatReference client:load dataset="entities" />
+  <Fragment slot="explainer">
+    <h2>Three ways to write the same character</h2>
+    <p>
+      Each HTML entity has up to three forms, and all of them give the same character in the rendered
+      page.
+    </p>
+    <table>
+      <thead><tr><th>Form</th><th>Example</th><th>When to prefer it</th></tr></thead>
+      <tbody>
+        <tr><td>Named</td><td><code>&amp;mdash;</code></td><td>HTML, where readability in the source matters</td></tr>
+        <tr><td>Decimal</td><td><code>&amp;#8212;</code></td><td>XML, and anywhere the name might not be defined</td></tr>
+        <tr><td>Hexadecimal</td><td><code>&amp;#x2014;</code></td><td>When cross-checking against a Unicode chart, since U+2014 is the same number</td></tr>
+      </tbody>
+    </table>
+    <p>
+      HTML5 defines about 2,000 named entities. XML defines exactly five. So markup copied from an HTML
+      context can break an XML parser. See <a href="/xml-escape">XML escape</a>.
+    </p>
+
+    <h2>What actually has to be escaped</h2>
+    <p>
+      Much less than most people escape. In a UTF-8 HTML document:
+    </p>
+    <ul>
+      <li>In text content, escape only <code>&amp;</code> and <code>&lt;</code>.</li>
+      <li>In an attribute value, escape those two plus the quote character that delimits the attribute.</li>
+      <li>Escape nothing else. Type é, &mdash;, © and 你好 directly.</li>
+    </ul>
+    <p>
+      To escape each accented character to a numeric reference is a habit from the time of ambiguous
+      encodings. It triples the byte count, makes the source hard to read, and breaks copy and paste from
+      the source file. Declare <code>&lt;meta charset="utf-8"&gt;</code> and type the characters.
+    </p>
+
+    <h2>The invisible ones</h2>
+    <table>
+      <thead><tr><th>Entity</th><th>What it does</th><th>Where to use it</th></tr></thead>
+      <tbody>
+        <tr><td><code>&amp;nbsp;</code></td><td>A space that will not break</td><td>&ldquo;10&nbsp;kg&rdquo;, &ldquo;Figure&nbsp;4&rdquo;, preventing a lone short word at the end of a heading</td></tr>
+        <tr><td><code>&amp;thinsp;</code></td><td>A narrow space</td><td>Before French punctuation, and inside large numbers</td></tr>
+        <tr><td><code>&amp;zwnj;</code></td><td>Prevents a ligature</td><td>Persian and Arabic typography; separating &ldquo;fi&rdquo; where a ligature is wrong</td></tr>
+        <tr><td><code>&amp;zwj;</code></td><td>Forces a join</td><td>Joins emoji sequences. The family emoji is built this way</td></tr>
+        <tr><td><code>&amp;shy;</code></td><td>A hyphenation point</td><td>Only renders as a hyphen if the line actually breaks there</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Two warnings about <code>&amp;nbsp;</code>. It is not a normal space, so a string comparison, or a
+      regex that looks for <code>\s</code> in some engines, does not match it. This often causes
+      &ldquo;why does this lookup fail&rdquo; bugs in content pasted from Word. And a run of them for
+      indentation is a layout hack. Use CSS padding or margin.
+    </p>
+
+    <h2>Dashes and quotes</h2>
+    <p>
+      The four horizontal lines are different characters with different jobs. The correct one is most of
+      the difference between typeset and typed text.
+    </p>
+    <ul>
+      <li>The hyphen <code>-</code> joins compound words: well-known, twenty-one.</li>
+      <li>The en dash <code>&amp;ndash;</code> marks ranges and relationships: 1914&ndash;1918, the London&ndash;Paris route.</li>
+      <li>The em dash <code>&amp;mdash;</code> marks a parenthetical break in a sentence.</li>
+      <li>The minus <code>&amp;minus;</code> is for arithmetic. It is wider than a hyphen and aligned with the digits.</li>
+    </ul>
+    <p>
+      For quotes, the apostrophe in prose is <code>&amp;rsquo;</code> (&rsquo;), not the vertical
+      typewriter mark. Keep the vertical form for code, where it is a delimiter.
+    </p>
+
+    <h2>Why an entity sometimes shows as literal text</h2>
+    <ol>
+      <li>Double escaping: the ampersand was escaped upstream, so the browser receives <code>&amp;amp;nbsp;</code> and correctly shows <code>&amp;nbsp;</code> as text.</li>
+      <li>A missing semicolon: HTML5 accepts it for a few legacy entities only.</li>
+      <li>The wrong context: entities work in HTML text and attribute values. They do not work in a <code>&lt;textarea&gt;</code> value set from JavaScript, in a JSON string, in a CSS <code>content</code> property (which uses <code>\2014</code>), or in an XML document where the name is not declared.</li>
+      <li>A framework escaped it: React, Vue and most template engines escape text by default, so an entity in a JSX string literal shows as written. Use the character, or a JavaScript escape such as <code>\u2014</code>.</li>
+    </ol>
+  </Fragment>
+</ToolLayout>

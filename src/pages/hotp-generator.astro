@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeTotp from '@/components/tools/security/DevEncodeTotp.tsx'
+---
+
+<ToolLayout slug="hotp-generator">
+  <DevEncodeTotp client:load mode="hotp" />
+  <Fragment slot="explainer">
+    <h2>Counter-based, not time-based</h2>
+    <p>
+      HOTP is the original one-time-password algorithm, standardised as RFC 4226 in 2005. It is the same
+      as TOTP with one difference: the counter in the HMAC is a number that goes up when a code is
+      generated, and does not come from the clock.
+    </p>
+    <p>
+      So an HOTP generator has no clock to keep in sync and no expiry, but it has its own failure mode.
+    </p>
+
+    <h2>HOTP versus TOTP</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>HOTP (RFC 4226)</th><th>TOTP (RFC 6238)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Counter source</td><td>An event counter</td><td>Unix time ÷ step</td></tr>
+          <tr><td>Code lifetime</td><td>Until it is used</td><td>Typically 30 seconds</td></tr>
+          <tr><td>Needs a clock</td><td>No</td><td>Yes, on both sides</td></tr>
+          <tr><td>Main failure mode</td><td>Counter drift</td><td>Clock skew</td></tr>
+          <tr><td>Server state</td><td>Must persist the counter</td><td>Stateless beyond the secret</td></tr>
+          <tr><td>Typical use</td><td>Hardware tokens with no battery, OATH keys</td><td>Authenticator apps, nearly all web 2FA</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Counter drift, and how servers cope</h2>
+    <p>
+      Each time a user presses the button on a token and does not submit the code, the token's counter
+      moves forward and the server's does not. After enough idle presses the two are far apart, and the
+      server rejects all codes.
+    </p>
+    <p>
+      So servers accept a look-ahead window, usually the next 3 to 10 counters. When a submitted code
+      matches one of them, the server resynchronises and sets its counter past the match. The verifier
+      above does this: it checks ten steps ahead and shows the value to set on the server. A server
+      must never accept a counter behind its own, because then an attacker can replay a captured code.
+    </p>
+
+    <h2>Which is more secure?</h2>
+    <p>
+      Each has a weakness. An HOTP code stays valid until used, so a code seen over the shoulder or
+      caught by phishing keeps working. A TOTP code expires in under a minute, but TOTP fails completely
+      if a device's clock is wrong, and many 2FA support tickets are about that. Most services choose
+      TOTP, because clock sync is cheap on a phone and the short window helps.
+    </p>
+
+    <h2>Where you still meet HOTP</h2>
+    <ul>
+      <li>OATH-HOTP hardware tokens: a keyfob with one button and no clock.</li>
+      <li>YubiKey OATH-HOTP slots, still used in enterprise deployments.</li>
+      <li>Bank card readers that generate a code per transaction.</li>
+      <li>Paper backup lists, where each code is the next counter value in sequence.</li>
+    </ul>
+
+    <h2>The URI for enrollment</h2>
+    <p>
+      An HOTP provisioning URI carries <code>counter</code> in place of <code>period</code>:
+    </p>
+    <pre><code>otpauth://hotp/Example:alice?secret=JBSWY3DPEHPK3PXP&amp;counter=0&amp;digits=6</code></pre>
+    <p>
+      Fewer authenticator apps support the <code>hotp</code> type than <code>totp</code>. Some import it
+      as TOTP without a warning, and then their codes never match. Test the first code after you enrol.
+    </p>
+
+    <h2>Computed here, stored nowhere</h2>
+    <p>
+      The HMAC runs in WebCrypto in this tab, and the page does not save the secret or the counter. When
+      you refresh the page, both are gone. Use this to test a token, find where a counter ended up, or
+      validate an integration. Do not keep a credential here.
+    </p>
+  </Fragment>
+</ToolLayout>

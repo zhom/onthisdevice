@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeCycleCalculator from '@/components/tools/health/UnitsLifeCycleCalculator.tsx'
+---
+
+<ToolLayout slug="conception-date-calculator">
+  <UnitsLifeCycleCalculator client:load mode="conception" />
+  <Fragment slot="explainer">
+    <h2>Two ways round the same arithmetic</h2>
+    <p>
+      Pregnancy is dated from the first day of the last menstrual period (LMP), not from conception.
+      People can usually remember the LMP but not the day of ovulation. As a result, the "weeks
+      pregnant" figure includes about two weeks before conception.
+    </p>
+    <p>The calculation uses two numbers:</p>
+    <ul>
+      <li>280 days from the first day of the last period to the due date (Naegele&apos;s rule, 40 weeks).</li>
+      <li>266 days from ovulation to the due date: 280 minus the usual 14-day gap.</li>
+    </ul>
+    <p>
+      From a due date, conception was about 266 days earlier. From a period, conception was about 14
+      days later, adjusted for your cycle and luteal phase, which you can set in this tool.
+    </p>
+
+    <h2>Conception is a window, not a day</h2>
+    <p>
+      Sperm survive in fertile cervical mucus for up to five days. Fertilisation happens at ovulation,
+      but the intercourse that caused it can be at any time in the five days before. For this reason,
+      the conception date calculator gives a six-day span, not a single date. This is the most
+      important limit of the result.
+    </p>
+    <p>
+      Ovulation timing also varies. Even in regular cycles it moves by several days from month to
+      month, and illness, travel or stress in the first half of the cycle can delay it. A conception
+      date calculated from a due date includes all of that uncertainty.
+    </p>
+
+    <h2>Which due date to start from</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Source of due date</th><th scope="col">Typical accuracy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>First-trimester dating ultrasound (8&ndash;13 weeks)</td><td>About &plusmn;5 days; the clinical standard</td></tr>
+        <tr><td>Second-trimester ultrasound</td><td>About &plusmn;7&ndash;10 days</td></tr>
+        <tr><td>Third-trimester ultrasound</td><td>&plusmn;2&ndash;3 weeks; poor for dating</td></tr>
+        <tr><td>Last menstrual period, regular cycles</td><td>Good, if the LMP date is reliable</td></tr>
+        <tr><td>Last menstrual period, irregular cycles</td><td>Poor; a scan usually overrides it</td></tr>
+        <tr><td>IVF transfer</td><td>Almost exact: the date is known</td></tr>
+      </tbody>
+    </table>
+    <p>
+      If you have a due date from a scan, use it. It comes from the size of the fetus, not from a
+      remembered date, and the maternity record uses it.
+    </p>
+
+    <h2>What this cannot tell you</h2>
+    <p>
+      It cannot establish paternity, and you must not use it for that. The window is six days wide, and
+      the uncertainty of the due date adds five days or more in each direction, even from a good early
+      scan. Only a DNA test can answer a paternity question reliably.
+    </p>
+    <p>
+      It also cannot tell you the sex, the exact gestational age, or if a pregnancy is progressing
+      normally. It is date arithmetic with the working shown.
+    </p>
+
+    <h2>Only 4% of babies arrive on the due date</h2>
+    <p>
+      A due date is the midpoint of a distribution, not an appointment. About 4% of births happen on the
+      estimated date; about half happen within a week of it, and most happen between 37 and 42 weeks.
+      For this reason, some maternity services now give a due week.
+    </p>
+
+    <h2>Nothing entered here is transmitted</h2>
+    <p>
+      The calculation is JavaScript in your browser. There is no backend, no cookies and no analytics,
+      and local saving is off unless you turn it on. Open your network tab while you use the page: there
+      are no requests.
+    </p>
+  </Fragment>
+</ToolLayout>

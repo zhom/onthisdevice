@@ -1,0 +1,134 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-100kb">
+  <PdfSecureCompressToSize client:load targetBytes={102400} />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Where the 100 KB rule comes from</h2>
+      <p>
+        The 100 KB limit has nothing to do with legibility. It is a default from government and
+        university upload software of the time when a scanned document was stored as a BLOB in a
+        database column, and it stayed after that reason disappeared. You see it on visa applications,
+        scholarship portals, exam registration systems, tender submissions and public-sector
+        recruitment sites.
+      </p>
+      <p>
+        The limit is arbitrary, so the only useful question is how to use 102,400 bytes as well as
+        possible.
+      </p>
+    </section>
+
+    <section>
+      <h2>What 100 KB buys you, page by page</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Pages</th>
+              <th scope="col">Bytes per page</th>
+              <th scope="col">Realistic outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tabular-nums">1</td>
+              <td class="tabular-nums">~100,000</td>
+              <td>Good. A colour ID scan stays clearly readable at about 120–150 DPI.</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">2</td>
+              <td class="tabular-nums">~50,000</td>
+              <td>Fine for text. Photographs start to soften.</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">4</td>
+              <td class="tabular-nums">~25,000</td>
+              <td>Body text still legible; small print and signatures blur.</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">10</td>
+              <td class="tabular-nums">~10,000</td>
+              <td>Visibly degraded. Consider submitting fewer pages.</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">25+</td>
+              <td class="tabular-nums">~4,000</td>
+              <td>
+                Below the useful minimum: the file structure alone uses a large share of the budget.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The tool moves unused budget forward. A page that is mostly white space uses much less than its
+        share, and the remainder goes to the next page. For this reason, a covering letter followed by a
+        dense scan often looks better than the arithmetic above suggests.
+      </p>
+    </section>
+
+    <section>
+      <h2>Getting a better 100 KB</h2>
+      <ol>
+        <li>
+          Submit only the pages that were requested. This helps the most: two pages at 100 KB look
+          twice as good as four. Use <a href="/extract-pdf-pages">Extract PDF pages</a> first.
+        </li>
+        <li>
+          Turn on grayscale if the document has no meaningful colour. A black-ink scan photographed in
+          colour has a full chroma channel that it does not need; dropping it usually frees 10 to 25 per
+          cent.
+        </li>
+        <li>
+          Crop the margins. Phone scans often include the desk, a hand and shadow. Fewer pixels of noise
+          leave more bytes for the text.
+        </li>
+        <li>
+          Keep the resolution on automatic unless the result is unreadable. 200 DPI at a 100 KB target
+          pushes the JPEG quality down until the page looks worse than at 110 DPI.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Reading the per-page table</h2>
+      <p>
+        Each run shows the JPEG quality and scale factor for each page. Use them to judge the result:
+      </p>
+      <ul>
+        <li>
+          Quality 70 and above: looks the same as the original at normal zoom.
+        </li>
+        <li>
+          Quality 45–70: fine on screen, slight softening around small text when printed.
+        </li>
+        <li>
+          Quality 20–45: visible blocking in flat areas. Acceptable for a form, not for text that must
+          be read carefully.
+        </li>
+        <li>
+          Scale below 100%: that page did not fit even at the lowest quality, so its resolution was also
+          reduced. Check it before you submit.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Why the iteration is the whole point</h2>
+      <p>
+        An exact byte target needs a search. Each page is rendered once and then encoded up to nine
+        times at different quality settings, until the tool finds the largest one that fits. On your
+        laptop that takes a few hundred milliseconds. On a server, it is nine billed encodes per page
+        per attempt, so upload-based compressors offer "low, medium, high" and let you guess.
+      </p>
+      <p>
+        Retries are also free. If you do not like the result, change one setting and run it again, as
+        often as you like. Nothing counts your attempts.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

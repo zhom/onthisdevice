@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TrimAudio from '@/components/tools/media/TrimAudio.tsx'
+---
+
+<ToolLayout slug="trim-audio">
+  <TrimAudio client:load />
+  <Fragment slot="explainer">
+    <h2>How to trim an audio file</h2>
+    <ol>
+      <li>Drop in an MP3, WAV, M4A, FLAC, OGG or Opus file. It loads into a player at once.</li>
+      <li>Drag the two handles to the section you want to keep, or play the track and press <strong>Set here</strong> to use the playhead position.</li>
+      <li>Type exact timecodes such as <code>0:45</code>, <code>1:23.75</code> or <code>1:02:30</code> for precision to the hundredth of a second.</li>
+      <li>Keep <strong>Lossless</strong> mode unless you want a fade or a different output format.</li>
+      <li>Press <strong>Trim audio</strong>, check the preview, and download.</li>
+    </ol>
+
+    <h2>Lossless audio trimming and its limits</h2>
+    <p>
+      In copy mode the encoded audio passes through unchanged, without decoding or re-encoding, so there is no
+      generation loss. Compressed audio is stored in frames, so a cut lands on the nearest frame boundary, not
+      on the exact sample.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Frame length</th>
+            <th>Worst-case cut error</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MP3 at 44.1 kHz</td>
+            <td>1152 samples</td>
+            <td>≈ 26 ms</td>
+          </tr>
+          <tr>
+            <td>AAC (M4A)</td>
+            <td>1024 samples</td>
+            <td>≈ 23 ms</td>
+          </tr>
+          <tr>
+            <td>Opus</td>
+            <td>20 ms default</td>
+            <td>≈ 20 ms</td>
+          </tr>
+          <tr>
+            <td>WAV / FLAC</td>
+            <td>Sample accurate</td>
+            <td>None</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      About 20 milliseconds is a fiftieth of a second, which you cannot hear in speech or music. It matters only
+      when you cut to a beat grid; then re-encode mode gives a sample-exact edit.
+    </p>
+
+    <h2>Fades</h2>
+    <p>
+      A fade changes the samples, so a stream copy cannot do it. When you set a fade length, the audio trimmer
+      changes to re-encoding and tells you. A 0.5-1 second fade in and out removes the click of a cut in the
+      middle of a waveform. Add one to almost any clip from the middle of a recording.
+    </p>
+
+    <h2>Making a ringtone or an alert sound</h2>
+    <ol>
+      <li>Trim the section you want. 20-30 seconds is the usual maximum for a ringtone.</li>
+      <li>Add a short fade out so it does not stop abruptly if it plays to the end.</li>
+      <li>Convert to the format your phone needs: Android takes MP3, and iPhone needs M4A (an M4R is an AAC file with a different extension).</li>
+      <li>Copy it to the device. The original recording stays on your computer.</li>
+    </ol>
+
+    <h2>Why there is no waveform</h2>
+    <p>
+      A waveform needs the whole file decoded to PCM first. For a two-hour recording that means a long wait and
+      much memory, and on a phone it may not finish. This tool uses the browser's own player for instant
+      scrubbing, and the "Set here" buttons copy the playhead into the start or end field to the hundredth of a
+      second.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JwtDecoder from '@/components/tools/dev/JwtDecoder.tsx'
+---
+
+<ToolLayout slug="jwt-decoder">
+  <JwtDecoder client:load />
+  <Fragment slot="explainer">
+    <h2>How to decode a JWT</h2>
+    <ol>
+      <li>Paste the token. The tool removes a <code>Bearer </code> prefix automatically.</li>
+      <li>The JWT decoder decodes the header and payload from Base64url and shows them as formatted JSON.</li>
+      <li>The claims table explains each registered claim and converts <code>exp</code>, <code>iat</code> and <code>nbf</code> into local times, with the distance from now.</li>
+      <li>If the token uses HS256, HS384 or HS512, paste the shared secret and press <strong>Verify</strong> to check the signature with WebCrypto.</li>
+    </ol>
+
+    <h2>Why decoding a token here is safe</h2>
+    <p>
+      A server-rendered JWT debugger receives the token on its infrastructure (TLS terminators, load
+      balancer access logs, error trackers and other systems in the request path), even if it promises not
+      to log it. To paste a production access token into one is a credential disclosure.
+    </p>
+    <p>
+      This page is a static file, and its JavaScript has no API and no fetch call. Your browser parses the
+      token and verifies the signature with its WebCrypto implementation, and both are gone when you close
+      the tab. To confirm this, disconnect from the network: the page still works.
+    </p>
+
+    <h2>The three parts of a JWT</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Part</th><th>Contents</th><th>Protected?</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Header</td><td>The signing algorithm (<code>alg</code>), type (<code>typ</code>) and often a key id (<code>kid</code>)</td><td>Covered by the signature, but readable by anyone</td></tr>
+        <tr><td>Payload</td><td>The claims: who the token is about, who issued it, when it expires</td><td>Covered by the signature, but readable by anyone</td></tr>
+        <tr><td>Signature</td><td>An HMAC or a digital signature over <code>header.payload</code></td><td>The only part that proves anything</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      The three parts are joined with dots and encoded with Base64url, which is not encryption. Never put
+      data in a JWT payload that the holder of the token must not read.
+    </p>
+
+    <h2>Registered claims worth knowing</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Claim</th><th>Name</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>iss</code></td><td>Issuer</td><td>Who minted the token. Verifiers should check this matches an expected value.</td></tr>
+        <tr><td><code>sub</code></td><td>Subject</td><td>The principal, usually a stable user identifier.</td></tr>
+        <tr><td><code>aud</code></td><td>Audience</td><td>Who the token is for. A service must reject tokens issued for a different audience.</td></tr>
+        <tr><td><code>exp</code></td><td>Expiration</td><td>Seconds since 1970-01-01 UTC. Reject at or after this instant.</td></tr>
+        <tr><td><code>nbf</code></td><td>Not before</td><td>Reject before this instant.</td></tr>
+        <tr><td><code>iat</code></td><td>Issued at</td><td>When it was created. Use it to detect a stale session.</td></tr>
+        <tr><td><code>jti</code></td><td>JWT ID</td><td>A unique id, so a token can be blacklisted or replay-detected.</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Signature algorithms</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Family</th><th>Examples</th><th>Key</th><th>Verifiable here</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HMAC</td><td>HS256, HS384, HS512</td><td>One shared secret, held by both issuer and verifier</td><td>Yes</td></tr>
+        <tr><td>RSA</td><td>RS256, PS256</td><td>Private key signs, public key verifies</td><td>No. Needs the issuer public key</td></tr>
+        <tr><td>ECDSA</td><td>ES256, ES384</td><td>Private key signs, public key verifies</td><td>No. Needs the issuer public key</td></tr>
+        <tr><td>None</td><td><code>alg: none</code></td><td>No signature at all</td><td>Flagged as unsigned</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      A verifier that trusts the <code>alg</code> field from the token itself can be tricked into accepting
+      <code>alg: none</code>, or into verifying an RS256 token as HS256 using the public key as the HMAC
+      secret. Always set the expected algorithm in your verification code. Do not read it from the token.
+    </p>
+
+    <h2>Debugging an "expired" token</h2>
+    <p>
+      When a token looks valid but the server rejects it, check: is your device clock correct? Does the
+      <code>aud</code> claim match the service you call? Is the <code>iss</code> an issuer that service
+      trusts? Is the <code>kid</code> a key the service still has? Was the token revoked on the server? A
+      JWT cannot be un-issued, so revocation is always outside the token. The claims table on this page
+      answers the first four questions.
+    </p>
+  </Fragment>
+</ToolLayout>

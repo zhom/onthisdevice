@@ -1,0 +1,65 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="grams-to-ounces">
+  <UnitsLifePairConverter client:load spec="grams-to-ounces" />
+  <Fragment slot="explainer">
+    <h2>Which ounce?</h2>
+    <p>
+      Before you convert grams to ounces, decide which ounce you mean. There are three in common use,
+      and they differ a lot:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Ounce</th><th scope="col">In grams</th><th scope="col">Used for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Avoirdupois (weight)</td><td>28.349523125 g</td><td>Food, post, everything on this page</td></tr>
+        <tr><td>Troy</td><td>31.1034768 g</td><td>Gold, silver, platinum</td></tr>
+        <tr><td>US fluid ounce (volume)</td><td>29.5735 mL</td><td>Liquids in US recipes</td></tr>
+      </tbody>
+    </table>
+    <p>
+      A troy ounce is about 10% heavier than an avoirdupois ounce, so a "one ounce" gold coin weighs
+      31.1 g. A fluid ounce is a volume, not a weight. It equals 29.6 g only for something with the
+      density of water.
+    </p>
+
+    <h2>Divide by 28.349523125</h2>
+    <p>
+      That factor is exact: the avoirdupois pound is defined as 0.45359237 kg, and it has sixteen
+      ounces. So 100 g is 3.5274 oz, 250 g is 8.8185 oz, and 1 kg is 35.274 oz, which is 2 lb 3.27 oz in
+      the pounds-and-ounces readout.
+    </p>
+
+    <h2>The values that come up in a kitchen</h2>
+    <ul>
+      <li>113 g is one US stick of butter, 4 oz exactly (113.4 g).</li>
+      <li>225&ndash;227 g is half a pound, the size of a British butter half-block.</li>
+      <li>450&ndash;454 g is one pound. Recipes round it to 450 g.</li>
+      <li>28 g is one ounce, the standard portion size on nutrition labels for nuts and cheese.</li>
+      <li>340 g is 12 oz, a common US can and packet size.</li>
+    </ul>
+    <p>
+      British recipes published before about 1975 use ounces throughout. To use one, convert each
+      ingredient to grams once, write the converted list down, and cook from that list.
+    </p>
+
+    <h2>Postage boundaries</h2>
+    <p>
+      Postal rate bands are set in whole ounces in the US and in grams elsewhere, and the boundaries
+      do not line up. A 100 g letter is 3.53 oz, which falls in the 4 oz band. A 3 oz limit is 85.05 g.
+      A band boundary is a step change in price, so a converted rounded figure can put an item in the
+      next band on paper when the item is under. Weigh in the unit your carrier prices in.
+    </p>
+
+    <h2>Pounds and ounces, done properly</h2>
+    <p>
+      The composite readout splits a weight into whole pounds plus the remainder in ounces. It carries
+      correctly, so you never see "3 lb 16 oz". For example, 1,500 g is 52.91 oz, which is 3 lb 4.91 oz:
+      the format a parcel counter or a set of scales shows.
+    </p>
+  </Fragment>
+</ToolLayout>

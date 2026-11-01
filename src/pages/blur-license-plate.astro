@@ -1,0 +1,66 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BlurFaceInPhoto from '@/components/tools/image-edit/BlurFaceInPhoto.tsx'
+---
+
+<ToolLayout slug="blur-license-plate" width="wide">
+  <BlurFaceInPhoto client:load defaultEffect="block" defaultShape="rect" subject="plate" />
+
+  <Fragment slot="explainer">
+    <h2>How to hide a number plate</h2>
+    <ol>
+      <li>Drop the photos of the car on the page. Each photo is checked for plates, and every plate gets a box.</li>
+      <li>Check each photo. Click a box to keep it visible if it is not a plate. Drag on the photo to add a box the model missed.</li>
+      <li>Keep the solid fill. It is the safe choice for text such as a plate.</li>
+      <li>Download one photo, or all photos as one ZIP file. The GPS tag and the rest of the metadata are removed.</li>
+    </ol>
+
+    <h2>The plate model</h2>
+    <p>
+      The plates are found by an object detection model trained on licence plates (16 MB, MIT license). It runs in your
+      browser in a model runtime of 15 MB. Both files download once from this site and are kept in your browser, so the
+      tool works offline after the first use.
+    </p>
+    <p>
+      The model checks the whole photo, and large photos also in overlapping tiles, so plates on cars further away are
+      found too. In our tests with European, UK, US and Georgian plates it found about 4 of 5 plates. It sometimes marks
+      a sticker or a dealer badge. A photo takes one to three seconds on a laptop.
+    </p>
+
+    <h2>Why a solid fill and not a blur</h2>
+    <p>
+      A plate has few characters from a known set, in a known font. Someone can render every possible plate, blur it the
+      same way and compare it with your photo. A solid fill leaves nothing to compare. Use blur for faces and a fill for
+      plates.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the developer tools of your browser (F12), select the Network tab and drop a photo. You see the model files
+      load from this site the first time and no request with your photo. You can also load the tool once, turn off your
+      network and use it.
+    </p>
+
+    <h2>What else can identify the car</h2>
+    <ul>
+      <li>The GPS tag in the file. It is removed when you save from this page.</li>
+      <li>A house number or a street sign. Add a box over it.</li>
+      <li>The VIN behind the windscreen, parking permits and dealer stickers. Add a box over them.</li>
+      <li>The plate in another photo of the same listing. Drop all photos together and check each one.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Small, dirty, bent or partly hidden plates can be missed. Look at every photo before you share it.</li>
+      <li>Plates on motorbikes and plates in unusual formats are found less often.</li>
+      <li>Plates seen at a steep angle get a box that is a little too large. That is safe, but you can redraw it.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/blur-face-in-photo">Blur Face in Photo</a> for people in the same photo,
+      <a href="/censor-image">Censor Image</a> for documents and screenshots, and
+      <a href="/compress-image-to-500kb">Compress to 500 KB</a> when a listing site limits the file size.
+    </p>
+  </Fragment>
+</ToolLayout>

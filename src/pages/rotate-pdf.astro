@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RotatePdf from '@/components/tools/pdf/RotatePdf.tsx'
+---
+
+<ToolLayout slug="rotate-pdf">
+  <RotatePdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to rotate PDF pages</h2>
+      <ol>
+        <li>Drop the PDF onto the box above and wait for the thumbnail grid to appear.</li>
+        <li>
+          Select nothing to rotate the whole document, or click the pages you want. The quick-select
+          buttons select all, odd, even or inverted, and the range box takes input such as <code class="font-mono">2, 5-9, 20-</code>.
+        </li>
+        <li>
+          Use <strong>90° left</strong>, <strong>90° right</strong> or <strong>180°</strong>. Each
+          thumbnail also has two rotate buttons for a single page.
+        </li>
+        <li>Check the previews, then press <strong>Apply and download</strong>.</li>
+      </ol>
+      <p>
+        The grid shows pages as a PDF reader shows them, so the saved file matches the preview.
+      </p>
+    </section>
+
+    <section>
+      <h2>PDF rotation is metadata</h2>
+      <p>
+        Each PDF page has a <code class="font-mono">/Rotate</code> entry of 0, 90, 180 or 270 degrees
+        that tells the viewer how to turn the page before it shows it. This tool changes only that
+        number. The file size stays the same, images are not re-compressed, and text stays selectable in
+        the new orientation.
+      </p>
+      <p>
+        A scanner can store a landscape page as a portrait image with a 90-degree flag. Some tools show
+        the raw image and others apply the flag. This tool renders pages the way a viewer does, so the
+        previews match any standards-compliant PDF reader.
+      </p>
+    </section>
+
+    <section>
+      <h2>PDF rotation reference</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[520px]">
+          <thead>
+            <tr>
+              <th scope="col">Problem</th>
+              <th scope="col">Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Text reads bottom-to-top</td>
+              <td>Rotate 90° right</td>
+            </tr>
+            <tr>
+              <td>Text reads top-to-bottom</td>
+              <td>Rotate 90° left</td>
+            </tr>
+            <tr>
+              <td>Page is upside down</td>
+              <td>Rotate 180°</td>
+            </tr>
+            <tr>
+              <td>Only the backs of a duplex scan are upside down</td>
+              <td>Select <strong>Even</strong>, then rotate 180°</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Why rotating in a viewer is not enough</h2>
+      <p>
+        Most PDF readers have a rotate button in the toolbar, but it changes only the current view. When
+        you close the file, the sideways page is back. Some readers save the rotation only in a paid
+        version. This tool writes the rotation into the file, so the page prints the right way round and
+        looks correct for each person you send it to.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

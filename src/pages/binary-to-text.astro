@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeBinary from '@/components/tools/text/DevEncodeBinary.tsx'
+---
+
+<ToolLayout slug="binary-to-text">
+  <DevEncodeBinary client:load kind="text" direction="decode" />
+  <Fragment slot="explainer">
+    <h2>Decoding binary</h2>
+    <p>
+      Paste the ones and zeros. The tool discards all other characters (spaces, commas, newlines, stray
+      letters) before decoding, so the formatting of the source does not matter. It splits the
+      remaining bits into groups of eight (or seven in ASCII mode) and reads each group as a character
+      code.
+    </p>
+
+    <h2>Do it by hand</h2>
+    <p>Take <code>01010111</code>:</p>
+    <pre><code>Place values: 128  64  32  16   8   4   2   1
+Bits:           0   1   0   1   0   1   1   1
+Contributing:      64      16       4   2   1
+Total: 64 + 16 + 4 + 2 + 1 = 87  →  "W"</code></pre>
+    <p>
+      A shortcut for the common case: a byte that starts <code>010</code> is an uppercase letter, and a
+      byte that starts <code>011</code> is lowercase or a digit. The last five bits give the position in
+      the alphabet.
+    </p>
+
+    <h2>When the bit count does not divide evenly</h2>
+    <p>
+      In a valid binary message, the total bit count is a multiple of the group size. If there is a
+      remainder, one of these is true:
+    </p>
+    <ul>
+      <li>A digit was lost in the copy. Check the start and end of the paste.</li>
+      <li>The source used 7-bit groups and you decode as 8, or the reverse.</li>
+      <li>A 0 or 1 in the input was not data: a bullet point, a list number, a line label.</li>
+      <li>The message was never binary text.</li>
+    </ul>
+    <p>The error message gives the exact number of leftover bits, which usually shows the cause.</p>
+
+    <h2>UTF-8 or single-byte?</h2>
+    <p>
+      If the decoded text has many <code>Ã</code>, <code>â</code> and <code>€</code> characters, you
+      are reading UTF-8 bytes one at a time. Switch the character set to UTF-8 and the accented
+      characters appear. If you get replacement diamonds in UTF-8 mode, the source was probably 7-bit
+      ASCII or Latin-1, so switch the other way.
+    </p>
+
+    <h2>Common patterns you can recognise</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Byte</th><th>Character</th><th>Why it matters</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>00100000</code></td><td>space</td><td>The most common byte in English text</td></tr>
+          <tr><td><code>00001010</code></td><td>line feed</td><td>End of a line on Unix</td></tr>
+          <tr><td><code>00001101</code></td><td>carriage return</td><td>Paired with the above on Windows</td></tr>
+          <tr><td><code>00110000</code>–<code>00111001</code></td><td>digits 0–9</td><td>All start <code>0011</code></td></tr>
+          <tr><td><code>00000000</code></td><td>null</td><td>Padding, or a string terminator</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where binary messages come from</h2>
+    <p>
+      Puzzle hunts, CTF challenges, escape rooms, geocaching clues, homework, and some technical cases:
+      a logic-analyser capture, a serial trace, or an error message that printed a byte in binary. The
+      tool reads the bits the same way in all cases.
+    </p>
+  </Fragment>
+</ToolLayout>

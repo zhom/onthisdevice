@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="opus-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".opus,.ogg,.oga,.webm,audio/opus,audio/ogg"
+    sourceLabel="Opus"
+    sourceHint="WhatsApp .opus, Telegram .ogg, Discord and Signal exports. Drop the whole folder"
+    target="mp3"
+    defaultBitrate="128"
+    formatNote="Voice notes are usually 16–32 kbps Opus. 128 kbps MP3 holds everything in them with room to spare; higher settings only make bigger files."
+  />
+  <Fragment slot="explainer">
+    <h2>Why your voice notes are Opus files</h2>
+    <p>
+      Opus is the best speech codec at low bitrates. A clear voice note fits into 16–24 kbps (about
+      150 KB per minute), so WhatsApp, Telegram, Signal, Discord, Google Meet, Zoom’s web client and
+      almost all modern real-time systems use it. It is also royalty-free.
+    </p>
+    <p>
+      The problem is playback outside those apps. Windows Media Player, older iPhones, most car stereos,
+      many transcription services and many legal and medical intake systems do not open an
+      <code>.opus</code> file. You convert Opus to MP3 almost always to give the recording to another
+      system.
+    </p>
+
+    <h2>What the file will be called</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Source</th><th>Extension you will see</th><th>What is inside</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>WhatsApp export</td><td><code>.opus</code></td><td>Opus in an Ogg container</td></tr>
+          <tr><td>Telegram voice message</td><td><code>.ogg</code> or <code>.oga</code></td><td>Opus in an Ogg container</td></tr>
+          <tr><td>Signal</td><td><code>.m4a</code> or <code>.opus</code></td><td>Varies by platform and version</td></tr>
+          <tr><td>Discord voice message</td><td><code>.ogg</code></td><td>Opus</td></tr>
+          <tr><td>Browser recording (Chrome, Firefox)</td><td><code>.webm</code></td><td>Opus in a WebM container</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This page accepts all five. If your file is Vorbis, not Opus (game audio, a Spotify cache, a
+      Wikipedia clip), it still converts, but <a href="/ogg-to-mp3">OGG to MP3</a> is written for that
+      case.
+    </p>
+
+    <h2>Bitrate: why 128 kbps is enough and 320 is waste</h2>
+    <p>
+      People often pick the wrong bitrate here. Many choose 320 kbps "to be safe", which gives a file
+      twenty times larger than the original with no additional information.
+    </p>
+    <p>
+      Opus at 24 kbps encodes speech very efficiently. MP3 is a much older design and needs three to
+      four times the bitrate for the same speech without audible warble around consonants. So the
+      useful range is 96–128 kbps: enough that the MP3 encoder does not limit quality, but not so much
+      that you store silence at high fidelity. Use 192 kbps only if the recording contains music.
+    </p>
+    <p>
+      A one-minute WhatsApp note is about 150 KB as Opus and about 950 KB as a 128 kbps MP3. That
+      seven-fold growth is normal. It comes from the older format, not from a fault in the conversion.
+    </p>
+
+    <h2>Converting a whole chat export</h2>
+    <p>
+      Unzip the export, select all audio files, and the queue converts them in order: fifty files at a
+      time, a progress row each, and one ZIP at the end. Upload converters handle this workload worst:
+      dozens of small files, each with its own round trip, and each counted against a free-tier limit.
+    </p>
+
+    <h2>These recordings should not be uploaded</h2>
+    <p>
+      Voice notes are the most personal audio most people have: family conversations, medical
+      appointments, arguments, legal discussions, evidence. An upload converter asks you to send that to
+      an unknown server and trust a retention policy you cannot check.
+    </p>
+    <p>
+      Here, the Opus decoder and the LAME MP3 encoder are part of a WebAssembly build of FFmpeg that
+      comes from this site and runs in your browser tab. The site’s Content-Security-Policy lists no
+      third-party origin, so a file cannot be sent anywhere, even by accident. Open your browser’s
+      Network tab and convert a file: after the one-time engine download there are no requests. Or
+      switch off Wi-Fi and convert.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      Older phone recordings and call captures are usually AMR. See <a href="/amr-to-mp3">AMR to MP3</a>.
+      To merge several voice notes into one file, use the <a href="/audio-joiner">audio joiner</a>,
+      which can trim each one on its waveform first. To make a new recording, use the
+      <a href="/voice-recorder">voice recorder</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

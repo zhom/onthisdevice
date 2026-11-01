@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeBinary from '@/components/tools/text/DevEncodeBinary.tsx'
+---
+
+<ToolLayout slug="decimal-to-binary">
+  <DevEncodeBinary client:load kind="number" direction="encode" />
+  <Fragment slot="explainer">
+    <h2>The method, shown for your number</h2>
+    <p>
+      Divide by two and write down the remainder. Divide the quotient by two again, and repeat until the
+      quotient is zero. The remainders, read from the bottom up, give the binary form. The table above
+      does this for your number, row by row, and shows the working as well as the answer.
+    </p>
+    <pre><code>Convert 13:
+13 ÷ 2 = 6  remainder 1
+ 6 ÷ 2 = 3  remainder 0
+ 3 ÷ 2 = 1  remainder 1
+ 1 ÷ 2 = 0  remainder 1
+Read upwards: 1101</code></pre>
+
+    <h2>The subtraction method</h2>
+    <p>
+      Some people find this method quicker. Write the powers of two down to your number, then subtract the
+      largest that fits, again and again:
+    </p>
+    <pre><code>Convert 200, using 128 64 32 16 8 4 2 1:
+200 − 128 = 72   →  1 in the 128 column
+ 72 −  64 =  8   →  1 in the 64 column
+  8 −   8 =  0   →  1 in the 8 column
+Result: 11001000</code></pre>
+
+    <h2>Numbers worth knowing by sight</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Decimal</th><th>Binary</th><th>Hex</th><th>Where you meet it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>15</td><td>1111</td><td>F</td><td>One hex digit, four bits</td></tr>
+          <tr><td>16</td><td>10000</td><td>10</td><td>Where hex carries</td></tr>
+          <tr><td>127</td><td>1111111</td><td>7F</td><td>Largest signed 8-bit value; end of ASCII</td></tr>
+          <tr><td>128</td><td>10000000</td><td>80</td><td>The high bit alone</td></tr>
+          <tr><td>255</td><td>11111111</td><td>FF</td><td>Largest byte; an IP octet maximum</td></tr>
+          <tr><td>1024</td><td>10000000000</td><td>400</td><td>One kibibyte</td></tr>
+          <tr><td>65535</td><td>16 ones</td><td>FFFF</td><td>Largest 16-bit value; the highest port number</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Remember the pattern: n ones equal 2ⁿ − 1, and a 1 followed by n zeros equals 2ⁿ. Almost all
+      &ldquo;why does it stop there?&rdquo; limits in computing are one of these two.
+    </p>
+
+    <h2>Negative numbers and two's complement</h2>
+    <p>
+      Hardware does not store a minus sign. It stores the two's complement: invert each bit of the positive
+      value and add one. Enter a negative number above, and the panel shows the exact bit pattern at 8, 16,
+      32 or 64 bits.
+    </p>
+    <pre><code>−5 in 8 bits:
+ 5        = 00000101
+inverted  = 11111010
+add 1     = 11111011   (251 if read as unsigned)</code></pre>
+    <p>
+      With two's complement, ordinary binary addition works without change for negative numbers. The cost
+      is an asymmetric range: an 8-bit signed value goes from −128 to +127, not −127 to +127, and the most
+      negative value has no positive counterpart.
+    </p>
+
+    <h2>Very large numbers</h2>
+    <p>
+      All arithmetic here uses BigInt, so a 200-digit input converts exactly. Ordinary JavaScript numbers
+      lose precision above 2⁵³ (about 9 quadrillion), so converters that use them return wrong digits for
+      large values without a warning. Paste a very large number and check the round-trip on the
+      binary-to-decimal page.
+    </p>
+
+    <h2>What about fractions?</h2>
+    <p>
+      This page handles integers. Fractional binary is a different topic: 0.1 in decimal has no finite
+      binary form, as 1/3 has no finite decimal form. This fact explains why <code>0.1 + 0.2</code> is not
+      <code>0.3</code> in almost all programming languages.
+    </p>
+  </Fragment>
+</ToolLayout>

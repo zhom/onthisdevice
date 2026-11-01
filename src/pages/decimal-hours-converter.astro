@@ -1,0 +1,111 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyTimeConvert from '@/components/tools/datetime/CalcMoneyTimeConvert.tsx'
+---
+
+<ToolLayout slug="decimal-hours-converter">
+  <CalcMoneyTimeConvert client:load variant="decimal" />
+
+  <Fragment slot="explainer">
+    <h2>Why payroll insists on decimals</h2>
+    <p>
+      Pay is hours multiplied by a rate, and <code>7:45 × 22.00</code> is not an arithmetic expression.
+      Payroll systems therefore store time as a decimal number of hours: seven hours forty-five minutes is
+      <strong>7.75</strong>.
+    </p>
+    <p>
+      The trap: <code>7.45</code> also looks like seven forty-five, but it is eighteen minutes short. Over
+      a five-day week that is an hour and a half of unpaid work, and over a year more than a week's pay.
+      For this reason it is the most important conversion in timesheet handling.
+    </p>
+
+    <h2>The conversion</h2>
+    <pre><code>decimal hours = hours + minutes ÷ 60
+minutes       = (decimal − whole hours) × 60</code></pre>
+    <p>
+      One minute is 1/60 of an hour, or 0.01666…, so a decimal figure rounded to two places is accurate to
+      about thirty-six seconds. Two places are enough for payroll. Use four if a timesheet must reconcile
+      exactly to the minute.
+    </p>
+
+    <h2>Minutes to decimal, every five minutes</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Minutes</th>
+            <th style="text-align:right">Decimal</th>
+            <th>Minutes</th>
+            <th style="text-align:right">Decimal</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>:00</td><td style="text-align:right">0.00</td><td>:30</td><td style="text-align:right">0.50</td></tr>
+          <tr><td>:05</td><td style="text-align:right">0.08</td><td>:35</td><td style="text-align:right">0.58</td></tr>
+          <tr><td>:10</td><td style="text-align:right">0.17</td><td>:40</td><td style="text-align:right">0.67</td></tr>
+          <tr><td>:15</td><td style="text-align:right">0.25</td><td>:45</td><td style="text-align:right">0.75</td></tr>
+          <tr><td>:20</td><td style="text-align:right">0.33</td><td>:50</td><td style="text-align:right">0.83</td></tr>
+          <tr><td>:25</td><td style="text-align:right">0.42</td><td>:55</td><td style="text-align:right">0.92</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Four of these are exact: :15, :30, :45 and :00. The others are recurring decimals, so totals built
+      from twenty-minute increments never come to a round number.
+    </p>
+
+    <h2>Payroll rounding conventions</h2>
+    <ul>
+      <li>
+        Quarter hour (0.25): the most common US payroll convention, sometimes called the 7-minute rule,
+        because the boundary is at 7½ minutes on each side.
+      </li>
+      <li>
+        Tenth of an hour (0.1): six-minute units. Standard in legal and professional services billing.
+      </li>
+      <li>
+        Exact minutes: no rounding. More and more the default with digital clock-in systems, and always the
+        safest.
+      </li>
+    </ul>
+    <p>
+      Under the US Fair Labor Standards Act, rounding is allowed only if it is neutral: to the nearest
+      increment, in both directions, so that over time it favours the employee as often as the employer. A
+      policy that always rounds down, or rounds clock-ins forward and clock-outs back, is unlawful. This
+      converter always rounds to the nearest increment.
+    </p>
+
+    <h2>Converting a whole column</h2>
+    <p>
+      Paste a column from a spreadsheet, and the tool converts each line separately, in the direction it
+      needs: a line with a colon is read as h:mm and returned as a decimal; a bare number is read as a
+      decimal and returned as h:mm. You can copy the results as a column and paste them into the next
+      cell.
+    </p>
+    <p>
+      Negative values also work (write a correction as <code>-0:15</code>), which matters when you adjust a
+      submitted timesheet.
+    </p>
+
+    <h2>Spreadsheet gotcha</h2>
+    <p>
+      Excel and Google Sheets store a time as a fraction of a day, not of an hour. A cell that shows
+      <code>7:45</code> holds 0.3229. To get decimal hours from a time-formatted cell, multiply by 24
+      (<code>=A1*24</code>) and format the result as a plain number. Formatting alone does not convert; the
+      multiplication does.
+    </p>
+
+    <h2>Related conversions</h2>
+    <p>
+      To add up shifts, use the hours calculator, which shows both formats per entry. For a full week with
+      overtime rules and pay, use the time card calculator. For 24-hour to AM/PM notation, use the military
+      time converter: that is clock time, which is different from duration.
+    </p>
+
+    <h2>Runs on your device</h2>
+    <p>
+      The conversion, the bulk column and the exports are JavaScript in your browser, so a pasted timesheet
+      stays on your device. The page works with the network turned off.
+    </p>
+  </Fragment>
+</ToolLayout>

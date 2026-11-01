@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="mp4-to-mov">
+  <VideoRemux
+    client:load
+    from="mp4"
+    target="mov"
+    hint="Re-wrap for QuickTime, iMovie and Final Cut. The video data is copied, not re-compressed"
+  />
+  <Fragment slot="explainer">
+    <h2>MP4 and MOV are closer than they look</h2>
+    <p>
+      Both formats are the same file structure with a different label. Apple designed QuickTime (.mov)
+      in 1991. The MPEG group adopted it as the ISO base media file format and built MP4 on it. Inside,
+      both are a tree of boxes (<code>ftyp</code>, <code>moov</code>, <code>mdat</code>) with the same
+      layout. The differences are the brand in the <code>ftyp</code> box and the short list of codecs
+      each one officially allows.
+    </p>
+    <p>
+      So MP4 to MOV is a copy, not a transcode. Each video and audio packet goes into the new file
+      unchanged, the index is rebuilt, and the output is within a few kilobytes of the input. Nothing is
+      re-compressed, so the picture is byte-for-byte the original.
+    </p>
+
+    <h2>When you actually need a MOV</h2>
+    <ul>
+      <li>QuickTime Player on an older macOS refuses some MP4 files that it opens after a re-wrap.</li>
+      <li>iMovie and Final Cut are stricter about brands and audio layouts than a player. A re-wrap often fixes a rejected import.</li>
+      <li>Older Apple hardware and some broadcast tools expect the QuickTime brand.</li>
+      <li>Timecode and alpha-channel workflows use MOV, not MP4. They need a source that already has them.</li>
+    </ul>
+
+    <h2>What re-wrapping cannot do</h2>
+    <p>
+      If Final Cut still rejects the clip, the problem is the codec, not the container. Apple’s editors
+      prefer <strong>ProRes</strong>, an intra-frame format where each frame stands alone. H.264 must be
+      decoded across a run of frames, which makes scrubbing expensive. ProRes needs an encoder that a
+      browser does not have, so this page does not offer it. On a Mac, use a desktop encoder for that
+      conversion. Here you can confirm that the container is not the problem.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>MP4</th>
+            <th>MOV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Underlying structure</td>
+            <td>ISO base media file format</td>
+            <td>ISO base media file format</td>
+          </tr>
+          <tr>
+            <td>Typical codecs</td>
+            <td>H.264, HEVC, AAC</td>
+            <td>H.264, HEVC, ProRes, PCM, AAC</td>
+          </tr>
+          <tr>
+            <td>Plays on Windows out of the box</td>
+            <td>Yes</td>
+            <td>Not reliably</td>
+          </tr>
+          <tr>
+            <td>Plays on Apple devices</td>
+            <td>Yes</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>File size for the same footage</td>
+            <td>Baseline</td>
+            <td>Within a fraction of a percent</td>
+          </tr>
+          <tr>
+            <td>Is one “higher quality”?</td>
+            <td colspan="2">No. Quality lives in the codec and the bitrate, never in the container.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Faststart is switched on</h2>
+    <p>
+      The index that says where each frame is goes at the front of the output file, not the end. That
+      is what <code>-movflags +faststart</code> does. The file can start to play before it fully loads,
+      which helps on a web page and does no harm otherwise. It costs one extra pass over the file at
+      the end of the copy.
+    </p>
+
+    <h2>Going the other way</h2>
+    <p>
+      To convert a QuickTime file back to MP4, use <a href="/mov-to-mp4">MOV to MP4</a>. For a smaller
+      file to share, use <a href="/compress-video">compress video</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

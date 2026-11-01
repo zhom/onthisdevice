@@ -1,0 +1,144 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-size">
+  <PdfSecureCompressToSize client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Type the number the form gave you</h2>
+      <p>
+        Upload limits are arbitrary: 80 KB, 350 KB, 4 MB, 4.7 MB. Enter the exact figure, and the encoder
+        searches for the best quality that fits under it, so you do not need to guess a preset and run
+        it again.
+      </p>
+      <p>
+        For round limits, there are separate pages for <a href="/compress-pdf-to-100kb">100 KB</a>,
+        <a href="/compress-pdf-to-200kb">200 KB</a>, <a href="/compress-pdf-to-300kb">300 KB</a>,
+        <a href="/compress-pdf-to-500kb">500 KB</a>, <a href="/compress-pdf-to-1mb">1 MB</a> and
+        <a href="/compress-pdf-to-2mb">2 MB</a>. They use the same engine with the box already filled.
+      </p>
+    </section>
+
+    <section>
+      <h2>The algorithm, in full</h2>
+      <p>These are the steps, so you can predict the result:</p>
+      <ol>
+        <li>
+          Estimate the container. A PDF needs a catalog, a page tree, a cross-reference table and an
+          object per page. The tool estimates this as <code>1,200 + 260 × pages</code> bytes and
+          subtracts it from your target first.
+        </li>
+        <li>
+          Pick a rendering resolution. Automatic mode divides the remaining budget by the page count
+          and converts that to a DPI between 72 and 200. You can override it.
+        </li>
+        <li>
+          Render each page once. This is the expensive step, so it happens only once per page.
+        </li>
+        <li>
+          Calculate the share of the page: remaining budget divided by remaining pages. The share is
+          calculated again for each page, so a page that finishes under budget gives the difference
+          to the pages after it.
+        </li>
+        <li>
+          Binary-search the quality. Encode at the minimum (5) to check that the page can fit, then
+          bisect between 5 and 94 eight times and keep the largest quality whose output is within the
+          share.
+        </li>
+        <li>
+          Scale down if the minimum is still too big. The page is drawn again at 70 per cent and the
+          search runs again, up to three times.
+        </li>
+        <li>
+          Assemble and measure. The tool reports the final size, the average quality and the decisions
+          for each page.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Why the search matters more than the encoder</h2>
+      <p>
+        All tools use the same JPEG encoder. The difference is how many times it can run. An upload-based
+        compressor pays for CPU and bandwidth per request, so nine encodes per page cost it money, and
+        it gives you three presets. On your own hardware, the ninth attempt costs only a few
+        milliseconds.
+      </p>
+      <p>
+        For the same reason, there is no daily quota here.
+      </p>
+    </section>
+
+    <section>
+      <h2>Choosing a sensible target</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Situation</th>
+              <th scope="col">Try</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>A form states a limit</td>
+              <td>That limit exactly; the search always finishes under it</td>
+            </tr>
+            <tr>
+              <td>Email attachment, no stated limit</td>
+              <td>500 KB to 2 MB</td>
+            </tr>
+            <tr>
+              <td>Attaching to a chat app</td>
+              <td>Under 8 MB covers the Discord free tier and most others</td>
+            </tr>
+            <tr>
+              <td>Posting on a slow connection</td>
+              <td>1 MB, and consider grayscale</td>
+            </tr>
+            <tr>
+              <td>Archiving a scan you will read again</td>
+              <td>
+                Do not use this tool. Use the lossless mode in
+                <a href="/compress-pdf">Compress PDF</a> and keep the text layer
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Units, rounding and what "KB" means here</h2>
+      <p>
+        Kilobytes are binary here: 1 KB is 1,024 bytes and 1 MB is 1,048,576 bytes. Windows Explorer,
+        the macOS Get Info panel and almost all upload forms report file size this way. A 100 KB target
+        thus means 102,400 bytes, not 100,000.
+      </p>
+      <p>
+        If a form means decimal kilobytes, aim slightly lower (97 KB instead of 100 KB) to be safe with
+        both definitions.
+      </p>
+    </section>
+
+    <section>
+      <h2>What this tool will not do</h2>
+      <ul>
+        <li>
+          Keep the text layer. A byte target requires rendering pages as images. A file that keeps its
+          text layer cannot reliably reach a byte target.
+        </li>
+        <li>
+          Improve a bad scan. Compression cannot add detail. A blurry source gives a smaller blurry file.
+        </li>
+        <li>
+          Go below the structural minimum. A valid PDF needs at least a few hundred bytes per page, and
+          the result panel tells you when you reach this limit.
+        </li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ExtractPdfPages from '@/components/tools/pdf/ExtractPdfPages.tsx'
+---
+
+<ToolLayout slug="extract-pdf-pages">
+  <ExtractPdfPages client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to extract pages from a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above.</li>
+        <li>
+          Click the pages you want, in the order you want them. A numbered badge on each selected
+          thumbnail shows its position in the output.
+        </li>
+        <li>
+          To type the selection, enter for example <code class="font-mono">5, 1, 12-14</code> and press
+          Apply range. The output uses the order you type.
+        </li>
+        <li>
+          Choose one combined PDF or a ZIP with one file per page, then press <strong>Extract</strong>.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Order matters, and that is the point</h2>
+      <p>
+        Many extraction tools sort your selection and return the pages in document order. This one keeps
+        the order you chose, so you can also use it to reorder a document: put page 9 first, then pages 2
+        to 4, then the appendix. For ascending order, click <strong>Sort ascending</strong>.
+      </p>
+      <p>
+        You can also select the same page twice, for example to make a repeated separator sheet.
+      </p>
+    </section>
+
+    <section>
+      <h2>One PDF or one file per page?</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[560px]">
+          <thead>
+            <tr>
+              <th scope="col">Output</th>
+              <th scope="col">You get</th>
+              <th scope="col">Use it when</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>One combined PDF</td>
+              <td>A single file with your pages in the chosen order</td>
+              <td>The pages form one document: a chapter, a section, a signed set</td>
+            </tr>
+            <tr>
+              <td>ZIP, one PDF per page</td>
+              <td>
+                Files named <code class="font-mono">name_page-04.pdf</code>, zero-padded so they sort
+                correctly
+              </td>
+              <td>Each page is its own document: invoices, certificates, tickets</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Quality and fidelity</h2>
+      <p>
+        Extraction copies page objects directly into the new document: the same drawing operators, the same
+        embedded fonts, the same image streams at their original resolution. Nothing is rasterised or
+        compressed again, so text stays selectable and searchable and vector graphics stay sharp at any
+        zoom. Link and comment annotations on the extracted pages are copied; document outlines and
+        attachments are not, because they belong to the whole original document.
+      </p>
+      <p>
+        To get the pages as images, use the PDF to JPG converter. To make them smaller, put the extracted
+        file through the compressor.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

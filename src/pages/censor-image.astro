@@ -1,0 +1,87 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BlurFaceInPhoto from '@/components/tools/image-edit/BlurFaceInPhoto.tsx'
+---
+
+<ToolLayout slug="censor-image">
+  <BlurFaceInPhoto client:load defaultEffect="block" defaultShape="rect" subject="anything" />
+
+  <Fragment slot="explainer">
+    <h2>Censoring a screenshot properly</h2>
+    <p>
+      Most leaks of “redacted” material come from one mistake: the black rectangle was drawn as an
+      object on top of the content and did not replace it. In PDFs, slide decks, design files and many
+      screenshot annotators, that rectangle is a separate layer. Select it, delete it, and the original
+      is below it, intact. This page overwrites the pixels inside your box before the file is encoded,
+      so there is nothing to remove.
+    </p>
+
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop in the screenshot, photo or scan.</li>
+      <li>Drag a rectangle over each item that must not be published: names, emails, account numbers, addresses, API keys, faces.</li>
+      <li>Keep the effect on <strong>Solid block</strong> for text. Use blur or mosaic only for faces and scenery.</li>
+      <li>Check the preview, then export. The result is re-encoded from raw pixels, so the metadata is removed.</li>
+    </ol>
+
+    <h2>A checklist for screenshots you are about to post</h2>
+    <ul>
+      <li>The obvious content: the figure, the name, the message you ask about.</li>
+      <li>The browser chrome. Tabs show the other pages you had open. The address bar can contain session tokens and internal hostnames. A bookmarks bar shows much about your employer.</li>
+      <li>Notifications and the clock: a banner from a private group, an email subject line, a timestamp that shows where you were.</li>
+      <li>Autocomplete and history: an open dropdown below a search field is a common source of accidental disclosure.</li>
+      <li>Reflections and second copies: a monitor in a phone photo, a preview pane, a thumbnail strip.</li>
+      <li>Usernames in file paths: <code>C:\Users\firstname.lastname\…</code> in a terminal or a title bar identifies you.</li>
+    </ul>
+
+    <h2>Why solid black beats blur for anything textual</h2>
+    <p>
+      Blur and mosaic are deterministic filters. When the content is short structured text, the number
+      of possible values is small. If someone thinks the hidden value is a six-digit order number,
+      they can render all million candidates, apply the same filter and compare. This has been done
+      many times on real redacted documents. In a filled rectangle all pixels have the same value, so
+      no computation can recover the content. Use blur only for faces, where the candidates cannot be
+      listed.
+    </p>
+
+    <h2>Colour choice</h2>
+    <p>
+      Black is the convention and is clear. White can look tidier on a light screenshot, but it also
+      looks like an empty field, so the reader can think nothing was there. For a report or a bug
+      ticket, black with a visible border shows that the redaction is deliberate. To show different
+      categories of redaction, use two clearly different colours and explain them in the caption.
+    </p>
+
+    <h2>What happens to the file itself</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Concern</th><th>What this tool does</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hidden layers</td><td>None exist. The output is a flat raster encoded from the canvas.</td></tr>
+          <tr><td>Undo history</td><td>Not written to the file. Some editors embed edit history or a preview of the previous state.</td></tr>
+          <tr><td>EXIF / GPS</td><td>Discarded, because the file is built from pixels and not patched.</td></tr>
+          <tr><td>Embedded thumbnail</td><td>Discarded. This item most often leaks the image from before the redaction.</td></tr>
+          <tr><td>Upload</td><td>Never happens. The image is opened, drawn and encoded in this tab.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Working with documents rather than images</h2>
+    <p>
+      If your source is a PDF, a screenshot of it is a workaround. It is more thorough to redact the
+      PDF itself: rasterise the affected pages and remove the text layer. For this reason, the
+      <a href="/redact-pdf">PDF redaction tool</a> destroys the text layer and does not only cover it.
+      Use this page for images and that tool for contracts and discovery material.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/blur-face-in-photo">Blur Face in Photo</a> for people,
+      <a href="/pixelate-image">Pixelate Image</a> for a mosaic look, and
+      <a href="/remove-exif-data">Remove EXIF Data</a> when the pixels are fine but the metadata is
+      not.
+    </p>
+  </Fragment>
+</ToolLayout>

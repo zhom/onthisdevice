@@ -1,0 +1,91 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CsvToExcel from '@/components/tools/data/CsvToExcel.tsx'
+---
+
+<ToolLayout slug="csv-to-excel">
+  <CsvToExcel client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert CSV to an Excel workbook</h2>
+    <ol>
+      <li>Paste the CSV or drop a <code>.csv</code> / <code>.tsv</code> file onto the left pane.</li>
+      <li>Confirm the delimiter. Auto-detect handles commas, semicolons, tabs and pipes, and the preview shows the grid immediately.</li>
+      <li>Name the sheet and choose if the first row is a header.</li>
+      <li>Click <strong>Download .xlsx</strong>. Your browser writes the workbook and saves it to your downloads folder.</li>
+    </ol>
+
+    <h2>Why not just rename the file to .xlsx?</h2>
+    <p>
+      <code>.xlsx</code> is not a text format. It is a ZIP archive with XML parts that describe sheets,
+      shared strings, styles and relationships. A renamed CSV does not open in Excel, or opens with a
+      “the file format and extension don’t match” warning. This tool writes a real workbook with
+      SheetJS, so Excel, LibreOffice Calc, Numbers and Google Sheets open it without warnings.
+    </p>
+
+    <h2>Problems this solves that a raw CSV does not</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">CSV problem</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">What the workbook does instead</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">Everything lands in column A</td>
+            <td class="border-b px-3 py-2">Columns are defined in the file, so the local list separator does not matter</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Accents turn into mojibake</td>
+            <td class="border-b px-3 py-2">XLSX is UTF-8 internally; no BOM guesswork</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Every column is the same narrow width</td>
+            <td class="border-b px-3 py-2">Widths are measured from the longest value and written into the file</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Numbers arrive as text and will not sum</td>
+            <td class="border-b px-3 py-2">Numeric cells are written with a numeric type</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">No way to filter or sort on open</td>
+            <td class="border-b px-3 py-2">An autofilter is added to the header row</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Keeping leading zeros and long identifiers</h2>
+    <p>
+      This is the classic spreadsheet data loss: postcodes such as <code>01234</code> become
+      <code>1234</code>, and a 16-digit account number becomes <code>4.91634E+15</code>. Turn off
+      <strong>Convert numbers and booleans</strong> to write each cell as text, so those values stay
+      exactly as typed. With the option on, the converter still does not convert values with a leading
+      zero or more than fifteen digits to numbers, because those are almost always identifiers, not
+      quantities.
+    </p>
+
+    <h2>Sheet naming rules</h2>
+    <p>
+      Excel allows at most 31 characters in a sheet name and forbids the characters
+      <code>: \ / ? * [ ]</code>. The tool replaces invalid characters with a space and truncates the
+      name before it writes the file, so Excel always opens the workbook.
+    </p>
+
+    <h2>Delimiters and quoting</h2>
+    <p>
+      Parsing follows RFC 4180: a quoted field can contain the delimiter, line breaks and doubled quotes.
+      Multi-line addresses in quotes thus stay in one cell and do not spill onto new rows, a common
+      failure of simple CSV splitters.
+    </p>
+
+    <h2>Nothing leaves your device</h2>
+    <p>
+      The CSV is parsed and the workbook is built in this browser tab, then passed to the browser as an
+      in-memory blob. There is no upload, so contact lists, invoices and export dumps stay on your
+      device.
+    </p>
+  </Fragment>
+</ToolLayout>

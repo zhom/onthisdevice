@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BlurFaceInPhoto from '@/components/tools/image-edit/BlurFaceInPhoto.tsx'
+---
+
+<ToolLayout slug="blur-face-in-photo" width="wide">
+  <BlurFaceInPhoto client:load defaultEffect="blur" defaultShape="ellipse" subject="face" />
+
+  <Fragment slot="explainer">
+    <h2>How to blur faces in a photo</h2>
+    <ol>
+      <li>Drop one or more photos on the page. Each photo is checked for faces, and every face gets a box.</li>
+      <li>Click a box to keep that face visible. Click it again to hide it. The list under the photo shows each face with a small picture.</li>
+      <li>Drag on the photo to add a box over a face or anything else the model did not mark.</li>
+      <li>Choose blur, pixelate or a solid fill, an oval or a rectangle, and the strength.</li>
+      <li>Download the photo, or all photos as one ZIP file.</li>
+    </ol>
+    <p>
+      On a phone, pinch to zoom and move the photo with two fingers. With a keyboard, press Tab to go to a box, Enter to
+      switch it, the arrow keys to move it, + and - to resize it and Delete to remove it.
+    </p>
+
+    <h2>The face model</h2>
+    <p>
+      The faces are found by a small face detection model (230 kB, MIT license). It runs in your browser in a model
+      runtime of 15 MB. Both files come from this site the first time you use the tool and are kept in your browser, so
+      the tool also works offline after that.
+    </p>
+    <p>
+      The model looks at the whole photo at three sizes and then at overlapping tiles of the full image. This finds large
+      faces in a portrait and faces of about 10 pixels in a crowd photo. A 12-megapixel group photo takes a few seconds on
+      a laptop.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the developer tools of your browser (F12), select the Network tab and drop a photo. You see the model files
+      load from this site the first time and no request with your photo. You can also load the tool once, turn off your
+      network and use it.
+    </p>
+
+    <h2>Blur, pixelate or fill</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Style</th><th>Use it for</th><th>Can it be undone?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Blur</td><td>Faces, tattoos, house numbers</td><td>No, at 50% strength or more the detail is gone.</td></tr>
+          <tr><td>Pixelate</td><td>Faces, when the effect should look deliberate</td><td>Not for faces. Short text can sometimes be guessed.</td></tr>
+          <tr><td>Fill</td><td>Text: names, plates, card numbers</td><td>No. The area is one colour.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Strength is measured against the size of each box, so a small face gets the same effect as a large one. The preview
+      shows the same result as the saved file.
+    </p>
+
+    <h2>The metadata in the file</h2>
+    <p>
+      A phone photo often holds GPS coordinates, the time, the camera model and a small preview image of the photo. The
+      saved file is written again from the pixels, so none of this is in it. The preview image matters: other editors
+      often keep it, and it still shows the faces. To see what a photo holds, open it in the
+      <a href="/image-metadata-viewer">image metadata viewer</a>.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Faces seen from the side, from behind, under a mask or very blurred can be missed. Check every photo and add boxes where needed.</li>
+      <li>Some boxes mark things that are not faces, such as hands or patterns. Click them to keep them visible.</li>
+      <li>Reflections, photos on a wall and screens can show a face again. Look for them.</li>
+      <li>Very large photos use a lot of memory. On a phone, photos above about 50 megapixels can fail.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/blur-faces-in-video">Video Face Blur</a> does the same for a video,
+      <a href="/face-blur-camera">Face Blur Camera</a> blurs faces on your webcam live, and
+      <a href="/blur-license-plate">Blur License Plate</a> finds number plates. To clear metadata without other changes,
+      use <a href="/remove-exif-data">Remove EXIF Data</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

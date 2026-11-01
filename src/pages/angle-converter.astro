@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="angle-converter">
+  <UnitConverter client:load dimension="angle" from="deg" to="rad" />
+  <Fragment slot="explainer">
+    <h2>How to convert an angle</h2>
+    <ol>
+      <li>Type the angle into either field. The same control converts degrees to radians and radians to degrees.</li>
+      <li>Pick the units. The first group has degrees, radians, gradians and turns. The second has the sub-degree units of astronomy, optics and ballistics.</li>
+      <li>The formula panel shows the exact factor, and the chart below lists the standard angles.</li>
+    </ol>
+
+    <h2>Degrees and radians</h2>
+    <p>
+      A full turn is 360 degrees or 2π radians, so the conversion factor is π/180, about
+      0.01745329252. In the other direction, one radian is 180/π degrees, or 57.29577951°.
+    </p>
+    <p>
+      Radians are the natural unit for calculus and circular motion: an arc of one radian on a unit
+      circle has length one. For this reason, the derivative of sin(x) is cos(x); in degrees, a factor
+      of π/180 appears. The trigonometric functions of all programming languages expect radians, which
+      is the most common practical reason to convert.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Degrees</th><th>Radians (exact)</th><th>Radians (decimal)</th><th>Gradians</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0°</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>30°</td><td>π/6</td><td>0.5235987756</td><td>33.333</td></tr>
+          <tr><td>45°</td><td>π/4</td><td>0.7853981634</td><td>50</td></tr>
+          <tr><td>60°</td><td>π/3</td><td>1.047197551</td><td>66.667</td></tr>
+          <tr><td>90°</td><td>π/2</td><td>1.570796327</td><td>100</td></tr>
+          <tr><td>180°</td><td>π</td><td>3.141592654</td><td>200</td></tr>
+          <tr><td>270°</td><td>3π/2</td><td>4.712388980</td><td>300</td></tr>
+          <tr><td>360°</td><td>2π</td><td>6.283185307</td><td>400</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Arcminutes, arcseconds and coordinates</h2>
+    <p>
+      Degrees divide by 60, like hours: one degree is 60 arcminutes, and one arcminute is 60
+      arcseconds. Latitude and longitude are often written this way (51° 28′ 38″ N). To convert to
+      decimal degrees, divide the minutes by 60 and the seconds by 3,600, then add them.
+    </p>
+    <p>
+      For scale, an arcsecond is about the angle of a small coin seen from five kilometres, and one
+      arcsecond of latitude is about 31 metres on the ground. Astronomers often work in
+      milliarcseconds; the Gaia spacecraft measures stellar positions to a few tens of
+      microarcseconds.
+    </p>
+
+    <h2>Milliradians, mils and shooting</h2>
+    <p>
+      A milliradian is a thousandth of a radian. At 100 metres, one milliradian covers almost exactly
+      10 centimetres, and at 1,000 metres one metre. Range and holdover estimates are then a matter of
+      moving a decimal point.
+    </p>
+    <p>
+      The NATO mil approximates the same idea: it divides the circle into 6,400 equal parts instead of
+      6,283.19. This gives 0.05625° per mil, against 0.0572958° for a true milliradian, a difference of
+      about 2 %. Artillery uses the 6,400 version; most rifle scopes use true milliradians. The unit
+      list has both, with separate labels, because mixing them at distance puts rounds well off
+      target.
+    </p>
+
+    <h2>Gradians, and why your calculator has a DRG key</h2>
+    <p>
+      The gradian divides a right angle into 100 parts, so a full turn is 400 gon. It came from the
+      decimalisation of the French Revolution, which also gave the metre. It is still used in European
+      surveying and in the "GRAD" mode of scientific calculators. If your trigonometry answers are
+      wrong by a constant factor, first check whether the calculator is in DEG, RAD or GRAD mode.
+    </p>
+  </Fragment>
+</ToolLayout>

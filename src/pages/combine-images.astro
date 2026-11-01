@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CombineImages from '@/components/tools/image-edit/CombineImages.tsx'
+---
+
+<ToolLayout slug="combine-images">
+  <CombineImages client:load defaultLayout="horizontal" />
+
+  <Fragment slot="explainer">
+    <h2>Three ways to combine images</h2>
+    <ul>
+      <li>Side by side: images go from left to right and are matched on height. Best for before-and-after pairs, comparisons and wide banners.</li>
+      <li>Stacked: top to bottom, matched on width. Best for joining screenshots of a long page, a chat thread or a receipt scanned in two halves.</li>
+      <li>Grid: a fixed number of columns, each cell sized to the largest image. Best for contact sheets, collages and photo sets.</li>
+    </ul>
+
+    <h2>How the sizing options work</h2>
+    <p>
+      Photos are seldom the same size, and how you handle that decides if the montage looks tidy. The
+      tool gives you three explicit choices:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Setting</th><th>What happens</th><th>Use when</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Keep every image at its own size</td><td>Nothing is scaled; shorter images are padded with the background colour and positioned by the alignment control</td><td>The images are already consistent, or you want the size difference to show</td></tr>
+          <tr><td>Scale all to the smallest</td><td>All images are reduced to the height (or width) of the smallest image</td><td>The default for comparisons: no image is enlarged, so nothing goes soft</td></tr>
+          <tr><td>Scale all to the largest</td><td>All images are enlarged to match the biggest</td><td>You need a specific output size and accept upscaling of the small ones</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Scaling always keeps the aspect ratio of each image and uses a high-quality resample, so a
+      4000 px photo reduced to match a 1200 px one still looks clean.
+    </p>
+
+    <h2>Gaps, colour and corners</h2>
+    <p>
+      A gap of 8–24 px in a contrasting colour stops a montage from looking like one confusing wide
+      photograph. Set the background to white for print and documents, or to your page colour for the
+      web. If the montage will be on an unknown background, turn on transparency and export PNG.
+      Corner rounding clips each photo to a rounded rectangle: 8–16 px looks modern, and above 40 px it
+      looks like a sticker sheet.
+    </p>
+
+    <h2>Order matters, and you control it</h2>
+    <p>
+      You can drag the file chips above the preview. The order is left to right for side by side, top
+      to bottom for stacked, and row by row (left to right, then down) for the grid. Remove an image
+      with the × on its chip; the canvas updates immediately. The pixel dimensions of the output show
+      above the preview, so you know what you will download.
+    </p>
+
+    <h2>Why there is no file limit</h2>
+    <p>
+      Upload services limit the number of images, the size and the jobs per day, because each job
+      costs them bandwidth and CPU. Here the compositing is a canvas operation in your browser, so the
+      only limit is the memory of your device. That limit is real: a grid of twenty 12-megapixel photos
+      makes a canvas of several hundred million pixels, and some mobile browsers refuse to allocate it.
+      In that case, make the inputs smaller with <a href="/resize-image">Resize Image</a> and try
+      again.
+    </p>
+
+    <h2>Choosing the export format</h2>
+    <ul>
+      <li>PNG: lossless, keeps transparency, the correct default for screenshots, diagrams and images with text.</li>
+      <li>JPG: much smaller for photographic montages; no transparency, so the background colour is always painted.</li>
+      <li>WebP: smaller than JPG at the same quality and keeps transparency; the best option for the web when you know the browsers of your audience.</li>
+    </ul>
+    <p>
+      If the combined file must fit a size limit, use <a href="/compress-image-to-1mb">compress to 1 MB</a>
+      next. It shows the quality setting it chose.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/merge-images-side-by-side">Merge Images Side by Side</a> opens in the horizontal preset
+      for comparison shots, and <a href="/photo-collage-maker">Photo Collage Maker</a> opens on a
+      2-column grid with gaps and rounded corners already set. To caption the finished montage, use
+      <a href="/add-text-to-image">Add Text to Image</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

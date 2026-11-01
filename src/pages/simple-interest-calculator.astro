@@ -1,0 +1,113 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SimpleInterestCalculator from '@/components/tools/finance/SimpleInterestCalculator.tsx'
+---
+
+<ToolLayout slug="simple-interest-calculator">
+  <SimpleInterestCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the simple interest calculator</h2>
+    <ol>
+      <li>
+        Choose what to <strong>solve for</strong>: the interest amount, the principal, the rate or the time.
+        That input disappears and the target field takes its place.
+      </li>
+      <li>
+        Enter the three values you know. Time can be in years, months or days; days use a 365-day year.
+      </li>
+      <li>
+        Read the answer and the working. The formula panel shows the rearranged equation with your numbers,
+        so you can check homework or an invoice.
+      </li>
+      <li>
+        Compare with the compound column to see what the same money would do if the interest were added to
+        the balance each year.
+      </li>
+    </ol>
+
+    <h2>The four forms of I = Prt</h2>
+    <p>
+      Simple interest has one equation and three rearrangements. Enter rates as decimals (5% is 0.05) and time
+      in years.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Solve for</th>
+            <th>Formula</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Interest</td><td><code>I = P × r × t</code></td><td>10,000 × 0.05 × 3 = 1,500</td></tr>
+          <tr><td>Principal</td><td><code>P = I / (r × t)</code></td><td>1,500 ÷ (0.05 × 3) = 10,000</td></tr>
+          <tr><td>Rate</td><td><code>r = I / (P × t)</code></td><td>1,500 ÷ (10,000 × 3) = 5%</td></tr>
+          <tr><td>Time</td><td><code>t = I / (P × r)</code></td><td>1,500 ÷ (10,000 × 0.05) = 3 years</td></tr>
+          <tr><td>Final balance</td><td><code>A = P × (1 + r × t)</code></td><td>10,000 × 1.15 = 11,500</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Simple against compound interest</h2>
+    <p>
+      Simple interest is charged on the original principal only, so it grows in a straight line. Compound
+      interest is charged on the balance including interest already added, so it curves upward. Over a year
+      or two the difference is small; over decades it is large.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Years at 6% on 10,000</th>
+            <th style="text-align:right">Simple</th>
+            <th style="text-align:right">Compound (annual)</th>
+            <th style="text-align:right">Difference</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>1 year</td><td style="text-align:right">10,600</td><td style="text-align:right">10,600</td><td style="text-align:right">0</td></tr>
+          <tr><td>5 years</td><td style="text-align:right">13,000</td><td style="text-align:right">13,382</td><td style="text-align:right">382</td></tr>
+          <tr><td>10 years</td><td style="text-align:right">16,000</td><td style="text-align:right">17,908</td><td style="text-align:right">1,908</td></tr>
+          <tr><td>20 years</td><td style="text-align:right">22,000</td><td style="text-align:right">32,071</td><td style="text-align:right">10,071</td></tr>
+          <tr><td>30 years</td><td style="text-align:right">28,000</td><td style="text-align:right">57,435</td><td style="text-align:right">29,435</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where simple interest is used</h2>
+    <ul>
+      <li>
+        Short-term promissory notes and bridging finance, where the term is in days and compounding would
+        make almost no difference.
+      </li>
+      <li>
+        Many private and family loans, because it is easy to agree and easy to verify.
+      </li>
+      <li>
+        US car loans, which are usually called simple-interest loans. Interest accrues daily on the
+        outstanding balance, so early payment reduces the interest charged.
+      </li>
+      <li>
+        Statutory interest on late commercial payments in many jurisdictions, and court-awarded interest on
+        damages.
+      </li>
+      <li>
+        Bond coupon calculations between payment dates, where accrued interest is pro-rated on a day count
+        basis.
+      </li>
+    </ul>
+    <p>
+      Savings accounts, credit cards, mortgages and student loans almost always compound. A product that
+      quotes an APY or an AER gives a compound figure.
+    </p>
+
+    <h2>Day counts and part years</h2>
+    <p>
+      This calculator converts days to years by dividing by 365. Financial contracts use other conventions as
+      well, such as 30/360, actual/360 and actual/365, and the choice changes the answer by up to about 1.4%.
+      For contractual use, check which convention your agreement specifies.
+    </p>
+  </Fragment>
+</ToolLayout>

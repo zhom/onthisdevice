@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ImageColorPicker from '@/components/tools/image-edit/ImageColorPicker.tsx'
+---
+
+<ToolLayout slug="image-color-picker">
+  <ImageColorPicker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to pick a colour from an image</h2>
+    <ol>
+      <li>Drop in a screenshot, photo or logo.</li>
+      <li>Move the pointer over the image. The magnifier shows an 11 × 11 pixel neighbourhood so you can see exactly which pixel you are on.</li>
+      <li>Click to lock the colour. The tool adds it to the history, and all notations (HEX, RGB, RGBA, HSL, a CSS custom property and a UIColor initialiser) are ready to copy.</li>
+      <li>Use the palette panel for the main colours of the whole image.</li>
+    </ol>
+
+    <h2>Keyboard use</h2>
+    <p>
+      A mouse is hard to place exactly on the edge of a letterform or a one-pixel border. Tab to the
+      image, then use the arrow keys to move the sample point one pixel at a time. Hold
+      <kbd>Shift</kbd> for ten-pixel jumps, and press <kbd>Enter</kbd> to pick. The coordinate readout
+      next to the magnifier shows your exact position, so you can sample the same pixel from two
+      versions of a screenshot.
+    </p>
+
+    <h2>Reading the colour notations</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Notation</th><th>Example</th><th>Where you would use it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>HEX</td><td><code>#3b82f6</code></td><td>CSS, design tools, almost everywhere</td></tr>
+          <tr><td>RGB</td><td><code>rgb(59, 130, 246)</code></td><td>CSS, canvas APIs, image editors</td></tr>
+          <tr><td>RGBA</td><td><code>rgba(59, 130, 246, 1)</code></td><td>When the source pixel is semi-transparent</td></tr>
+          <tr><td>HSL</td><td><code>hsl(217, 91%, 60%)</code></td><td>Tints and shades: change only the lightness</td></tr>
+          <tr><td>CSS variable</td><td><code>--picked: #3b82f6;</code></td><td>Paste into a token file</td></tr>
+          <tr><td>UIColor</td><td><code>UIColor(red: 0.231, …)</code></td><td>iOS and macOS development</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Learn HSL. Hue, saturation and lightness are separate numbers, so you can build a whole scale from
+      one sampled colour by changing only the lightness. In HEX that is guesswork.
+    </p>
+
+    <h2>How the dominant palette is built</h2>
+    <p>
+      The palette uses median cut, the quantisation algorithm that built GIF palettes for thirty years.
+      The tool samples up to 24,000 pixels evenly across the image as points in RGB space. It splits the
+      box that holds them at the median of the channel with the widest spread. That gives two boxes, and
+      the split repeats on the widest box until there is one box per swatch you asked for. The average of
+      each box is its swatch, and the percentage is that box's share of the sampled pixels.
+    </p>
+    <p>
+      Median cut divides by population, so a large area of near-identical sky gives several similar
+      blues, and a small but vivid logo may get no swatch. If a colour you can see is missing, raise the
+      swatch count. If it still does not show, sample it with the eyedropper.
+    </p>
+
+    <h2>Accuracy notes</h2>
+    <ul>
+      <li>JPEG artefacts: a flat area in a JPEG varies by a few units per channel, mostly near edges. For an exact brand colour, sample from the middle of a large flat region, or use a PNG.</li>
+      <li>Colour profiles: the browser decodes the image and applies any embedded profile, so you sample what you see on screen. An image tagged Display P3 gives different numbers from the same file read as raw sRGB.</li>
+      <li>Screenshots are better than photos. A photograph of a screen has the camera's white balance and the display's tint. To pick a UI colour, take a screenshot of the UI.</li>
+      <li>Transparency: the tool shows the alpha channel as it is. The swatch shows over a checkerboard, so semi-transparent pixels are easy to see.</li>
+    </ul>
+
+    <h2>Nothing is uploaded, including the palette</h2>
+    <p>
+      The tool reads the image once into an ImageData buffer with <code>getImageData</code>, and all
+      later work is arithmetic on that buffer. No pixels leave the browser. Screenshots for colour
+      picking are often unreleased product designs, internal dashboards or client work under NDA.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/hex-to-rgb-converter">HEX to RGB Converter</a> converts a value you already have,
+      <a href="/image-metadata-viewer">Image Metadata Viewer</a> shows the colour profile and camera
+      data of a file, and <a href="/meme-generator">Meme Generator</a> or
+      <a href="/add-text-to-image">Add Text to Image</a> add text in the colour you sampled.
+    </p>
+  </Fragment>
+</ToolLayout>

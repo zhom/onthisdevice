@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResizeImage from '@/components/tools/image-edit/ResizeImage.tsx'
+---
+
+<ToolLayout slug="resize-image">
+  <ResizeImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to resize an image</h2>
+    <ol>
+      <li>Drop one or more images onto the box above, or click it to browse. Your browser reads JPG, PNG, WebP, AVIF, GIF and BMP directly.</li>
+      <li>Choose how to set the new size: <strong>by pixels</strong> for an exact width or height, <strong>by percentage</strong> to scale proportionally, or a <strong>preset</strong> for a known screen or social size.</li>
+      <li>Leave the chain button locked to keep the original proportions. The tool then scales each image from the side you typed into, so a mixed batch of portrait and landscape photos is not distorted.</li>
+      <li>Press <strong>Resize</strong>. Download the files one at a time, or the whole batch as a ZIP.</li>
+    </ol>
+
+    <h2>Why the resampling filter matters</h2>
+    <p>
+      To make an image smaller, you discard pixels, and the method decides whether the result is sharp or
+      soft. Nearest-neighbour sampling picks one source pixel for each output pixel and discards the rest,
+      which gives jagged edges and shimmering detail. This tool uses <strong>lanczos3</strong>, a windowed
+      sinc filter that takes a weighted average of a 6 × 6 neighbourhood for each output pixel. Most
+      professional photo software uses it, and it is sharper than the browser's built-in scaling on text,
+      fine textures and diagonal lines.
+    </p>
+    <p>
+      Resampling happens in linear RGB with premultiplied alpha. This prevents the dark halos around the
+      edges of transparent PNGs scaled in gamma space.
+    </p>
+
+    <h2>Upscaling limits</h2>
+    <p>
+      Enlarging cannot add detail that was never captured. The extra pixels are interpolated from their
+      neighbours, so a 400 px image enlarged to 1600 px always looks soft. Lanczos does this about as well
+      as a classical filter can. For more real detail, you need the original file at a higher resolution or
+      a machine-learning upscaler. For this reason, <strong>“don’t enlarge images that are already smaller
+      than the target”</strong> is on by default: it stops a batch preset from enlarging your smallest files.
+    </p>
+
+    <h2>Common image sizes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Use</th><th>Pixels</th><th>Aspect ratio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Instagram square post</td><td>1080 × 1080</td><td>1:1</td></tr>
+          <tr><td>Instagram portrait post</td><td>1080 × 1350</td><td>4:5</td></tr>
+          <tr><td>Instagram story / Reel</td><td>1080 × 1920</td><td>9:16</td></tr>
+          <tr><td>YouTube thumbnail</td><td>1280 × 720</td><td>16:9</td></tr>
+          <tr><td>X (Twitter) header</td><td>1500 × 500</td><td>3:1</td></tr>
+          <tr><td>Facebook cover</td><td>820 × 312</td><td>~21:8</td></tr>
+          <tr><td>LinkedIn banner</td><td>1584 × 396</td><td>4:1</td></tr>
+          <tr><td>Pinterest pin</td><td>1000 × 1500</td><td>2:3</td></tr>
+          <tr><td>Full HD screen</td><td>1920 × 1080</td><td>16:9</td></tr>
+          <tr><td>4K UHD screen</td><td>3840 × 2160</td><td>16:9</td></tr>
+          <tr><td>Open Graph preview</td><td>1200 × 630</td><td>~1.91:1</td></tr>
+          <tr><td>Profile picture</td><td>512 × 512</td><td>1:1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Resize or compress?</h2>
+    <p>
+      The two methods work together. Resizing changes the pixel count: half the width and half the height
+      removes three quarters of the pixels and usually three quarters of the bytes. Compression changes how
+      many bits each remaining pixel costs. For a photo on a web page, resize first to the largest size it
+      will be shown at, then <a href="/compress-image">compress</a> to about 80% quality. That often turns a
+      6 MB phone photo into a 120 KB file that still looks sharp on a retina screen.
+    </p>
+  </Fragment>
+</ToolLayout>

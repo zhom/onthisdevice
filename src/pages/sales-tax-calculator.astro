@@ -1,0 +1,132 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SalesTaxCalculator from '@/components/tools/everyday/SalesTaxCalculator.tsx'
+---
+
+<ToolLayout slug="sales-tax-calculator">
+  <SalesTaxCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the sales tax calculator</h2>
+    <ol>
+      <li>
+        Choose whether you are <strong>adding</strong> tax to a net price or <strong>removing</strong>
+        it from a gross total.
+      </li>
+      <li>Enter the amount.</li>
+      <li>
+        Pick your state from the list, or tap a row in the reference table. The state base rate loads with a
+        typical local add-on that you can change.
+      </li>
+      <li>
+        Outside the US, switch to <strong>Enter my own rate</strong> and type your VAT or GST
+        percentage.
+      </li>
+    </ol>
+    <p>
+      The result shows the net price, the tax and the gross total, with the state and local portions
+      separately when both apply.
+    </p>
+
+    <h2>Sales tax formulas</h2>
+    <p>
+      Adding tax: tax = net × rate ÷ 100, and gross = net + tax.<br />
+      Removing tax: net = gross ÷ (1 + rate ÷ 100), and tax = gross − net.
+    </p>
+    <p>
+      The common mistake is to remove tax by subtracting the same percentage. Take $108.25 at 8.25%:
+    </p>
+    <ul>
+      <li>Wrong: 108.25 − 8.25% = $99.32</li>
+      <li>Right: 108.25 ÷ 1.0825 = $100.00</li>
+    </ul>
+    <p>
+      The percentage was applied to the smaller net price, so you must divide it out of the larger gross
+      figure. The error grows with the rate: at 20% VAT the wrong method is off by 4% of the total.
+    </p>
+
+    <h3>Reverse VAT at common rates</h3>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rate</th>
+            <th scope="col">Divide the gross by</th>
+            <th scope="col">Tax as a share of the gross</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>5%</td><td>1.05</td><td>4.762%</td></tr>
+          <tr><td>6%</td><td>1.06</td><td>5.660%</td></tr>
+          <tr><td>7%</td><td>1.07</td><td>6.542%</td></tr>
+          <tr><td>8.25%</td><td>1.0825</td><td>7.621%</td></tr>
+          <tr><td>10%</td><td>1.10</td><td>9.091%</td></tr>
+          <tr><td>20%</td><td>1.20</td><td>16.667%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>State and local sales tax rates</h2>
+    <p>
+      Only the state portion of US sales tax is set at state level. Thirty-eight states also let counties,
+      cities and special-purpose districts levy their own sales tax, which is collected with the state rate
+      at the register. So two shops twenty minutes apart can charge different totals for the same item, and
+      the address sets the real rate, not the state.
+    </p>
+    <p>
+      Some special cases:
+    </p>
+    <ul>
+      <li>
+        California's 7.25% includes a 1.25% mandatory local component. For this reason it is quoted as the
+        highest "state" rate, although the state share is 6%.
+      </li>
+      <li>
+        Alaska has no state sales tax, but many boroughs and cities have one, so purchases there are not
+        always tax free.
+      </li>
+      <li>
+        Delaware, Montana, New Hampshire and Oregon charge no general sales tax at any level.
+      </li>
+      <li>
+        New Mexico levies a gross receipts tax on the seller and Hawaii a general excise tax. Sellers
+        normally pass both to the buyer, so they work like a sales tax.
+      </li>
+      <li>
+        Groceries, prescription drugs and clothing are exempt or taxed at a reduced rate in many states, so
+        the rate on your receipt can be lower than the general rate.
+      </li>
+    </ul>
+
+    <h2>Sales tax versus VAT</h2>
+    <p>
+      US sales tax is a single-stage tax, charged once at the final retail sale, and is normally shown
+      separately from the shelf price. VAT and GST are multi-stage: each business in the chain charges it
+      and reclaims what it paid, and consumer prices usually include it. The arithmetic in this tool works
+      for both. "Remove tax" is the calculation a VAT-registered business uses to split a gross invoice into
+      net and VAT.
+    </p>
+
+    <h2>Working out an unknown rate</h2>
+    <p>
+      If your receipt shows the net and the tax but not the rate:
+    </p>
+    <p>rate = tax ÷ net × 100</p>
+    <p>
+      A $4.13 tax on a $50.00 subtotal is 8.26%. Enter that figure in the custom rate field to reproduce
+      the receipt.
+    </p>
+
+    <h2>Accuracy and limits</h2>
+    <p>
+      The table lists state base rates and an approximate average local add-on. It is a reference and not a
+      compliance tool: rates change with legislation, sourcing rules differ between origin and destination
+      states, and some goods have their own rules. For filing or invoicing, get the exact rate for the
+      delivery address from your state revenue department or a certified rate service.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      The arithmetic runs in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

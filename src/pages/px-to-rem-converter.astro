@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="px-to-rem-converter">
+  <DevFormatCssUnits client:load from="px" to="rem" />
+  <Fragment slot="explainer">
+    <h2>The formula</h2>
+    <pre><code>rem = px ÷ root font size
+
+At the 16px browser default:
+  24px ÷ 16 = 1.5rem
+  14px ÷ 16 = 0.875rem
+  10px ÷ 16 = 0.625rem</code></pre>
+    <p>
+      The root font size is whatever <code>html</code> computes to. Leave it at 16 unless your project
+      changes it. If it does, set the field above, and all numbers on this page, including the
+      reference table, update.
+    </p>
+
+    <h2>The accessibility argument, stated plainly</h2>
+    <p>
+      A visitor who has set their browser&rsquo;s default text size to 20px has done so because 16px is
+      hard for them to read. If your type is in px, nothing changes for them: 14px stays 14px. If it is
+      in rem, the entire interface scales proportionally and the site becomes usable.
+    </p>
+    <p>
+      Page zoom is not the same thing. Zoom scales everything including the layout, which on a laptop
+      means horizontal scrolling; text-size preference scales the text within the layout. Browsers offer
+      both because they solve different problems, and only one of them is defeated by px.
+    </p>
+    <p>
+      This is also the reason to avoid px in media queries. A breakpoint at <code>768px</code> fires at
+      the same viewport width regardless of text size, so a user with large text hits the desktop layout
+      while their content is still overflowing.
+    </p>
+
+    <h2>What to use where</h2>
+    <table>
+      <thead><tr><th>Property</th><th>Unit</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><code>font-size</code></td><td>rem</td><td>Respects the user&rsquo;s preference; no compounding</td></tr>
+        <tr><td><code>margin</code>, <code>padding</code>, <code>gap</code></td><td>rem</td><td>Spacing should grow with type or the rhythm breaks</td></tr>
+        <tr><td><code>border-radius</code></td><td>rem, or px for small values</td><td>A 2px radius does not need to scale</td></tr>
+        <tr><td><code>border-width</code>, <code>outline-width</code></td><td>px</td><td>A hairline should stay a hairline</td></tr>
+        <tr><td>Breakpoints</td><td>rem or em</td><td>Layout should respond to text size, not just viewport width</td></tr>
+        <tr><td><code>max-width</code> for readable text</td><td>ch</td><td>Measure is about characters per line, roughly 60–75ch</td></tr>
+        <tr><td>Component-internal spacing</td><td>em</td><td>Scales with the component&rsquo;s own font size. See <a href="/px-to-em">px to em</a></td></tr>
+      </tbody>
+    </table>
+
+    <h2>The bulk rewrite, and what it deliberately skips</h2>
+    <p>
+      Paste a whole stylesheet and every matching length is converted at once. The scanner is
+      string-, comment- and <code>url()</code>-aware, so <code>content: "16px"</code> and
+      <code>url(sprite-32px.png)</code> are copied through untouched. Three categories are skipped by
+      default, each with its own switch:
+    </p>
+    <ul>
+      <li>Zero. <code>0rem</code> is noise; <code>0</code> is the same length in every unit.</li>
+      <li>1px and 2px. Almost always a hairline border, outline or shadow spread. Converting them to 0.0625rem makes them scale, and a scaled hairline renders as a blurry 1.3px line at some zoom levels.</li>
+      <li>Media query preludes. Converting a breakpoint changes when it fires, which is a design decision rather than a mechanical one. Do it deliberately.</li>
+    </ul>
+    <p>
+      There is also a property filter: enter <code>font-size, line-height</code> and only those
+      declarations are touched, which is the safest way to migrate an existing codebase incrementally.
+    </p>
+
+    <h2>The 62.5% trick, and the case against it</h2>
+    <p>
+      Setting <code>html &#123; font-size: 62.5% &#125;</code> makes 1rem equal 10px, so 1.4rem is 14px
+      and the arithmetic disappears. It is widely used and it has a real cost: it changes the default
+      text size for every visitor who has not overridden it, and you then have to set the body back to
+      1.6rem to compensate. It also breaks the direct correspondence between the user&rsquo;s chosen size
+      and what they get.
+    </p>
+    <p>
+      If your project uses it, set the root field above to 10 and this page will match. If you are
+      starting fresh, leave the root at 16, use the reference table, and let the build handle the
+      division.
+    </p>
+  </Fragment>
+</ToolLayout>

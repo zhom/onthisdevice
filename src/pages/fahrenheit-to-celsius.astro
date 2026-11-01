@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="fahrenheit-to-celsius">
+  <UnitsLifePairConverter client:load spec="fahrenheit-to-celsius" />
+  <Fragment slot="explainer">
+    <h2>Subtract first, then scale</h2>
+    <p>
+      Fahrenheit to Celsius reverses both steps of the other direction, and the order matters:
+    </p>
+    <p><strong>&deg;C = (&deg;F &minus; 32) &times; 5/9</strong></p>
+    <p>
+      Subtract 32 to align the zero points, then multiply by 5/9, because a Fahrenheit degree is smaller.
+      Dividing by 1.8 is the same operation and easier on a calculator. If you scale before you subtract,
+      the answer is always 14.2 degrees too low.
+    </p>
+
+    <h2>Thermostats, weather and comfort</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">&deg;F</th><th scope="col">&deg;C</th><th scope="col">Feels like</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>-17.8</td><td>Severe cold</td></tr>
+        <tr><td>32</td><td>0</td><td>Freezing</td></tr>
+        <tr><td>50</td><td>10</td><td>Coat weather</td></tr>
+        <tr><td>60</td><td>15.6</td><td>Cool spring day</td></tr>
+        <tr><td>68</td><td>20</td><td>Standard room temperature</td></tr>
+        <tr><td>72</td><td>22.2</td><td>The default US thermostat setting</td></tr>
+        <tr><td>80</td><td>26.7</td><td>Warm</td></tr>
+        <tr><td>90</td><td>32.2</td><td>Hot</td></tr>
+        <tr><td>100</td><td>37.8</td><td>Very hot; above body temperature</td></tr>
+      </tbody>
+    </table>
+    <p>
+      For weather, the Fahrenheit scale fits human experience well: 0 to 100 &deg;F goes from "unbearably
+      cold" to "unbearably hot" in most inhabited places, and the same span in Celsius is a narrow &minus;18
+      to 38.
+    </p>
+
+    <h2>The mental shortcut</h2>
+    <p>
+      Subtract 30 and halve. 70 &rarr; 20 (true 21.1). 90 &rarr; 30 (true 32.2). 50 &rarr; 10 (true 10). It
+      is a degree or two low in the middle of the range and exact at 50, which is enough to decide what to
+      wear.
+    </p>
+
+    <h2>Cooking with a US recipe</h2>
+    <p>
+      American oven temperatures come in 25 &deg;F steps that give untidy Celsius numbers, so European
+      editions round them:
+    </p>
+    <ul>
+      <li>325 &deg;F = 162.8 &deg;C, written as 160 &deg;C (gas 3)</li>
+      <li>350 &deg;F = 176.7 &deg;C, written as 180 &deg;C (gas 4)</li>
+      <li>375 &deg;F = 190.6 &deg;C, written as 190 &deg;C (gas 5)</li>
+      <li>400 &deg;F = 204.4 &deg;C, written as 200 &deg;C (gas 6)</li>
+      <li>425 &deg;F = 218.3 &deg;C, written as 220 &deg;C (gas 7)</li>
+    </ul>
+    <p>
+      For a fan oven, subtract another 20 &deg;C from those figures. The oven temperature converter on this
+      site does the whole chain, including gas marks.
+    </p>
+
+    <h2>Fahrenheit&apos;s odd zero</h2>
+    <p>
+      In 1724 Daniel Fahrenheit set his zero at the temperature of an ice, water and ammonium chloride brine,
+      the coldest thing he could reliably reproduce, and 96 at about human body temperature. The modern
+      definition uses neither point; it is fixed by reference to the Celsius scale. This history is why the
+      numbers do not line up neatly.
+    </p>
+  </Fragment>
+</ToolLayout>

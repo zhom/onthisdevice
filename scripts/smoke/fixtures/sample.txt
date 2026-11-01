@@ -1,0 +1,3 @@
+Hello from the smoke harness.
+Second line, with some words.
+Third line: 42 apples.

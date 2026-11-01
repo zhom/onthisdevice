@@ -1,0 +1,130 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FileIntegrityComparison from '@/components/tools/security/FileIntegrityComparison.tsx'
+---
+
+<ToolLayout slug="file-integrity-comparison">
+  <FileIntegrityComparison client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to compare two files</h2>
+    <ol>
+      <li>
+        Drop one file into each panel. The order does not matter, and the files can have different names,
+        folders and timestamps.
+      </li>
+      <li>
+        Let the comparison run. The tool reads both files side by side in 4 MB slices, computes SHA-256 for
+        each, and compares the bytes directly, all in one pass.
+      </li>
+      <li>
+        Read the result. Identical means the contents are identical byte for byte. Different means at least
+        one byte differs, and the panel tells you which one.
+      </li>
+      <li>
+        Copy either digest if you need to paste it into a ticket, a release note or a message.
+      </li>
+    </ol>
+
+    <h2>What is compared, and what is ignored</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th>
+          <th>Affects the verdict?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>File contents (every byte)</td><td>Yes: this is the whole comparison.</td></tr>
+        <tr><td>File length</td><td>Yes. Files of different lengths cannot be identical.</td></tr>
+        <tr><td>Filename</td><td>No.</td></tr>
+        <tr><td>Folder or drive</td><td>No.</td></tr>
+        <tr><td>Created and modified timestamps</td><td>No.</td></tr>
+        <tr><td>Permissions and ownership</td><td>No.</td></tr>
+        <tr><td>Extended attributes, resource forks, alternate data streams</td><td>No: the browser cannot see them.</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Remember the last row on macOS and Windows: two files can have byte-identical contents and different
+      metadata that the browser cannot access. For ordinary checks (did a copy survive, does a download
+      match, did two backups diverge), the contents are what matter.
+    </p>
+
+    <h2>Why the first differing byte is useful</h2>
+    <p>
+      That two files differ tells you little. Where they first differ usually tells you why:
+    </p>
+    <ul>
+      <li>
+        Offset 0: completely different files, or the same content in a different container format. Check
+        the file signatures.
+      </li>
+      <li>
+        A small offset, inside the header: embedded metadata such as a timestamp, a producer string, a
+        compression level or a UUID from the exporting application. Common with PDFs, ZIPs and images.
+      </li>
+      <li>
+        Deep into the file, with a matching prefix and one file shorter: a truncated or interrupted copy.
+        The tool reports "beyond the shorter file" when one file is an exact prefix of the other, the
+        classic sign of an incomplete download.
+      </li>
+      <li>
+        Deep into the file, same length: one corrupted block, a bit flip from failing storage, or a
+        targeted change. Isolated damage in the middle of a file that otherwise matches usually means a
+        hardware problem, not an attack.
+      </li>
+      <li>
+        At the very end: a trailing newline, an appended signature block, or padding from an archiver.
+      </li>
+    </ul>
+
+    <h2>Common reasons two "identical" files differ</h2>
+    <ul>
+      <li>
+        Line endings: a text file that went through Windows has CRLF where the original had LF. Each line
+        differs at the byte level, but the content reads the same.
+      </li>
+      <li>
+        A trailing newline: editors disagree about whether the last line ends with one. One byte gives a
+        completely different digest.
+      </li>
+      <li>
+        Text encoding: UTF-8 with or without a byte-order mark. Three invisible bytes at offset 0.
+      </li>
+      <li>
+        Timestamps inside archives: zipping the same directory twice gives different bytes, because the
+        entries record the time of compression.
+      </li>
+      <li>
+        Image and document metadata: EXIF, XMP and PDF producer strings change when a file is saved again,
+        even with no visible edit.
+      </li>
+      <li>
+        Silent corruption: rare, but real. Checksums exist to catch it.
+      </li>
+    </ul>
+
+    <h2>Handling very large files</h2>
+    <p>
+      Both files are streamed, not loaded, so peak memory stays at a few megabytes, for two text files or
+      two 50 GB disk images. The limit is disk read speed, and the panel shows the combined throughput.
+      Nothing is uploaded, so you can compare large private files; a server-based comparison would need
+      both files transferred in full.
+    </p>
+    <p>
+      SHA-256 is computed during the byte comparison, so you also get the digests. Two files with the same
+      SHA-256 are identical for all practical purposes. The direct byte comparison lets the tool find the
+      exact position of the difference.
+    </p>
+
+    <h2>Good uses for this</h2>
+    <ul>
+      <li>Confirming that a backup or a restore is correct before you delete the original.</li>
+      <li>Checking that a large file copied to an external drive or NAS arrived intact.</li>
+      <li>Deciding if two similarly named files in your downloads folder are duplicates.</li>
+      <li>Verifying that a build is reproducible: the same inputs gave the same artefact.</li>
+      <li>Checking that an export from one tool matches an export from another.</li>
+      <li>Confirming that a file you received matches the copy you already had.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

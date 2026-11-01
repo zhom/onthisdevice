@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatSql from '@/components/tools/dev/DevFormatSql.tsx'
+---
+
+<ToolLayout slug="sql-minify">
+  <DevFormatSql client:load mode="minify" />
+  <Fragment slot="explainer">
+    <h2>When to minify SQL to one line</h2>
+    <p>
+      Minifying SQL does not improve performance, because the database discards whitespace when it parses the
+      query. It helps when you need to store or send the query in four places:
+    </p>
+    <ul>
+      <li>Config files: a multi-line query in YAML needs a block scalar and correct indentation; in JSON each newline must be escaped as <code>\n</code>. One line avoids both.</li>
+      <li>Environment variables: a newline inside an env var is awkward in Docker, systemd and most CI systems. One line needs no special quoting.</li>
+      <li>Log lines: structured loggers treat a newline as a record boundary, so a multi-line query becomes six unrelated log entries, and a grep finds only one fragment.</li>
+      <li>Comparing two queries: two equivalent queries with different formatting look completely different. Minify both, and a character-level diff shows the real change.</li>
+    </ul>
+
+    <h2>Comments: remove or keep?</h2>
+    <p>
+      The default is to remove them, and not only to save bytes. A line comment that starts with
+      <code>--</code> runs to the end of the line, so without the newline it hides the rest of the statement.
+      If you keep comments, the tool must add a newline after each one, so the output is no longer one line.
+    </p>
+    <p>
+      Block comments (<code>/* … */</code>) are safer because they have an explicit end, but they still cost
+      bytes and seldom help a machine. If the comments matter, keep the formatted version in version control
+      and minify only where you use the query.
+    </p>
+
+    <h2>What stays exactly the same</h2>
+    <table>
+      <thead><tr><th>Token type</th><th>Treatment</th></tr></thead>
+      <tbody>
+        <tr><td>String literals</td><td>Byte-for-byte, including doubled quotes, backslash escapes in MySQL, and Postgres dollar-quoted bodies</td></tr>
+        <tr><td>Quoted identifiers</td><td>Byte-for-byte, with the quoting style of the selected dialect</td></tr>
+        <tr><td>Numbers, operators, parameters</td><td>Unchanged; <code>$1</code>, <code>:name</code>, <code>@var</code> and <code>?</code> all stay</td></tr>
+        <tr><td>Keywords</td><td>Case changed only if you ask for it</td></tr>
+        <tr><td>Whitespace between tokens</td><td>Removed, or reduced to one space where removal would join two tokens</td></tr>
+      </tbody>
+    </table>
+    <p>
+      <code>a AND b</code> cannot become <code>aANDb</code>, so the tool keeps one space when the characters
+      before and after are both word characters. Around commas, parentheses and operators, the space goes.
+    </p>
+
+    <h2>How much smaller?</h2>
+    <p>
+      A formatted analytics query with one column per line and a comment header usually loses
+      35&ndash;55% of its bytes. A compact hand-written query can lose 10%. The before, after and saved
+      percentage for your query appear above the output.
+    </p>
+
+    <h2>Getting the readable query back</h2>
+    <p>
+      The SQL minifier keeps every token, so the <a href="/sql-formatter">SQL formatter</a> can rebuild a
+      readable query from the result. Comments you removed are lost. Keep the readable version as the source
+      and treat the minified form as build output.
+    </p>
+  </Fragment>
+</ToolLayout>

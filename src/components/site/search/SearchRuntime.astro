@@ -1,0 +1,27 @@
+---
+/**
+ * On-device search runtime, once per page (BaseLayout): where the search index is (versioned,
+ * so a deploy never reads a stale cache), which tool this page is, and the loader for "drop a
+ * file anywhere" and paste. Nothing loads until a file is dragged or pasted.
+ */
+import { TOOL_BY_SLUG } from '@/lib/tools'
+import { siteIndex } from '@/lib/search/build'
+import { RUNTIME_ID } from '@/lib/search/runtime'
+
+const slug = Astro.url.pathname.replace(/^\/+|\/+$/g, '')
+const tool = TOOL_BY_SLUG.get(slug)
+---
+
+<div
+  id={RUNTIME_ID}
+  hidden
+  data-index={`/search-index.json?v=${siteIndex().version}`}
+  data-tool={tool?.slug}
+  data-title={tool?.title}
+  data-accepts={tool?.accepts?.join(' ')}
+>
+</div>
+
+<script>
+  import '@/components/site/search/runtime-client'
+</script>

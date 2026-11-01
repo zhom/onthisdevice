@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MuteVideo from '@/components/tools/media/MuteVideo.tsx'
+---
+
+<ToolLayout slug="mute-video">
+  <MuteVideo client:load />
+  <Fragment slot="explainer">
+    <h2>How to remove the sound from a video</h2>
+    <ol>
+      <li>Drop the video in. MP4, MOV, MKV, WebM and AVI all work.</li>
+      <li>If you want, switch on <strong>Also strip metadata</strong> to clear titles, comments, timestamps and GPS tags at the same time.</li>
+      <li>Press <strong>Remove audio</strong>. The video stream is copied, not re-encoded, so a large file finishes in seconds.</li>
+      <li>Play the result to confirm it is silent, then download it.</li>
+    </ol>
+
+    <h2>Why this is lossless and fast</h2>
+    <p>
+      A container such as MP4 holds separate video and audio streams. To mute a video, the tool writes
+      the container again with only the video stream inside: FFmpeg's <code>-c:v copy -an</code>. No
+      frame is decoded, so nothing is re-compressed, and the speed depends on your disk, not your CPU.
+    </p>
+    <p>
+      A video editor usually renders the whole timeline again, which costs time and a generation of
+      quality. Here the picture that comes out is byte-for-byte the picture that went in.
+    </p>
+
+    <h2>How much space you get back</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Audio in the source</th>
+            <th>Saved per minute</th>
+            <th>Saved in an hour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AAC 128 kbps stereo</td>
+            <td>≈ 0.9 MB</td>
+            <td>≈ 55 MB</td>
+          </tr>
+          <tr>
+            <td>AAC 256 kbps stereo</td>
+            <td>≈ 1.8 MB</td>
+            <td>≈ 110 MB</td>
+          </tr>
+          <tr>
+            <td>PCM 48 kHz 16-bit stereo</td>
+            <td>≈ 11 MB</td>
+            <td>≈ 660 MB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When you would want a silent video</h2>
+    <ul>
+      <li>Background loops on a website: browsers autoplay only muted video, and an audio track wastes bandwidth.</li>
+      <li>Privacy: a clip filmed in an office or hospital may show nothing sensitive, but the conversation in the background can.</li>
+      <li>Copyright: remove licensed music before you upload to avoid automated content claims.</li>
+      <li>Re-scoring: remove the original sound before you put the clip into an edit with a new soundtrack.</li>
+      <li>Smaller files for silent screen recordings that captured unwanted microphone noise.</li>
+    </ul>
+
+    <h2>Keeping the audio instead</h2>
+    <p>
+      To keep the soundtrack as a separate file, run
+      <a href="/extract-audio-from-video">extract audio from video</a> first. In stream-copy mode it
+      saves the original AAC or Opus track with no quality loss. To keep the sound but change the
+      picture, see <a href="/compress-video">compress video</a> or
+      <a href="/resize-video">resize video</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

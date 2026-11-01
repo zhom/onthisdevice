@@ -1,0 +1,18 @@
+/* TEAM */
+    Site: onthisdevice.com
+    Contact: contact [at] geolara.com
+
+/* SITE */
+    Standards: HTML5, CSS3, ECMAScript 2023, WebAssembly
+    Components: Astro 5, React 19, Tailwind CSS v4, shadcn/ui,
+                ffmpeg.wasm, jSquash, pdf-lib, pdfjs-dist
+    Software: Astro (static output), Vite, TypeScript (strict)
+    Hosting: static CDN — Netlify / Cloudflare Pages / Vercel
+
+/* PROMISE */
+    Every tool on this site runs entirely in your browser.
+    Your files are never uploaded. There is no server, no API,
+    no database, and no analytics — the Content-Security-Policy
+    ships with `connect-src 'self' blob: data:`, so the site is
+    not merely promising it, it is technically unable to phone home.
+    Turn off your network after the page loads: everything still works.

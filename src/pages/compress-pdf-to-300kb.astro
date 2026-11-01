@@ -1,0 +1,125 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-300kb">
+  <PdfSecureCompressToSize client:load targetBytes={307200} />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>The comfortable middle</h2>
+      <p>
+        At 300 KB, a multi-page document no longer looks compressed. It is about 50 KB a page across
+        six pages: enough for a scan at about 110 DPI at a JPEG quality without visible blocking. At
+        that point most people cannot see that the file changed.
+      </p>
+      <p>
+        You see it as a limit on contract-submission portals, some medical-records upload forms and
+        grant applications. People also choose it when they are told an attachment is "too big" with
+        no number.
+      </p>
+    </section>
+
+    <section>
+      <h2>Resolution, in plain terms</h2>
+      <p>
+        DPI is the number of pixels rendered for each inch of the printed page. An A4 page is 8.27 inches
+        wide, so:
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">DPI</th>
+              <th scope="col">A4 page in pixels</th>
+              <th scope="col">Looks like</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tabular-nums">72</td>
+              <td class="tabular-nums">595 × 842</td>
+              <td>Fine at 100% zoom; small print softens close up</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">96</td>
+              <td class="tabular-nums">794 × 1123</td>
+              <td>The old Windows screen standard: readable, ordinary</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">110</td>
+              <td class="tabular-nums">910 × 1287</td>
+              <td>The usual sweet spot: sharp on a laptop and on a phone</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">150</td>
+              <td class="tabular-nums">1240 × 1754</td>
+              <td>Prints acceptably; footnotes and stamps stay sharp</td>
+            </tr>
+            <tr>
+              <td class="tabular-nums">200</td>
+              <td class="tabular-nums">1654 × 2339</td>
+              <td>Near print quality; only worth it with a large byte budget</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Two times the DPI gives four times the pixels, so DPI is the most expensive setting on the page.
+        At a 300 KB target, the automatic setting usually chooses 96 to 150 DPI, depending on the number
+        of pages.
+      </p>
+    </section>
+
+    <section>
+      <h2>Colour or grayscale?</h2>
+      <p>
+        A JPEG stores brightness at full resolution and colour at half in each direction. The two chroma
+        planes together are about a sixth to a third of the bytes of a typical scan, and more when the
+        scan has coloured noise, which camera-based scans always have.
+      </p>
+      <ul>
+        <li>
+          Turn grayscale on for black-ink documents, photocopies, printed letters, contracts and
+          documents you will print in mono.
+        </li>
+        <li>
+          Leave it off when colour carries meaning: a stamped certificate, a highlighted passage, a
+          chart, an identity document, or a signature where blue ink must look different from black.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Why "300 KB" rarely comes out at exactly 300 KB</h2>
+      <p>
+        The search stops at the largest quality that still fits. JPEG output size moves in steps, so the
+        last accepted attempt is usually a little under the target: 291 KB, 297 KB, 283 KB. This is
+        correct, because the alternative is a file over the limit that the form rejects.
+      </p>
+      <p>
+        The result panel shows both numbers with a bar to compare them, and the arithmetic of the
+        search: your target, minus the estimated container overhead, divided by the page count.
+      </p>
+    </section>
+
+    <section>
+      <h2>Compressing on a phone</h2>
+      <p>
+        The tool works on mobile, which matters because people often need to get a file under 300 KB
+        on a phone, close to a deadline. Two notes:
+      </p>
+      <ul>
+        <li>
+          Mobile browsers limit the memory of a tab. A very large scan, such as 40 pages at 600 DPI,
+          can use it up, and the tab reloads. Split the document first, or use a laptop.
+        </li>
+        <li>
+          Rendering uses the CPU, so expect two to four times the time of a laptop. Progress shows per
+          page.
+        </li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

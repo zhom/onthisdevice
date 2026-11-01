@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BusinessDaysCalculator from '@/components/tools/datetime/BusinessDaysCalculator.tsx'
+---
+
+<ToolLayout slug="business-days-calculator">
+  <BusinessDaysCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to count working days</h2>
+    <ol>
+      <li>Enter the start and end dates. The count includes both when they are working days.</li>
+      <li>
+        Tick the days that are non-working where you are. Saturday and Sunday are pre-selected; a Friday–Saturday
+        weekend or a single rest day takes one click.
+      </li>
+      <li>
+        Add your holidays. Type a date and a name, or import a ready-made set for a year and then delete the days your
+        organisation works.
+      </li>
+      <li>Read the working-day total and the full list of removed days, with the reason for each.</li>
+    </ol>
+
+    <h2>How the count is built up</h2>
+    <p>
+      The calculation has three passes, and the result panel shows each one, so you can audit the number:
+    </p>
+    <ol>
+      <li>Calendar days: each day in the inclusive range.</li>
+      <li>Minus weekend days: the weekdays you marked as non-working.</li>
+      <li>
+        Minus holidays: only those on a day that is still in the count after the weekend pass, so a holiday on a
+        Sunday is not subtracted twice.
+      </li>
+    </ol>
+    <p>
+      Spreadsheet counts often get this last step wrong when people subtract a holiday count by hand. For the same
+      reason, the business days calculator lists the holidays it removed, not only a number.
+    </p>
+
+    <h2>Weekends are not Saturday and Sunday everywhere</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Region</th>
+            <th>Usual weekend</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Most of Europe, the Americas, East Asia, Australia</td>
+            <td>Saturday and Sunday</td>
+          </tr>
+          <tr>
+            <td>UAE (since 2022), Israel</td>
+            <td>Friday and Saturday, with a half day on Friday in some sectors</td>
+          </tr>
+          <tr>
+            <td>Saudi Arabia, Qatar, Kuwait, Oman, Egypt, Jordan</td>
+            <td>Friday and Saturday</td>
+          </tr>
+          <tr>
+            <td>Iran</td>
+            <td>Thursday and Friday, or Friday only</td>
+          </tr>
+          <tr>
+            <td>Nepal</td>
+            <td>Saturday only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Set the checkboxes to the working week of the contract or team you count for, which may differ from your own
+      calendar.
+    </p>
+
+    <h2>Your holiday list stays on this device</h2>
+    <p>
+      Holidays are saved to the local storage of this browser. They are not uploaded, they stay between visits, and
+      the page uses them again the next time you open it. Storage is per browser and per device, so the list does not
+      follow you to your phone. Export it as CSV for a copy. Clearing site data removes it.
+    </p>
+    <p>
+      The import buttons generate holidays from their rules, not from a fixed table, so they work for any year you
+      type. They are a starting point and not legal advice: substitute days, regional holidays and company shutdowns
+      vary, so review the list before you rely on the count.
+    </p>
+
+    <h2>Where working-day counts matter</h2>
+    <ul>
+      <li>Service level agreements: "resolved within 5 business days" needs an agreed holiday calendar.</li>
+      <li>Payroll and leave: annual leave is usually deducted in working days, not calendar days.</li>
+      <li>Legal deadlines: many court and tax rules count clear business days and move a deadline forward if it falls on a holiday.</li>
+      <li>Payment terms: banking days exclude weekends and bank holidays, so a transfer sent on Friday can arrive on Tuesday.</li>
+      <li>Project planning: a 20-working-day task is four weeks only if no holidays fall inside it.</li>
+    </ul>
+
+    <h2>Counting conventions to watch</h2>
+    <p>
+      Some rules count business days from an event and exclude the day of the event; others include it. This
+      calculator counts an inclusive range (both endpoints, when they are working days), which is the most common
+      reading of "between these dates". If your rule excludes the start day, subtract one working day from the
+      result, or move the start date one day forward before you count.
+    </p>
+  </Fragment>
+</ToolLayout>

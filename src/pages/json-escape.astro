@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-escape">
+  <DevFormatJson client:load mode="escape" />
+  <Fragment slot="explainer">
+    <h2>What escaping for JSON means</h2>
+    <p>
+      A JSON string is delimited by double quotes, so a double quote inside it must be marked as data,
+      not a delimiter. The same applies to the backslash that does the marking, and to the control
+      characters that cannot appear literally. JSON escape applies those rules to any text, so the
+      result is one valid JSON string.
+    </p>
+
+    <h2>The complete escape table</h2>
+    <table>
+      <thead><tr><th>Character</th><th>Escaped as</th><th>Required?</th></tr></thead>
+      <tbody>
+        <tr><td>Double quote <code>"</code></td><td><code>\"</code></td><td>Always</td></tr>
+        <tr><td>Backslash <code>\</code></td><td><code>\\</code></td><td>Always</td></tr>
+        <tr><td>Backspace (U+0008)</td><td><code>\b</code></td><td>Always</td></tr>
+        <tr><td>Form feed (U+000C)</td><td><code>\f</code></td><td>Always</td></tr>
+        <tr><td>Line feed (U+000A)</td><td><code>\n</code></td><td>Always</td></tr>
+        <tr><td>Carriage return (U+000D)</td><td><code>\r</code></td><td>Always</td></tr>
+        <tr><td>Tab (U+0009)</td><td><code>\t</code></td><td>Always</td></tr>
+        <tr><td>Other control characters</td><td><code>\u00XX</code></td><td>Always</td></tr>
+        <tr><td>Forward slash <code>/</code></td><td><code>\/</code></td><td>Optional. Needed only to avoid <code>&lt;/script&gt;</code> inside HTML</td></tr>
+        <tr><td>Any printable Unicode</td><td>Itself</td><td>Never. JSON is UTF-8</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The nested-JSON case</h2>
+    <p>
+      The most common use is to put one JSON document inside another. Webhook payloads do it
+      (<code>&#123;"event": "x", "payload": "&#123;\"id\":1&#125;"&#125;</code>), log aggregators do it,
+      and so do message queues that carry a typed envelope around an opaque body. Paste the inner
+      document here, keep the surrounding quotes, and put the result into the outer document as a value.
+    </p>
+    <p>
+      If you escape twice, you get <code>\\"</code> everywhere. This is almost always a bug in a pipeline
+      where two layers both escape. If the text has more backslashes than quotes, run
+      <a href="/json-unescape">unescape</a> until it stops changing, then fix the layer that escapes
+      without need.
+    </p>
+
+    <h2>Escaping is context-specific</h2>
+    <p>
+      People often confuse three escaping schemes. Each makes text &ldquo;safe&rdquo; for one context
+      only.
+    </p>
+    <ul>
+      <li>JSON escaping uses backslashes and applies inside a JSON string.</li>
+      <li>URL encoding uses <code>%XX</code> and applies inside a URL. See the <a href="/url-encoder-decoder">URL encoder</a>.</li>
+      <li>HTML escaping uses <code>&amp;entity;</code> and applies inside markup. See the <a href="/html-entity-encoder">HTML entity encoder</a>.</li>
+    </ul>
+    <p>
+      Text that goes through two contexts needs both, in the correct order. Escape JSON in an HTML
+      attribute for JSON first, then for HTML.
+    </p>
+
+    <h2>Should the quotes be included?</h2>
+    <p>
+      Keep them when you paste the result as a complete JSON value. Turn them off when the destination
+      already has quotes, for example between the quotes of an existing string in your editor.
+    </p>
+  </Fragment>
+</ToolLayout>

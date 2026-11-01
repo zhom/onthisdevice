@@ -1,0 +1,97 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="mp3-to-wav">
+  <GifAudioToMp3
+    client:load
+    accept=".mp3,.mp2,audio/mpeg"
+    sourceLabel="MP3"
+    sourceHint="Decoded to uncompressed PCM at your chosen bit depth. Expect about 10 MB per minute"
+    target="wav"
+    formatNote="WAV is uncompressed, so sample rate, channel count and bit depth set the output size. The bitrate of the source MP3 does not change it."
+  />
+  <Fragment slot="explainer">
+    <h2>What decoding to WAV does and does not do</h2>
+    <p>
+      A WAV file is a header followed by raw PCM samples. To convert MP3 to WAV, the tool runs the MP3
+      decoder and writes the samples it produces. The result is an exact, lossless copy of the decoded
+      audio, but not a copy of the original recording. What the MP3 encoder discarded stays lost.
+    </p>
+    <p>
+      So this conversion does not improve quality. It gives a format that editors, samplers, DAWs and
+      analysis tools can open, scrub and process directly, with no decoding on each operation and no
+      more quality loss each time you save.
+    </p>
+
+    <h2>Choosing a bit depth</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Depth</th><th>Bytes per sample</th><th>Stereo 44.1 kHz size</th><th>Use it when</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>16-bit PCM</td><td>2</td><td>10.1 MB per minute</td><td>Playback, burning, maximum compatibility. The CD standard.</td></tr>
+          <tr><td>24-bit PCM</td><td>3</td><td>15.1 MB per minute</td><td>The file is going into a mix where you will apply gain, EQ and effects.</td></tr>
+          <tr><td>32-bit float</td><td>4</td><td>20.2 MB per minute</td><td>Your DAW works in float and you want processing headroom that cannot clip.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A 16-bit source converted to 24-bit gets no new information: the extra bits are zeros. It is
+      still sometimes the correct choice, because each later processing step in your editor then has
+      room below the noise floor.
+    </p>
+
+    <h2>Working out the file size in advance</h2>
+    <p>
+      For uncompressed audio, the size is exact:
+    </p>
+    <p><code>bytes = sample rate × channels × (bit depth ÷ 8) × seconds</code></p>
+    <p>
+      A four-minute stereo track at 44 100 Hz and 16-bit is 44 100 × 2 × 2 × 240 = 42 336 000 bytes,
+      about 40 MB. The bitrate of the source MP3 is not in that calculation: a 128 kbps MP3 and a
+      320 kbps MP3 of the same track give WAV files of the same size. So upload-based converters often
+      cap WAV output.
+    </p>
+
+    <h2>The gap of silence at the start</h2>
+    <p>
+      MP3 is a frame-based format: the encoder pads the start of the stream so the first real audio
+      starts on a frame boundary, usually 576 or 1105 samples in. Decoders that ignore this play the
+      padding as a few milliseconds of silence.
+    </p>
+    <p>
+      Most files written since the mid-2000s have a LAME or iTunes gapless information tag that says
+      exactly how much to trim, and FFmpeg uses it. Older or unusually encoded files may not have it,
+      and then a few milliseconds remain. That rarely matters, but adjust it by hand if you cut the file
+      into exactly timed samples.
+    </p>
+
+    <h2>What to do with the WAV once you have it</h2>
+    <ul>
+      <li>Sampling and looping: samplers want raw PCM so they can loop at exact sample positions with no decode latency.</li>
+      <li>Editing: each cut and save of an MP3 re-encodes it and adds loss. Edit in WAV and export once at the end.</li>
+      <li>Voice-over and video work: most NLEs prefer PCM for scrubbing performance and frame-accurate sync.</li>
+      <li>Analysis and machine learning: almost all audio libraries expect PCM input and would decode the MP3 themselves.</li>
+      <li>Legacy hardware: some announcement systems, telephony platforms and museum installations read only WAV.</li>
+    </ul>
+
+    <h2>Big files, no cap</h2>
+    <p>
+      A one-hour podcast becomes a WAV of about 600 MB. Here FFmpeg compiled to WebAssembly decodes it in
+      your browser tab, so the file does not travel and the only limit is your device’s memory. The
+      browser sandbox allows about 2 GB of working memory, which is about three hours of stereo 16-bit
+      audio.
+    </p>
+
+    <h2>Going the other way</h2>
+    <p>
+      To make a WAV smaller, or to compress recordings your DAW exported, use
+      <a href="/wav-to-mp3">WAV to MP3</a>, which shows the exact size ratio for each file. For a
+      lossless archive about half the size of WAV, convert to FLAC in the
+      <a href="/audio-converter">general audio converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

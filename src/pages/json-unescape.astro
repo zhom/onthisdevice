@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-unescape">
+  <DevFormatJson client:load mode="unescape" />
+  <Fragment slot="explainer">
+    <h2>Turning an escaped string back into text</h2>
+    <p>
+      Paste an escaped JSON string and JSON unescape returns the characters it stands for:
+      <code>\"</code> becomes a quote, <code>\n</code> becomes a real line break,
+      <code>\t</code> becomes a tab, and <code>\uXXXX</code> becomes the character at that
+      codepoint. The surrounding double quotes are optional. If you leave them off, the tool adds
+      them before parsing.
+    </p>
+
+    <h2>The three errors you will actually hit</h2>
+    <h3>A lone backslash</h3>
+    <p>
+      In JSON, a backslash always starts an escape sequence. A raw Windows path such as
+      <code>C:\Users\me</code> reads as &ldquo;escape U, escape m&rdquo;, and neither exists. To fix
+      it, double each backslash in the source that made the string. This is the most common cause of
+      an escaped string that does not parse.
+    </p>
+    <h3>An unterminated string</h3>
+    <p>
+      This is usually an incomplete copy and paste, or an unescaped quote inside the string. The parser
+      then ends the string early and finds invalid text after it. Make sure there are exactly two
+      unescaped quotes.
+    </p>
+    <h3>A short \u escape</h3>
+    <p>
+      <code>\u</code> must be followed by exactly four hexadecimal digits. <code>\u41</code> is
+      invalid, although 41 is a valid hex byte. Write <code>\u0041</code>.
+    </p>
+
+    <h2>Double-escaped text</h2>
+    <p>
+      If one unescape gives text that still contains <code>\"</code> and <code>\n</code>, the value was
+      escaped twice. This happens when a client serialises an object to a string and a framework then
+      serialises the whole request again, or when a log line records an already-serialised payload.
+      Unescape a second time to read it. Then find the layer that escapes without need, because some
+      other layer will later unescape the data twice when it should not.
+    </p>
+
+    <h2>Characters outside the Basic Multilingual Plane</h2>
+    <p>
+      JSON escapes characters above U+FFFF as a surrogate pair: two <code>\u</code> escapes that
+      combine into one character. An emoji such as 🎉 is <code>\ud83c\udf89</code>. The tool joins the
+      pair correctly, so emoji, rare CJK ideographs and mathematical alphanumerics come back whole, not
+      as two replacement characters.
+    </p>
+
+    <h2>What to do with the result</h2>
+    <p>
+      If the unescaped text is a JSON document (usual when you take a payload from a log), send it to
+      the <a href="/json-validator">JSON validator</a> to format and check it. If it is plain text with
+      newlines, you can read or save it. In both cases, escape it again before you write it back into
+      a JSON field. Unescaped text is not safe to paste into a JSON document.
+    </p>
+  </Fragment>
+</ToolLayout>

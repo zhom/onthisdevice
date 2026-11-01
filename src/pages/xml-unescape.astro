@@ -1,0 +1,59 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-unescape">
+  <DevFormatXml client:load mode="unescape" />
+  <Fragment slot="explainer">
+    <h2>What XML unescape decodes</h2>
+    <ul>
+      <li>The five XML built-in entities: <code>&amp;amp;</code>, <code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;quot;</code>, <code>&amp;apos;</code>.</li>
+      <li>Decimal references such as <code>&amp;#160;</code> and <code>&amp;#8212;</code>, for any codepoint.</li>
+      <li>Hexadecimal references such as <code>&amp;#x00A0;</code> and <code>&amp;#x2014;</code>, in either letter case.</li>
+      <li>Common HTML named entities found in escaped XML: nbsp, copy, reg, trade, hellip, mdash, ndash, the curly quotes, the guillemets, and the main currency and degree signs.</li>
+    </ul>
+    <p>
+      Text that looks like an entity but is not recognised stays exactly as written. Removing an unknown
+      <code>&amp;foo;</code> would destroy data, and it is often not an entity at all but a query string that was
+      never escaped.
+    </p>
+
+    <h2>Double escaping, and how to spot it</h2>
+    <p>
+      If your text contains <code>&amp;amp;amp;</code> or <code>&amp;amp;lt;</code>, two layers each escaped it.
+      This is common in pipelines: a value is escaped when written into a database, escaped again when rendered
+      into a template, and arrives with extra ampersands. Unescape again until the text stops changing. Then fix
+      the pipeline, because a double-escaped value will meet a consumer that unescapes once and shows the rest
+      as literal text.
+    </p>
+    <p>
+      The opposite bug is text unescaped one time too many, which now contains raw <code>&lt;</code> characters
+      that break the next document it goes into. Unescape to read; escape before you write.
+    </p>
+
+    <h2>Turning escaped markup back into a document</h2>
+    <p>
+      A common task is to recover an XML document stored as text inside another XML document or a log field.
+      Unescape it here, then paste the result into the <a href="/xml-validator">XML validator</a> to check that
+      it is well-formed, and into the <a href="/xml-formatter">formatter</a> to make it readable. If the
+      recovered document is still escaped, run it again (see the section above).
+    </p>
+
+    <h2>Numeric references and what they mean</h2>
+    <table>
+      <thead><tr><th>Reference</th><th>Character</th><th>Where it turns up</th></tr></thead>
+      <tbody>
+        <tr><td><code>&amp;#160;</code> / <code>&amp;#xA0;</code></td><td>Non-breaking space</td><td>Content pasted from HTML or Word; looks like a space but is not one</td></tr>
+        <tr><td><code>&amp;#8217;</code> / <code>&amp;#x2019;</code></td><td>Right single quote</td><td>Apostrophes autocorrected by a word processor</td></tr>
+        <tr><td><code>&amp;#8212;</code> / <code>&amp;#x2014;</code></td><td>Em dash</td><td>Editorial content</td></tr>
+        <tr><td><code>&amp;#65279;</code> / <code>&amp;#xFEFF;</code></td><td>Byte-order mark</td><td>An invisible character that breaks the XML declaration</td></tr>
+        <tr><td><code>&amp;#10;</code></td><td>Line feed</td><td>Multi-line values stored in an attribute</td></tr>
+      </tbody>
+    </table>
+    <p>
+      A decoded non-breaking space looks the same as a normal space in the output box. If a string comparison
+      fails for no visible reason, this is often the cause.
+    </p>
+  </Fragment>
+</ToolLayout>

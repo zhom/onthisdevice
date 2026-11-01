@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="octal-to-text">
+  <DevEncodeRadixText client:load radix="octal" direction="decode" />
+  <Fragment slot="explainer">
+    <h2>Base 8, three bits at a time</h2>
+    <p>
+      Octal uses the digits 0–7, and each digit is exactly three bits. That is why it survived: machines
+      with 12, 24 and 36-bit words split evenly into octal digits, and hex (four bits per digit) did
+      not. When 8-bit bytes became standard, hex was the natural fit, and octal remained in only a few
+      areas.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Character</th><th>Octal</th><th>Decimal</th><th>Hex</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>A</code></td><td>101</td><td>65</td><td>41</td></tr>
+          <tr><td><code>a</code></td><td>141</td><td>97</td><td>61</td></tr>
+          <tr><td><code>0</code></td><td>060</td><td>48</td><td>30</td></tr>
+          <tr><td>space</td><td>040</td><td>32</td><td>20</td></tr>
+          <tr><td>line feed</td><td>012</td><td>10</td><td>0A</td></tr>
+          <tr><td>maximum byte</td><td>377</td><td>255</td><td>FF</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Three digits per byte</h2>
+    <p>
+      A byte needs three octal digits, because 377 is the largest value. So for octal to text, input
+      without spaces must be a multiple of three characters: <code>101 145 154</code> is unambiguous,
+      and <code>101145154</code> parses only if each value was padded. A length error is probably an
+      unpadded small value: <code>12</code> where you meant <code>012</code>.
+    </p>
+
+    <h2>Where octal still appears</h2>
+    <ul>
+      <li>
+        Escape sequences: <code>\101</code> in C, Python and many regex flavours is the character
+        <code>A</code>. Perl, sed and printf all read the same form.
+      </li>
+      <li>
+        File permissions: <code>chmod 755</code> is octal, but it encodes permission bits, not
+        characters. Use the chmod calculator for that.
+      </li>
+      <li>
+        Legacy protocols and hardware: PDP-11 lineage documentation, some industrial controllers, and
+        a few network standards use only octal.
+      </li>
+      <li>
+        Unix tools: <code>od -c</code> and <code>od -b</code> still print octal by default, which
+        surprises people who expect hex.
+      </li>
+    </ul>
+
+    <h2>The leading-zero trap</h2>
+    <p>
+      In old C, a leading zero meant octal, so <code>010</code> was 8, not 10. This caused so many bugs
+      that modern languages removed it: Python 3 rejects leading zeros without <code>0o</code>, and
+      JavaScript treats them as an error in strict mode. Now the explicit <code>0o</code> prefix is the
+      correct form. This tool accepts it on input and can add it on output.
+    </p>
+
+    <h2>Converting octal by hand</h2>
+    <p>
+      The easiest way is through binary. Write each octal digit as three bits, join them, then group
+      them into bytes again:
+    </p>
+    <pre><code>110 145 154 154 157
+= 001001000 001100101 001101100 001101100 001101111
+regrouped into 8-bit bytes:
+= 01001000 01100101 01101100 01101100 01101111
+= 72 101 108 108 111
+= "Hello"</code></pre>
+    <p>Going the other way, take the bits three at a time from the right.</p>
+  </Fragment>
+</ToolLayout>

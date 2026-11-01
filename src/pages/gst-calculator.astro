@@ -1,0 +1,112 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyVat from '@/components/tools/finance/CalcMoneyVat.tsx'
+---
+
+<ToolLayout slug="gst-calculator">
+  <CalcMoneyVat client:load variant="gst" />
+
+  <Fragment slot="explainer">
+    <h2>The two shortcuts worth memorising</h2>
+    <p>
+      In Australia, GST is 10%, so the GST arithmetic is easy:
+    </p>
+    <ul>
+      <li>To add GST, multiply the ex-GST price by 1.1.</li>
+      <li>To find the GST in a total, divide by 11.</li>
+      <li>To find the ex-GST price, divide the total by 1.1.</li>
+    </ul>
+    <p>
+      New Zealand's 15% is less tidy. Divide the inclusive total by 1.15 for the ex-GST price, and by
+      7.6667 for the GST. The three-sevenths shortcut from the old 12.5% rate has been wrong since
+      October 2010.
+    </p>
+
+    <h2>Rates in this calculator</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Country</th>
+            <th style="text-align:right">Rate</th>
+            <th style="text-align:right">Divide total by</th>
+            <th style="text-align:right">Tax fraction of total</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Australia (GST)</td><td style="text-align:right">10%</td><td style="text-align:right">1.10</td><td style="text-align:right">1/11</td></tr>
+          <tr><td>New Zealand (GST)</td><td style="text-align:right">15%</td><td style="text-align:right">1.15</td><td style="text-align:right">3/23</td></tr>
+          <tr><td>Singapore (GST)</td><td style="text-align:right">9%</td><td style="text-align:right">1.09</td><td style="text-align:right">9/109</td></tr>
+          <tr><td>India (GST slabs)</td><td style="text-align:right">5 / 12 / 18 / 28%</td><td style="text-align:right">1.05–1.28</td><td style="text-align:right">varies</td></tr>
+          <tr><td>Canada (GST)</td><td style="text-align:right">5%</td><td style="text-align:right">1.05</td><td style="text-align:right">1/21</td></tr>
+          <tr><td>Canada (HST, Ontario)</td><td style="text-align:right">13%</td><td style="text-align:right">1.13</td><td style="text-align:right">13/113</td></tr>
+          <tr><td>Canada (HST, Atlantic)</td><td style="text-align:right">15%</td><td style="text-align:right">1.15</td><td style="text-align:right">3/23</td></tr>
+          <tr><td>Malaysia (SST, services)</td><td style="text-align:right">6%</td><td style="text-align:right">1.06</td><td style="text-align:right">3/53</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      The rates are static data in the page, with the date they were checked. The site does not fetch
+      them live. Confirm the current rate with your revenue authority before you file, and type a custom
+      rate when you need one.
+    </p>
+
+    <h2>India's slab system</h2>
+    <p>
+      India does not have a single GST rate. The GST Council puts goods and services in slabs, usually
+      5%, 12%, 18% and 28%. Some items are zero-rated, and a short list of luxury and demerit goods pays
+      a compensation cess on top of 28%. The slab follows your HSN code for goods or SAC code for
+      services.
+    </p>
+    <p>
+      The tax also splits by destination. A sale within a state is CGST plus SGST, each half the total
+      rate. A sale across state lines is IGST at the full rate. The split changes how you report the
+      tax, but the amount and the arithmetic above stay the same.
+    </p>
+
+    <h2>Canada: GST, PST and HST</h2>
+    <p>
+      Three regimes coexist. Alberta and the territories charge only the 5% federal GST. Ontario and
+      the Atlantic provinces use a Harmonised Sales Tax that combines federal and provincial into one
+      rate of 13% or 15%. British Columbia, Saskatchewan and Manitoba charge 5% GST plus a separate
+      provincial sales tax, and Quebec charges GST plus QST.
+    </p>
+    <p>
+      For a separate-PST province, enter the two taxes as two lines in the invoice panel. Do not add the
+      rates together: they are administered separately, and in Quebec the QST base rules differ from GST.
+    </p>
+
+    <h2>GST or VAT? Structurally the same tax</h2>
+    <p>
+      Both are broad-based consumption taxes collected at each stage of the supply chain. Businesses
+      claim credit for tax already paid on their inputs, so only the final consumer pays. Australia, New
+      Zealand, India, Canada and Singapore say GST. The UK, the EU and South Africa say VAT. The name is
+      historical, and the arithmetic on this page is the same for both.
+    </p>
+    <p>
+      A US sales tax is different. It is charged only at the final retail sale and has no input credit.
+    </p>
+
+    <h2>Invoices and rounding</h2>
+    <p>
+      The multi-line panel takes a full invoice with a different rate per line, for Indian slabs and for
+      mixed supplies. Each line is rounded to the minor unit on its own, as accounting software does, and
+      the totals are the sum of the rounded lines. Some authorities require you to round the total
+      instead. The difference is at most one cent per line, but use one method consistently.
+    </p>
+
+    <h2>Registration thresholds</h2>
+    <p>
+      Australia requires GST registration above A$75,000 of turnover (A$150,000 for non-profits),
+      New Zealand above NZ$60,000, and Singapore above S$1 million. Below the threshold, registration
+      is usually optional. It can still help if you sell mainly to other registered businesses: they
+      reclaim what you charge, and you reclaim the GST on your own costs.
+    </p>
+
+    <h2>Everything runs on your device</h2>
+    <p>
+      Turnover, invoice values and client work stay in this browser tab, and the CSV, Excel and PDF
+      exports are made locally. The GST calculator also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

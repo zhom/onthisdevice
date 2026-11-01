@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="wav-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".wav,.wave,.aiff,.aif,.aifc,.bwf,audio/wav,audio/wave,audio/aiff"
+    sourceLabel="WAV"
+    sourceHint="Session bounces, field recordings and interviews, including files of several hundred megabytes"
+    target="mp3"
+    defaultBitrate="192"
+    emphasiseRatio={true}
+    formatNote="WAV is uncompressed, so this is the conversion with the largest possible saving. The result panel shows exactly what percentage of the original each file ends up at."
+  />
+  <Fragment slot="explainer">
+    <h2>Large WAV files convert locally</h2>
+    <p>
+      WAV files are large. A one-hour stereo interview is about 600 MB; a multitrack bounce or a field
+      recording can be several gigabytes. A converter that uploads the file must receive, store, encode and
+      return all of it, so upload services often limit file size or files per hour.
+    </p>
+    <p>
+      This WAV to MP3 converter runs the LAME encoder in a WebAssembly build of FFmpeg inside this browser tab,
+      so the file stays on your computer and there is no queue. The limit is your own memory: the browser
+      sandbox has about 2 GB of working memory, enough for a three-hour stereo recording.
+    </p>
+
+    <h2>How much smaller the MP3 is</h2>
+    <p>
+      Standard CD-rate stereo WAV is 1411 kbps. The MP3 size is your chosen bitrate divided by that number.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>MP3 setting</th><th>Share of the WAV</th><th>One hour, stereo</th><th>One hour, mono</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>320 kbps</td><td>22.7%</td><td>≈ 137 MB</td><td>≈ 137 MB</td></tr>
+          <tr><td>256 kbps</td><td>18.1%</td><td>≈ 110 MB</td><td>≈ 110 MB</td></tr>
+          <tr><td>192 kbps</td><td>13.6%</td><td>≈ 82 MB</td><td>≈ 82 MB</td></tr>
+          <tr><td>128 kbps</td><td>9.1%</td><td>≈ 55 MB</td><td>≈ 55 MB</td></tr>
+          <tr><td>96 kbps</td><td>6.8%</td><td>≈ 41 MB</td><td>≈ 41 MB</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      MP3 bitrate is the total for the file, so mono alone does not halve the size. But the whole bitrate goes to
+      one channel, so a mono voice recording at 96 kbps sounds like a stereo one at 192 kbps. For a
+      single-voice interview, mono at 96 kbps gives the largest saving.
+    </p>
+
+    <h2>Choosing a bitrate by content</h2>
+    <ul>
+      <li>Single-voice interview or dictation: 96 kbps mono. It sounds the same as the WAV on headphones and is about 40 MB an hour.</li>
+      <li>Podcast with two or three speakers: 128 kbps, the platform standard. A higher bitrate is inaudible on a commute.</li>
+      <li>Live recording, room ambience, applause: 192 kbps stereo. Low bitrates handle diffuse noise and audience sound worst.</li>
+      <li>Music mixdown for another person: 256 or 320 kbps. Also send the WAV if they will master it.</li>
+      <li>Audio for more editing: do not convert. Keep the WAV; MP3 is a delivery format, not a working format.</li>
+    </ul>
+
+    <h2>When to switch on loudness normalisation</h2>
+    <p>
+      The advanced panel has an EBU R128 loudness normaliser with a target of −16 LUFS and a −1.5 dBTP ceiling,
+      the level that podcast platforms and most speech distributors expect.
+    </p>
+    <p>
+      Turn it on for interviews, lectures, meeting recordings and recordings from several sessions at different
+      gain settings, so listeners do not have to keep changing the volume. Leave it off for music that is
+      already mastered, because it overrides the mastering, and for audio you will master yourself later.
+    </p>
+
+    <h2>AIFF, BWF and other uncompressed relatives</h2>
+    <p>
+      This page also accepts AIFF and AIFC (the Apple equivalent of WAV, common from Logic and older Mac tools)
+      and Broadcast Wave files. BWF is a normal WAV with an extra <code>bext</code> chunk for timecode,
+      originator and coding history. The audio decodes the same, but MP3 has no equivalent for the broadcast
+      metadata, so it is dropped. If you need that metadata, keep the BWF with the MP3.
+    </p>
+
+    <h2>A note on 32-bit float sources</h2>
+    <p>
+      Recorders such as the Zoom F-series and MixPre write 32-bit float WAV, where samples can go above 0 dBFS
+      without clipping. These files convert here, but anything above full scale is limited in the MP3. If your
+      recording has very loud peaks, lower the gain in an editor first, so the encoder does not decide where
+      to clip.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      To convert the other way for editing, use <a href="/mp3-to-wav">MP3 to WAV</a>. For a lossless archive at
+      about half the size of WAV, convert to FLAC in the <a href="/audio-converter">general audio
+      converter</a>. To join several takes with trims and crossfades before encoding, use the
+      <a href="/audio-joiner">audio joiner</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

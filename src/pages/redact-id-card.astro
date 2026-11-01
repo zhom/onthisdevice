@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactIdCard from '@/components/tools/redact/scan/RedactIdCard.tsx'
+---
+
+<ToolLayout slug="redact-id-card" width="wide">
+  <RedactIdCard client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact an ID card</h2>
+    <ol>
+      <li>Drop a photo or scan of a passport, ID card or driving licence. A PDF works too.</li>
+      <li>The tool reads the document and puts a black box on each field you chose to hide.</li>
+      <li>Switch fields on or off. Click a box to keep it visible, or drag on the image to cover more.</li>
+      <li>Type a watermark such as "Copy for Acme Ltd, 30 Oct 2026". It is drawn across the whole image.</li>
+      <li>Download the result as JPG, PNG or PDF.</li>
+    </ol>
+
+    <h2>What the ID card redactor finds</h2>
+    <ul>
+      <li>The machine-readable zone at the bottom of passports and many ID cards. The tool verifies its check digits, so it knows when it read the zone correctly.</li>
+      <li>The document number, personal number and the dates of birth and expiry. When the zone was read, the tool finds its values on the card, also when the card prints them with spaces or month names.</li>
+      <li>On EU driving licences, the numbered fields: 3 (birth date), 4a and 4b (dates), 5 (licence number) and 8 (address).</li>
+      <li>The signature, with a model trained on signatures, and the photo, with a face detector.</li>
+    </ul>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The OCR engine (about 7 MB), the face detector (under 1 MB), the signature model (24 MB) and the model runtime (15 MB)
+      download once from this site and stay in your browser. Your document stays in the page.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and drop your document. You see the engine and models load
+      from this site the first time, and no request after that. You can also turn off your network after the first use.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Glare, a steep angle or a blurry photo make the OCR miss fields. Take the photo straight on, in even light.</li>
+      <li>Cards without a machine-readable zone are matched by labels and shapes, which misses more. Check every field by eye.</li>
+      <li>Security patterns behind the text can be read as letters. Remove boxes that cover nothing.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

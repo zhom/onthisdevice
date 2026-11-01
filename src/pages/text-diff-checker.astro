@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TextDiffChecker from '@/components/tools/text/TextDiffChecker.tsx'
+---
+
+<ToolLayout slug="text-diff-checker">
+  <TextDiffChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to compare two texts</h2>
+    <ol>
+      <li>Put the original version in the left box and the newer version in the right box. You can drop files directly onto either box.</li>
+      <li>The comparison runs automatically. Removed lines are tinted and marked with a minus, added lines with a plus, and edited lines have the changed words highlighted.</li>
+      <li>Turn on <strong>Ignore whitespace</strong> when only the indentation or wrapping changed, and <strong>Ignore case</strong> when capitalisation does not matter.</li>
+      <li>Switch between side-by-side and unified views. Unified is easier on a phone and matches what you see in a code review.</li>
+      <li>Copy or download the unified diff to attach to a ticket, an email or a pull request.</li>
+    </ol>
+
+    <h2>How the diff is calculated</h2>
+    <p>
+      The text diff checker uses Eugene Myers’ 1986 O(ND) greedy algorithm, the same method as
+      <code>git diff</code> and GNU diff. It finds the shortest edit script: the smallest set of insertions
+      and deletions that turns the first text into the second. So a moved paragraph shows as one deletion and
+      one insertion, not as a series of unrelated changes.
+    </p>
+    <p>
+      Myers slows down when two large files have little in common. So the tool first trims the identical
+      start and end, then splits the remaining work on patience anchors: lines that appear exactly once in
+      both texts, such as a unique heading or function signature. Each gap between anchors is small enough
+      for Myers to solve at once, and the anchors keep the alignment correct in files with much repeated
+      boilerplate.
+    </p>
+    <p>
+      After the lines are aligned, each pair of a deleted and an inserted line is compared again at word
+      level with the same algorithm on tokens. This gives the inline highlighting.
+    </p>
+
+    <h2>Reading the change summary</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Figure</th>
+            <th>What it means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Added</td><td>Lines that exist only in the new text</td></tr>
+          <tr><td>Removed</td><td>Lines that exist only in the original</td></tr>
+          <tr><td>Modified</td><td>Lines edited in place: a removal and an insertion that the tool paired</td></tr>
+          <tr><td>Unchanged</td><td>Lines identical in both, under your current comparison options</td></tr>
+          <tr><td>Similarity</td><td>Unchanged lines as a percentage of the longer document</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Contract review: find the clause that changed between two supplier drafts, without a tracked-changes copy.</li>
+      <li>Editing: see exactly what an editor changed in a manuscript or a press release.</li>
+      <li>Configuration debugging: compare a working config with a broken one when “nothing changed”.</li>
+      <li>Translation and localisation: check which strings changed between two export files.</li>
+      <li>Plagiarism spot-checks: measure how much two submissions overlap.</li>
+      <li>Offline code review: paste two versions of a function and read the diff without a repository.</li>
+    </ul>
+
+    <h2>Unified diff format</h2>
+    <p>
+      The downloadable file is a standard unified patch. Each hunk starts with a header such as
+      <code>@@ -12,7 +12,9 @@</code>, which means “seven lines from line 12 of the original became nine lines
+      from line 12 of the new file”. Context lines start with a space, removals with <code>-</code> and
+      additions with <code>+</code>. Each change has three lines of context, and nearby changes merge into one
+      hunk. <code>git apply</code>, <code>patch</code> and most review platforms accept it directly.
+    </p>
+
+    <h2>Privacy and size limits</h2>
+    <p>
+      Both texts stay in your browser, so you can compare a confidential contract or an unreleased document.
+      Files of a few megabytes work well. Above about 6,000 changed lines, the tool skips word-level
+      highlighting so the page stays responsive, and the on-screen table shows at most 1,200 rows. The
+      downloadable diff always contains every change.
+    </p>
+  </Fragment>
+</ToolLayout>

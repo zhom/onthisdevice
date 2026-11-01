@@ -1,0 +1,48 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AnonymizeChatText from '@/components/tools/redact/text/AnonymizeChatText.tsx'
+---
+
+<ToolLayout slug="anonymize-chat-text" width="wide">
+  <AnonymizeChatText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Export the chat from the app, or copy the messages.</li>
+      <li>Drop the file on the box or paste the text. The tool finds the line format and lists the people who wrote.</li>
+      <li>Each person gets one fake name. It replaces their name as sender and every time someone mentions them.</li>
+      <li>Check the result. Press a mark to keep a value. Add missed nicknames to the always-hide list.</li>
+      <li>Copy the result or download it as a .txt file.</li>
+    </ol>
+
+    <h2>Supported exports</h2>
+    <ul>
+      <li>WhatsApp: Export chat, Without media. Both the iPhone and the Android line formats work.</li>
+      <li>Telegram: the JSON or HTML export from Telegram Desktop, or copied messages.</li>
+      <li>Slack: the JSON files of a workspace export, or copied messages. User IDs in mentions are replaced too.</li>
+      <li>Discord: text or JSON exports, or copied messages.</li>
+      <li>Teams, Signal, iMessage and plain transcripts with "Name: message" lines.</li>
+    </ul>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The line formats are read with pattern rules. Phone numbers, emails, addresses, card and bank numbers are found with
+      pattern rules too. A language model finds the names of people who are mentioned but did not write. The model and its
+      runtime download once from this site (about 35 MB) and stay in your browser's storage.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the Network tab in your browser's developer tools and paste the chat. Apart from the model files on the first
+      use, the page makes no requests. After the first use the tool also works with the network turned off.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Nicknames and names written in lower case can be missed. Add them to the always-hide list.</li>
+      <li>Names inside photos, voice notes and attachments are not part of a text export and are not changed.</li>
+      <li>The fake names are new for each visit. Download the result if you need the same names again.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

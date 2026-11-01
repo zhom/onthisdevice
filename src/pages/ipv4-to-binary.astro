@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeSubnet from '@/components/tools/dev/DevEncodeSubnet.tsx'
+---
+
+<ToolLayout slug="ipv4-to-binary">
+  <DevEncodeSubnet client:load mode="binary" />
+  <Fragment slot="explainer">
+    <h2>An address is 32 bits in four groups</h2>
+    <p>
+      Dotted decimal is only a display convention. The IPv4 address is one 32-bit number, split into
+      four bytes so people can read it. The four forms side by side, with the binary, make subnetting
+      easy to understand.
+    </p>
+    <pre><code>192   . 168   .   1   .  10
+11000000 10101000 00000001 00001010
+C0        A8        01        0A
+= 3232235786 as a single integer</code></pre>
+
+    <h2>Why binary makes masks obvious</h2>
+    <p>
+      A subnet mask is a run of ones followed by a run of zeros. With the address and the mask in
+      binary, the network address is the columns where both have a 1:
+    </p>
+    <pre><code>address 11000000 10101000 00000001 00001010
+/26     11111111 11111111 11111111 11000000
+network 11000000 10101000 00000001 00000000
+host bits                            001010</code></pre>
+    <p>
+      The six free bits give 64 addresses, and the network boundary falls every 64 in the last octet:
+      0, 64, 128, 192. This derives the same table that people learn by heart.
+    </p>
+
+    <h2>Boundaries worth knowing by eye</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Last-octet mask</th><th>Binary</th><th>Prefix</th><th>Block size</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>00000000</td><td>/24</td><td>256</td></tr>
+          <tr><td>128</td><td>10000000</td><td>/25</td><td>128</td></tr>
+          <tr><td>192</td><td>11000000</td><td>/26</td><td>64</td></tr>
+          <tr><td>224</td><td>11100000</td><td>/27</td><td>32</td></tr>
+          <tr><td>240</td><td>11110000</td><td>/28</td><td>16</td></tr>
+          <tr><td>248</td><td>11111000</td><td>/29</td><td>8</td></tr>
+          <tr><td>252</td><td>11111100</td><td>/30</td><td>4</td></tr>
+          <tr><td>254</td><td>11111110</td><td>/31</td><td>2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Each value is the previous one plus the next power of two from the top: 128, 192, 224, 240 …
+      Any other value, such as 100 or 255.0.255.0, is not a valid mask.
+    </p>
+
+    <h2>The integer form</h2>
+    <p>
+      Databases and log pipelines usually store an address as a 32-bit unsigned integer. It sorts
+      correctly, indexes tightly, and turns &ldquo;is this address inside that block?&rdquo; into one
+      integer range query. MySQL has
+      <code>INET_ATON</code>/<code>INET_NTOA</code>, PostgreSQL has a native <code>inet</code> type,
+      and most languages have a one-line conversion. Both the decimal and hex forms are shown above.
+    </p>
+
+    <h2>Recognising an address from its bits</h2>
+    <ul>
+      <li>Starts <code>00001010</code>: the 10.0.0.0/8 private block.</li>
+      <li>Starts <code>11000000 10101000</code>: 192.168.0.0/16, the home-router range.</li>
+      <li>Starts <code>1010 1100 0001</code>: inside 172.16.0.0/12.</li>
+      <li>Starts <code>1110</code>: multicast, 224.0.0.0/4.</li>
+      <li>Starts <code>01111111</code>: loopback, 127.0.0.0/8.</li>
+    </ul>
+    <p>The tool shows the class and scope of the address you enter, from the bits alone.</p>
+
+    <h2>What this page does not do</h2>
+    <p>
+      There is no WHOIS, geolocation or reverse DNS lookup, because each needs a network request and
+      this site makes none. All results come from arithmetic on the address you typed, in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

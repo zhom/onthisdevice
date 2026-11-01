@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ChangeImageDpi from '@/components/tools/image-edit/ChangeImageDpi.tsx'
+---
+
+<ToolLayout slug="change-image-dpi">
+  <ChangeImageDpi client:load />
+
+  <Fragment slot="explainer">
+    <h2>What DPI actually is</h2>
+    <p>
+      DPI (dots per inch, sometimes PPI) is a label, not a property of the image data. It tells layout
+      software how big one pixel should be on paper. A 600 × 600 pixel image tagged 300 DPI prints at
+      2 × 2 inches; the same file tagged 72 DPI prints at 8.3 inches and looks blurry, with no change to
+      any pixel. A change of the tag does not change the sharpness of the file, only the intended
+      physical size.
+    </p>
+    <p>
+      For this reason, setting DPI here is instant and lossless: the tool changes the density field in
+      the file header and does not touch the compressed image data.
+    </p>
+
+    <h2>So why do forms demand 300 DPI?</h2>
+    <p>
+      There are two reasons. First, layout software reads the tag to place the image, and a file
+      without a tag defaults to 72 DPI. The image is then placed more than four times too large, and
+      the reviewer sees a soft, oversized picture. Second, submission guidelines use “300 DPI” to mean
+      “enough pixels to print well”, but the tag alone cannot give that. Set the tag for the checker,
+      and check the pixel count for the printer.
+    </p>
+
+    <h2>Where the number is stored</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Format</th><th>Field</th><th>Units</th><th>Can the tool write it?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>JPEG</td><td>JFIF APP0 segment: units, Xdensity, Ydensity</td><td>Per inch or per cm</td><td>Yes: changed in place, or inserted if absent</td></tr>
+          <tr><td>JPEG with EXIF</td><td>IFD0 tags XResolution (0x011A), YResolution (0x011B), ResolutionUnit (0x0128)</td><td>Rational, inch or cm</td><td>Yes: updated so it agrees with JFIF</td></tr>
+          <tr><td>PNG</td><td><code>pHYs</code> chunk</td><td>Pixels per metre</td><td>Yes: rewritten or inserted after IHDR, with a new CRC32</td></tr>
+          <tr><td>WebP, GIF, BMP</td><td>No standard density field</td><td>n/a</td><td>No: convert to JPG or PNG first</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The tool writes both JPEG fields because some applications read JFIF and others prefer EXIF. A
+      file where the two disagree lays out differently in different applications.
+    </p>
+
+    <h2>Set DPI only, or resample?</h2>
+    <ul>
+      <li>Set DPI only: the tool rewrites the header and nothing else. Use this when the pixel count is already correct and a form or a designer needs the tag to say 300. It is instant and cannot degrade the image, because the image data is not touched.</li>
+      <li>Resample: you give the physical size and the DPI. The tool calculates the pixel dimensions, resizes to them with a Lanczos3 filter, and writes the tag. Use this when the printed size must be exact. It re-encodes, so it is not lossless, and it warns you when the target needs upscaling.</li>
+    </ul>
+
+    <h2>The arithmetic, both ways</h2>
+    <p>
+      Pixels = inches × DPI, and inches = pixels ÷ DPI. A 4 × 6 inch print at 300 DPI needs
+      1200 × 1800 pixels, and a 3000 × 2000 pixel photo tagged 300 DPI prints at 10 × 6.67 inches. The
+      table on the page does this for your image at each common resolution, in inches and centimetres,
+      so you can see if your file is big enough for your print.
+    </p>
+
+    <h2>Choosing a resolution</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>DPI</th><th>Use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>72 / 96</td><td>Old screen defaults. Still the fallback when a file has no tag.</td></tr>
+          <tr><td>150</td><td>Draft printing, newspapers, large posters seen from a distance.</td></tr>
+          <tr><td>200</td><td>Everyday office laser output; often the practical limit of the paper.</td></tr>
+          <tr><td>300</td><td>The standard for photo prints, passport photos, magazines and most submission guidelines.</td></tr>
+          <tr><td>600</td><td>Line art, engravings, fine text, high-quality scans.</td></tr>
+          <tr><td>1200</td><td>Archival scanning and reprographics. Very large files; seldom necessary for photographs.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Common misconceptions</h2>
+    <ul>
+      <li>“Changing DPI to 300 will make my photo higher quality.” No. It makes the printed version smaller, which can look sharper on paper, but adds no detail.</li>
+      <li>“My 72 DPI image is low resolution.” The tag says nothing about resolution. A 6000 × 4000 photo tagged 72 DPI has exactly the same detail as the same file tagged 300.</li>
+      <li>“DPI affects how it looks on screen.” Browsers and most viewers ignore it and lay images out in pixels. It matters for print and in page-layout software.</li>
+      <li>“Resampling up to 300 DPI fixes a small image.” It only invents pixels by interpolation. The tool tells you when your settings do this.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/passport-photo-maker">Passport Photo Maker</a> writes 300 DPI automatically for
+      document photos, <a href="/resize-image">Resize Image</a> changes pixel dimensions directly,
+      and <a href="/image-metadata-viewer">Image Metadata Viewer</a> shows the full EXIF block,
+      including the resolution tags this tool writes.
+    </p>
+  </Fragment>
+</ToolLayout>

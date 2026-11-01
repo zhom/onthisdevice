@@ -1,0 +1,54 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-minify">
+  <DevFormatXml client:load mode="minify" />
+  <Fragment slot="explainer">
+    <h2>Which whitespace is safe to remove</h2>
+    <p>
+      The XML specification has no concept of insignificant whitespace: every character in a text node is data.
+      In practice, a text node with only spaces and newlines between two elements is indentation from a pretty
+      printer, and removing it changes nothing for any consumer. By default, the XML minifier removes only this
+      whitespace.
+    </p>
+    <p>Text nodes with content stay unchanged. You can optionally collapse runs of whitespace inside them to one space, as an HTML renderer does. This option is off by default; leave it off if your document uses <code>xml:space="preserve"</code>, contains preformatted text, or is a format where a double space has a meaning.</p>
+
+    <h2>Why XML shrinks more than JSON</h2>
+    <p>
+      XML repeats each element name twice, in the opening and the closing tag, with angle brackets on both. A
+      field called <code>customerReference</code> costs 4 characters in JSON (<code>"…":</code> plus the value)
+      and 36 in XML before the value. With one level of indentation per depth, an indented XML document is
+      often 40&ndash;50% whitespace. Minification usually saves 20&ndash;50%; the exact figure for your
+      document appears above the output.
+    </p>
+
+    <h2>Self-closing tags</h2>
+    <p>
+      For an XML parser, <code>&lt;a&gt;&lt;/a&gt;</code> and <code>&lt;a/&gt;</code> are exactly equivalent, as
+      the specification says. The short form saves bytes, so the tool uses it by default. Turn it off if a
+      downstream consumer is not a real parser: home-made regex readers, some legacy SOAP stacks and a few
+      embedded XML libraries handle self-closing tags incorrectly.
+    </p>
+
+    <h2>Compression or minification</h2>
+    <p>
+      Serving XML with gzip or Brotli reduces transfer size much more than minification, with one line of server
+      configuration. Minify when the limit applies to the uncompressed bytes:
+    </p>
+    <ul>
+      <li>A SOAP payload against a gateway with a message-size cap.</li>
+      <li>An XML column in a database, or an XML field inside another document.</li>
+      <li>An embedded or industrial device with a fixed receive buffer.</li>
+      <li>A signed document where you want a stable, compact form. Real XML canonicalisation (C14N) is a different, stricter transformation than minification.</li>
+    </ul>
+
+    <h2>Comments</h2>
+    <p>
+      Removing comments is optional. Comments in configuration files (<code>web.config</code>, Maven POMs,
+      Android manifests) often explain why a setting exists, which is worth more than the bytes. Comments in a
+      generated payload almost never are.
+    </p>
+  </Fragment>
+</ToolLayout>

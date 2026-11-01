@@ -1,0 +1,116 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyMarginMarkup from '@/components/tools/finance/CalcMoneyMarginMarkup.tsx'
+---
+
+<ToolLayout slug="margin-and-markup-calculator">
+  <CalcMoneyMarginMarkup client:load variant="both" />
+
+  <Fragment slot="explainer">
+    <h2>The same profit, two different denominators</h2>
+    <p>
+      Margin and markup measure the same money against different bases. Both start from the same
+      gross profit (selling price minus cost), and divide it by a different number:
+    </p>
+    <pre><code>margin % = profit ÷ selling price × 100
+markup % = profit ÷ cost × 100</code></pre>
+    <p>
+      Buy for 40, sell for 100. The profit is 60 either way. As a share of the 100 you took, that is a
+      <strong>60% margin</strong>. As a share of the 40 you spent, it is a <strong>150% markup</strong>.
+      Both numbers are correct for the same transaction. So a supplier and an accountant can describe
+      the same deal and seem to disagree by a factor of two and a half.
+    </p>
+
+    <h2>The mistake that costs money</h2>
+    <p>
+      "We work on 30%" is ambiguous, and that is expensive. 30% added to a cost of 70 gives a price of
+      91 and a margin of 23.1%, not 30%. To earn a 30% margin on that cost, the price must be 100, a
+      markup of 42.9%.
+    </p>
+    <p>
+      For a business with a turnover of a million, a 30% markup mistaken for a 30% margin is about
+      70,000 of gross profit that does not exist. It is the most common pricing error in small
+      business, and it continues because both numbers sound reasonable.
+    </p>
+
+    <h2>Conversion table</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Markup on cost</th>
+            <th style="text-align:right">Equals margin</th>
+            <th style="text-align:right">Price multiplier</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>10%</td><td style="text-align:right">9.1%</td><td style="text-align:right">× 1.10</td></tr>
+          <tr><td>20%</td><td style="text-align:right">16.7%</td><td style="text-align:right">× 1.20</td></tr>
+          <tr><td>25%</td><td style="text-align:right">20.0%</td><td style="text-align:right">× 1.25</td></tr>
+          <tr><td>33.3%</td><td style="text-align:right">25.0%</td><td style="text-align:right">× 1.33</td></tr>
+          <tr><td>50%</td><td style="text-align:right">33.3%</td><td style="text-align:right">× 1.50</td></tr>
+          <tr><td>66.7%</td><td style="text-align:right">40.0%</td><td style="text-align:right">× 1.67</td></tr>
+          <tr><td>100%</td><td style="text-align:right">50.0%</td><td style="text-align:right">× 2.00</td></tr>
+          <tr><td>150%</td><td style="text-align:right">60.0%</td><td style="text-align:right">× 2.50</td></tr>
+          <tr><td>233%</td><td style="text-align:right">70.0%</td><td style="text-align:right">× 3.33</td></tr>
+          <tr><td>400%</td><td style="text-align:right">80.0%</td><td style="text-align:right">× 5.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The two conversions are <code>margin = markup ÷ (1 + markup)</code> and
+      <code>markup = margin ÷ (1 − margin)</code>, both with the percentages expressed as decimals.
+    </p>
+
+    <h2>Why margin cannot exceed 100% and markup can</h2>
+    <p>
+      Margin's denominator is the price, and the cost must fit inside that price, so profit can come
+      near the price but never reach it. Markup's denominator is the cost, which has no such limit: a
+      5 item sold for 50 is a 900% markup and a 90% margin. So high-margin sectors quote margin and
+      low-cost sectors quote markup. Each picks the number that sounds better.
+    </p>
+
+    <h2>Which one to use, and when</h2>
+    <ul>
+      <li>
+        Use markup to set a price. You start from a known cost and need a number to multiply by.
+        Cost-plus pricing is markup.
+      </li>
+      <li>
+        Use margin to judge a business. Gross margin is comparable across products and competitors,
+        and it goes into a P&amp;L. Investors, lenders and accountants all use margin.
+      </li>
+      <li>
+        Never mix them in one conversation. Agree which one you mean before you agree the number.
+      </li>
+    </ul>
+
+    <h2>Pricing a whole list at once</h2>
+    <p>
+      The bulk panel takes a pasted column of costs (with or without item names, separated by comma,
+      tab or semicolon) and prices each row at the margin or markup you set. Each row shows its price,
+      profit and both percentages, and the table exports to CSV, Excel or PDF. It reads the last
+      numeric field on a line as the cost and the first non-numeric field as the name, so you can paste
+      a spreadsheet column without edits.
+    </p>
+
+    <h2>Gross, not net</h2>
+    <p>
+      All figures here are gross margin on the cost of goods. Rent, salaries, marketing, shipping,
+      payment-processing fees, returns, shrinkage and tax still come out of that gross profit. A
+      business can have a healthy gross margin and a negative net margin, so gross margin is a pricing
+      tool, not a judgement on the business.
+    </p>
+    <p>
+      Price on the net figure, before VAT or sales tax. Tax you collect for an authority is not your
+      revenue and must never be in a margin calculation.
+    </p>
+
+    <h2>Your cost prices are not sent anywhere</h2>
+    <p>
+      Supplier costs are among the most sensitive numbers a business has. In this margin and markup
+      calculator, JavaScript in your browser computes the pricing, the bulk table and the exports. To
+      confirm, disconnect from the network: everything still works.
+    </p>
+  </Fragment>
+</ToolLayout>

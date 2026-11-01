@@ -1,0 +1,108 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoRemux from '@/components/tools/media/VideoRemux.tsx'
+---
+
+<ToolLayout slug="mkv-to-mp4">
+  <VideoRemux
+    client:load
+    from="mkv"
+    target="mp4"
+    hint="Matroska files of any size. A 4 GB film is fine, because nothing is uploaded"
+  />
+  <Fragment slot="explainer">
+    <h2>Turning a Matroska file into something your TV will accept</h2>
+    <p>
+      MKV is the most capable video container in common use: it can hold any codec, any number of audio
+      tracks, chapters, attachments and several kinds of subtitle at once. That flexibility is why
+      hardware refuses it. Smart TVs, games consoles, older Android phones and most upload forms support
+      only MP4, and they reject the file for its wrapper alone. Usually the video inside is ordinary
+      H.264 that the device could decode easily.
+    </p>
+    <p>
+      So MKV to MP4 is a change of wrapper, and it costs no quality. FFmpeg reads the Matroska index,
+      copies each compressed packet across and writes an MP4 index in front of it. No frame is decoded.
+    </p>
+
+    <h2>What survives the conversion, and what does not</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Inside the MKV</th>
+            <th>In the MP4</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>H.264 or HEVC video</td>
+            <td>Copied unchanged</td>
+            <td>MP4 carries both natively</td>
+          </tr>
+          <tr>
+            <td>AAC or MP3 audio</td>
+            <td>Copied unchanged</td>
+            <td>Both are standard MP4 audio</td>
+          </tr>
+          <tr>
+            <td>FLAC, DTS or Vorbis audio</td>
+            <td>Re-encoded to AAC 160 kbps</td>
+            <td>MP4 has no slot for them</td>
+          </tr>
+          <tr>
+            <td>VP9 or AV1 video</td>
+            <td>Re-encoded to H.264 (slow)</td>
+            <td>Players expect these in WebM</td>
+          </tr>
+          <tr>
+            <td>Second and third audio tracks</td>
+            <td>Dropped. The first track is kept</td>
+            <td>This tool does not offer track selection</td>
+          </tr>
+          <tr>
+            <td>Soft subtitles (SRT, ASS, PGS)</td>
+            <td>Dropped</td>
+            <td>MP4 has no equivalent for ASS or PGS</td>
+          </tr>
+          <tr>
+            <td>Chapters and attachments</td>
+            <td>Dropped</td>
+            <td>Not carried by the copy path</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you need subtitles, keep the MKV and play it in a media player that supports MKV. To burn
+      subtitles into the picture is a re-encode and makes them permanent, which people rarely want.
+    </p>
+
+    <h2>Very large files</h2>
+    <p>
+      Here a browser tool has a real limit. The input and the output are both in the tab’s memory, and
+      browsers give WebAssembly about 2 GB. The copy path needs no decoding buffer in addition, so
+      multi-gigabyte films usually convert on a desktop with free RAM. On a phone, or with thirty other
+      tabs open, they may not. If memory runs out, the page tells you so in a sentence.
+    </p>
+    <p>
+      An upload converter means 4 GB up, often against a 1 GB cap on free accounts, a queue, and 4 GB
+      back down. Here there is no transfer.
+    </p>
+
+    <h2>Does converting MKV to MP4 lose quality?</h2>
+    <p>
+      Not when the streams are copied. The output is bit-for-bit the same video data in a different
+      wrapper, and the file size is within a fraction of a percent of the original. The page tells you
+      before it starts if your file qualifies. Quality is lost only when something in the MKV has no
+      MP4 equivalent, and then you get a clear warning and a choice.
+    </p>
+
+    <h2>Related jobs</h2>
+    <p>
+      For only the soundtrack, <a href="/mkv-to-mp3">MKV to MP3</a> skips the video. If the file is too
+      big for a messaging app, <a href="/compress-video">compress video</a> targets a size. If it is too
+      long, <a href="/trim-video">trim video</a> cuts it without re-encoding.
+    </p>
+  </Fragment>
+</ToolLayout>

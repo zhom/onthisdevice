@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="sha256-hash-generator">
+  <DevEncodeHash client:load algorithm="SHA-256" />
+  <Fragment slot="explainer">
+    <h2>Verifying a download with SHA-256</h2>
+    <ol>
+      <li>Copy the SHA-256 value that the publisher lists next to the download link.</li>
+      <li>Switch to the File tab above and drop the downloaded file onto it.</li>
+      <li>Paste the published value into the comparison box.</li>
+      <li>Look for the match banner. The comparison ignores case and whitespace, so paste the value unchanged.</li>
+    </ol>
+    <p>
+      A match means the bytes on your disk are exactly the bytes the publisher hashed. A mismatch means
+      something differs: most often an incomplete download, sometimes a mirror with an older build, and very
+      rarely a tampered file.
+    </p>
+
+    <h2>What a checksum does and does not prove</h2>
+    <p>
+      A checksum proves integrity, not authenticity. An attacker who can replace the file can usually also
+      edit the web page that lists the hash. For this reason many projects publish a detached signature (a
+      <code>.asc</code> or <code>.sig</code> file) signed with a key you can verify independently. The checksum
+      then protects against corruption and the signature against substitution.
+    </p>
+    <p>
+      If you get the hash from a different channel than the file, such as the project's Git repository, a
+      mailing-list announcement or a package manager's index, most of that gap closes.
+    </p>
+
+    <h2>Never use SHA-256 for passwords</h2>
+    <p>
+      This is the most common misuse. SHA-256 is designed to be fast, and a consumer GPU computes billions
+      of hashes per second. With a stolen database, a weak password falls in seconds, salted or not.
+    </p>
+    <p>
+      Password storage needs a function that is slow and memory-hard by design: Argon2id first, then scrypt
+      or bcrypt, each with a per-user salt and a work factor tuned to your hardware. Use fast hashes for
+      files, not for credentials.
+    </p>
+
+    <h2>The SHA-2 family</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Variant</th><th>Digest</th><th>Internal word size</th><th>Typical use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SHA-224</td><td>224 bits</td><td>32-bit</td><td>Rare; a truncated SHA-256</td></tr>
+          <tr><td>SHA-256</td><td>256 bits</td><td>32-bit</td><td>The default for almost everything</td></tr>
+          <tr><td>SHA-384</td><td>384 bits</td><td>64-bit</td><td>TLS suites, some government profiles</td></tr>
+          <tr><td>SHA-512</td><td>512 bits</td><td>64-bit</td><td>Archival integrity; often faster on 64-bit CPUs</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      SHA-3 is a separate design based on Keccak. It was standardised in 2015 as a backup, not because SHA-2
+      was failing. Browsers do not implement it, so this page does not offer it.
+    </p>
+
+    <h2>Large files and memory</h2>
+    <p>
+      WebCrypto has no streaming interface for SHA, so the whole file must be in memory while it is hashed.
+      This page reads it in 8&nbsp;MB slices with a progress bar and warns above about a gigabyte. For a
+      multi-gigabyte ISO, use the MD5 or CRC-32 page, which streams the file, or run
+      <code>sha256sum</code> locally.
+    </p>
+
+    <h2>Why hashing here is safe</h2>
+    <p>
+      The SHA-256 hash generator uses the browser's native WebCrypto implementation inside this tab. The
+      page cannot reach a server: its Content-Security-Policy declares no external origin in
+      <code>connect-src</code>. Hashing a confidential archive here is the same as running the command-line
+      tool on your own computer.
+    </p>
+  </Fragment>
+</ToolLayout>

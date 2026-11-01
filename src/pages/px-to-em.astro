@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="px-to-em">
+  <DevFormatCssUnits client:load from="px" to="em" />
+  <Fragment slot="explainer">
+    <h2>What em is relative to</h2>
+    <p>
+      For every property except one, <code>em</code> resolves against the computed
+      <code>font-size</code> of the element itself. For <code>font-size</code>, it resolves against the
+      <em>parent&rsquo;s</em> font size. That single exception is the source of nearly all em confusion,
+      and it is worth reading twice.
+    </p>
+    <pre><code>.card &#123;
+  font-size: 1.25em;   /* 1.25 × the PARENT's size */
+  padding: 1em;        /* 1 × THIS element's size, i.e. 1.25 × parent */
+&#125;</code></pre>
+    <p>
+      Set the parent font size field above to the computed size of the containing element (read it from
+      the Computed panel in devtools), and the px to em conversion matches what the browser does.
+    </p>
+
+    <h2>The compounding trap</h2>
+    <p>
+      em multiplies down the tree, and inherited rules multiply with it.
+    </p>
+    <pre><code>ul &#123; font-size: 0.9em; &#125;
+
+Level 1: 16px × 0.9 = 14.4px
+Level 2: 14.4 × 0.9 = 12.96px
+Level 3: 12.96 × 0.9 = 11.66px
+Level 4: 11.66 × 0.9 = 10.5px   ← unreadable</code></pre>
+    <p>
+      Nothing here is a bug; it is em working exactly as specified. The fix is either to scope the rule
+      so it cannot nest (<code>:not(ul ul)</code>, or a class rather than an element selector) or to use
+      rem, which is immune because it always resolves against the root.
+    </p>
+
+    <h2>Where em is the right choice</h2>
+    <p>
+      Component-internal measurements that should track the component&rsquo;s own text size. Define a
+      button once in em and it works at every size, because everything inside it scales together:
+    </p>
+    <pre><code>.button &#123;
+  font-size: 1rem;        /* the one dial */
+  padding: 0.625em 1em;   /* 10px / 16px at this size */
+  border-radius: 0.375em;
+  gap: 0.5em;
+&#125;
+
+.button--sm &#123; font-size: 0.875rem; &#125;  /* everything shrinks proportionally */
+.button--lg &#123; font-size: 1.125rem; &#125;  /* everything grows proportionally */</code></pre>
+    <p>
+      Two size modifiers, one declaration each. In rem you would have to restate the padding, radius and
+      gap for every size.
+    </p>
+
+    <h2>Other good uses</h2>
+    <ul>
+      <li>Icon sizing. <code>width: 1em; height: 1em</code> makes an inline SVG match the surrounding text exactly, at any size.</li>
+      <li>Media queries. Inside a media query em resolves against the browser&rsquo;s initial font size, never your declared root, which makes em breakpoints more predictable than rem ones in a project that changes the root size.</li>
+      <li><strong>Text indentation and hanging punctuation</strong>, which should be proportional to the type by definition.</li>
+    </ul>
+
+    <h2>The bulk rewrite cannot know your tree</h2>
+    <p>
+      When you paste a stylesheet, the converter applies the single parent font size you set at the top
+      to every value it rewrites. It has no way to know that <code>.card p</code> sits inside something
+      that set 1.25em, because that depends on the DOM, not the stylesheet. For a file with several nested type
+      contexts, convert one section at a time with the right parent size for each, or use the property
+      filter to limit the rewrite to a single property.
+    </p>
+  </Fragment>
+</ToolLayout>

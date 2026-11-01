@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="length-converter">
+  <UnitConverter client:load dimension="length" from="cm" to="in" />
+  <Fragment slot="explainer">
+    <h2>How to convert a length</h2>
+    <ol>
+      <li>Type your number into either field. The other side updates on each keystroke, so you can work in either direction.</li>
+      <li>Pick the units. The list has groups for metric, imperial and US, and nautical and astronomical units, so millimetres are easy to find.</li>
+      <li>If you picked the pair the wrong way round, use the swap button. It keeps the equation and does not reset it.</li>
+      <li>Set the decimal places for a fixed number of digits. For drawings and cut lists, three decimals of a millimetre is usually enough.</li>
+    </ol>
+    <p>
+      Each pair in the "common conversions" list has its own link, so you can bookmark
+      <code>?from=cm&amp;to=in</code> and open the conversion you use most.
+    </p>
+
+    <h2>Which factors are exact and which are not</h2>
+    <p>
+      Most common length conversions are exact. Since the 1959 international yard and pound agreement,
+      the inch is exactly 25.4 mm, so the foot is exactly 0.3048 m, the yard exactly 0.9144 m and the
+      mile exactly 1,609.344 m. Those conversions have no rounding. The 2.54 in a formula is the
+      definition, not a measurement.
+    </p>
+    <p>
+      The nautical mile is also exact, at 1,852 m, because it was redefined from "one minute of
+      latitude" to a round metric number. The astronomical unit was fixed at exactly
+      149,597,870,700 m in 2012. The light-year follows from it, because the speed of light is a
+      defined constant. The only rounding comes from the decimal places you choose.
+    </p>
+    <p>
+      Note: the US survey foot, used in older American land records, is two parts per million longer
+      than the international foot. It was officially retired at the end of 2022. Over a city block the
+      difference is invisible. Over a state boundary it is metres, so surveyors care. This converter
+      uses the international foot throughout.
+    </p>
+
+    <h2>Reference: metric prefixes on the metre</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Unit</th><th>Symbol</th><th>Metres</th><th>Typical use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Kilometre</td><td>km</td><td>1,000</td><td>Road distances, running races</td></tr>
+          <tr><td>Metre</td><td>m</td><td>1</td><td>Rooms, fabric, height</td></tr>
+          <tr><td>Centimetre</td><td>cm</td><td>0.01</td><td>Body measurements, paper sizes</td></tr>
+          <tr><td>Millimetre</td><td>mm</td><td>0.001</td><td>Engineering drawings, timber, screws</td></tr>
+          <tr><td>Micrometre</td><td>µm</td><td>0.000001</td><td>Paint thickness, chip features, dust</td></tr>
+          <tr><td>Nanometre</td><td>nm</td><td>0.000000001</td><td>Wavelengths of light, semiconductors</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Quick mental conversions</h2>
+    <ul>
+      <li>cm to inches: divide by 2.5 and take a little off. 30 cm is just under 12 in.</li>
+      <li>metres to feet: multiply by 3 and add 10 %. 10 m becomes 33 ft, against 32.8 exact.</li>
+      <li>km to miles: multiply by 6 and drop a zero, so 8 km is about 4.8 mi (true value 4.97).</li>
+      <li>miles to km: use the Fibonacci trick. Consecutive Fibonacci numbers are about a mile/km pair, so 5 mi ≈ 8 km and 8 mi ≈ 13 km.</li>
+    </ul>
+    <p>
+      These are estimates. The length converter above uses full double precision and rounds only when
+      it shows the result, so you copy the most accurate value at the precision you asked for.
+    </p>
+  </Fragment>
+</ToolLayout>

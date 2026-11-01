@@ -1,0 +1,93 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import HtmlEntityEncoder from '@/components/tools/dev/HtmlEntityEncoder.tsx'
+---
+
+<ToolLayout slug="html-entity-encoder">
+  <HtmlEntityEncoder client:load />
+  <Fragment slot="explainer">
+    <h2>How to encode and decode entities</h2>
+    <ol>
+      <li>Choose <strong>Encode</strong> to turn characters into entities, or <strong>Decode</strong> to turn entities back into characters.</li>
+      <li>Pick the entity style: named (<code>&amp;mdash;</code>), decimal (<code>&amp;#8212;</code>) or hexadecimal (<code>&amp;#x2014;</code>).</li>
+      <li>Choose how much to escape. <strong>Only special characters</strong> is correct for almost all modern pages.</li>
+      <li>Copy the result, or use the reference table to look up a single character.</li>
+    </ol>
+
+    <h2>Which characters actually need escaping</h2>
+    <p>
+      HTML needs escaping only where a character would otherwise be read as markup, and that depends on
+      where the text is.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Context</th><th>Must escape</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Element text</td><td><code>&amp;</code> and <code>&lt;</code></td><td><code>&lt;</code> opens a tag; <code>&amp;</code> starts an entity</td></tr>
+        <tr><td>Double-quoted attribute</td><td><code>&amp;</code> and <code>"</code></td><td>The quote would close the attribute early</td></tr>
+        <tr><td>Single-quoted attribute</td><td><code>&amp;</code> and <code>'</code></td><td>Same reason</td></tr>
+        <tr><td>Unquoted attribute</td><td>Almost everything</td><td>Do not use unquoted attributes with dynamic values</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Most libraries escape all five of <code>&amp; &lt; &gt; " '</code> in all contexts, because it is cheap
+      and keeps a value safe if it moves to another context later. Minimal mode here does the same.
+    </p>
+
+    <h2>Named, decimal or hexadecimal?</h2>
+    <p>
+      All three give the same character. Named references are readable: <code>&amp;nbsp;</code> tells you
+      more than <code>&amp;#160;</code>. But there are over 2000 of them, only HTML defines them (XML has
+      five), and older parsers disagree on edge cases. Numeric references work everywhere and need no lookup
+      table. Use hexadecimal when you copy a code point from the Unicode charts, where it is written as
+      <code>U+2014</code>.
+    </p>
+    <p>
+      If your page is served as UTF-8, as it should be, write most characters directly. <code>&mdash;</code>
+      is 3 bytes in UTF-8 and <code>&amp;mdash;</code> is 7. The character is also easier to read in source
+      and you can search for it in your editor.
+    </p>
+
+    <h2>Entities you will actually meet</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Character</th><th>Named</th><th>Numeric</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>&amp;</td><td><code>&amp;amp;</code></td><td><code>&amp;#38;</code></td><td>Escape it first, or you will double-encode everything else</td></tr>
+        <tr><td>&lt;</td><td><code>&amp;lt;</code></td><td><code>&amp;#60;</code></td><td>The one that actually opens a tag</td></tr>
+        <tr><td>&gt;</td><td><code>&amp;gt;</code></td><td><code>&amp;#62;</code></td><td>Not strictly required in text, escaped by convention</td></tr>
+        <tr><td>"</td><td><code>&amp;quot;</code></td><td><code>&amp;#34;</code></td><td>Required inside double-quoted attributes</td></tr>
+        <tr><td>'</td><td><code>&amp;apos;</code></td><td><code>&amp;#39;</code></td><td><code>&amp;apos;</code> is HTML5 and XML; older HTML only had the numeric form</td></tr>
+        <tr><td>non-breaking space</td><td><code>&amp;nbsp;</code></td><td><code>&amp;#160;</code></td><td>Prevents a line break; not the same character as a normal space</td></tr>
+        <tr><td>&mdash;</td><td><code>&amp;mdash;</code></td><td><code>&amp;#8212;</code></td><td>Em dash</td></tr>
+        <tr><td>–</td><td><code>&amp;ndash;</code></td><td><code>&amp;#8211;</code></td><td>En dash, for ranges</td></tr>
+        <tr><td>…</td><td><code>&amp;hellip;</code></td><td><code>&amp;#8230;</code></td><td>A single ellipsis character, not three dots</td></tr>
+        <tr><td>©</td><td><code>&amp;copy;</code></td><td><code>&amp;#169;</code></td><td></td></tr>
+        <tr><td>€</td><td><code>&amp;euro;</code></td><td><code>&amp;#8364;</code></td><td></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Escaping is not the whole of XSS defence</h2>
+    <p>
+      HTML escaping stops text from being read as markup, which blocks the classic
+      <code>&lt;script&gt;</code> injection into element text. It does not protect other contexts. A value
+      inside a <code>&lt;script&gt;</code> block needs JavaScript string escaping. A value used as an
+      <code>href</code> needs a scheme allowlist, because <code>javascript:</code> URLs are not markup and
+      HTML escaping does not change them. A value inside a <code>style</code> attribute needs CSS escaping.
+      Use a templating engine that knows the context, and use this tool to debug, not as a security control.
+    </p>
+
+    <h2>Astral characters and emoji</h2>
+    <p>
+      JavaScript stores characters above U+FFFF as two UTF-16 code units. Encoders that iterate over code
+      units split them and output two meaningless references. This tool iterates by code point, so 😀
+      becomes the single reference <code>&amp;#128512;</code> and decodes back to the same emoji.
+    </p>
+  </Fragment>
+</ToolLayout>

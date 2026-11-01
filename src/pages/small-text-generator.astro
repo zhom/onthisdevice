@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="small-text-generator">
+  <DevEncodeFancyText
+    client:load
+    sample="small text"
+    featured={['small-caps', 'superscript', 'subscript']}
+  />
+  <Fragment slot="explainer">
+    <h2>Three kinds of small text</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Style</th><th>Sample</th><th>Sits</th><th>Coverage</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Small caps</td><td>sᴍᴀʟʟ ᴄᴀᴘs</td><td>On the baseline</td><td>All letters except X</td></tr>
+          <tr><td>Superscript</td><td>ˢᵘᵖᵉʳˢᶜʳᶦᵖᵗ</td><td>Raised</td><td>All letters except Q; all digits</td></tr>
+          <tr><td>Subscript</td><td>ₛᵤbₛcᵣᵢₚₜ</td><td>Lowered</td><td>Only about half the alphabet; all digits</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Small caps are the most usable of the three: small capitals that stay on the baseline, so a whole
+      phrase still reads as text. Superscript is much smaller and raised. It suits a short marker but is hard
+      to read past a few words. Subscript has the worst coverage, because Unicode added only the letters used
+      in chemical and mathematical notation.
+    </p>
+
+    <h2>Why some letters are missing</h2>
+    <p>
+      These characters were not designed as a styling set. Unicode added them for phonetics, mathematics and
+      chemistry, so it has only the letters those fields needed. There is no small-caps X, no superscript Q,
+      and no subscript for most consonants. The small text generator shows a missing character at full size,
+      and you can see it in the preview.
+    </p>
+
+    <h2>Good uses for small text</h2>
+    <ul>
+      <li>A quiet subtitle under a profile name or a channel description.</li>
+      <li>Footnote markers: superscript digits are complete, so ¹ ² ³ work.</li>
+      <li>Chemical formulae in plain text: H₂O, CO₂, C₆H₁₂O₆.</li>
+      <li>Maths in a bio: x², 10⁻⁹, n^th written as nᵗʰ.</li>
+      <li>Visual separation in a Discord or Twitch panel that has no formatting.</li>
+    </ul>
+
+    <h2>Do not use it for disclaimers</h2>
+    <p>
+      Do not use small text for anything a reader has a right to see. It fails on devices without the glyphs,
+      screen readers read it unpredictably or skip it, and in several jurisdictions contract terms made hard
+      to read on purpose are unenforceable. If the content matters, use ordinary text.
+    </p>
+
+    <h2>Usernames and display names</h2>
+    <p>
+      Support varies. Discord and Twitch generally accept these characters in display names and channel
+      panels. Twitter/X accepts them in the display name but not the handle. Instagram accepts them in the bio
+      and the name field but sometimes rejects them in the username. Many platforms allow only ASCII in
+      handles. Test first, because some services make you wait before you can change a name back.
+    </p>
+
+    <h2>Superscript versus a real exponent</h2>
+    <p>
+      In a document with formatting, such as Word, Google Docs or HTML, use the real superscript command. It
+      scales with the font, assistive technology reads it correctly, and it copies cleanly into equation
+      editors. Use Unicode superscript only where no formatting is available.
+    </p>
+  </Fragment>
+</ToolLayout>

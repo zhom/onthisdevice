@@ -1,0 +1,95 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoToMp3Batch from '@/components/tools/media/VideoToMp3Batch.tsx'
+---
+
+<ToolLayout slug="webm-to-mp3">
+  <VideoToMp3Batch
+    client:load
+    from="webm"
+    hint="WebM video, .weba audio and browser voice notes, decoded on your device"
+  />
+  <Fragment slot="explainer">
+    <h2>WebM to MP3: Opus in, MP3 out</h2>
+    <p>
+      Almost every WebM file stores its audio as Opus, a codec that is better than MP3 at every bitrate, most
+      of all below 96 kbps, where MP3 sounds watery and Opus still sounds like speech. Conversion from Opus to
+      MP3 therefore loses efficiency. Do it when you need MP3: for a car stereo, an old hardware player,
+      transcription software, a DAW that does not import WebM, or a client who asked for MP3.
+    </p>
+    <p>
+      Because of that loss, use a generous bitrate. 192 kbps or higher keeps the second compression inaudible
+      on music; for speech, 128 kbps mono is more than enough and halves the file.
+    </p>
+
+    <h2>Where WebM audio comes from</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>File</th>
+            <th>Typical audio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Browser voice recorders and web apps</td>
+            <td>.webm or .weba</td>
+            <td>Opus, mono, 48 kHz</td>
+          </tr>
+          <tr>
+            <td>Browser and tab screen recordings</td>
+            <td>.webm</td>
+            <td>Opus, stereo</td>
+          </tr>
+          <tr>
+            <td>Saved web video</td>
+            <td>.webm</td>
+            <td>Opus at 128-160 kbps</td>
+          </tr>
+          <tr>
+            <td>Meeting and call recorders</td>
+            <td>.webm</td>
+            <td>Opus, often mono at a low bitrate</td>
+          </tr>
+          <tr>
+            <td>Telegram voice messages</td>
+            <td>.ogg or .webm</td>
+            <td>Opus, mono</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>.weba files also work</h2>
+    <p>
+      A <code>.weba</code> file is a WebM container with only an audio stream. Browsers use this extension when
+      a recording had no camera. The tool handles it the same way, and because there is no video track to
+      remove, it converts almost at once.
+    </p>
+
+    <h2>Voice notes and transcription</h2>
+    <p>
+      This is the most common use. A web app recorded an interview, a stand-up or a lecture, and the
+      transcription service, the note app or the recipient needs MP3. For this job:
+    </p>
+    <ul>
+      <li>Choose <strong>128 kbps</strong> and tick <strong>downmix to mono</strong>. Speech recognition gains nothing from stereo or a higher bitrate.</li>
+      <li>An hour of audio is about 55 MB, which fits in an email.</li>
+      <li>The conversion runs in this tab, which matters when the recording is a client call, a medical appointment, an HR meeting or a legal interview.</li>
+    </ul>
+
+    <h2>Batch conversion</h2>
+    <p>
+      Add as many recordings as you like. They convert one after another, and you can download them as one
+      ZIP. There is no file count limit.
+    </p>
+
+    <h2>To keep the video</h2>
+    <p>
+      <a href="/webm-to-mp4">WebM to MP4</a> converts the whole file, picture included, for an editor or an
+      iPhone. If a browser screen recording cannot be scrubbed, that page explains why and fixes it.
+    </p>
+  </Fragment>
+</ToolLayout>

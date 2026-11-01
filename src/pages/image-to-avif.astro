@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ImageToAvif from '@/components/tools/image-convert/ImageToAvif.tsx'
+---
+
+<ToolLayout slug="image-to-avif">
+  <ImageToAvif client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert images to AVIF</h2>
+    <ol>
+      <li>Drop JPG, PNG, WebP, GIF or BMP files onto the box above. The tool detects the source format from the file contents, so a wrong extension does not matter.</li>
+      <li>Set the quality slider. AVIF numbers do not match JPEG numbers: quality 50 in AVIF looks about like quality 80 in JPEG.</li>
+      <li>Set the effort slider for the last few percent of size. Higher effort means a longer search for a compact encoding at the same visual quality.</li>
+      <li>Wait. AVIF is slow to encode, and a large photograph at high effort can take several seconds. The progress bar shows the current file.</li>
+      <li>Download each file, or the whole batch as a ZIP.</li>
+    </ol>
+    <p>
+      The encoder is libavif with the AOM AV1 encoder, compiled to WebAssembly. It runs in a worker thread, so
+      the page stays responsive. Nothing is uploaded.
+    </p>
+
+    <h2>Quality and effort: two different dials</h2>
+    <p>
+      People often confuse these. Quality sets the target: how much detail the encoder can discard. Effort sets
+      how hard the encoder searches for the cheapest way to reach that target. Higher effort makes the file
+      smaller and the encode slower. It does not make the image look better.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">AVIF quality</th>
+            <th align="left">Roughly equivalent JPEG</th>
+            <th align="left">Use for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>75–85</td><td>q95+</td><td>Near-transparent quality, archival delivery</td></tr>
+          <tr><td>60–70</td><td>q88–92</td><td>Hero images, photography portfolios</td></tr>
+          <tr><td>50–60</td><td>q78–85</td><td>The general-purpose default</td></tr>
+          <tr><td>35–45</td><td>q65–75</td><td>Thumbnails, list images, background textures</td></tr>
+          <tr><td>Below 30</td><td>None</td><td>AVIF stays smooth, not blocky, but detail is clearly gone</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Effort 4 to 6 usually gives 3–6% smaller files for about double the time. Effort 6 to 9 gives another
+      2–3% for several times the time again. Effort 6 is a sensible default. Use 2–3 for hundreds of files.
+    </p>
+
+    <h2>Where AVIF wins and where it does not</h2>
+    <ul>
+      <li>Photographs gain the most. 40–60% smaller than JPEG at matched quality is normal, and at low bitrates AVIF goes soft, where JPEG goes blocky.</li>
+      <li>Gradients and flat colour are excellent. AV1's larger transform blocks and directional prediction avoid the banding of 8-bit JPEG.</li>
+      <li>Transparency is supported, with the alpha plane coded separately.</li>
+      <li>Logos, icons and screenshots often get larger. Lossless WebP or a well-optimised PNG usually gives a smaller file, faster.</li>
+      <li>For very small images, AVIF's container overhead can make a 32 × 32 icon larger than the PNG.</li>
+    </ul>
+
+    <h2>Deploying AVIF safely</h2>
+    <p>
+      Chrome, Edge, Firefox, Safari 16+ and all current mobile browsers decode AVIF. Older browsers and much
+      desktop software do not. The standard pattern is a picture element with AVIF first, WebP second and JPEG
+      last, so the browser takes the first format it can read. Keep your originals, because AVIF is a delivery
+      format. To go back, <a href="/avif-to-jpg">AVIF to JPG</a> and <a href="/avif-to-png">AVIF to PNG</a>
+      convert locally. For mixed conversions in one pass, use the
+      <a href="/image-converter">universal image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

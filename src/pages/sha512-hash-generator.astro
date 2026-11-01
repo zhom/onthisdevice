@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="sha512-hash-generator">
+  <DevEncodeHash client:load algorithm="SHA-512" />
+  <Fragment slot="explainer">
+    <h2>SHA-512: 512 bits, 128 hex characters</h2>
+    <p>
+      SHA-512 is the 64-bit member of the SHA-2 family. It uses 64-bit words and 1024-bit blocks, where
+      SHA-256 uses 32-bit words and 512-bit blocks, and its digest is twice as long. The design is the same
+      with wider internals.
+    </p>
+
+    <h2>SHA-512 is often faster than SHA-256</h2>
+    <p>
+      On most desktop and server hardware, a 64-bit CPU processes 64 bits per operation faster than 32. There
+      are exceptions. Modern x86 and ARM chips have dedicated SHA-256 instructions and no SHA-512
+      equivalent, so SHA-256 is faster on those machines. On 32-bit devices SHA-256 is clearly faster.
+    </p>
+    <p>
+      In a browser, speed depends on how the platform implements WebCrypto. If throughput matters for a
+      large file, time both on your own hardware.
+    </p>
+
+    <h2>When 512 bits is the right choice</h2>
+    <ul>
+      <li>
+        Long-term archival integrity: a digest recorded now that must still be trustworthy in thirty years.
+      </li>
+      <li>
+        Compliance requirements: some government and financial profiles specify SHA-384 or SHA-512.
+      </li>
+      <li>
+        Key derivation inputs: when you need more than 256 bits of output without a second pass.
+      </li>
+      <li>
+        SHA-512/256: a truncated SHA-512 that gives a 256-bit digest at 64-bit speed and is immune to
+        length-extension attacks by design.
+      </li>
+    </ul>
+    <p>
+      For everyday integrity checks, SHA-256 is already far beyond any feasible collision search. The extra
+      bits add margin, not missing security.
+    </p>
+
+    <h2>Length extension</h2>
+    <p>
+      SHA-256 and SHA-512 share a weakness, although it does not affect checksums. Both use the
+      Merkle–Damgård construction, so a person who knows <code>hash(secret ‖ message)</code> and the length of
+      the secret can compute <code>hash(secret ‖ message ‖ extra)</code> without the secret. Never
+      authenticate a message by hashing a secret and the data together. Use HMAC, which is built to prevent
+      this.
+    </p>
+
+    <h2>Identifying an unlabelled hash</h2>
+    <p>
+      No other hash in common use has 128 hex characters. If a field rejects your value, the system probably
+      wanted the 64 characters of SHA-256. The comparison table on this page shows each algorithm for the
+      same input, so you can find the one whose length matches.
+    </p>
+
+    <h2>Runs locally</h2>
+    <p>
+      The SHA-512 hash generator hashes text as you type and reads files in slices with a progress bar,
+      through the browser's native WebCrypto. The only size limit is your device's memory. The tool also
+      works with the network off.
+    </p>
+  </Fragment>
+</ToolLayout>

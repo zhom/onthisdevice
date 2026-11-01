@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="kg-to-lbs">
+  <UnitsLifePairConverter client:load spec="kg-to-lbs" />
+  <Fragment slot="explainer">
+    <h2>The pound is a metric unit too</h2>
+    <p>
+      Since 1959 the international avoirdupois pound has been defined as
+      <strong>exactly 0.45359237 kilograms</strong>. So kg to lbs is a division by that number, or a
+      multiplication by 2.2046226218, and the result is exact. No more accurate figure exists, because
+      this is the definition.
+    </p>
+    <p>
+      The familiar "2.2" shortcut is 0.2% low. On a 70 kg body weight that is 340 g, which does not
+      matter. On a 20-tonne shipment it is 44 kg, which does.
+    </p>
+
+    <h2>Three different answers for the same weight</h2>
+    <p>
+      70 kg can be written in all of these ways, and different countries expect different ones:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Form</th><th scope="col">70 kg is</th><th scope="col">Used in</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Kilograms</td><td>70 kg</td><td>Almost everywhere, and all medical records</td></tr>
+        <tr><td>Pounds</td><td>154.32 lb</td><td>United States</td></tr>
+        <tr><td>Stone and pounds</td><td>11 st 0.3 lb</td><td>United Kingdom, Ireland</td></tr>
+        <tr><td>Pounds and ounces</td><td>154 lb 5.2 oz</td><td>Parcels, small goods, birth weights</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The page shows all four at once, because the arithmetic usually goes wrong when you convert to
+      decimal pounds and then calculate stone by hand.
+    </p>
+
+    <h2>Weights worth knowing by heart</h2>
+    <ul>
+      <li>1 kg = 2.20 lb &middot; 5 kg = 11.02 lb &middot; 10 kg = 22.05 lb</li>
+      <li>20 kg = 44.09 lb, the common checked-bag allowance</li>
+      <li>23 kg = 50.71 lb, the other common allowance. So the US "50 lb" limit is slightly lower</li>
+      <li>45 kg = 99.21 lb &middot; 100 kg = 220.46 lb</li>
+    </ul>
+
+    <h2>Gym plates never quite match</h2>
+    <p>
+      An Olympic bar is 20 kg (44.09 lb) in metric gyms and 45 lb (20.41 kg) in American ones. A
+      20 kg plate is 44.09 lb, and a 45 lb plate is 20.41 kg. So a bar loaded from a mixed set is
+      slightly unequal, and a "225 lb" bench in an American gym is 102.06 kg, not the 100 kg a metric
+      lifter would call it. Personal records do not convert cleanly, so record which set you used.
+    </p>
+
+    <h2>Mass, weight and force</h2>
+    <p>
+      This converter handles mass. The pound is also a unit of force (pound-force): the weight of a
+      pound-mass under standard gravity. On Earth the two are numerically equal, so the difference does
+      not matter in daily life. But for a spring rating, a thrust figure or a torque, check which pound
+      you have before you apply 0.45359237.
+    </p>
+
+    <h2>Converting a spreadsheet column</h2>
+    <p>
+      Switch to the Batch tab, paste the column, and copy the result. Blank lines stay, so the result
+      pastes back aligned. Lines the tool cannot read come back empty, with no substitute value. All
+      work happens in this browser tab.
+    </p>
+  </Fragment>
+</ToolLayout>

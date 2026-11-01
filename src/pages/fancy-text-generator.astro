@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="fancy-text-generator">
+  <DevEncodeFancyText client:load sample="fancy text" />
+  <Fragment slot="explainer">
+    <h2>These are characters, not fonts</h2>
+    <p>
+      The fancy text generator does not change the font. Each style replaces your letters with different
+      Unicode characters that are drawn in a particular way. <code>𝐀</code> is not a bold <code>A</code>;
+      it is U+1D400, MATHEMATICAL BOLD CAPITAL A, a separate character.
+    </p>
+    <p>
+      Because the style is in the characters, it stays when you paste into places with no formatting: an
+      Instagram bio, a LinkedIn headline, a Discord nickname, a form field, a spreadsheet cell.
+    </p>
+
+    <h2>Where the characters come from</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Unicode block</th><th>Gives you</th><th>Reliability</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mathematical Alphanumeric Symbols</td><td>Bold, italic, script, fraktur, double-struck, monospace</td><td>Very good: designed for maths, borrowed for style</td></tr>
+          <tr><td>Halfwidth and Fullwidth Forms</td><td>Ｆｕｌｌｗｉｄｔｈ vaporwave text</td><td>Excellent: all CJK-capable fonts have it</td></tr>
+          <tr><td>Enclosed Alphanumerics</td><td>Ⓑⓤⓑⓑⓛⓔ and 🄱🄾🅇🄴🄳 letters</td><td>Mixed on older Android</td></tr>
+          <tr><td>Phonetic Extensions</td><td>Sᴍᴀʟʟ ᴄᴀᴘs, superscript, subscript</td><td>Good, with a few gaps</td></tr>
+          <tr><td>Combining Diacritical Marks</td><td>Strikethrough, underline, cursed text</td><td>Renders everywhere, positions vary</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Where it works and where it breaks</h2>
+    <p>
+      Bold, italic, script, monospace and fullwidth are safe on iOS, Android, Windows, macOS and all major
+      social platforms. Support for the boxed sets (circled, squared, negative) is less complete, mostly on
+      older Android devices and in some desktop apps that fall back to a limited system font. The
+      regional-indicator style shows as flag-style tiles on phones and as plain letters on many desktops.
+    </p>
+    <p>
+      You cannot test this on your own device: you see your own font stack, not that of your reader. When it
+      matters, send the text to yourself on a different phone first.
+    </p>
+
+    <h2>The costs, stated plainly</h2>
+    <ul>
+      <li>
+        Accessibility: screen readers often read mathematical letters one at a time, as &ldquo;mathematical
+        bold capital A&rdquo;, or skip them. Never style text that carries information someone needs.
+      </li>
+      <li>
+        Searchability: styled characters are different bytes, so a search for the plain word does not find
+        them. Keep your real name and keywords in ordinary text.
+      </li>
+      <li>
+        Copy fidelity: some systems normalise or remove these characters, including a few databases, most
+        username fields, and many form validators.
+      </li>
+    </ul>
+
+    <h2>Copying on mobile</h2>
+    <p>
+      Each style has its own copy button that writes directly to the clipboard, with a fallback for browsers
+      that block the modern clipboard API. Without a button, you must select text by hand, which on a phone
+      means a long-press and a drag, and you can easily copy the label with the sample.
+    </p>
+
+    <h2>Everything runs in this tab</h2>
+    <p>
+      The transformations are simple codepoint arithmetic in your browser as you type. Nothing you enter is
+      sent, which matters because people often use these styles on names, handles and private messages.
+    </p>
+  </Fragment>
+</ToolLayout>

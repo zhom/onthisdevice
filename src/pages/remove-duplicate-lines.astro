@@ -1,0 +1,87 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RemoveDuplicateLines from '@/components/tools/text/RemoveDuplicateLines.tsx'
+---
+
+<ToolLayout slug="remove-duplicate-lines">
+  <RemoveDuplicateLines client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to remove duplicate lines</h2>
+    <ol>
+      <li>Paste your list with one item per line, or drop a text or CSV file onto the box.</li>
+      <li>Choose the output: the deduplicated list, only the lines that repeat, or only the lines that appear exactly once.</li>
+      <li>Decide whether case matters. For email addresses and URLs it usually does not; for identifiers and passwords it always does.</li>
+      <li>Leave “Trim each line” on unless trailing spaces have a meaning in your data.</li>
+      <li>Read the counters to confirm the result before you copy or download it.</li>
+    </ol>
+
+    <h2>Keep first or keep last?</h2>
+    <p>
+      Both options remove the same number of lines. They differ in which copy stays, and so in where it
+      appears in the output. <strong>Keep first</strong> keeps the earliest occurrence, for a chronological
+      log or a list in priority order. <strong>Keep last</strong> keeps the most recent occurrence, for data
+      where later entries are updates, such as an append-only export where the newest row for a customer is
+      correct.
+    </p>
+    <p>
+      In both cases the remaining lines stay in their original order. The command-line method
+      <code>sort | uniq</code> sorts everything alphabetically.
+    </p>
+
+    <h2>The three modes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Mode</th>
+            <th>Input</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Remove duplicates</td>
+            <td>a, b, a, c, b</td>
+            <td>a, b, c</td>
+          </tr>
+          <tr>
+            <td>Show only duplicates</td>
+            <td>a, b, a, c, b</td>
+            <td>a, b (one entry per repeated value)</td>
+          </tr>
+          <tr>
+            <td>Show only unique lines</td>
+            <td>a, b, a, c, b</td>
+            <td>c (the lines that appear exactly once)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>Mailing lists: merge exports from two systems and remove the overlap before an import that charges per contact.</li>
+      <li>Keyword research: combine exports from several tools and keep one row per phrase.</li>
+      <li>Log analysis: “show only duplicates” with counts turns a raw log into a frequency table for a spreadsheet.</li>
+      <li>Redirect maps and URL lists: find the paths that appear twice before they cause a redirect loop.</li>
+      <li>Data cleanup: “show only unique lines” finds the rows that are in one export and not in the other.</li>
+    </ul>
+
+    <h2>What counts as the same line</h2>
+    <p>
+      Two lines are duplicates when their comparison keys match. The key is the line itself, optionally
+      trimmed of leading and trailing whitespace and optionally lowercased. Nothing else is normalised:
+      <code>john.doe@example.com</code> and <code>johndoe@example.com</code> are different lines, and so
+      are values with different internal spacing. For looser matching, normalise the list with
+      <a href="/find-and-replace">find and replace</a> first, then remove duplicates.
+    </p>
+
+    <h2>Large lists and privacy</h2>
+    <p>
+      The tool reads lines in chunks and lets the browser repaint between them, so a list of several hundred
+      thousand lines does not freeze the tab. A customer list or a set of internal hostnames stays on your
+      device.
+    </p>
+  </Fragment>
+</ToolLayout>

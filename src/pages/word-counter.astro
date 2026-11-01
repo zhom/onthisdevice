@@ -1,0 +1,97 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WordCounter from '@/components/tools/text/WordCounter.tsx'
+---
+
+<ToolLayout slug="word-counter">
+  <WordCounter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to count words in your text</h2>
+    <ol>
+      <li>Paste or type your text into the box. You can also drag a <code>.txt</code>, <code>.md</code> or <code>.csv</code> file onto it, or use the Open file button.</li>
+      <li>Each figure updates as you type: words, characters, sentences, paragraphs, lines, reading time and speaking time.</li>
+      <li>Set the reading speed for your audience. 238 words per minute is the average for adult silent reading; use 150 for dense technical writing and 350 for skimming.</li>
+      <li>Check the length panel if the text has a limit: a post, a meta description, a title tag or an SMS.</li>
+      <li>Copy or download the full report to record the numbers for a client brief, a submission form or a content audit.</li>
+    </ol>
+
+    <h2>What counts as a word, a sentence and a paragraph</h2>
+    <p>
+      Word counters often disagree, so these are the exact rules of this word counter. A word is a run of
+      non-space characters that contains at least one letter or digit. Hyphenated compounds such as
+      “state-of-the-art” count as one word, contractions such as “don’t” count as one, and a bullet or dash on
+      its own counts as none. On normal prose, the result matches common word processors.
+    </p>
+    <p>
+      A sentence ends at a full stop, question mark, exclamation mark or ellipsis followed by whitespace or the
+      end of the text, and also at a blank line, so headings and list items count. Abbreviations such as
+      “Dr.” and “etc.” and initials such as “J. R. R.” do not split a sentence. A paragraph is a block of
+      consecutive non-empty lines; blank lines separate paragraphs.
+    </p>
+
+    <h2>Reading time and speaking time</h2>
+    <p>
+      Reading time is words divided by a reading speed. The 238 words-per-minute default comes from Marc
+      Brysbaert’s 2019 meta-analysis of 190 studies of adult silent reading of English prose; the same paper
+      gives about 183 wpm for reading aloud. Presentations and voice-overs are slower, so speaking time here
+      uses 140 wpm, a comfortable conference-talk pace close to the audiobook narrator average.
+    </p>
+    <p>
+      Both are planning estimates. Technical material with code, tables or unfamiliar terms reads much slower
+      than narrative prose, and a script read aloud with pauses can take 20% longer than the figure shown.
+    </p>
+
+    <h2>Typical word counts by format</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Typical length</th>
+            <th>Reading time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Tweet / X post</td><td>Up to 280 characters</td><td>Seconds</td></tr>
+          <tr><td>Meta description</td><td>150–155 characters</td><td>Seconds</td></tr>
+          <tr><td>Product description</td><td>150–300 words</td><td>≈ 1 minute</td></tr>
+          <tr><td>Blog post</td><td>800–1,500 words</td><td>4–7 minutes</td></tr>
+          <tr><td>In-depth guide</td><td>2,000–4,000 words</td><td>8–17 minutes</td></tr>
+          <tr><td>Conference talk (20 min)</td><td>2,600–2,900 words</td><td>20 minutes spoken</td></tr>
+          <tr><td>University essay</td><td>1,500–3,000 words</td><td>6–13 minutes</td></tr>
+          <tr><td>Novel</td><td>70,000–110,000 words</td><td>5–8 hours</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Using keyword density</h2>
+    <p>
+      The keyword table ranks the most frequent terms and shows the share of each in all counted terms. Set
+      the phrase length to two or three words to see the phrases a search engine can match. Single-word
+      density is a crude measure: “content marketing” tells you much more than “content” and “marketing”
+      separately.
+    </p>
+    <p>
+      Density is a diagnostic, not a target. If your main phrase is between about 0.5% and 2.5%, the copy
+      usually reads naturally; above 4%, readers probably notice the repetition. Also check what the table
+      does not contain: if the terms you want to rank for are not in the top twenty, the page is probably
+      about something else.
+    </p>
+
+    <h2>Readability scores</h2>
+    <p>
+      The Flesch Reading Ease score combines average sentence length and average syllables per word into a
+      0–100 figure, where higher is easier. Plain English for a general audience scores 60–70; technical
+      documentation often scores in the 30s. The Flesch–Kincaid grade level converts the same inputs into a US
+      school grade. Both measure only sentence and word length, so they cannot tell you whether the writing
+      is clear. A sudden drop in the score usually means one sentence is too long.
+    </p>
+
+    <h2>Your text stays on your device</h2>
+    <p>
+      The counter is JavaScript in your browser tab, so your draft, a client’s confidential brief or an
+      unpublished manuscript stays on your device. After the page loads, it also works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

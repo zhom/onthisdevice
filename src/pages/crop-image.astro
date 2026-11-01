@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CropImage from '@/components/tools/image-edit/CropImage.tsx'
+---
+
+<ToolLayout slug="crop-image">
+  <CropImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to crop an image</h2>
+    <ol>
+      <li>Drop a photo onto the box above. Your browser decodes it, and it stays on your device.</li>
+      <li>Drag inside the highlighted rectangle to move the crop, or drag one of the eight handles to resize it. The dimmed area is discarded.</li>
+      <li>Pick an aspect ratio if you need a fixed shape. With a ratio locked, all handles keep the proportions.</li>
+      <li>For an exact result, type the numbers into <strong>X</strong>, <strong>Y</strong>, <strong>Width</strong> and <strong>Height</strong>. They are in original image pixels and stay in sync with the box.</li>
+      <li>Check the live preview on the right, then press <strong>Crop image</strong> and download.</li>
+    </ol>
+
+    <h2>Cropping with the keyboard</h2>
+    <p>
+      Press Tab until the crop box has focus, then:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Keys</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>Arrow keys</td><td>Move the selection by 1 px</td></tr>
+          <tr><td>Shift + arrows</td><td>Move the selection by 20 px</td></tr>
+          <tr><td>Alt + arrows</td><td>Resize from the bottom-right corner by 1 px</td></tr>
+          <tr><td>Alt + Shift + arrows</td><td>Resize by 20 px</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Does cropping lose quality?</h2>
+    <p>
+      The pixels you keep are copied exactly, with no scaling, interpolation or resampling, so the
+      cropped region is bit-identical to the same region of the original. Quality can change only in
+      the final encode. If the source is a JPEG and you export a JPEG, the image is compressed a second
+      time. At quality 90 or more, that loss is invisible; PNG export avoids it but gives a larger file.
+    </p>
+
+    <h2>Which aspect ratio to use</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Ratio</th><th>Where it is used</th><th>Typical pixels</th></tr></thead>
+        <tbody>
+          <tr><td>1:1</td><td>Profile pictures, Instagram squares, product tiles</td><td>1080 × 1080</td></tr>
+          <tr><td>4:3</td><td>Compact cameras, iPad screens, many phone screenshots</td><td>1600 × 1200</td></tr>
+          <tr><td>3:2</td><td>DSLR and mirrorless sensors, 6 × 4 inch prints</td><td>1800 × 1200</td></tr>
+          <tr><td>16:9</td><td>Video thumbnails, slide decks, TV and monitor wallpapers</td><td>1920 × 1080</td></tr>
+          <tr><td>9:16</td><td>Stories, Reels, TikTok, phone lock screens</td><td>1080 × 1920</td></tr>
+          <tr><td>2:3</td><td>Pinterest pins, portrait prints</td><td>1000 × 1500</td></tr>
+          <tr><td>1.91:1</td><td>Open Graph and Twitter card previews</td><td>1200 × 630</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Composition tips that actually help</h2>
+    <ul>
+      <li>The grid in the crop box marks the rule-of-thirds lines. A horizon or the eyes of a subject near one of them usually looks better than in the centre.</li>
+      <li>Crop for the smallest place the image will appear. A detail that is clear on a laptop can disappear in a 48 px avatar.</li>
+      <li>Leave a little space above faces, and do not crop through joints (wrists, ankles and elbows), which looks abrupt.</li>
+      <li>If you need a square and a wide version, crop the wide one first, then crop the square from the original, not from the cropped file.</li>
+    </ul>
+
+    <p>
+      For a round profile picture, use <a href="/circle-crop-image">circle crop</a>. To change the pixel
+      dimensions and not the framing, use <a href="/resize-image">resize image</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

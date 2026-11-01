@@ -1,0 +1,88 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RotateVideo from '@/components/tools/media/RotateVideo.tsx'
+---
+
+<ToolLayout slug="flip-video">
+  <RotateVideo client:load mode="flip" />
+  <Fragment slot="explainer">
+    <h2>Mirror, not rotate</h2>
+    <p>
+      A flip reflects the frame across an axis. A horizontal flip swaps left and right, like a bathroom
+      mirror; a vertical flip swaps top and bottom. A rotation turns the whole frame around its centre and
+      never reverses anything. People often confuse the two, and the wrong choice gives a video that is
+      upside down and backwards.
+    </p>
+    <p>
+      A quick test: if writing in the shot reads correctly and must stay that way, you want
+      <a href="/rotate-video">rotation</a>. If writing in the shot reads backwards, you want a horizontal
+      flip.
+    </p>
+
+    <h2>The webcam mirroring problem</h2>
+    <p>
+      Video-call software shows your own camera feed mirrored, because a preview that is not mirrored feels
+      wrong: you move your left hand and the person on screen moves their right. Most apps mirror only the
+      preview and record the true image, but some record what you saw. Then all logos, labels and
+      whiteboards in the shot are reversed.
+    </p>
+    <p>
+      A horizontal flip fixes this in one pass. It is also correct when a recording was made through a
+      mirror or a prism-based rig, or when the front camera of a phone saved the mirrored version.
+    </p>
+
+    <h2>Where each direction is useful</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Flip</th>
+            <th>What it does</th>
+            <th>Typical reason</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Horizontal</td>
+            <td>Left and right swap</td>
+            <td>Un-mirroring a selfie or webcam clip; reversing text; making a dance or exercise tutorial follow along on the correct side</td>
+          </tr>
+          <tr>
+            <td>Vertical</td>
+            <td>Top and bottom swap</td>
+            <td>Footage from an inverted camera mount, a microscope, a telescope or a ceiling-mounted action camera</td>
+          </tr>
+          <tr>
+            <td>Both</td>
+            <td>Identical to a 180° rotation</td>
+            <td>Convenience: two flips and one rotation give the same frame</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why flipping needs a re-encode</h2>
+    <p>
+      Containers have a metadata flag for rotation ("turn this 90 degrees") but none for mirroring. So the
+      only way to flip a video is to decode each frame, reverse the pixel order and encode it again. The
+      mirror itself is lossless (no pixel value changes), but the H.264 compression runs a second time.
+    </p>
+    <p>
+      At the default quality, the second pass is not visible. If the clip goes into an editor for more work,
+      choose the high quality preset in the advanced options, because each re-encode adds loss.
+    </p>
+
+    <h2>Check it before you export</h2>
+    <p>
+      The preview above applies the flip live with CSS, so you can play the clip and confirm the result
+      before you spend time on encoding. The exported file uses the FFmpeg <code>hflip</code> and
+      <code>vflip</code> filters, the same operations that desktop editors use internally.
+    </p>
+
+    <h2>Local, unwatermarked, unlimited</h2>
+    <p>
+      The flip video tool processes the video in this tab, and nothing is transmitted. The export has no
+      watermark, and there is no limit on clip length and no account.
+    </p>
+  </Fragment>
+</ToolLayout>

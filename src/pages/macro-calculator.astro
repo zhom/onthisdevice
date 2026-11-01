@@ -1,0 +1,157 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MacroCalculator from '@/components/tools/health/MacroCalculator.tsx'
+---
+
+<ToolLayout slug="macro-calculator">
+  <MacroCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the macro calculator</h2>
+    <ol>
+      <li>
+        Enter your daily calorie target, or switch to the estimate tab and let the macro calculator
+        estimate one from your body and activity level.
+      </li>
+      <li>
+        Pick a preset (balanced, low carb, high protein or keto), or choose Custom and set the split
+        with the sliders.
+      </li>
+      <li>
+        Read the grams. Each macro shows grams, calories and its share of the total. The per-meal table
+        divides it across the number of meals you eat.
+      </li>
+      <li>Copy the summary if you want to paste it into a food tracker or a note.</li>
+    </ol>
+
+    <h2>Turning percentages into grams</h2>
+    <p>
+      Macros are usually given as percentages of calories, but you eat grams. The conversion uses the
+      Atwater factors:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Macronutrient</th>
+            <th scope="col">Calories per gram</th>
+            <th scope="col">Thermic effect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Protein</td><td>4 kcal</td><td>20 – 30% of its own calories burned digesting it</td></tr>
+          <tr><td>Carbohydrate</td><td>4 kcal</td><td>5 – 10%</td></tr>
+          <tr><td>Fat</td><td>9 kcal</td><td>0 – 3%</td></tr>
+          <tr><td>Alcohol</td><td>7 kcal</td><td>10 – 30%, and it suppresses fat oxidation while it is metabolised</td></tr>
+          <tr><td>Fibre</td><td>0 – 2 kcal</td><td>Largely unavailable; counted as carbohydrate on most labels</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      So 2,000 kcal at 30 percent protein is 2,000 × 0.30 = 600 kcal from protein, and 600 ÷ 4 = 150 g
+      of protein a day.
+    </p>
+
+    <h2>The presets, and when to use each one</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Preset</th>
+            <th scope="col">Protein / Carb / Fat</th>
+            <th scope="col">Best for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Balanced</td>
+            <td>30 / 40 / 30</td>
+            <td>General health and mixed training. A sensible default if you are unsure</td>
+          </tr>
+          <tr>
+            <td>Low carb</td>
+            <td>35 / 25 / 40</td>
+            <td>People who find carbohydrate hard to moderate, or who prefer steadier energy</td>
+          </tr>
+          <tr>
+            <td>High protein</td>
+            <td>40 / 35 / 25</td>
+            <td>Cutting phases and body recomposition. Protects muscle and controls hunger</td>
+          </tr>
+          <tr>
+            <td>Keto</td>
+            <td>20 / 5 / 75</td>
+            <td>Ketogenic diets. Usually under 50 g of carbohydrate a day</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At matched calories and matched protein, the carb-to-fat ratio has very little effect on fat
+      loss. Choose the split you can keep to and that fuels your training. That decides the result.
+    </p>
+
+    <h2>How much protein?</h2>
+    <p>
+      Set protein with care. The evidence points to these figures:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Situation</th>
+            <th scope="col">Protein per kg of body weight</th>
+            <th scope="col">Per lb</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Minimum to avoid deficiency (RDA)</td><td>0.8 g</td><td>0.36 g</td></tr>
+          <tr><td>Active adult, general health</td><td>1.2 – 1.6 g</td><td>0.55 – 0.73 g</td></tr>
+          <tr><td>Building muscle at maintenance or a surplus</td><td>1.6 – 2.2 g</td><td>0.73 – 1.0 g</td></tr>
+          <tr><td>Cutting while lean, preserving muscle</td><td>2.0 – 2.4 g</td><td>0.9 – 1.1 g</td></tr>
+          <tr><td>Older adults (65+), countering sarcopenia</td><td>1.2 – 1.5 g</td><td>0.55 – 0.68 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      If you carry a lot of body fat, base the figure on your target weight or lean mass, not your
+      current weight, or the number is unrealistically large.
+    </p>
+    <p>
+      Spread it out. About 0.3 to 0.4 g per kg per meal, three or four times a day, gives more muscle
+      protein synthesis than the same total in one meal.
+    </p>
+
+    <h2>Floors for carbs and fat</h2>
+    <ul>
+      <li>
+        Fat: at least about 0.5 g per kg, ideally 0.8 to 1.0 g. Dietary fat carries vitamins A, D, E
+        and K, supplies essential fatty acids, and supports sex hormone production. Very low fat
+        intake is unpleasant and rarely necessary.
+      </li>
+      <li>
+        Carbohydrate: the rest, but note the effect on training. Carbs are the main fuel above moderate
+        intensity. If your sessions feel flat, move calories from fat to carbs first.
+      </li>
+      <li>
+        Fibre: about 14 g per 1,000 kcal. That is the US Dietary Guidelines figure, and your results
+        show it. It helps satiety much more than the macro split does.
+      </li>
+    </ul>
+
+    <h2>Tracking without losing your mind</h2>
+    <p>
+      You do not need to hit three targets exactly each day, and it is not realistic. A practical
+      order:
+    </p>
+    <ol>
+      <li>Calories set the direction. Treat the target as a ceiling.</li>
+      <li>Protein sets the composition of what you gain or lose. Treat it as a floor.</li>
+      <li>Carbs and fat can move freely against each other to fit real meals.</li>
+      <li>Judge yourself on the weekly average, not any single day.</li>
+    </ol>
+    <p>
+      Weigh food raw where you can, because cooked weights vary with the water lost. And enter cooking
+      oil: a tablespoon is 120 kcal, and it is the entry people most often miss in a food diary.
+    </p>
+  </Fragment>
+</ToolLayout>

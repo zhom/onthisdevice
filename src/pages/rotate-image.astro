@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RotateImage from '@/components/tools/image-edit/RotateImage.tsx'
+---
+
+<ToolLayout slug="rotate-image">
+  <RotateImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to rotate an image</h2>
+    <ol>
+      <li>Drop in one or more photos.</li>
+      <li>Use the <strong>90° left</strong>, <strong>90° right</strong> and <strong>180°</strong> buttons for quarter turns, or the angle slider and number box for any other angle, to a tenth of a degree.</li>
+      <li>Pick the fill for the corners that open at odd angles: transparent, white, black or a colour you choose.</li>
+      <li>Check the live preview, then press <strong>Rotate</strong> and download the images one by one or as a ZIP.</li>
+    </ol>
+
+    <h2>Why photos come out sideways</h2>
+    <p>
+      A phone or camera sensor is fixed in the body, so it always reads out pixels in the same orientation,
+      however you hold it. The camera does not rotate the data; it writes an EXIF tag,
+      <code>Orientation</code>, that records which way was up. Software that reads the tag shows the photo
+      correctly. Software that ignores it shows the raw sensor readout. For this reason the same file can be
+      upright in your gallery and rotated 90° in a web form, an email client or an old desktop viewer.
+    </p>
+    <p>
+      When you rotate an image here, the orientation is written into the pixels. The exported file needs no
+      tag and looks the same everywhere, which is what you want before you upload to a system you do not
+      control.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>EXIF orientation</th><th>Meaning</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Normal</td><td>Nothing to do</td></tr>
+          <tr><td>3</td><td>Rotated 180°</td><td>Rotate 180°</td></tr>
+          <tr><td>6</td><td>Rotated 90° counter-clockwise</td><td>Rotate 90° right</td></tr>
+          <tr><td>8</td><td>Rotated 90° clockwise</td><td>Rotate 90° left</td></tr>
+          <tr><td>2, 4, 5, 7</td><td>Mirrored variants</td><td>Use <a href="/flip-image">flip</a> as well</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Right angles are lossless; odd angles are not</h2>
+    <p>
+      At 90, 180 and 270 degrees each source pixel lands exactly on a destination pixel, so the rotation only
+      rearranges pixels and loses nothing. At any other angle the grids do not line up, so each output pixel is
+      a weighted blend of its neighbours. Every image editor has this effect, and it softens the finest detail
+      slightly. When you straighten a scan by a degree or two, the effect is invisible.
+    </p>
+
+    <h2>The corners, and what to do with them</h2>
+    <p>
+      A rectangle rotated by an arbitrary angle needs a larger bounding box with four empty triangles. This
+      tool makes the canvas larger to fit, so no part of your image is cropped, and fills the triangles with
+      your chosen background. For a new width W′ and height H′ from an original W × H at angle θ:
+    </p>
+    <p>
+      <code>W′ = |W·cos θ| + |H·sin θ|</code><br />
+      <code>H′ = |W·sin θ| + |H·cos θ|</code>
+    </p>
+    <p>
+      Transparent corners need PNG or WebP output. JPEG has no alpha channel, so a transparent choice becomes
+      white. To remove the corners, rotate first and then trim them with the <a href="/crop-image">crop
+      tool</a>.
+    </p>
+
+    <h2>Straightening a crooked scan or horizon</h2>
+    <ol>
+      <li>Find a line in the image that must be level: a horizon, a door frame, the edge of a page.</li>
+      <li>Change the angle by ±0.5° at a time and compare that line with the edge of the preview panel.</li>
+      <li>When it is level, crop inwards to remove the filled corners. Expect to lose 2–5% of the frame for each degree of correction.</li>
+    </ol>
+  </Fragment>
+</ToolLayout>

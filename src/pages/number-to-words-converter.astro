@@ -1,0 +1,151 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import NumberToWordsConverter from '@/components/tools/everyday/NumberToWordsConverter.tsx'
+---
+
+<ToolLayout slug="number-to-words-converter">
+  <NumberToWordsConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the converter</h2>
+    <ol>
+      <li>
+        On <strong>Number → words</strong>, type a number and read the cardinal spelling, the ordinal
+        form and the cheque-writing currency wording. Choose British "and", the lakh/crore system and a
+        capitalisation style to suit the document.
+      </li>
+      <li>
+        On <strong>Words → number</strong>, paste a number written in English words and get the digits.
+        The tool reads hyphens, "and", "point" for decimals, and lakh/crore.
+      </li>
+    </ol>
+
+    <h2>Writing an amount on a cheque</h2>
+    <p>
+      The words line on a cheque is the legal amount. When the words and the figures disagree, most
+      banking codes, including the US Uniform Commercial Code, tell the bank to pay the words. So get it
+      right:
+    </p>
+    <ul>
+      <li>
+        Write the whole units in words, then the fractional part as <strong>xx/100</strong> or in
+        words: "One thousand two hundred dollars and 50/100", or "one thousand two hundred dollars and
+        fifty cents". Banks accept both.
+      </li>
+      <li>Start at the far left of the line, so nobody can add words in front.</li>
+      <li>Draw a horizontal line through the space after the wording.</li>
+      <li>Make sure the words match the numeric box exactly, including the cents.</li>
+      <li>For a whole amount, write "and 00/100". Do not leave the cents blank.</li>
+    </ul>
+    <p>
+      Capitalisation is house style, not law. Sentence case is the most common. Title case is used on
+      formal instruments and invoices.
+    </p>
+
+    <h2>The rules English uses</h2>
+    <ul>
+      <li>
+        Hyphens join the tens and units of two-digit numbers from 21 to 99: twenty-one, forty-seven,
+        ninety-nine.
+      </li>
+      <li>
+        "And" comes before the final part under a hundred in British, Irish, Australian and Indian
+        English: "one hundred and five", "two thousand and forty-six". American English usually leaves
+        it out.
+      </li>
+      <li>
+        Written-out numbers need no commas, but legal drafting sometimes puts them between scale groups.
+      </li>
+      <li>
+        Hundred, thousand and million stay singular after a number: three hundred, not three hundreds.
+      </li>
+      <li>
+        Decimals are read digit by digit after "point": 2.75 is "two point seven five", not "two point
+        seventy-five".
+      </li>
+    </ul>
+
+    <h2>Cardinal and ordinal numbers</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Number</th>
+            <th scope="col">Cardinal</th>
+            <th scope="col">Ordinal in words</th>
+            <th scope="col">Ordinal in figures</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>one</td><td>first</td><td>1st</td></tr>
+          <tr><td>2</td><td>two</td><td>second</td><td>2nd</td></tr>
+          <tr><td>3</td><td>three</td><td>third</td><td>3rd</td></tr>
+          <tr><td>5</td><td>five</td><td>fifth</td><td>5th</td></tr>
+          <tr><td>8</td><td>eight</td><td>eighth</td><td>8th</td></tr>
+          <tr><td>9</td><td>nine</td><td>ninth</td><td>9th</td></tr>
+          <tr><td>12</td><td>twelve</td><td>twelfth</td><td>12th</td></tr>
+          <tr><td>20</td><td>twenty</td><td>twentieth</td><td>20th</td></tr>
+          <tr><td>21</td><td>twenty-one</td><td>twenty-first</td><td>21st</td></tr>
+          <tr><td>100</td><td>one hundred</td><td>one hundredth</td><td>100th</td></tr>
+          <tr><td>1,000</td><td>one thousand</td><td>one thousandth</td><td>1,000th</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Only the last word changes. All words before it keep their cardinal form, so 1,203 is "one thousand
+      two hundred and third", not "first thousand…".
+    </p>
+
+    <h2>Short scale, long scale and the Indian system</h2>
+    <p>
+      English-speaking countries now use the short scale, where each new name is a thousand times the
+      last: thousand, million, billion (10⁹), trillion (10¹²). The older long scale, still used in much
+      of continental Europe, makes a billion a million million (10¹²). This causes real errors in
+      translated financial documents.
+    </p>
+    <p>
+      The Indian system groups differently: three digits, then twos, which gives lakh (10⁵) and crore
+      (10⁷).
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Digits</th>
+            <th scope="col">Short scale</th>
+            <th scope="col">Indian system</th>
+            <th scope="col">Indian digit grouping</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1,000</td><td>one thousand</td><td>one thousand</td><td>1,000</td></tr>
+          <tr><td>100,000</td><td>one hundred thousand</td><td>one lakh</td><td>1,00,000</td></tr>
+          <tr><td>1,000,000</td><td>one million</td><td>ten lakh</td><td>10,00,000</td></tr>
+          <tr><td>10,000,000</td><td>ten million</td><td>one crore</td><td>1,00,00,000</td></tr>
+          <tr><td>1,000,000,000</td><td>one billion</td><td>one arab / one hundred crore</td><td>1,00,00,00,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Precision on very large numbers</h2>
+    <p>
+      JavaScript's ordinary numbers lose exactness above about 9 quadrillion, so a converter built on them
+      turns 9,007,199,254,740,993 into a different number. This number to words converter parses the
+      integer part as a BigInt and never converts it to a float, so each digit you type is the digit it
+      spells out, up to duodecillion (42 digits).
+    </p>
+
+    <h2>Where written-out numbers are required</h2>
+    <ul>
+      <li>Cheques and money orders</li>
+      <li>Contracts, deeds and promissory notes, where figures are often repeated in words</li>
+      <li>Invoices and purchase orders in jurisdictions that require an amount in words</li>
+      <li>Academic and journalistic style guides, which usually spell out numbers under ten or under a hundred</li>
+      <li>Accessibility and screen-reader scripts, where a spelled-out figure removes ambiguity</li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      Amounts you type, including cheque values, stay in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeChmod from '@/components/tools/dev/DevEncodeChmod.tsx'
+---
+
+<ToolLayout slug="chmod-calculator">
+  <DevEncodeChmod client:load />
+  <Fragment slot="explainer">
+    <h2>Three classes, three permissions</h2>
+    <p>
+      Unix permissions answer nine yes/no questions: may the owner, the group and everyone else read,
+      write and execute? Each permission has a value (read 4, write 2, execute 1), and each class gets
+      the sum of its permissions as one octal digit.
+    </p>
+    <pre><code>rwx = 4 + 2 + 1 = 7
+rw- = 4 + 2     = 6
+r-x = 4     + 1 = 5
+r-- = 4         = 4</code></pre>
+    <p>Three digits, one per class, give the familiar 644, 755 or 600.</p>
+
+    <h2>What the permissions mean on a directory</h2>
+    <p>
+      On a directory, the same three letters mean something quite different:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Bit</th><th>On a file</th><th>On a directory</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>read (r)</td><td>Open and read the contents</td><td>List the names inside, but not read them</td></tr>
+          <tr><td>write (w)</td><td>Modify or truncate the file</td><td>Create, rename and delete entries inside</td></tr>
+          <tr><td>execute (x)</td><td>Run it as a program</td><td>Traverse it, to reach anything inside</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This has two results. First, a directory needs execute to be useful: with read alone you see
+      names but can open nothing. Second, deleting a file depends on the write permission of its
+      directory, not of the file. You can delete a read-only file that you do not own if you can write
+      to its folder. The sticky bit closes that gap.
+    </p>
+
+    <h2>The special bits</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Bit</th><th>Octal</th><th>On an executable</th><th>On a directory</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>setuid</td><td>4000</td><td>Runs as the file's owner, whoever starts it</td><td>No effect on Linux</td></tr>
+          <tr><td>setgid</td><td>2000</td><td>Runs as the file's group</td><td>New entries inherit the directory's group</td></tr>
+          <tr><td>sticky</td><td>1000</td><td>Historic, now ignored</td><td>Only the owner of an entry may delete it</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      In <code>ls -l</code> these replace the execute character: <code>s</code> where execute is also
+      set, capital <code>S</code> where it is not, and <code>t</code> or <code>T</code> in the same way
+      for sticky. A capital <code>S</code> usually shows a mistake: a setuid bit on a file that nobody
+      can execute.
+    </p>
+
+    <h2>Why 777 keeps appearing, and why it is wrong</h2>
+    <p>
+      777 is the fastest way to make a permission error go away, so forum answers often suggest it. It
+      lets each account on the machine, including any compromised service, rewrite the file. On a web
+      root, this turns a minor vulnerability into remote code execution.
+    </p>
+    <p>
+      The correct fix is almost always ownership. Set the group of the file to the group the web server
+      runs as, then use 664 for files and 775 for directories. If you cannot change ownership, fix the
+      deployment; do not work around it.
+    </p>
+
+    <h2>Modes you will actually use</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Mode</th><th>Symbolic</th><th>For</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>644</td><td>rw-r--r--</td><td>Ordinary files: documents, HTML, images</td></tr>
+          <tr><td>755</td><td>rwxr-xr-x</td><td>Scripts, binaries and directories</td></tr>
+          <tr><td>600</td><td>rw-------</td><td>SSH private keys, .env files; SSH refuses looser modes</td></tr>
+          <tr><td>700</td><td>rwx------</td><td>~/.ssh and other private directories</td></tr>
+          <tr><td>664 / 775</td><td>rw-rw-r-- / rwxrwxr-x</td><td>Shared group editing</td></tr>
+          <tr><td>1777</td><td>rwxrwxrwt</td><td>/tmp: everyone writes, only owners delete</td></tr>
+          <tr><td>2775</td><td>rwxrwsr-x</td><td>A project directory where new files keep the team group</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Symbolic notation</h2>
+    <p>
+      <code>chmod u+x script.sh</code> adds execute for the owner and changes nothing else.
+      <code>chmod u=rwx,go=rx script.sh</code> sets each class exactly and clears all permissions not
+      listed. This page generates the equals form, because it gives the same result from any starting
+      mode, which is what a script or a runbook needs.
+    </p>
+    <p>
+      A warning about recursion: <code>chmod -R 755</code> makes all files executable, including
+      documents and images. Use <code>chmod -R u=rwX,go=rX</code>: the capital <code>X</code> sets
+      execute only on directories and on files that already had it.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeBinary from '@/components/tools/text/DevEncodeBinary.tsx'
+---
+
+<ToolLayout slug="binary-translator">
+  <DevEncodeBinary client:load kind="text" direction="encode" autoDetect />
+  <Fragment slot="explainer">
+    <h2>One box, both directions</h2>
+    <p>
+      Paste any text. If the input has only ones, zeros and whitespace, the binary translator decodes
+      it as binary; it encodes all other input. If the guess is wrong (for example, when your message is
+      the word <code>1010</code>), use the swap button.
+    </p>
+
+    <h2>A quick reference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Character</th><th>Binary (8-bit)</th><th>Character</th><th>Binary (8-bit)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>A</code></td><td>01000001</td><td><code>a</code></td><td>01100001</td></tr>
+          <tr><td><code>B</code></td><td>01000010</td><td><code>b</code></td><td>01100010</td></tr>
+          <tr><td><code>M</code></td><td>01001101</td><td><code>m</code></td><td>01101101</td></tr>
+          <tr><td><code>Z</code></td><td>01011010</td><td><code>z</code></td><td>01111010</td></tr>
+          <tr><td><code>0</code></td><td>00110000</td><td><code>9</code></td><td>00111001</td></tr>
+          <tr><td>space</td><td>00100000</td><td><code>!</code></td><td>00100001</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Uppercase letters all start <code>010</code>, lowercase letters all start <code>011</code>, and
+      digits all start <code>0011</code>. The last five bits give the position in the group. With this
+      pattern, you can read short binary strings by eye.
+    </p>
+
+    <h2>Why computers use base 2 at all</h2>
+    <p>
+      A physical component can reliably hold two states (charged or not, high or low voltage,
+      magnetised one way or the other), but not ten. The rest is convention: which bit patterns mean
+      which characters, how many bits make a unit, and the order of the bytes. Binary is counting with
+      two symbols instead of ten.
+    </p>
+
+    <h2>Some things binary is not</h2>
+    <ul>
+      <li>
+        It is not encryption. Anyone can reverse it. If a puzzle uses binary as its
+        &ldquo;code&rdquo;, the puzzle is a lookup, not a cipher.
+      </li>
+      <li>
+        It is not machine code. Machine instructions are also binary, but with a completely different
+        mapping. An executable decoded as text gives gibberish.
+      </li>
+      <li>
+        It is not one universal standard. The same bits mean different characters in ASCII, EBCDIC and
+        UTF-16, so the mapping must be agreed in advance.
+      </li>
+    </ul>
+
+    <h2>Choosing the settings</h2>
+    <p>
+      Keep the character set on UTF-8 unless an exercise specifies 7-bit ASCII. Keep the separator on
+      spaces for output that a person reads: binary without spaces is unreadable after about three
+      characters and impossible to proofread. Set it to &ldquo;none&rdquo; only when a machine reads
+      the output.
+    </p>
+
+    <h2>Puzzle and homework tips</h2>
+    <p>
+      If a decoded message is garbage, first count the digits: the total must divide by 8 (or 7). If it
+      divides by neither, a digit was lost in transcription. If it divides by both and only one gives
+      readable text, that is the correct group size. If the plaintext looks like more encoded data,
+      such as hex characters or a Base64 string, the puzzle probably has more stages.
+    </p>
+  </Fragment>
+</ToolLayout>

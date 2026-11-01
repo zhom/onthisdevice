@@ -1,0 +1,91 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifToMp4 from '@/components/tools/media/GifToMp4.tsx'
+---
+
+<ToolLayout slug="gif-to-mp4">
+  <GifToMp4 client:load />
+  <Fragment slot="explainer">
+    <h2>Why a GIF is much bigger than the same animation as MP4</h2>
+    <p>
+      GIF dates from 1987 and was made for static images on dial-up bulletin boards. It stores each frame
+      as a complete picture of at most 256 colours, with simple run-length compression and a crude
+      "which pixels changed" optimisation. It has no concept of motion, so a panning shot makes it store a
+      completely new frame each time.
+    </p>
+    <p>
+      H.264 was made for video. It stores a keyframe at intervals and describes each following frame as
+      motion vectors and small corrections. For the same animation, an MP4 is usually
+      <strong>10-50× smaller</strong>. It also looks better, because it has no 256-colour limit, so
+      gradients have no bands or dither noise.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Typical 5-second clip</th>
+            <th>As GIF</th>
+            <th>As MP4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>480p screen capture, mostly static</td>
+            <td>4-8 MB</td>
+            <td>150-400 KB</td>
+          </tr>
+          <tr>
+            <td>720p camera footage, moving</td>
+            <td>25-60 MB</td>
+            <td>600 KB - 1.5 MB</td>
+          </tr>
+          <tr>
+            <td>Flat-colour animation</td>
+            <td>1-3 MB</td>
+            <td>80-250 KB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Platform limits that MP4 gets you under</h2>
+    <ul>
+      <li>Discord allows 10 MB on free accounts. A GIF that Discord rejects almost always fits as an MP4.</li>
+      <li>WhatsApp converts GIFs to video internally. An MP4 skips that lossy step.</li>
+      <li>Twitter/X allows 15 MB for GIF and much more for video, and video plays more smoothly.</li>
+      <li>In email and chat clients, a 40 MB GIF in a signature is a problem. A 900 KB MP4 is not.</li>
+      <li>On web pages, an autoplaying muted MP4 is the standard replacement for a heavy GIF, at a fraction of the bandwidth.</li>
+    </ul>
+
+    <h2>The silent audio track</h2>
+    <p>
+      iOS Safari's autoplay rules and several chat clients refuse an MP4 with no audio stream. This is the
+      most common reason a converted GIF "does not work" on a phone. A silent AAC track adds a few kilobytes
+      and makes the file behave like the GIF it replaced, so the option is on by default. Turn it off if an
+      editor needs a file with no audio track.
+    </p>
+
+    <h2>Looping</h2>
+    <p>
+      A GIF stores its own loop count. MP4 has no equivalent, so the player controls looping. Discord,
+      Twitter and an HTML <code>video loop</code> element all loop. If a platform plays a video only once,
+      use the repeat option to write the animation into the file several times. A five-second loop
+      repeated five times is a 25-second video that behaves like a loop everywhere.
+    </p>
+
+    <h2>Frame timing</h2>
+    <p>
+      GIF stores a delay per frame, often uneven: a long pause on a punchline, then rapid motion. "Source
+      timing" keeps that exactly. A fixed frame rate resamples the timing, which smooths some animations
+      and ruins the comic timing of others. Use the source timing unless the result looks wrong.
+    </p>
+
+    <h2>Going the other way</h2>
+    <p>
+      If a platform or document cannot take video, <a href="/video-to-gif">video to GIF</a> does the
+      reverse, with palette generation for the best 256-colour result. For all other uses, MP4 is the
+      better format.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeCycleCalculator from '@/components/tools/health/UnitsLifeCycleCalculator.tsx'
+---
+
+<ToolLayout slug="ovulation-calculator">
+  <UnitsLifeCycleCalculator client:load mode="ovulation" />
+  <Fragment slot="explainer">
+    <h2>Count backwards, not forwards</h2>
+    <p>
+      The most useful fact about ovulation timing: it depends on the next period, not the last one.
+      The luteal phase (from ovulation to the start of bleeding) is very consistent for each person,
+      usually 12 to 14 days. Almost all variation in cycle length is in the follicular phase before
+      ovulation.
+    </p>
+    <p>
+      So "day 14" is correct only for a 28-day cycle. On a 32-day cycle with a 14-day luteal phase,
+      ovulation is about day 18. On a 24-day cycle it is about day 10. So this ovulation calculator asks
+      for your luteal phase length as a separate input and does not assume half your cycle.
+    </p>
+
+    <h2>The six-day fertile window</h2>
+    <p>
+      Conception is possible on only about six days per cycle: the five days before ovulation and the
+      day of ovulation. The asymmetry has a biological cause.
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Cell</th><th scope="col">Survival</th><th scope="col">Consequence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Sperm</td><td>Up to 5 days in fertile cervical mucus</td><td>Intercourse before ovulation can still result in conception</td></tr>
+        <tr><td>Egg</td><td>About 12&ndash;24 hours after release</td><td>The window closes almost immediately after ovulation</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The probability is not equal across those six days. Studies of couples who time intercourse find
+      the highest conception rates in the two days just before ovulation. The day of ovulation is
+      slightly lower, and the fifth day before it is much lower.
+    </p>
+
+    <h2>What a calendar prediction can and cannot do</h2>
+    <p>
+      This tool projects from an average. It cannot know that you ovulated late this month because of
+      illness, travel, stress or a change in sleep. A variation of several days between cycles is
+      normal, also in people who describe their cycles as regular. Large data sets of tracked cycles
+      show that only a minority of people ovulate on the day a calendar method predicts.
+    </p>
+    <p>Three methods observe and do not predict, and they work well with this tool:</p>
+    <ul>
+      <li>
+        LH test strips detect the luteinising hormone surge 24&ndash;36 hours before ovulation. Start
+        to test a few days before the predicted date.
+      </li>
+      <li>
+        Basal body temperature rises by about 0.3 &deg;C after ovulation and stays up. It confirms
+        ovulation, but only afterwards.
+      </li>
+      <li>
+        Cervical mucus becomes clear, stretchy and slippery in the fertile window. It is the cheapest
+        and most immediate signal, and fertility awareness teaches it first.
+      </li>
+    </ul>
+
+    <h2>Not a contraceptive method</h2>
+    <p>
+      Calendar-only prediction is one of the least reliable ways to avoid pregnancy, with typical-use
+      failure rates of 12% to 24% per year. Correctly taught symptothermal fertility awareness
+      (temperature, mucus and calendar rules, with instruction) works much better, but it is a
+      different practice from reading a date off a web page. Do not use this tool as contraception.
+    </p>
+
+    <h2>When to seek advice</h2>
+    <p>
+      General guidance in most health systems is to seek advice after twelve months of trying under
+      the age of 35, or six months at 35 and over. Sooner if cycles are absent, very irregular,
+      shorter than 21 days or longer than 35, or if there is a known condition such as PCOS or
+      endometriosis. Also mention a short luteal phase (under 10 days).
+    </p>
+
+    <h2>Why this page has no account and no cookies</h2>
+    <p>
+      Reproductive health data is some of the most sensitive information a person can enter into a
+      website. An app that uploads, stores and syncs it makes a permanent record that can be breached,
+      sold or subpoenaed. Here the arithmetic runs in your browser, and no request leaves the page while
+      you use it.
+    </p>
+    <p>
+      Saving your dates on this device is off by default. If you switch it on, the values go to your own
+      browser&apos;s local storage, and the delete button removes them at once. To confirm, open your
+      browser&apos;s network tab, or turn off Wi-Fi: the tool works the same offline.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,110 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import YamlToJson from '@/components/tools/data/YamlToJson.tsx'
+---
+
+<ToolLayout slug="yaml-to-json">
+  <YamlToJson client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert YAML to JSON</h2>
+    <ol>
+      <li>Paste the YAML or drop a <code>.yaml</code> / <code>.yml</code> file onto the left pane.</li>
+      <li>Read any error. The tool reports problems with the exact line and column, and shows the line with a caret under the error.</li>
+      <li>Pick the boolean rules. Leave the toggle off for YAML 1.2 behaviour, or turn it on if your file uses <code>yes</code> and <code>no</code> for true and false.</li>
+      <li>Choose how to handle multiple documents. A stream separated by <code>---</code> can become a JSON array or only its first document.</li>
+      <li>Copy or download the JSON, minified or pretty printed.</li>
+    </ol>
+
+    <h2>What the YAML parser understands</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">YAML feature</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Supported</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="border-b px-3 py-2">Block mappings and sequences</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2">Any nesting depth, including maps that start on a <code>-</code> line</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Flow collections</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2"><code>[a, b]</code> and <code>&#123;k: v&#125;</code>, including across several lines</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Block scalars</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2"><code>|</code>, <code>&gt;</code> with <code>+</code>/<code>-</code> chomping and indentation digits</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Quoted scalars</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2">Single quotes with <code>''</code>, double quotes with <code>\n</code>, <code>\t</code>, <code>\uNNNN</code></td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Comments</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2">Recognised and skipped, also at end of line; JSON cannot keep them</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Multi-document streams</td>
+            <td class="border-b px-3 py-2">Yes</td>
+            <td class="border-b px-3 py-2"><code>---</code> and <code>...</code> boundaries</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Anchors, aliases, merge keys</td>
+            <td class="border-b px-3 py-2">No</td>
+            <td class="border-b px-3 py-2">Reported as an error, not dropped without notice</td>
+          </tr>
+          <tr>
+            <td class="border-b px-3 py-2">Custom tags, explicit <code>? key</code></td>
+            <td class="border-b px-3 py-2">No</td>
+            <td class="border-b px-3 py-2">Rare outside hand-written YAML; also reported as an error</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Three common YAML mistakes</h2>
+    <ul>
+      <li>
+        Tabs: YAML does not allow tabs in indentation. Editors that expand tabs to spaces hide the problem until
+        a build fails; here you get “Tabs cannot be used for indentation” with the exact line.
+      </li>
+      <li>
+        An unquoted value that contains “: ”: <code>title: Report: Q3</code> is not a string. The parser reads a
+        nested mapping and gives an error. Quote the value.
+      </li>
+      <li>
+        Inconsistent indentation: sibling keys must start in the same column. One extra space gives “this line is
+        indented 3 spaces but the mapping around it uses 2”.
+      </li>
+    </ul>
+
+    <h2>Type resolution</h2>
+    <p>
+      Plain scalars are resolved with the YAML 1.2 core schema: <code>null</code> and <code>~</code> become
+      null; <code>true</code>/<code>false</code> become booleans; decimal, hexadecimal (<code>0x1f</code>),
+      octal (<code>0o17</code>) and binary (<code>0b1011</code>) integers become numbers, as do floats and
+      exponents. Underscores used as digit separators are removed. All other values stay strings, including
+      dates, because JSON has no date type.
+    </p>
+    <p>
+      Two YAML values have no JSON equivalent: <code>.inf</code> and <code>.nan</code>. The tool writes them as
+      <code>null</code> and shows a notice, so the output is always valid JSON.
+    </p>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      The YAML parser is written for this page and bundled with it, so there is no library download or API
+      call. Kubernetes manifests, CI pipelines and Ansible inventories often name internal hosts and services,
+      and they stay on your computer.
+    </p>
+  </Fragment>
+</ToolLayout>

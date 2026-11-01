@@ -1,0 +1,72 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatSql from '@/components/tools/dev/DevFormatSql.tsx'
+---
+
+<ToolLayout slug="sql-formatter">
+  <DevFormatSql client:load mode="format" />
+  <Fragment slot="explainer">
+    <h2>How to format a SQL query</h2>
+    <ol>
+      <li>Paste the query, or use <strong>Load .sql file</strong> for a file too big to paste.</li>
+      <li>Pick the dialect you run. It sets the keyword list, the comment syntax and the identifier quoting.</li>
+      <li>Choose the keyword case and indent width. The output pane updates on each keystroke.</li>
+      <li>Copy the result, download it as <code>.sql</code>, or press <strong>Replace input with result</strong> and continue editing.</li>
+    </ol>
+
+    <h2>What the SQL formatter changes</h2>
+    <p>
+      It changes only whitespace. It does not rewrite <code>!=</code> to <code>&lt;&gt;</code>, remove the
+      <code>AS</code> from aliases, or reflow a <code>CASE</code> expression into a different shape. It
+      tokenizes the input, decides where the line breaks and indentation go, and prints each token exactly as
+      you wrote it.
+    </p>
+    <p>The layout rules:</p>
+    <ul>
+      <li>Top-level clauses (<code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>GROUP BY</code>, <code>HAVING</code>, <code>ORDER BY</code>, <code>LIMIT</code>) start at the left edge of their statement.</li>
+      <li>Joins get their own line, with <code>ON</code> on the same line so the join condition reads as one unit.</li>
+      <li><code>AND</code> and <code>OR</code> start a continuation line indented one step, so a five-condition <code>WHERE</code> reads as a list.</li>
+      <li>Select-list columns go one per line, so a diff shows one added column and not a whole rewritten line.</li>
+      <li>Subqueries open a new indent level; function-call parentheses do not, so <code>coalesce(a, b)</code> stays on one line while <code>IN (SELECT …)</code> breaks.</li>
+      <li><code>CASE</code> puts each <code>WHEN</code> and the <code>ELSE</code> on its own line and aligns <code>END</code> with the <code>CASE</code>.</li>
+    </ul>
+
+    <h2>Why not to format SQL on a server</h2>
+    <p>
+      A query shows your schema: table names, column names, the shape of your data model. It often also holds
+      a literal, such as an account ID, an email address or a date range that identifies a customer. Some
+      queries contain connection strings, credentials in a <code>COPY</code> or <code>FDW</code> statement, or
+      internal hostnames.
+    </p>
+    <p>
+      In 2025, security researchers enumerated the public &ldquo;saved snippet&rdquo; URLs of several online
+      formatting sites and recovered about 80,000 documents. Many contained live cloud keys and database
+      connection strings, from users who only clicked Format. This formatter sends no text. Open the panel
+      under the tool and check that the request counter stays at zero, or disconnect from the network and
+      continue.
+    </p>
+
+    <h2>Dialect differences that change the output</h2>
+    <table>
+      <thead>
+        <tr><th>Dialect</th><th>Identifier quoting</th><th>Notable keywords</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PostgreSQL</td><td><code>"double quotes"</code></td><td>ILIKE, RETURNING, ON CONFLICT, dollar-quoted bodies, <code>::</code> casts</td></tr>
+        <tr><td>MySQL / MariaDB</td><td><code>`backticks`</code></td><td>ON DUPLICATE KEY UPDATE, STRAIGHT_JOIN, <code>#</code> comments, backslash escapes in strings</td></tr>
+        <tr><td>SQL Server</td><td><code>[brackets]</code></td><td>TOP, OUTPUT, MERGE, APPLY, <code>@variables</code></td></tr>
+        <tr><td>Oracle</td><td><code>"double quotes"</code></td><td>CONNECT BY, START WITH, MINUS, DUAL</td></tr>
+        <tr><td>SQLite</td><td>Any of the above</td><td>PRAGMA, AUTOINCREMENT, upsert syntax</td></tr>
+        <tr><td>Snowflake / BigQuery</td><td>Double quotes / backticks</td><td>QUALIFY, UNNEST, LATERAL FLATTEN</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Keeping a team&rsquo;s SQL consistent</h2>
+    <p>
+      Format the same way each time. Agree on keyword case, indent width, and whether select-list columns go
+      one per line, and write the rules down. Uppercase keywords, a two-space indent and one column per line
+      is the most common convention in analytics teams, because it gives the smallest diffs. Format before
+      review: a reviewer who must reformat a query in their head reads it less carefully.
+    </p>
+  </Fragment>
+</ToolLayout>

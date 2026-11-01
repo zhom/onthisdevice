@@ -1,0 +1,140 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalorieCalculator from '@/components/tools/health/CalorieCalculator.tsx'
+---
+
+<ToolLayout slug="calorie-calculator">
+  <CalorieCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the calorie calculator</h2>
+    <ol>
+      <li>Enter sex, height, current weight, goal weight and age.</li>
+      <li>
+        Pick the activity level that matches your real week. Read the descriptions, not only the labels.
+      </li>
+      <li>
+        Choose your rate of change. The rate options are per week; slower is almost always better.
+      </li>
+      <li>
+        Read your daily target, then check the projected timeline below to see when you reach your goal
+        weight.
+      </li>
+    </ol>
+    <p>
+      The results update as you type. The whole model runs in this browser tab, and nothing is sent.
+    </p>
+
+    <h2>How the daily target is worked out</h2>
+    <p>There are three steps. The results panel shows each with your numbers.</p>
+    <ol>
+      <li>
+        <strong>BMR</strong> from the Mifflin-St Jeor equation: the calories you burn at complete rest.
+      </li>
+      <li>
+        <strong>Maintenance (TDEE)</strong> = BMR × your activity multiplier. At this intake, your
+        weight stays the same.
+      </li>
+      <li>
+        <strong>Target</strong> = maintenance minus (or plus) the daily energy of your chosen rate. A
+        kilogram of body fat stores about 7,700 kcal, so a loss of 0.5 kg a week needs a deficit of
+        0.5 × 7,700 ÷ 7 ≈ 550 kcal a day.
+      </li>
+    </ol>
+
+    <h2>Why the timeline is a curve, not a line</h2>
+    <p>
+      Many calorie calculators divide the total weight to lose by a fixed weekly rate and show a date.
+      That is wrong, and it is why many people think they have "stalled" at week ten when they have
+      not.
+    </p>
+    <p>
+      As you get lighter, your maintenance falls: there is less tissue to keep warm and less mass to
+      move. If your intake stays fixed, the deficit gets smaller each week, and weight loss slows
+      towards an asymptote. This calculator models that: it calculates your BMR and maintenance again
+      at each new weight and derives the next week's loss from them. If your intake can never reach the
+      goal, the calculator says so and shows no date.
+    </p>
+
+    <h2>Choosing a rate</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Rate</th>
+            <th scope="col">Daily deficit</th>
+            <th scope="col">Suits</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0.25 kg / 0.5 lb per week</td>
+            <td>about 275 kcal</td>
+            <td>Lean people, people who train hard, the last few kilos</td>
+          </tr>
+          <tr>
+            <td>0.5 kg / 1 lb per week</td>
+            <td>about 550 kcal</td>
+            <td>The default for most people: visible progress, easy to live with</td>
+          </tr>
+          <tr>
+            <td>0.75 kg / 1.5 lb per week</td>
+            <td>about 825 kcal</td>
+            <td>Higher starting body fat, short focused phases</td>
+          </tr>
+          <tr>
+            <td>1 kg / 2 lb per week</td>
+            <td>about 1,100 kcal</td>
+            <td>Only with a lot to lose, and seldom for more than a few months</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      As a guide, aim for 0.5 to 1 percent of body weight per week. At 100 kg that is 0.5 to 1 kg; at
+      60 kg it is 300 to 600 g. Above 1 percent, more of the loss comes from muscle and less from fat.
+    </p>
+
+    <h2>Minimum sensible intakes</h2>
+    <p>
+      Below about 1,500 kcal for men and 1,200 kcal for women, it is difficult to meet protein and
+      micronutrient targets, and people stop following the diet. If your chosen rate would put you
+      below that, the calculator keeps the target at the floor and tells you. To increase the deficit,
+      move more (walking, NEAT, training) and do not eat less.
+    </p>
+    <p>
+      Very low calorie diets below 800 kcal are a medical intervention. They need supervision, and no
+      calculator should recommend them.
+    </p>
+
+    <h2>Why the scale lies day to day</h2>
+    <p>
+      Body weight changes by 1 to 2 kg within one day for reasons not related to fat. Glycogen binds
+      about 3 g of water per gram stored, so a high-carb day adds water weight. Sodium, hard training,
+      menstrual cycle phase, travel and the bathroom all change the number.
+    </p>
+    <p>
+      Weigh yourself at the same time each morning and compare seven-day averages. A weekly average
+      that has not moved in two to three weeks is a real plateau. One heavy morning is not.
+    </p>
+
+    <h2>What to do when progress stops</h2>
+    <ul>
+      <li>
+        Recalculate. After you lose 5 percent of your body weight, your maintenance is lower. Enter your
+        new weight above.
+      </li>
+      <li>
+        Measure your intake again. Portions grow over a few weeks for almost everyone. Weigh your food
+        for a week and compare.
+      </li>
+      <li>
+        Add movement before you cut food. 2,000 more steps a day is about 80 to 100 kcal and does not
+        make you hungrier, as a smaller dinner does.
+      </li>
+      <li>
+        Take a maintenance break. Two weeks at maintenance after a long deficit restores leptin,
+        training quality and morale, and makes the next block work better.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

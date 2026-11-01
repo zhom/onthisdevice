@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AudioConverter from '@/components/tools/media/AudioConverter.tsx'
+---
+
+<ToolLayout slug="audio-converter">
+  <AudioConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert an audio file</h2>
+    <ol>
+      <li>Drop in an MP3, WAV, OGG, M4A, FLAC, AAC, Opus or WMA file, or a video if you only want its soundtrack.</li>
+      <li>Choose the output format. The estimated size updates immediately, so you can see the trade-off.</li>
+      <li>Set a bitrate for lossy formats, a bit depth for WAV, or a compression level for FLAC.</li>
+      <li>Open <strong>Advanced options</strong> to change the sample rate, force mono, or normalise loudness.</li>
+      <li>Convert, listen to the result on the page, and download it.</li>
+    </ol>
+
+    <h2>Format reference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Codec</th>
+            <th>Lossy?</th>
+            <th>Size for 3 minutes</th>
+            <th>Choose it when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MP3</td>
+            <td>LAME</td>
+            <td>Yes</td>
+            <td>4.3 MB at 192 kbps</td>
+            <td>All devices must play it</td>
+          </tr>
+          <tr>
+            <td>M4A</td>
+            <td>AAC</td>
+            <td>Yes</td>
+            <td>4.3 MB at 192 kbps</td>
+            <td>Better quality than MP3 at the same bitrate</td>
+          </tr>
+          <tr>
+            <td>OGG</td>
+            <td>Vorbis</td>
+            <td>Yes</td>
+            <td>4.3 MB at 192 kbps</td>
+            <td>Patent-free pipelines, games, Linux tooling</td>
+          </tr>
+          <tr>
+            <td>FLAC</td>
+            <td>FLAC</td>
+            <td>No</td>
+            <td>≈ 18 MB</td>
+            <td>Archiving; about half the size of WAV</td>
+          </tr>
+          <tr>
+            <td>WAV</td>
+            <td>PCM</td>
+            <td>No</td>
+            <td>31 MB at 16-bit/44.1 kHz</td>
+            <td>A tool requires raw PCM input</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The one rule of lossy conversion</h2>
+    <p>
+      Each lossy encode removes data that cannot come back. MP3 to FLAC restores nothing: it stores the
+      damaged signal losslessly in a much bigger file. MP3 to MP3 at a higher bitrate makes the file
+      bigger and adds a second round of damage.
+    </p>
+    <p>
+      Keep your masters in FLAC or WAV, and make lossy copies from them. If you only have a lossy file
+      and need another lossy format, convert once, directly, at a bitrate at least as high as the
+      original.
+    </p>
+
+    <h2>Sample rate and channels</h2>
+    <p>
+      Sample rate sets the highest frequency the file can hold. 44.1 kHz covers human hearing up to
+      about 22 kHz, 48 kHz is the video and broadcast standard, and 16 kHz is enough for clear speech.
+      Downsampling a 48 kHz file to 44.1 kHz does no harm; upsampling adds only bytes.
+    </p>
+    <p>
+      Forcing mono halves the data for a single-source recording, such as a lapel microphone or a phone
+      voice memo, with no audible loss. Do not use it for music.
+    </p>
+
+    <h2>Loudness normalisation</h2>
+    <p>
+      The optional normalisation pass applies the FFmpeg <code>loudnorm</code> filter with a target of
+      −16 LUFS integrated and a −1.5 dBTP ceiling. Most podcast platforms expect this level, and it
+      fixes interviews where one speaker is much quieter than the other. It analyses and corrects in
+      one pass, so it is a little less precise than a two-pass measurement, but well within the
+      tolerance of those platforms. Leave it off for mastered music.
+    </p>
+  </Fragment>
+</ToolLayout>

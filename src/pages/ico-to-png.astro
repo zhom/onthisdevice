@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PngToIco from '@/components/tools/image-convert/PngToIco.tsx'
+---
+
+<ToolLayout slug="ico-to-png">
+  <PngToIco client:load mode="decode" />
+
+  <Fragment slot="explainer">
+    <h2>One .ico, several images</h2>
+    <p>
+      An icon file is a directory of images. To convert ICO to PNG, the tool reads the six-byte header,
+      reads the sixteen-byte entry for each image, and extracts all images: usually four to eight, at
+      different sizes and colour depths. You get a preview grid, the dimensions and depth of each image,
+      a download button per image and one ZIP of all of them.
+    </p>
+
+    <h2>Two kinds of payload, handled differently</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Payload</th><th>Since</th><th>What we do</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>PNG</td><td>Windows Vista</td><td>Copied byte-for-byte. The PNG you download is the bytes from inside the .ico, with no re-encoding and no quality change.</td></tr>
+          <tr><td>BMP DIB (1, 4, 8, 24, 32-bit)</td><td>Windows 1.0 onwards</td><td>Decoded by hand: palette lookup for the low-depth entries, bottom-up row order corrected, and the separate 1-bit AND mask applied as the alpha channel. Then encoded to PNG.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The result card shows which path each image took, so you know if it is an original or a
+      conversion.
+    </p>
+
+    <h2>The details that trip up naive converters</h2>
+    <ul>
+      <li>The doubled height: a BMP entry's header gives twice the real height, because it describes the colour bitmap and the transparency mask stacked together. Read literally, each icon comes out squashed.</li>
+      <li>Bottom-up rows: DIB stores the last row first. If you miss that, the icon is upside down.</li>
+      <li>Row padding: each row is padded to a four-byte boundary. At 4-bit depth a 16-pixel row is 8 bytes of data padded to 8, but a 24-bit 17-pixel row is 51 bytes padded to 52. If this is wrong, the image skews diagonally.</li>
+      <li>The zeroed alpha channel: many 32-bit icons have all alpha bytes set to zero, which means fully transparent. The AND mask is the correct source, so the tool uses it when the alpha channel is empty.</li>
+      <li>256 means zero: the directory stores width and height in one byte each, so 256 is stored as 0. The real dimensions come from the payload.</li>
+    </ul>
+
+    <h2>Why extract an icon?</h2>
+    <ul>
+      <li>To recover a logo. Sometimes the only copy of an old brand mark is the favicon on an archived site.</li>
+      <li>To edit it. Image editors handle PNG much better than ICO. Extract, edit, then rebuild with <a href="/png-to-ico">PNG to ICO</a>.</li>
+      <li>To reuse it on the web. Modern sites use PNG or SVG icons for manifests and touch icons. ICO remains only for the legacy <code>/favicon.ico</code> path.</li>
+      <li>To inspect it. The sizes a site ships show quickly if its icon will look right in a taskbar.</li>
+    </ul>
+
+    <h2>Cursors and other oddities</h2>
+    <p>
+      A <code>.cur</code> file uses the same container with a different type flag in the header, so its
+      images extract normally. The hotspot is lost: the two coordinates that say where the click lands
+      are in the directory entry, and PNG cannot store them. Animated cursors (<code>.ani</code>) are a
+      different RIFF-based format, and this tool does not support them.
+    </p>
+
+    <h2>Picking the right extraction</h2>
+    <p>
+      For the best quality, take the largest entry, usually 256 × 256. For the icon as it shows in a
+      browser tab, take the 16 × 16. It is often a separate hand-tuned drawing, not a scaled-down copy
+      of the big one, and it is the entry most people see. The preview grid shows small entries with
+      pixel-perfect scaling (<code>image-rendering: pixelated</code>) so you can judge them accurately.
+    </p>
+
+    <h2>Local and private</h2>
+    <p>
+      Parsing, decoding and PNG encoding all happen in this tab, so you can use icons from internal
+      tools or unreleased products. The tool also works offline.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/png-to-ico">PNG to ICO</a> to build an icon,
+      <a href="/favicon-generator">Favicon Generator</a> for a complete modern icon set, and
+      <a href="/png-to-jpg">PNG to JPG</a> if you need the extracted images in a different format.
+    </p>
+  </Fragment>
+</ToolLayout>

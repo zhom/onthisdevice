@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UrlEncoderDecoder from '@/components/tools/dev/UrlEncoderDecoder.tsx'
+---
+
+<ToolLayout slug="url-encoder-decoder">
+  <UrlEncoderDecoder client:load />
+  <Fragment slot="explainer">
+    <h2>How to URL encode or decode</h2>
+    <ol>
+      <li>On the <strong>Encode / decode</strong> tab, choose a direction and the encoding rule that matches where the value will end up.</li>
+      <li>Paste the text. The converted value appears next to it, with a count of the escape sequences.</li>
+      <li>If decoding fails, the message gives the exact character position of the broken escape, not only the browser's "URI malformed".</li>
+      <li>On the <strong>Query string</strong> tab, paste a full URL to break its parameters into an editable table, then copy the rebuilt URL.</li>
+    </ol>
+
+    <h2>encodeURI or encodeURIComponent?</h2>
+    <p>
+      This choice causes more broken links than anything else. The two functions differ only in which
+      characters they leave unchanged.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Function</th><th>Leaves unescaped</th><th>Use it for</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>encodeURI</code></td>
+          <td>A-Z a-z 0-9 and <code>; , / ? : @ &amp; = + $ - _ . ! ~ * ' ( ) #</code></td>
+          <td>A complete URL you want to make safe without destroying its structure</td>
+        </tr>
+        <tr>
+          <td><code>encodeURIComponent</code></td>
+          <td>A-Z a-z 0-9 and <code>- _ . ! ~ * ' ( )</code></td>
+          <td>One query value, one path segment, one form field</td>
+        </tr>
+        <tr>
+          <td>Form encoding</td>
+          <td>A-Z a-z 0-9 and <code>- _ .</code>; space becomes <code>+</code></td>
+          <td>An <code>application/x-www-form-urlencoded</code> body</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      Build the URL yourself, and run <code>encodeURIComponent</code> on each value you put into it.
+      <code>encodeURI</code> on a URL that already contains an unencoded value does not fix it, because
+      <code>encodeURI</code> keeps <code>&amp;</code> and <code>=</code>, the two characters most likely to be
+      inside the value and break the parse.
+    </p>
+
+    <h2>Common escape sequences</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Character</th><th>Escaped</th><th>Why it matters</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>space</td><td><code>%20</code> or <code>+</code></td><td><code>+</code> only means space in a query string, never in a path</td></tr>
+        <tr><td><code>&amp;</code></td><td><code>%26</code></td><td>Unescaped, it starts a new parameter</td></tr>
+        <tr><td><code>=</code></td><td><code>%3D</code></td><td>Unescaped, it splits key from value</td></tr>
+        <tr><td><code>?</code></td><td><code>%3F</code></td><td>Unescaped, it starts the query string</td></tr>
+        <tr><td><code>#</code></td><td><code>%23</code></td><td>Everything after it is a fragment and never reaches the server</td></tr>
+        <tr><td><code>/</code></td><td><code>%2F</code></td><td>Escape it inside a path segment that legitimately contains a slash</td></tr>
+        <tr><td><code>%</code></td><td><code>%25</code></td><td>A bare percent sign makes the whole URL undecodable</td></tr>
+        <tr><td><code>é</code></td><td><code>%C3%A9</code></td><td>Non-ASCII becomes its UTF-8 bytes, two escapes here</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Why decoding sometimes fails</h2>
+    <p>
+      Percent encoding has two rules: a <code>%</code> must be followed by two hexadecimal digits, and the
+      bytes those escapes give must be valid UTF-8. A URL cut in the middle of a sequence, often by a database
+      column that is too short or a trimmed log line, breaks both. The decoder gives the position of the first
+      broken escape, so you can see whether the value was cut short or was never encoded correctly.
+    </p>
+
+    <h2>Editing query parameters</h2>
+    <p>
+      The query-string tab decodes each parameter for display, so you edit readable text, and encodes it again
+      on output. It handles repeated keys (common in filter UIs), parameters with no value and semicolon
+      separators, and keeps the fragment. Use it to remove UTM parameters, change a page number, or reproduce
+      a bug report's exact query with one value changed.
+    </p>
+
+    <h2>Runs in your browser</h2>
+    <p>
+      URLs often contain session identifiers, signed download links and internal hostnames. JavaScript in your
+      own tab does the work, and no server logs it.
+    </p>
+  </Fragment>
+</ToolLayout>

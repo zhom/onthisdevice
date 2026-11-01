@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeSizeConverter from '@/components/tools/units/UnitsLifeSizeConverter.tsx'
+---
+
+<ToolLayout slug="clothing-size-converter">
+  <UnitsLifeSizeConverter client:load mode="clothing" />
+  <Fragment slot="explainer">
+    <h2>A dress size is not a measurement</h2>
+    <p>
+      No major market has a legal definition of clothing sizes. A US 8, a UK 12 and a German 38 are
+      conventions, and for decades they have grown larger (vanity sizing). A garment labelled US 8
+      today is several centimetres bigger than a US 8 from the 1970s.
+    </p>
+    <p>
+      For this reason, this clothing size converter goes from a body measurement to a label, not from
+      label to label. You get one approximation, not two.
+    </p>
+
+    <h2>Measuring properly</h2>
+    <ul>
+      <li>Bust or chest: around the fullest point, with the tape level all the way round and arms down.</li>
+      <li>Waist: around the narrowest part of the torso, usually just above the navel. Do not hold your breath.</li>
+      <li>Hip: around the widest point of the seat, usually 20 cm below the waist.</li>
+      <li>Neck: for shirts, around the base of the neck with one finger under the tape.</li>
+      <li>Inside leg: from the crotch to the top of the shoe, in the shoes you will wear.</li>
+    </ul>
+    <p>
+      Measure over light clothing or none, with the tape snug but not compressing. A tight tape gives
+      you a size too small.
+    </p>
+
+    <h2>The European numbering families</h2>
+    <p>
+      "EU size" is not one system. Women&apos;s clothing has at least three common systems, offset from
+      each other by fixed amounts:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">US</th><th scope="col">UK</th><th scope="col">Germany / EU</th><th scope="col">France</th><th scope="col">Italy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>4</td><td>8</td><td>34</td><td>36</td><td>40</td></tr>
+        <tr><td>6</td><td>10</td><td>36</td><td>38</td><td>42</td></tr>
+        <tr><td>8</td><td>12</td><td>38</td><td>40</td><td>44</td></tr>
+        <tr><td>10</td><td>14</td><td>40</td><td>42</td><td>46</td></tr>
+      </tbody>
+    </table>
+    <p>
+      France is two above Germany; Italy is six above. A label of "40" can be a UK 8, a UK 12 or a UK 14,
+      depending on the country that printed it. Look for a country code on the tag.
+    </p>
+
+    <h2>Men&apos;s sizing is more honest</h2>
+    <p>
+      Men&apos;s tailoring usually shows the real chest measurement in inches, and shirts show the
+      collar measurement, so the conversion is almost mechanical: a 40 in chest is a 100 cm chest, which
+      is an EU 50. Letter sizes (S, M, L) are a coarser layer on the same measurements. When a brand
+      gives both, trust the number.
+    </p>
+
+    <h2>Jeans, where labels are fiction</h2>
+    <p>
+      Denim waist labels are the least reliable numbers in clothing. Independent tests found jeans
+      labelled W32 that measured from 79 to 91 cm at the waistband, and the same brand varied between
+      cuts. The label is a marketing decision, not a measurement.
+    </p>
+    <p>
+      The reliable method: lay a pair that fits flat, measure the waistband from side to side, double
+      it, and shop with that number. The jeans tab converts between the inch label, centimetres and the
+      European and women&apos;s numbering, but no chart can correct a brand that mislabels.
+    </p>
+
+    <h2>Use the brand&apos;s chart when there is one</h2>
+    <p>
+      These tables are industry mid-points. Some brands publish garment measurements, for example a
+      "flat measurement" chart with the dimensions of the garment and not of the intended body. Such a
+      chart is much more precise, and you should always use it first.
+    </p>
+  </Fragment>
+</ToolLayout>

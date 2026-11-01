@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MemeGenerator from '@/components/tools/image-edit/MemeGenerator.tsx'
+---
+
+<ToolLayout slug="add-text-to-image">
+  <MemeGenerator client:load variant="text" />
+
+  <Fragment slot="explainer">
+    <h2>Putting words on a picture without a design app</h2>
+    <p>
+      Usually you need one line of text, in a readable colour, in the correct corner, exported at the
+      original resolution. This page adds text to an image that way. It opens with one caption box, a
+      normal sans-serif face, no outline and a soft drop shadow. On a photograph, these settings look
+      deliberate and not loud.
+    </p>
+
+    <h2>Step by step</h2>
+    <ol>
+      <li>Drop in the photo, screenshot or graphic.</li>
+      <li>Type your text into the box on the right. Press <kbd>Enter</kbd> in it for a line break. Long lines wrap at the wrap width you set.</li>
+      <li>Drag the text on the canvas to place it. Keyboard users can select the box and use the arrow keys.</li>
+      <li>Set the colour, and add an outline or a drop shadow so the text stays readable on any background.</li>
+      <li>Press <strong>Add text box</strong> for each new label. For example, a title and a credit line can have different settings.</li>
+    </ol>
+
+    <h2>Making text readable over any background</h2>
+    <p>
+      The most common mistake is white text on a photo that is white in one corner. Three methods fix
+      it, and you can combine them:
+    </p>
+    <ul>
+      <li>An outline: a dark stroke at 5–10% of the font size traces each letter. It is the most reliable option over busy detail such as leaves or a crowd.</li>
+      <li>A drop shadow is softer. It lifts light text off a mid-tone background without the comic-book look of an outline.</li>
+      <li>A bar: use the white-space sliders to add a solid band above or below the photo and put the text there. It gives the best legibility and keeps the image clear.</li>
+    </ul>
+
+    <h2>Choosing a size that survives the feed</h2>
+    <p>
+      Size is a percentage of image height, not pixels, so the same setting looks the same on an 800 px
+      or a 6000 px source. As a guide: 3–4% for a discreet credit or watermark, 6–8% for a caption read
+      at a glance, and 10% or more for a headline that must be legible as a thumbnail.
+    </p>
+
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Use</th><th>Size</th><th>Style</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Photo credit / handle</td><td>2.5–4%</td><td>Small sans, a mid grey for a 60–80% opacity look, bottom-right</td></tr>
+          <tr><td>Social caption</td><td>6–8%</td><td>Drop shadow on, sentence case, wide wrap width</td></tr>
+          <tr><td>Poster headline</td><td>10–16%</td><td>Heavy sans, uppercase, thin outline</td></tr>
+          <tr><td>Diagram label</td><td>3–5%</td><td>Monospace, solid contrasting colour, no shadow</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Fonts come from your device, never from a CDN</h2>
+    <p>
+      The font list has the families that come with Windows, macOS, iOS and Android. The page does not
+      fetch Google Fonts or other remote typefaces, because it makes no network requests. If your
+      device does not have a font, the browser uses the next match in the same stack. Thus the same
+      settings can look slightly different on a Mac and on Android. The exported image does not
+      change: when the text is drawn into the pixels, it looks the same everywhere.
+    </p>
+
+    <h2>Watermarking, honestly</h2>
+    <p>
+      A drawn watermark deters reuse but does not protect the photo. It makes reuse without credit
+      harder, and a screenshot still shows your name. Anyone can still crop, clone or inpaint it. For
+      proof of origin, keep an untouched original with its EXIF data in a safe place, and publish the
+      marked copy. To remove identifying data before you publish, use
+      <a href="/remove-exif-data">Remove EXIF Data</a>.
+    </p>
+
+    <h2>After you export</h2>
+    <p>
+      PNG keeps text edges sharp and is the correct choice for screenshots and flat graphics. JPG is
+      smaller for photographs. If the result must fit a size limit,
+      <a href="/compress-image-to-200kb">compress it to 200 KB</a>. A text overlay compresses well, so
+      the caption stays sharp at a small target. For a caption under the image, the
+      <a href="/meme-generator">meme generator</a> has a white-bar preset.
+    </p>
+  </Fragment>
+</ToolLayout>

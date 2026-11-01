@@ -1,0 +1,158 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WaterIntakeCalculator from '@/components/tools/health/WaterIntakeCalculator.tsx'
+---
+
+<ToolLayout slug="water-intake-calculator">
+  <WaterIntakeCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the water intake calculator</h2>
+    <ol>
+      <li>Enter your body weight. It sets the baseline and matters much more than any rule of thumb.</li>
+      <li>Add your age. Kidney concentrating ability declines with age, so the per-kilogram figure tapers.</li>
+      <li>Enter about how many minutes a day you exercise or sweat.</li>
+      <li>Pick today's climate where you are, not the annual average.</li>
+      <li>Read two numbers: total water, and the smaller drinks-only figure that you act on.</li>
+    </ol>
+
+    <h2>How the estimate is built</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Component</th>
+            <th scope="col">Rule used</th>
+            <th scope="col">Source of the figure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Baseline, age 18–30</td>
+            <td>40 ml per kg</td>
+            <td>Standard clinical maintenance-fluid estimate for younger adults</td>
+          </tr>
+          <tr>
+            <td>Baseline, age 31–55</td>
+            <td>35 ml per kg</td>
+            <td>The most commonly cited adult figure</td>
+          </tr>
+          <tr>
+            <td>Baseline, age 56+</td>
+            <td>30 ml per kg</td>
+            <td>Reduced renal concentrating capacity and blunted thirst</td>
+          </tr>
+          <tr>
+            <td>Exercise</td>
+            <td>+12 ml per minute (≈350 ml per 30 min)</td>
+            <td>American College of Sports Medicine guidance on replacing sweat losses</td>
+          </tr>
+          <tr>
+            <td>Climate</td>
+            <td>×1.00 temperate up to ×1.25 very hot or humid</td>
+            <td>Sweat losses rise steeply with heat, and further when humidity blocks evaporation</td>
+          </tr>
+          <tr>
+            <td>Pregnancy / breastfeeding</td>
+            <td>+300 ml / +700 ml</td>
+            <td>EFSA adequate-intake adjustments</td>
+          </tr>
+          <tr>
+            <td>Food contribution</td>
+            <td>20% of total</td>
+            <td>EFSA and IOM both put food at roughly 20–30% of water intake</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Reference intakes from health authorities</h2>
+    <p>
+      The two most-cited sets of figures are for total water: drinks plus the water in food.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Authority</th>
+            <th scope="col">Adult men</th>
+            <th scope="col">Adult women</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EFSA (European Food Safety Authority)</td>
+            <td>2.5 L per day total water</td>
+            <td>2.0 L per day total water</td>
+          </tr>
+          <tr>
+            <td>US National Academies (IOM)</td>
+            <td>3.7 L per day total water (about 13 cups from drinks)</td>
+            <td>2.7 L per day total water (about 9 cups from drinks)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      They differ because they come from different population survey data. Both are population averages for
+      sedentary adults in temperate climates, so an estimate based on body weight, with adjustments, is more
+      useful for one person.
+    </p>
+
+    <h2>Where "eight glasses a day" came from</h2>
+    <p>
+      The slogan probably comes from a 1945 US Food and Nutrition Board recommendation of about 2.5 litres a
+      day. That recommendation also said "most of this quantity is contained in prepared foods", a sentence
+      that was later usually left out. No trial shows that eight glasses is the right target for anyone.
+    </p>
+
+    <h2>Does coffee count?</h2>
+    <p>
+      Yes. Caffeine has a mild diuretic effect above about 250–300 mg in people who do not drink it regularly,
+      but the water in the drink is much more than the extra urine. Controlled studies that compare coffee with
+      equal volumes of water find no meaningful difference in hydration. Tea, milk, juice and soft drinks also
+      count.
+    </p>
+    <p>
+      Alcohol is the exception. It suppresses vasopressin, so you lose more fluid than you take in: about 10 ml
+      of extra urine per gram of alcohol. Alternate alcoholic drinks with water.
+    </p>
+
+    <h2>How to tell whether you are hydrated</h2>
+    <ul>
+      <li>
+        Urine colour: pale straw is the target. Dark yellow or amber means drink more. Colourless all day
+        usually means you drink more than you need. B vitamins turn urine bright yellow, which can mislead
+        you.
+      </li>
+      <li>
+        Frequency: four to seven trips a day is typical for a well-hydrated adult.
+      </li>
+      <li>
+        Thirst: for healthy adults in normal conditions, drinking when thirsty works. It is less reliable in
+        older adults, in extreme heat and during long exercise.
+      </li>
+      <li>
+        Weight around exercise: weigh yourself before and after a long session. Each kilogram lost is about a
+        litre of sweat; replace 1.25 to 1.5 litres per kilogram over the next hours.
+      </li>
+    </ul>
+
+    <h2>When plain water is not enough</h2>
+    <p>
+      Sweat contains sodium: about 0.5 to 1.5 g per litre, and more in people not used to the heat. For efforts
+      over about 90 minutes, in heat, or for people who finish sessions with salt on their skin, water without
+      sodium dilutes blood sodium and can cause hyponatraemia. Symptoms are headache, nausea, confusion and
+      swelling, and in endurance events it is more dangerous than mild dehydration. Use an electrolyte drink,
+      or add salt to food after long sessions.
+    </p>
+
+    <h2>Habits that work better than a target</h2>
+    <ul>
+      <li>Drink 400–500 ml on waking; you are mildly dehydrated after a night's sleep.</li>
+      <li>Keep a filled bottle where you work, where you can see it.</li>
+      <li>Attach drinking to existing habits: every meal, every coffee, every time you stand up.</li>
+      <li>Drink more early in the day, so you do not catch up at 10 pm and then sleep badly.</li>
+      <li>Eat water: cucumber, watermelon, tomatoes, soup and yoghurt are 80 to 95 percent water.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

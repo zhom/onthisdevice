@@ -1,0 +1,152 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BillSplitCalculator from '@/components/tools/everyday/BillSplitCalculator.tsx'
+---
+
+<ToolLayout slug="bill-split-calculator">
+  <BillSplitCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to split a bill by item</h2>
+    <ol>
+      <li>Switch to the <strong>Split by item</strong> tab.</li>
+      <li>
+        Add everyone at the table. Names are only labels and stay in your browser, so first names or
+        nicknames are fine.
+      </li>
+      <li>
+        Enter each line from the check with its price. You can group items, for example all the
+        drinks, if the bill shows them that way.
+      </li>
+      <li>
+        Tap the names of the people who shared each item. A dish tapped for three people is divided
+        three ways. The <strong>Everyone</strong> button assigns a shared platter in one tap.
+      </li>
+      <li>
+        Set the tax and tip. Tax can be a percentage or the exact amount on the bill, and the tip can
+        be calculated before or after tax.
+      </li>
+    </ol>
+    <p>
+      Each person gets a card with their items, their share of the tax and tip, and the total they
+      owe. Copy the whole split to paste into a group chat.
+    </p>
+
+    <h2>Why tax and tip are shared proportionally</h2>
+    <p>
+      If the food is split by item but the tax and tip evenly, the person who ate least pays too
+      much. This bill split calculator gives each person the same fraction of the tax and tip as
+      their fraction of the subtotal:
+    </p>
+    <p>
+      <strong>person total = own items + tax × (own items ÷ subtotal) + tip × (own items ÷ subtotal)</strong>
+    </p>
+    <p>
+      If your food is 30% of the subtotal, you pay 30% of the tax and 30% of the tip. Nobody can gain
+      by ordering differently, and the parts always add up to the exact bill.
+    </p>
+
+    <h3>What happens to the odd cents</h3>
+    <p>
+      Proportional shares are almost never whole cents. The calculator computes exact shares, rounds
+      each one down to the cent, then gives the remaining cents to the people with the largest
+      fractional parts. This is the largest-remainder method used in apportionment. Nobody pays more
+      than one extra cent, and the personal totals add up to the exact bill, which matters when one
+      person pays by card.
+    </p>
+
+    <h2>Worked example</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Item</th>
+            <th scope="col">Price</th>
+            <th scope="col">Shared by</th>
+            <th scope="col">Alex</th>
+            <th scope="col">Bailey</th>
+            <th scope="col">Casey</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Margherita pizza</td>
+            <td>$18.00</td>
+            <td>Alex</td>
+            <td>$18.00</td>
+            <td>$0</td>
+            <td>$0</td>
+          </tr>
+          <tr>
+            <td>Sharing platter</td>
+            <td>$24.50</td>
+            <td>All three</td>
+            <td>$8.17</td>
+            <td>$8.17</td>
+            <td>$8.16</td>
+          </tr>
+          <tr>
+            <td>Pasta</td>
+            <td>$16.00</td>
+            <td>Bailey</td>
+            <td>$0</td>
+            <td>$16.00</td>
+            <td>$0</td>
+          </tr>
+          <tr>
+            <td>Two cocktails</td>
+            <td>$21.00</td>
+            <td>Casey</td>
+            <td>$0</td>
+            <td>$0</td>
+            <td>$21.00</td>
+          </tr>
+          <tr>
+            <td><strong>Subtotal</strong></td>
+            <td><strong>$79.50</strong></td>
+            <td></td>
+            <td><strong>$26.17</strong></td>
+            <td><strong>$24.17</strong></td>
+            <td><strong>$29.16</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      With 8.25% tax ($6.56) and an 18% pre-tax tip ($14.31), the $100.37 total splits to about $33.04
+      for Alex, $30.51 for Bailey and $36.82 for Casey. An even split of $33.46 each would move about
+      $2.50 from the cheapest order to the most expensive one.
+    </p>
+
+    <h2>When an even split is the right answer</h2>
+    <p>
+      Itemising is not always worth the effort. If everyone ate about the same, or precision would be
+      rude in the group, use the <strong>Split evenly</strong> tab: a subtotal, a tax rate, a tip and a
+      headcount. It also allocates to the exact cent, so the shares add up.
+    </p>
+
+    <h2>Common questions the numbers answer</h2>
+    <ul>
+      <li>
+        Someone only had a drink: assign the drink to that person alone, and their tax and tip shares
+        get smaller automatically.
+      </li>
+      <li>
+        An item is unassigned: the calculator warns you, names the item and keeps it out of all
+        totals, so you can see the gap between the bill and what the group pays.
+      </li>
+      <li>
+        The bill has a service charge: enter it as a fixed tax amount and set the tip to 0%, or add a
+        tip on top.
+      </li>
+      <li>
+        One person pays and gets paid back: copy the split. Each line is a name and an amount, ready
+        to paste into a payment app request.
+      </li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      Names, prices and assignments stay in this browser tab, and closing the page discards them.
+    </p>
+  </Fragment>
+</ToolLayout>

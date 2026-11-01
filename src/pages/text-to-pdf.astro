@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TextToPdf from '@/components/tools/pdf-convert/TextToPdf.tsx'
+---
+
+<ToolLayout slug="text-to-pdf">
+  <TextToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to turn text into a PDF</h2>
+    <ol>
+      <li>Type or paste your text into the editor above, or drop a <code>.txt</code>, <code>.log</code>, <code>.csv</code> or <code>.md</code> file to load its contents.</li>
+      <li>Choose a font, size, line height, page size and margin. The counters show the words, lines and characters in your text.</li>
+      <li>Turn on page numbers for a long document.</li>
+      <li>Set the file name, press <strong>Create PDF</strong>, and download.</li>
+    </ol>
+
+    <h2>Choosing a font</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Font</th>
+            <th>Character</th>
+            <th>Best for</th>
+            <th>Words per A4 page at 11 pt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Helvetica</td>
+            <td>Neutral sans serif, even colour on the page</td>
+            <td>Notes, letters, handouts, anything read on screen</td>
+            <td>≈ 500</td>
+          </tr>
+          <tr>
+            <td>Times</td>
+            <td>Serif, narrower letterforms</td>
+            <td>Long prose, essays, printed documents</td>
+            <td>≈ 600</td>
+          </tr>
+          <tr>
+            <td>Courier</td>
+            <td>Monospaced: every character has the same width</td>
+            <td>Logs, code, fixed-width tables, ASCII art</td>
+            <td>≈ 350</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      All three are among the PDF standard's base 14 fonts, so they are not embedded in the file. A fifty-page
+      document is usually under 100 KB, and it looks the same in every reader on every operating system.
+    </p>
+
+    <h2>How the text is laid out</h2>
+    <p>
+      Word wrapping uses the real metrics of the chosen font, not a character count, so lines fill the column
+      without breaking early or overflowing:
+    </p>
+    <ul>
+      <li>Words break at spaces, and the line is filled greedily up to the column width.</li>
+      <li>A single token wider than the column, such as a long URL, a base64 blob or a checksum, is split by character so it cannot run off the page.</li>
+      <li>Hard line breaks in your input stay exactly where they are, which keeps logs, poetry and code readable.</li>
+      <li>Blank lines become vertical space, so paragraphs stay visually separated.</li>
+      <li>Tabs are expanded to four spaces, because PDF has no tab stops of its own.</li>
+      <li>At the bottom margin a new page starts. Page numbers, if on, are added at the end, when the total is known.</li>
+    </ul>
+
+    <h2>Margins and readability</h2>
+    <p>
+      A comfortable line length is about 60 to 80 characters. On A4 at 11 pt Helvetica, a 20 mm margin gives
+      about 85 characters per line: fine for reference material, slightly long for continuous reading. For a
+      document read from start to finish, raise the margin to 30 mm, or keep 20 mm and use a 12 pt font. Line
+      height matters as much: 1.4 to 1.5 suits body text, and 1.15 to 1.25 suits dense logs where you want
+      more on each page.
+    </p>
+
+    <h2>Which characters can be used</h2>
+    <p>
+      The standard PDF fonts use WinAnsi encoding, which covers the Latin alphabet, accented Western European
+      letters, curly quotes, en and em dashes, the euro sign and common symbols. Characters outside that set
+      (Cyrillic, Greek, Hebrew, Arabic, CJK, emoji) need an embedded font file. The text to PDF converter
+      transliterates what it safely can, by removing diacritics and mapping arrows and mathematical operators
+      to ASCII, and reports how many characters it replaced, so you can decide whether the output is usable.
+    </p>
+
+    <h2>Reasons to make a PDF from text</h2>
+    <ul>
+      <li>Sending a text that must not be edited or reflowed, such as a quote, a statement or a set of instructions.</li>
+      <li>Printing plain text with real margins and page breaks, in place of a browser's print stylesheet.</li>
+      <li>Attaching logs to a ticket in a format that opens the same way for everyone.</li>
+      <li>Archiving notes in a self-contained format that will still open in twenty years.</li>
+      <li>Making a clean handout from notes without a word processor.</li>
+    </ul>
+    <p>
+      For Markdown, <a href="/markdown-to-pdf">Markdown to PDF</a> keeps your headings, lists and code blocks.
+      For the reverse direction, use <a href="/pdf-to-text">PDF to Text</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

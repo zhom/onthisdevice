@@ -1,0 +1,136 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfMetadataEditor from '@/components/tools/pdf/PdfMetadataEditor.tsx'
+---
+
+<ToolLayout slug="pdf-metadata-editor">
+  <PdfMetadataEditor client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>What a PDF knows about you</h2>
+      <p>
+        Open any PDF you did not make yourself and look at File → Properties. There is a decent
+        chance it tells you the name of the person whose computer account created it, the exact
+        software and version they used, and the minute they saved it. None of that is visible on the
+        page, and almost nobody checks it before sending a document out.
+      </p>
+      <p>
+        The classic failures are well documented: a tender submitted with a competitor&rsquo;s name
+        still in the Author field because the template was reused; a &ldquo;newly drafted&rdquo;
+        contract whose creation timestamp is eighteen months old; an anonymous complaint whose
+        Creator field names the department&rsquo;s single licensed copy of a niche application.
+      </p>
+    </section>
+
+    <section>
+      <h2>The fields, and where they come from</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Field</th>
+            <th scope="col">Typically set by</th>
+            <th scope="col">What it can reveal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Title</td>
+            <td>The authoring application, often from the source filename</td>
+            <td>Internal project names, draft numbers</td>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td>The operating-system account name</td>
+            <td>A real name, or a corporate username format</td>
+          </tr>
+          <tr>
+            <td>Subject / Keywords</td>
+            <td>Manually, or by a document management system</td>
+            <td>Internal classification, matter numbers</td>
+          </tr>
+          <tr>
+            <td>Creator</td>
+            <td>The program the document was written in</td>
+            <td>&ldquo;Microsoft Word for Microsoft 365&rdquo;, &ldquo;LaTeX with hyperref&rdquo;</td>
+          </tr>
+          <tr>
+            <td>Producer</td>
+            <td>The library that wrote the PDF</td>
+            <td>The exact toolchain and version</td>
+          </tr>
+          <tr>
+            <td>CreationDate / ModDate</td>
+            <td>Automatically, to the second, with a timezone offset</td>
+            <td>When it was really written, and in which timezone</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Two metadata stores, not one</h2>
+      <p>
+        PDF carries metadata in two places. The <strong>information dictionary</strong> is the old
+        key-value block listed above. The <strong>XMP packet</strong> is an XML document stored in
+        the catalogue, added by most modern PDF writers, and it can hold considerably
+        more: original filenames, an instance ID and a document ID that link successive revisions of
+        the same file together, the software history, and sometimes embedded thumbnails.
+      </p>
+      <p>
+        Most &ldquo;remove PDF metadata&rdquo; tools clear only the information dictionary. That leaves
+        the XMP packet, and a text editor can still recover the same information. The panel above tells you whether an XMP block is present,
+        and <strong>Strip everything</strong> removes both.
+      </p>
+    </section>
+
+    <section>
+      <h2>Clearing a field really clears it</h2>
+      <p>
+        There is a subtlety here that trips up a lot of libraries. Writing an empty string into the
+        Author entry is not the same as deleting the entry: some readers show the empty value,
+        others fall back to a cached copy, and a raw inspection still shows the key. When you empty
+        a field in this editor, the key is deleted from the information dictionary outright, and
+        cleared dates remove the <code>CreationDate</code> and <code>ModDate</code> entries rather
+        than writing 1970.
+      </p>
+    </section>
+
+    <section>
+      <h2>What this tool does not do</h2>
+      <ul>
+        <li>
+          It does not remove metadata embedded <em>inside</em> images on the page. A photograph with
+          GPS EXIF data placed into a PDF keeps that data. Extract it with
+          <a href="/extract-images-from-pdf">Extract Images from PDF</a> and inspect it separately.
+        </li>
+        <li>
+          It does not remove tracked changes, comments or hidden layers. Those are page content, not
+          metadata.
+        </li>
+        <li>
+          It does not remove text that is merely covered by a black rectangle. That is a redaction
+          problem, and covering is not removing.
+        </li>
+        <li>
+          It cannot preserve an existing password or permission set. A protected file can be read
+          here, but the saved copy will be unprotected.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Reading metadata is as useful as writing it</h2>
+      <p>
+        Open the panel even when you do not want to change anything. The Producer field tells you what
+        made a document, which helps you verify that a scan really
+        came from the scanner it claims. Checking the dates on a contract, an invoice or a
+        submission is a thirty-second sanity test that occasionally turns up something important.
+      </p>
+      <p>
+        And because nothing is uploaded, you can run that check on a file you would never hand to a
+        web service: the document is opened by pdf-lib in this tab and stays there.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

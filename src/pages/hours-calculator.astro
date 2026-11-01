@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyTimeCard from '@/components/tools/datetime/CalcMoneyTimeCard.tsx'
+---
+
+<ToolLayout slug="hours-calculator">
+  <CalcMoneyTimeCard client:load variant="hours" />
+
+  <Fragment slot="explainer">
+    <h2>Subtracting times is harder than it looks</h2>
+    <p>
+      Clock time is base sixty but looks decimal, so mental subtraction often goes wrong. From 09:15 to
+      17:40 is not 17.40 − 9.15 = 8.25. It is eight hours and twenty-five minutes, which is 8.42 as a
+      decimal.
+    </p>
+    <p>
+      The reliable manual method: convert both times to minutes since midnight, subtract, then convert
+      back. 17:40 is 1,060 minutes, 09:15 is 555, and the difference is 505 minutes, which is 8 hours
+      25. This hours calculator does the same for each row.
+    </p>
+
+    <h2>Add as many periods as you need</h2>
+    <p>
+      Time-keeping is rarely one pair of times. A day split around a client meeting, a project worked on
+      three times in a week, or a freelance invoice for six sessions each gets its own labelled row, and
+      the totals add up across all rows.
+    </p>
+    <p>
+      Give each row a clear label. If someone questions the total three weeks later, the labels show
+      what each period was.
+    </p>
+
+    <h2>Type times however you like</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[380px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>You type</th>
+            <th style="text-align:right">Understood as</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>9</td><td style="text-align:right">09:00</td></tr>
+          <tr><td>930</td><td style="text-align:right">09:30</td></tr>
+          <tr><td>9:30</td><td style="text-align:right">09:30</td></tr>
+          <tr><td>9 30</td><td style="text-align:right">09:30</td></tr>
+          <tr><td>9:30 pm</td><td style="text-align:right">21:30</td></tr>
+          <tr><td>5p</td><td style="text-align:right">17:00</td></tr>
+          <tr><td>1745</td><td style="text-align:right">17:45</td></tr>
+          <tr><td>12am</td><td style="text-align:right">00:00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Breaks and overnight periods</h2>
+    <p>
+      Each row has an unpaid break in minutes, which the tool deducts from that row before the total. If
+      the end time is at or before the start time, the period crosses midnight, so 23:00 to 02:30 is
+      three and a half hours and not a negative number.
+    </p>
+
+    <h2>h:mm and decimal, side by side</h2>
+    <p>
+      <code>h:mm</code> is how a clock and a rota show time. Decimal hours (hours plus minutes divided by
+      sixty) are what payroll systems, invoicing software and spreadsheets need, because you cannot
+      multiply 8:25 by an hourly rate.
+    </p>
+    <p>
+      Each row and the total show both formats, plus the figure in minutes for billing in six-minute or
+      fifteen-minute units.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>
+        For freelance invoicing, add a row per session and set your rate. The gross amount shows with
+        the hours.
+      </li>
+      <li>
+        To check a payslip, rebuild the week from your own notes and compare the decimal total with the
+        hours you were paid for.
+      </li>
+      <li>
+        For project time, total the hours on one piece of work across several days.
+      </li>
+      <li>
+        For study and practice logs, find how many hours a task took.
+      </li>
+    </ul>
+    <p>
+      For a full Monday-to-Sunday grid with daily and weekly overtime rules, the time card calculator
+      uses the same engine in a week layout.
+    </p>
+
+    <h2>Rounding, if your client or employer uses it</h2>
+    <p>
+      Rounding to the nearest quarter or tenth of an hour applies per entry, before the total, and
+      always to the nearest increment in both directions. Legal billing usually uses tenths (six
+      minutes). US payroll usually uses quarters. On "exact", nothing is rounded.
+    </p>
+
+    <h2>Nothing leaves the tab</h2>
+    <p>
+      Your working hours are personal data: they show where you were and when. This page runs in your
+      browser, saves nothing unless you switch saving on, and makes the CSV, Excel and PDF exports
+      locally.
+    </p>
+  </Fragment>
+</ToolLayout>

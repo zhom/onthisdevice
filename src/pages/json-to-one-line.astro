@@ -1,0 +1,60 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-to-one-line">
+  <DevFormatJson client:load mode="oneline" />
+  <Fragment slot="explainer">
+    <h2>One line, still readable</h2>
+    <p>
+      To minify and to collapse JSON to one line are different operations. Minifying removes all
+      optional bytes and gives <code>&#123;"id":42,"name":"Ada"&#125;</code>. Collapsing keeps one
+      space after each colon and comma and gives <code>&#123;"id": 42, "name": "Ada"&#125;</code>. That
+      is still one line and still valid, and much easier to read in a log viewer or a terminal at 2am.
+      With the spacing switch off, the two are identical.
+    </p>
+
+    <h2>Where a single line is required</h2>
+    <h3>Log lines</h3>
+    <p>
+      Structured logging pipelines (journald, Docker&rsquo;s json-file driver, Fluent Bit, Vector,
+      CloudWatch) treat a newline as a record boundary. A pretty-printed JSON payload in a log becomes
+      fifteen unrelated records, and none of them parse. A search for the request ID finds only the line
+      that has it. One line per event makes the log queryable.
+    </p>
+    <h3>Environment variables</h3>
+    <p>
+      A newline inside an env var is possible but awkward in almost all runtimes: Docker
+      <code>--env</code>, systemd <code>Environment=</code> and most CI secret stores reject it or
+      require escaping. Collapse the JSON first to avoid the problem.
+    </p>
+    <h3>Command-line arguments</h3>
+    <p>
+      You can put a one-line payload in single quotes and pass it to curl:
+      <code>curl -d '&#123;"a": 1&#125;' -H 'content-type: application/json' …</code>. If the JSON
+      contains a single quote, use <a href="/json-escape">JSON escape</a> to make a fully escaped
+      literal, or write the body to a file and use <code>-d @file.json</code>.
+    </p>
+    <h3>Spreadsheet cells and issue trackers</h3>
+    <p>
+      Pasting multi-line JSON into a spreadsheet cell splits it across rows. One line pastes as one
+      cell.
+    </p>
+
+    <h2>What happens to newlines inside strings</h2>
+    <p>
+      They stay escaped. A string with a real line break is invalid JSON, so in any input that parses,
+      newlines are stored as the two-character sequence <code>\n</code>. Collapsing does not change
+      string contents, so a multi-line message field stays the same. Only the layout between tokens
+      changes.
+    </p>
+
+    <h2>Going back</h2>
+    <p>
+      Nothing is lost, so the <a href="/json-formatter">JSON formatter</a> turns the one-line result
+      back into an indented document. Key order stays the same unless you sorted it, so the round trip
+      is exact.
+    </p>
+  </Fragment>
+</ToolLayout>

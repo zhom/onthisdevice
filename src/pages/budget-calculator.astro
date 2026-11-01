@@ -1,0 +1,116 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyBudget from '@/components/tools/finance/CalcMoneyBudget.tsx'
+---
+
+<ToolLayout slug="budget-calculator">
+  <CalcMoneyBudget client:load />
+
+  <Fragment slot="explainer">
+    <h2>Where 50/30/20 comes from</h2>
+    <p>
+      Elizabeth Warren and Amelia Warren Tyagi made the split popular in <em>All Your Worth</em>
+      (2005). Its strength is that it is coarse. Three buckets are easy to remember and easy to check
+      against a bank statement in five minutes. People still use it twenty years later, while
+      forty-line spreadsheet budgets are abandoned within a month.
+    </p>
+    <ul>
+      <li>50% needs: what you would still owe in a bad month.</li>
+      <li>30% wants: all you could cut without a crisis.</li>
+      <li>20% savings and extra debt payments: money for future security.</li>
+    </ul>
+
+    <h2>Take-home pay, not salary</h2>
+    <p>
+      The percentages apply to the money that reaches your account. Gross salary makes each target too
+      high by about your marginal tax rate, and the budget then cannot be followed. If your pension or
+      health premium is deducted before you are paid, it is outside this budget: you already save that
+      money, so do not count it twice.
+    </p>
+    <p>
+      If you are paid weekly or fortnightly, enter the amount and the frequency. The budget calculator
+      annualises at 52 or 26 periods and divides by twelve. This spreads the two "extra" pay packets of
+      a fortnightly schedule across the year. If you budget a fortnightly wage as "×2 per month", you
+      lose a month of income each year.
+    </p>
+
+    <h2>The needs/wants line, honestly drawn</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[460px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Need</th>
+            <th>Want</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Rent or mortgage</td><td>A bigger place than you need</td></tr>
+          <tr><td>Utilities, basic phone</td><td>Streaming, premium data plan</td></tr>
+          <tr><td>Groceries</td><td>Restaurants, takeaway, coffee out</td></tr>
+          <tr><td>Transport to work</td><td>A car payment above what a cheaper car would cost</td></tr>
+          <tr><td>Insurance, childcare</td><td>Gym, hobbies, holidays</td></tr>
+          <tr><td>Minimum debt payments</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Two rules settle most questions. First, the minimum payment on a debt is a need; any amount above
+      it is savings, because it reduces future interest. Second, if a category can be reduced but not
+      removed (food, transport), put the basic version in needs and the difference in wants.
+    </p>
+
+    <h2>When 50% of your pay does not cover the rent</h2>
+    <p>
+      In an expensive city, this is normal. The rule is still useful with a different split. Use the
+      60/20/20 preset and read the overrun as information: it shows how much housing takes from
+      everything else. Use that number when you think about moving, sharing or negotiating pay.
+    </p>
+    <p>
+      Do not reduce savings to keep wants. Savings at zero is the failure that this framework makes
+      visible.
+    </p>
+
+    <h2>What the variance table is for</h2>
+    <p>
+      The variance table compares the targets with the line items you enter, so you can see if you
+      overspend. A positive variance means the category has room left; a negative one means the plan
+      is already over the target before the month starts.
+    </p>
+    <p>
+      Bring the "left unallocated" figure to zero. Income without a category is spent without a
+      decision, which is the usual reason for "I don't know where my money goes".
+    </p>
+
+    <h2>A workable first pass</h2>
+    <ol>
+      <li>Enter your take-home pay and how often you are paid.</li>
+      <li>Get the last full month of bank and card statements.</li>
+      <li>Add one line per recurring payment, and tag each as need, want or savings.</li>
+      <li>Add one "everyday spending" want line for variable spending.</li>
+      <li>Read the variance. If the mismatch is structural, adjust the split, not the facts.</li>
+      <li>Export the plan to CSV or PDF and check it again next month.</li>
+    </ol>
+
+    <h2>Related targets worth knowing</h2>
+    <ul>
+      <li>
+        Three months of needs: the standard starter emergency fund, shown above from your needs target.
+      </li>
+      <li>
+        Savings rate: savings ÷ take-home pay. The rule is twenty per cent; how far above that you go
+        decides how fast you reach financial independence.
+      </li>
+      <li>
+        Housing ratio: lenders test 28% of gross income, which is about 35–40% of take-home pay.
+        Cross-check with the home affordability calculator.
+      </li>
+    </ul>
+
+    <h2>Your numbers stay on your device</h2>
+    <p>
+      This page has no account, server or analytics. Line items are saved only if you turn on saving,
+      only in this browser, and the delete button next to the switch removes them immediately. The
+      CSV, Excel and PDF exports are made locally, and the page works with the network turned off.
+    </p>
+  </Fragment>
+</ToolLayout>

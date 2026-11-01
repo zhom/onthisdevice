@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DocxToMarkdown from '@/components/tools/data/DocxToMarkdown.tsx'
+---
+
+<ToolLayout slug="docx-to-markdown">
+  <DocxToMarkdown client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert Word to Markdown</h2>
+    <ol>
+      <li>Drop your <code>.docx</code> files. You can add several at once and switch between them.</li>
+      <li>Pick your Markdown dialect: ATX or setext headings, hyphen/asterisk/plus bullets, fenced or indented code, underscore or asterisk emphasis.</li>
+      <li>Decide about images. Off keeps the file small; on puts each picture inline as a base64 data URI, so the Markdown is self-contained.</li>
+      <li>Review and download. The second tab shows the intermediate HTML, so you can trace any unexpected result.</li>
+    </ol>
+
+    <h2>How the conversion works</h2>
+    <p>
+      The conversion has two stages, and they explain most results. First, <strong>mammoth</strong>
+      unzips the <code>.docx</code> and maps the semantic styles of Word onto HTML: “Heading 2” becomes
+      <code>&lt;h2&gt;</code>, a list paragraph becomes <code>&lt;li&gt;</code>, a hyperlink becomes
+      <code>&lt;a&gt;</code>. Then <strong>Turndown</strong> converts that HTML into Markdown with the style
+      options you chose. Both stages run in this browser tab.
+    </p>
+    <p>
+      Mammoth maps styles, not appearance. A line that only looks like a heading because it is 18pt and
+      bold is still a paragraph, so it becomes body text. If your headings are missing, apply real heading
+      styles in Word and convert again. This usually takes two minutes, and it also makes the document
+      accessible.
+    </p>
+
+    <h2>Element mapping</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">In Word</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">In Markdown</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="border-b px-3 py-2">Heading 1-6, Title, Subtitle</td><td class="border-b px-3 py-2"><code>#</code> … <code>######</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Bulleted list, including nesting</td><td class="border-b px-3 py-2"><code>-</code> with two-space indents</td></tr>
+          <tr><td class="border-b px-3 py-2">Numbered list</td><td class="border-b px-3 py-2"><code>1.</code>, <code>2.</code>, …</td></tr>
+          <tr><td class="border-b px-3 py-2">Bold / italic / strikethrough</td><td class="border-b px-3 py-2"><code>**bold**</code>, <code>_italic_</code>, <code>~~struck~~</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Hyperlink</td><td class="border-b px-3 py-2"><code>[text](url)</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Quote / Intense Quote style</td><td class="border-b px-3 py-2"><code>&gt; blockquote</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Table</td><td class="border-b px-3 py-2">GitHub pipe table with an alignment row</td></tr>
+          <tr><td class="border-b px-3 py-2">Inline code character style</td><td class="border-b px-3 py-2"><code>`code`</code></td></tr>
+          <tr><td class="border-b px-3 py-2">Fonts, colours, point sizes</td><td class="border-b px-3 py-2">Dropped: Markdown has no equivalent</td></tr>
+          <tr><td class="border-b px-3 py-2">Footnotes, comments, tracked changes</td><td class="border-b px-3 py-2">Not converted</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Tables</h2>
+    <p>
+      Word tables become GitHub-flavoured pipe tables. The first row becomes the header, as almost all real
+      documents intend, and cell alignment goes into the divider row as <code>:---</code>,
+      <code>---:</code> or <code>:---:</code>. Line breaks in a cell become <code>&lt;br&gt;</code>, because
+      a Markdown table row cannot span lines, and pipe characters in the text are escaped so the columns
+      stay intact. Merged cells cannot be shown, so a merged cell gives its value once and the covered
+      positions stay empty.
+    </p>
+
+    <h2>About images</h2>
+    <p>
+      Word stores pictures inside the document package, so there is no URL to link to. There are two
+      options: embed each image as a base64 data URI, which keeps everything in one file but can make it
+      several times larger, or leave images out. Embedding is off by default, and the tool warns you when
+      the result is larger than a megabyte. A change to this setting reads the documents again, because
+      mammoth makes the decision while it reads the file.
+    </p>
+
+    <h2>Typical uses</h2>
+    <ul>
+      <li>Moving documentation from Word into a Git repository, a wiki or a static site generator.</li>
+      <li>Turning a brief from a client into content for a CMS that uses Markdown.</li>
+      <li>Making documents diffable, so changes between versions can be reviewed in a pull request.</li>
+      <li>Batch-migrating a folder of specifications: drop them all and download one ZIP.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,116 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PercentageCalculator from '@/components/tools/math/PercentageCalculator.tsx'
+---
+
+<ToolLayout slug="percentage-calculator">
+  <PercentageCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the percentage calculator</h2>
+    <p>
+      Percentage questions come in four shapes, and mixing them up is the single most common source of
+      arithmetic mistakes. Pick the tab that matches the sentence you are trying to answer:
+    </p>
+    <ol>
+      <li>
+        <strong>X% of Y</strong>: “what is 15% of 240?”. Use this for tips, sales tax, commission and any
+        share of a known total.
+      </li>
+      <li>
+        <strong>X is what % of Y</strong>: “36 out of 240 is what percent?”. Use this for test scores,
+        conversion rates and market share.
+      </li>
+      <li>
+        <strong>% increase or decrease</strong>: “sales went from 80 to 100, by what percent?”. Use this
+        to compare a new figure with an earlier one.
+      </li>
+      <li>
+        <strong>X plus or minus Y%</strong>: “add 20% VAT to 250” or “take 30% off 89.99”. Use this to
+        apply a percentage, not to measure one.
+      </li>
+    </ol>
+    <p>
+      Every tab updates as you type and shows the full working underneath, including the decimal multiplier
+      it used. Copy the steps with one button if you need to paste them into homework or a spreadsheet note.
+    </p>
+
+    <h2>The four formulas</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Question</th>
+            <th scope="col">Formula</th>
+            <th scope="col">Worked example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What is X% of Y?</td>
+            <td>(X ÷ 100) × Y</td>
+            <td>15% of 240 = 0.15 × 240 = 36</td>
+          </tr>
+          <tr>
+            <td>X is what percent of Y?</td>
+            <td>(X ÷ Y) × 100</td>
+            <td>36 of 240 = 0.15 × 100 = 15%</td>
+          </tr>
+          <tr>
+            <td>Percentage change old → new</td>
+            <td>(new − old) ÷ |old| × 100</td>
+            <td>80 → 100 = 20 ÷ 80 = +25%</td>
+          </tr>
+          <tr>
+            <td>Add or subtract a percentage</td>
+            <td>X × (1 ± Y ÷ 100)</td>
+            <td>250 + 20% = 250 × 1.2 = 300</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Percentage traps worth knowing</h2>
+    <h3>Percentages do not add up</h3>
+    <p>
+      A 10% rise followed by another 10% rise is not a 20% rise. The two multipliers compound:
+      1.10 × 1.10 = 1.21, so the total is a 21% increase. The same logic explains why a 50% discount followed
+      by a further 20% off is a 60% discount, not 70%: 0.5 × 0.8 = 0.4, and you pay 40% of the original.
+    </p>
+    <h3>Going up and back down does not return you to the start</h3>
+    <p>
+      Rise 25% from 80 and you get 100. Fall 25% from 100 and you get 75, not 80. The rise was measured
+      against 80 and the fall against 100: different bases give different steps. To undo a p%
+      increase, you need a decrease of p ÷ (100 + p) × 100 percent.
+    </p>
+    <h3>Percentage points are not percent</h3>
+    <p>
+      If an interest rate moves from 4% to 5%, that is a rise of one <em>percentage point</em> but a 25%
+      increase in the rate itself. News reports mix these up constantly; the “% increase” tab always reports
+      the relative change, which is the second reading.
+    </p>
+    <h3>Percentage change versus percentage difference</h3>
+    <p>
+      Percentage change is directional and uses the starting value as its base. Percentage difference is
+      symmetric and uses the average of the two values, so comparing A with B gives the same answer as
+      comparing B with A. The change tab shows both figures so you can quote the right one.
+    </p>
+
+    <h2>Quick mental shortcuts</h2>
+    <ul>
+      <li>For 10%, move the decimal point one place left. 10% of 63 is 6.3.</li>
+      <li>5% is half of 10%. 5% of 63 is 3.15.</li>
+      <li>For 1%, move the point two places left. 1% of 63 is 0.63.</li>
+      <li>A 15% tip is 10% plus half of it again. 10% of 48 is 4.80, plus 2.40, gives 7.20.</li>
+      <li>X% of Y always equals Y% of X. 18% of 50 is awkward, but 50% of 18 is clearly 9.</li>
+    </ul>
+
+    <h2>Accuracy and privacy</h2>
+    <p>
+      Calculations run in double-precision floating point, the same arithmetic every spreadsheet uses, and
+      results are shown to up to ten decimal places with trailing zeros trimmed. Nothing you type is
+      transmitted anywhere: the calculator is JavaScript that runs inside your browser tab, so it keeps
+      working with the network switched off.
+    </p>
+  </Fragment>
+</ToolLayout>

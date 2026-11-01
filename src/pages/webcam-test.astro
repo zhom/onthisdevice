@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioWebcamTest from '@/components/tools/media/GifAudioWebcamTest.tsx'
+---
+
+<ToolLayout slug="webcam-test">
+  <GifAudioWebcamTest client:load />
+  <Fragment slot="explainer">
+    <h2>What the webcam test shows</h2>
+    <p>
+      The test gives three numbers, and each one matters for a different reason.
+    </p>
+    <ul>
+      <li>Resolution is what the camera delivers now, read from the video track’s own settings, not what the box claimed.</li>
+      <li>Measured frame rate is counted frame by frame as frames arrive in the page, with <code>requestVideoFrameCallback</code> where the browser supports it. This number decides whether you look smooth or jerky on a call, and it is often lower than the camera’s rating.</li>
+      <li>Aspect ratio shows whether the camera crops. A 4:3 sensor that delivers 16:9 does it by cutting off the top and bottom.</li>
+    </ul>
+
+    <h2>Why the frame rate is lower than advertised</h2>
+    <p>
+      A camera rated for 30 fps seldom delivers 30 fps in practice, for physical reasons, not faults.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Cause</th><th>Symptom</th><th>Fix</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Low light</td>
+            <td>Drops to 15 fps or below indoors in the evening</td>
+            <td>Add light in front of you. In low light the sensor exposes each frame longer, which limits the frame rate.</td>
+          </tr>
+          <tr>
+            <td>USB bandwidth</td>
+            <td>High resolutions drop frames; lower ones do not</td>
+            <td>Plug into a port directly, not through a hub or a monitor.</td>
+          </tr>
+          <tr>
+            <td>CPU load</td>
+            <td>Frame rate falls when other apps are busy</td>
+            <td>Close background video calls, encoders and browser tabs.</td>
+          </tr>
+          <tr>
+            <td>Another app has the camera</td>
+            <td>Preview is black, or stutters badly</td>
+            <td>Quit Zoom, Teams, OBS and any other tab that uses the camera.</td>
+          </tr>
+          <tr>
+            <td>Auto-exposure hunting</td>
+            <td>Frame rate changes while brightness shifts</td>
+            <td>Make the lighting steady, or set manual exposure in the camera’s own utility.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Requested resolution versus what you get</h2>
+    <p>
+      The resolution dropdown asks with <code>ideal</code>, not <code>exact</code>. With an <code>exact</code>
+      constraint, a camera that cannot meet the setting gives an error and no video; with <code>ideal</code>, it
+      returns its closest match. So if you ask for 1080p on a 720p sensor, you get a working 720p preview.
+    </p>
+    <p>
+      Many built-in laptop cameras are 720p sensors, whatever the marketing said. Some cameras also lower the
+      resolution to keep a higher frame rate, or the reverse, because the USB link cannot carry both.
+    </p>
+
+    <h2>Mirroring, and what other people see</h2>
+    <p>
+      Video-call apps mirror your self-view, because an unmirrored image of your own face looks wrong: text on
+      your shirt looks backwards, and you reach the wrong way when you adjust the camera. Everyone else on the
+      call sees the unmirrored image.
+    </p>
+    <p>
+      This page mirrors by default, and the toggle shows what others see. Snapshots are captured as displayed,
+      so turn mirroring off first to photograph a document, a whiteboard or anything with writing on it.
+    </p>
+
+    <h2>The snapshot</h2>
+    <p>
+      The snapshot draws the current video frame onto a canvas at full sensor resolution and encodes it as
+      PNG, which is lossless and records exactly what the camera delivered. It comes from the live stream, not
+      from a camera application, so it has no EXIF block: no timestamp, location, device serial or lens data.
+      It is not saved until you press download.
+    </p>
+    <p>
+      Use it to check focus and framing at full resolution, which a scaled-down preview cannot show.
+    </p>
+
+    <h2>Why your video stays on your device</h2>
+    <ul>
+      <li>The site is static, with no backend and no API routes, so there is no endpoint to receive a frame.</li>
+      <li>The page has no <code>RTCPeerConnection</code>, so there is no WebRTC path out.</li>
+      <li>The site’s Content-Security-Policy lists no third-party origin in <code>connect-src</code>, so the browser blocks requests to other sites.</li>
+      <li>The preview is your own <code>MediaStream</code> attached to a video element. There is no other step.</li>
+    </ul>
+    <p>
+      To check, open developer tools, watch the Network tab and run the test: no request appears. Or turn off
+      Wi-Fi and run it; it works the same.
+    </p>
+
+    <h2>Releasing the camera</h2>
+    <p>
+      Press "Stop and release the camera" to stop every track in the stream; the light next to your camera
+      goes out within a second. Closing the tab does the same. If the light stays on after both, another
+      application or browser tab still has the camera open. Check this before you join a call.
+    </p>
+
+    <h2>Also test your microphone</h2>
+    <p>
+      On a video call, a working camera with a failed microphone is the more common problem. The
+      <a href="/microphone-test">microphone test</a> checks levels, device selection and a record-and-playback
+      loop, also without sending anything. To record audio afterwards, use the
+      <a href="/voice-recorder">voice recorder</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

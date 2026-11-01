@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatMarkdownEditor from '@/components/tools/data/DevFormatMarkdownEditor.tsx'
+---
+
+<ToolLayout slug="markdown-editor">
+  <DevFormatMarkdownEditor client:load />
+  <Fragment slot="explainer">
+    <h2>A Markdown reference you can keep open</h2>
+    <table>
+      <thead><tr><th>Syntax</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td><code># Heading</code> … <code>###### Heading</code></td><td>Levels 1 to 6</td></tr>
+        <tr><td><code>**bold**</code>, <code>_italic_</code>, <code>~~strikethrough~~</code></td><td>Inline emphasis</td></tr>
+        <tr><td><code>`code`</code></td><td>Inline code</td></tr>
+        <tr><td>Three backticks, optionally followed by a language</td><td>Fenced code block</td></tr>
+        <tr><td><code>- item</code> or <code>1. item</code></td><td>Bulleted and numbered lists; indent four spaces to nest</td></tr>
+        <tr><td><code>- [ ] todo</code> / <code>- [x] done</code></td><td>Task list (GFM)</td></tr>
+        <tr><td><code>&gt; quote</code></td><td>Blockquote</td></tr>
+        <tr><td><code>[text](https://example.com)</code></td><td>Link</td></tr>
+        <tr><td><code>![alt](image.png)</code></td><td>Image</td></tr>
+        <tr><td><code>---</code> on its own line</td><td>Horizontal rule</td></tr>
+        <tr><td>Pipes and a <code>---</code> separator row</td><td>Table (GFM). The <a href="/markdown-table-generator">table generator</a> builds these for you</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Line breaks, the common mistake</h2>
+    <p>
+      In CommonMark, a single newline inside a paragraph is not a line break. It renders as a space, so
+      a hand-wrapped paragraph comes out as one line. To force a break, end the line with two spaces
+      (invisible, and most editors remove them) or use a backslash.
+    </p>
+    <p>
+      GitHub comments, GitLab, Slack and most chat renderers treat each newline as a break, so text that
+      looks right in an issue looks wrong on a static site. The
+      <strong>treat single newlines as line breaks</strong> switch matches that behaviour, so you can
+      preview for either target.
+    </p>
+
+    <h2>The preview is sanitised</h2>
+    <p>
+      Markdown allows raw HTML, and this Markdown editor's preview renders the safe subset of it. The
+      rest is filtered before it reaches the page. <code>script</code>, <code>style</code>,
+      <code>iframe</code>, <code>object</code>, <code>embed</code>, <code>form</code>,
+      <code>link</code>, <code>meta</code> and <code>base</code> are removed. All inline event handlers
+      and <code>style</code> attributes are removed. Any URL whose scheme is not http, https, mailto,
+      tel or a relative path is dropped, which blocks <code>javascript:</code> links. Links open in a
+      new tab with <code>rel="noopener"</code>.
+    </p>
+    <p>
+      Your source does not change. Only the display is filtered, and a note shows when something was
+      removed, so you know the rendered output differs from the raw HTML you wrote.
+    </p>
+
+    <h2>Autosave, and how to turn it off</h2>
+    <p>
+      Autosave is off at first. Switch it on and the editor writes your draft to this browser&rsquo;s
+      localStorage about half a second after you stop typing: on this device, in this browser, under
+      this origin. There is no sync and no server copy. The panel shows the time of the last save, and
+      the <strong>delete saved draft</strong> button removes it at once. When you switch autosave off,
+      the draft is also deleted.
+    </p>
+    <p>
+      Two limits: localStorage is usually capped at 5&ndash;10 MB per origin, and some private-browsing
+      modes do not have it. If a save fails, the panel tells you.
+    </p>
+
+    <h2>Getting the document out</h2>
+    <ul>
+      <li><strong>Copy Markdown</strong> for pasting into a repository, an issue or a CMS.</li>
+      <li><strong>Copy HTML</strong> for a rich-text editor or an email client. Most keep the formatting on paste.</li>
+      <li><strong>Download .md</strong> for version control.</li>
+      <li><strong>Download .html</strong> for a standalone file you can open in a browser or import into Word.</li>
+      <li><strong>Print</strong> and choose &ldquo;Save as PDF&rdquo; for a quick document. For a full conversion, use <a href="/markdown-to-pdf">Markdown to PDF</a>.</li>
+    </ul>
+
+    <h2>Why write in a tab with no server</h2>
+    <p>
+      Here, drafts such as an incident write-up, a resignation letter, a performance review or a
+      security disclosure stay private. After the page loads, it needs no network: you can disconnect
+      and keep writing. The panel under the editor counts the requests the page makes, so you can
+      confirm the number stays at zero.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,51 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AnonymizeCsv from '@/components/tools/redact/docs/AnonymizeCsv.tsx'
+---
+
+<ToolLayout slug="anonymize-csv">
+  <AnonymizeCsv client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Drop a CSV, TSV, Excel (.xlsx) or JSON file. JSON must be an array of objects, one per row.</li>
+      <li>Each column is classified by its header and by a sample of its values, and gets a default action.</li>
+      <li>Check each column. Change what it holds or what happens to it. The example under the column name and the preview update at once.</li>
+      <li>Press Anonymize, then download the file. It has the same format and the same columns, minus the ones you dropped.</li>
+    </ol>
+
+    <h2>The actions</h2>
+    <ul>
+      <li>Keep: the value stays as it is.</li>
+      <li>Mask: the format stays and most characters become stars, such as j***@e***.com or **** **** **** 1234. Dates keep the year.</li>
+      <li>Hash: HMAC-SHA-256 with a secret key, shortened to 16 hexadecimal characters. Equal inputs give equal outputs, so joins and counts still work.</li>
+      <li>Fake: a realistic value of the same type. The same input always gets the same fake value in one file, and a first name column and a full name in a notes column stay consistent.</li>
+      <li>Redact inside: for notes and comments. Emails, phone numbers, card numbers and other patterns inside the text are replaced. Turn on the language model to also find names.</li>
+      <li>Drop column: the column is not written.</li>
+    </ul>
+
+    <h2>Why the hash has a key</h2>
+    <p>
+      A plain hash of an email is not anonymous: anyone with a list of emails can hash the list and compare. The key is 32
+      random bytes made in your browser. Without it the hashes cannot be matched to a list. Copy the key if you need the
+      same hashes for another file, and keep it as safe as the data.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>
+      Reading, classifying and writing the table run in this page. Hashing uses your browser's built-in Web Crypto. The
+      optional language model for free text is a 19 MB file plus a 14 MB runtime, downloaded once from this site.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>Open the Network tab in your browser's developer tools before you drop the file. No request carries your data.</p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Column detection can be wrong. Check every column before you export, most of all columns with codes and IDs.</li>
+      <li>Other columns can still identify a person together, such as postcode, birth date and gender. Mask or drop them when that matters.</li>
+      <li>For Excel files, only the chosen sheet is written. Formulas and formatting are not kept.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,106 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VcardQrCodeGenerator from '@/components/tools/generators/VcardQrCodeGenerator.tsx'
+---
+
+<ToolLayout slug="vcard-qr-code-generator">
+  <VcardQrCodeGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to make a contact QR code</h2>
+    <ol>
+      <li>Fill in the fields you want on the card. The tool leaves blank fields out of the vCard; it does not write empty properties.</li>
+      <li>Watch the byte counter under the code. Below about 300 bytes, the code scans easily from a printed business card; above 400 the symbol gets dense.</li>
+      <li>Keep the error-correction level at L or M. A vCard is already a lot of data, and extra redundancy makes the symbol larger with no benefit on a clean printed card.</li>
+      <li>Download the SVG for print, the PNG for a screen, or the <code>.vcf</code> file to email the contact.</li>
+    </ol>
+
+    <h2>What a vCard contains</h2>
+    <p>
+      vCard is a plain-text format defined by RFC 2426 (version 3.0) and RFC 6350 (version 4.0). This tool
+      writes 3.0, because iOS, Android, Outlook and Google Contacts all read it reliably from a QR code. A
+      finished card looks like this:
+    </p>
+    <pre><code>BEGIN:VCARD
+VERSION:3.0
+N:Lovelace;Ada;;;
+FN:Ada Lovelace
+ORG:Analytical Engines Ltd
+TITLE:Head of Computation
+TEL;TYPE=CELL,VOICE:+44 20 7946 0958
+EMAIL;TYPE=INTERNET,PREF:ada@example.com
+URL:https://example.com
+ADR;TYPE=WORK:;;12 Marylebone Road;London;;NW1 5LS;United Kingdom
+END:VCARD</code></pre>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Holds</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>N</code></td><td>Family;Given;Additional;Prefix;Suffix</td><td>Structured name; the five parts are always present, even when empty</td></tr>
+          <tr><td><code>FN</code></td><td>Formatted name</td><td>The only mandatory display field; what the phone shows</td></tr>
+          <tr><td><code>ORG</code></td><td>Organisation</td><td>Sub-units are separated with semicolons</td></tr>
+          <tr><td><code>TEL</code></td><td>Phone number</td><td><code>TYPE=CELL</code>, <code>WORK</code>, <code>HOME</code>, <code>FAX</code></td></tr>
+          <tr><td><code>EMAIL</code></td><td>Address</td><td><code>PREF</code> marks the preferred one</td></tr>
+          <tr><td><code>ADR</code></td><td>PO box;Extended;Street;City;Region;Postcode;Country</td><td>Seven parts, the first two normally left empty</td></tr>
+          <tr><td><code>URL</code></td><td>Website</td><td>Include the scheme or some clients will not linkify it</td></tr>
+          <tr><td><code>NOTE</code></td><td>Free text</td><td>Newlines are written as <code>\n</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Inside a value, backslash, semicolon and comma are reserved, and the tool escapes them. Line breaks become
+      <code>\n</code>. So a company name such as “Smith, Jones &amp; Co.” does not split into two fields.
+    </p>
+
+    <h2>Keeping the vCard QR code scannable</h2>
+    <p>
+      Density is the main problem with contact QR codes. Each character of vCard text adds modules to the grid,
+      and at some point a phone camera can no longer resolve them at business-card size. Ways to cut bytes:
+    </p>
+    <ul>
+      <li>One phone number, not three. Mobile is almost always the one people want.</li>
+      <li>Leave out the address unless people visit you. It is usually 60–90 bytes on its own.</li>
+      <li>Leave out the note. People who scan your card seldom read it.</li>
+      <li>Shorten the URL. <code>example.com</code> works as well as <code>https://www.example.com/team/ada-lovelace</code> if the short form redirects.</li>
+      <li>Use level L or M correction. A clean, flat printed card needs little correction.</li>
+    </ul>
+
+    <h2>vCard code or a link to a profile page?</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>vCard QR code</th>
+            <th>Link to a page</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Works offline</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Saves in one tap</td><td>Yes</td><td>Usually two or three</td></tr>
+          <tr><td>Details can be changed later</td><td>No: reprint required</td><td>Yes</td></tr>
+          <tr><td>Can show a photo or logo</td><td>Not practically</td><td>Yes</td></tr>
+          <tr><td>Tells you who scanned</td><td>No</td><td>Yes, if you add analytics</td></tr>
+          <tr><td>Depends on a service staying online</td><td>No</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      On a conference badge or a printed card that will outlast a job title, many people put both: a vCard code
+      on the back for instant saving, and a short URL in text for details that change.
+    </p>
+
+    <h2>Testing before you print</h2>
+    <p>
+      Print one card at final size on the real card stock, then scan it with an iPhone camera, an Android camera
+      and one third-party scanner, at arm’s length, in normal office light. Check that the name, phone and email
+      arrive correctly, most of all accented characters and long organisation names. Then order the print run.
+    </p>
+  </Fragment>
+</ToolLayout>

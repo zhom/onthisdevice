@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BlurFaceInPhoto from '@/components/tools/image-edit/BlurFaceInPhoto.tsx'
+---
+
+<ToolLayout slug="pixelate-image">
+  <BlurFaceInPhoto client:load defaultEffect="pixelate" defaultShape="rect" subject="anything" />
+
+  <Fragment slot="explainer">
+    <h2>What pixelation does</h2>
+    <p>
+      To pixelate an image, a mosaic filter divides the selected area into a grid, averages all pixels in
+      each cell, and paints the cell that one colour. The mean replaces the detail in each cell. So the only
+      setting that matters is the cell size, and the useful question is how many cells wide the hidden
+      object is.
+    </p>
+
+    <h2>How to pixelate part of an image</h2>
+    <ol>
+      <li>Drop in the image: a photo, screenshot or scan.</li>
+      <li>Drag a rectangle over each area to hide. You can add as many as you need. Tab to a box, then move it with the arrow keys, resize it with + and -, or remove it with Delete.</li>
+      <li>Move the strength slider until the area is unreadable. Strength is relative to the box you drew, so small selections get proportionally larger blocks.</li>
+      <li>Export as PNG for screenshots and graphics, JPG for photos.</li>
+    </ol>
+
+    <h2>Choosing a block size</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Cells across the selection</th><th>Effect</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>20 or more</td><td>Looks censored, but shapes and letters are still legible</td><td>Decorative only</td></tr>
+          <tr><td>10–20</td><td>Faces unrecognisable at a glance, text still guessable</td><td>Weak</td></tr>
+          <tr><td>4–8</td><td>Only a colour gradient remains</td><td>The sensible default</td></tr>
+          <tr><td>2–3</td><td>Almost a solid colour</td><td>Use a solid block instead. It is simpler and honest</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Pixelation is not encryption</h2>
+    <p>
+      Mosaic is a deterministic, publicly known function with a very small output space. If the hidden
+      content comes from a short, predictable set (a six-digit account number, a licence plate, a date of
+      birth, a name from a staff list), an attacker can render each candidate, apply the same mosaic and
+      match the result. Researchers have done exactly this against pixelated text in redacted documents and
+      screenshots.
+    </p>
+    <p>
+      Faces are different: there is no small candidate set for a human face, and at four to eight cells
+      across, nothing usable is left. So use mosaic for faces and scenery, and solid blocks for anything you
+      could have typed. The <a href="/censor-image">censor tool</a> opens in block mode for that reason.
+    </p>
+
+    <h2>Pixelating the whole image</h2>
+    <p>
+      Switch on <strong>Apply to the whole image</strong> and the tool ignores the boxes. Use this to make a
+      low-information teaser of a screenshot you are not ready to publish, or an abstract background from a
+      photograph. The block size is then relative to the whole frame, so the same strength value gives a
+      much coarser grid.
+    </p>
+
+    <h2>Quality notes</h2>
+    <ul>
+      <li>The export is full resolution. The preview is scaled down to fit your screen, but the tool computes the mosaic again at native size on export, from the same fractional coordinates. The export matches the preview at a larger size.</li>
+      <li>Cells have hard edges on purpose. Smoothing is off when the reduced copy is scaled back up. Otherwise the browser would interpolate the blocks and leak some of the detail you meant to remove.</li>
+      <li>Metadata is dropped. Re-encoding from raw pixels removes EXIF, GPS and the embedded thumbnail. That thumbnail often still shows the original without pixelation.</li>
+      <li>Use PNG for screenshots. A mosaic is large flat blocks, which PNG stores very efficiently. JPEG adds ringing along each block edge.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      Use <a href="/blur-face-in-photo">Blur Face in Photo</a> when a soft blur looks better than a
+      grid, <a href="/censor-image">Censor Image</a> when the content is text, and
+      <a href="/blur-license-plate">Blur License Plate</a> for vehicle photos. If the pixelated
+      screenshot must fit an upload limit,
+      <a href="/reduce-image-size-in-kb">reduce it to any KB target</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

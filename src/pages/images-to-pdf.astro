@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ImagesToPdf from '@/components/tools/pdf-convert/ImagesToPdf.tsx'
+---
+
+<ToolLayout slug="images-to-pdf">
+  <ImagesToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to combine images into one PDF</h2>
+    <ol>
+      <li>Drop in any mix of JPG, PNG, WebP, AVIF, GIF or BMP files. Your device decodes them as they arrive.</li>
+      <li>Reorder the pages: drag a card, or use its arrow buttons, which work with the keyboard.</li>
+      <li>Remove anything you do not want with the × button on the card.</li>
+      <li>Choose the page layout: Auto for borderless pages that match each image, or a fixed size with a margin for printing.</li>
+      <li>Press <strong>Create PDF</strong> and download. Your images stay loaded, so you can build again with different settings.</li>
+    </ol>
+
+    <h2>How each format is handled</h2>
+    <p>
+      The PDF specification defines only two image types that match everyday web
+      formats: JPEG (DCTDecode) and PNG's underlying zlib stream (FlateDecode).
+      All other formats must be converted before they go into a document. The table
+      shows the path for each format.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Input</th>
+            <th>Path into the PDF</th>
+            <th>Quality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>JPG / JPEG</td>
+            <td>Embedded byte-for-byte</td>
+            <td>Identical to the original, no re-encode</td>
+          </tr>
+          <tr>
+            <td>PNG</td>
+            <td>Embedded byte-for-byte</td>
+            <td>Identical to the original, lossless</td>
+          </tr>
+          <tr>
+            <td>WebP</td>
+            <td>Decoded in the browser, stored as PNG</td>
+            <td>Lossless relative to the decoded pixels</td>
+          </tr>
+          <tr>
+            <td>AVIF</td>
+            <td>Decoded in the browser, stored as PNG</td>
+            <td>Lossless relative to the decoded pixels; needs a browser with AVIF support</td>
+          </tr>
+          <tr>
+            <td>GIF</td>
+            <td>First frame decoded, stored as PNG</td>
+            <td>Lossless; animation is not preserved</td>
+          </tr>
+          <tr>
+            <td>BMP</td>
+            <td>Decoded in the browser, stored as PNG</td>
+            <td>Lossless, and usually much smaller than the source</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      WebP stored as PNG can be larger than the original file, because WebP is a
+      much more modern compressor. This is necessary, because a PDF reader from 2010
+      must be able to open the result.
+    </p>
+
+    <h2>Auto page size versus a fixed size</h2>
+    <p>
+      With <strong>Auto</strong>, each page has the exact pixel dimensions of its
+      image, as PDF points. Nothing is scaled or cropped and there are no borders.
+      This suits screenshots, artwork and comics, but the pages can all have
+      different shapes.
+    </p>
+    <p>
+      With a fixed size such as A4, all pages have the same dimensions and the
+      images go inside your margin. Use this for a printer, a binder or a document
+      management system. Leave orientation on Auto and each page rotates to suit
+      its image, so a landscape photo is not letterboxed on a portrait page.
+    </p>
+
+    <h2>Photo orientation is handled for you</h2>
+    <p>
+      Cameras usually store photos in the sensor's native orientation and add an
+      EXIF tag that says how to rotate them for display. PDF has no such tag, so a
+      naive converter makes sideways pages. This tool reads the orientation tag and
+      applies the rotation to the embedded image, so portrait phone photos stay
+      portrait.
+    </p>
+
+    <h2>Nothing is uploaded</h2>
+    <p>
+      Decoding uses the browser's own image pipeline, and pdf-lib builds the
+      document in this tab. The tool also works offline. Related tools:
+      <a href="/jpg-to-pdf">JPG to PDF</a>,
+      <a href="/png-to-pdf">PNG to PDF</a> and
+      <a href="/pdf-to-jpg">PDF to JPG</a> for the reverse direction.
+    </p>
+  </Fragment>
+</ToolLayout>

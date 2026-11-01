@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="amr-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".amr,.3ga,.3gp,.awb,audio/amr,audio/3gpp"
+    sourceLabel="AMR"
+    sourceHint="Call recordings, voicemail and old phone memos: .amr, .3ga and .3gp all work"
+    target="mp3"
+    defaultBitrate="96"
+    formatNote="AMR is a narrowband speech codec: everything it recorded fits comfortably into a 64–96 kbps MP3. A higher setting adds bytes, not clarity."
+  />
+  <Fragment slot="explainer">
+    <h2>What AMR is, and why nothing plays it</h2>
+    <p>
+      Adaptive Multi-Rate is the speech codec that GSM networks used for voice calls. It encodes a
+      narrowband signal (about 300 Hz to 3.4 kHz, the telephone band) at eight rates between 4.75 and
+      12.2 kbps, and changes rate as network conditions change. It is very efficient for speech and
+      unsuitable for anything else.
+    </p>
+    <p>
+      AMR came from mobile telephony, and most desktop software ignored it. Windows and macOS do not
+      open a bare <code>.amr</code> without extra codecs, most editors refuse it, and transcription
+      services often reject it on upload. Android call recorders, Samsung and Nokia voice memo apps,
+      dashcams and many voicemail systems still produce it.
+    </p>
+
+    <h2>The four extensions you will encounter</h2>
+    <ul>
+      <li>.amr is a bare AMR stream with a six-byte magic header. This is the usual case.</li>
+      <li>.3ga is the Samsung name for AMR (or sometimes AAC) in a 3GP container. The audio is the same; the wrapper is different.</li>
+      <li>.3gp is the general 3GPP container, which can also hold video. Only the audio track is converted.</li>
+      <li>.awb is AMR-Wideband, a later 16 kHz variant used for HD Voice. It is clearer, and this tool handles it the same way.</li>
+    </ul>
+
+    <h2>Converting will not make it sound better</h2>
+    <p>
+      AMR discarded all audio outside the telephone band at the time of recording. Those frequencies
+      are not in the file. A 320 kbps encode gives a large MP3 with the same narrowband audio: only
+      the wrapper changes.
+    </p>
+    <p>
+      Conversion gives you a file that opens everywhere and that you can edit, send to a
+      transcription service or join to other recordings. It does not improve quality. A product that
+      advertises AMR enhancement sells a noise gate.
+    </p>
+    <p>
+      Use 64–96 kbps mono. This is more than the source contains, and it keeps a one-hour call
+      recording under 45 MB.
+    </p>
+
+    <h2>Getting the most out of a poor recording</h2>
+    <p>
+      If the recording is hard to hear, these steps help more than the format:
+    </p>
+    <ul>
+      <li>Force mono. The source has one channel, and stereo only duplicates it at twice the size.</li>
+      <li>Normalise the loudness with the option in the advanced panel. AMR recordings are often very quiet, and at −16 LUFS they are easier to hear and to transcribe.</li>
+      <li>Do the real cleanup in an audio editor. A high-pass filter at 200 Hz and gentle compression help more than any converter setting. Convert to <a href="/mp3-to-wav">WAV</a> first if the editor prefers it.</li>
+    </ul>
+
+    <h2>Why these files in particular should never be uploaded</h2>
+    <p>
+      AMR files are call recordings, voicemail, dictated notes, interviews and evidence for disputes.
+      This is some of the most sensitive audio people own. An online converter sends it to an unknown
+      server under a policy you cannot audit.
+    </p>
+    <p>
+      Nothing is uploaded here. The AMR decoder is part of a WebAssembly build of FFmpeg served from
+      this site, and it runs in your browser tab. The Content-Security-Policy of the site permits no
+      third-party origin. To verify, open the Network tab or turn off Wi-Fi, then convert.
+    </p>
+
+    <h2>If a file will not decode</h2>
+    <p>
+      There are two usual causes. The file is truncated (call recorders often stop mid-write when a
+      call ends or the phone runs out of storage), or it is not AMR, because a file manager renamed it
+      during a transfer. A valid AMR file starts with the ASCII bytes <code>#!AMR</code>; a 3GP file
+      has <code>ftyp3gp</code> near the start. For other files, use the
+      <a href="/audio-converter">general audio converter</a>, which detects the container itself.
+    </p>
+  </Fragment>
+</ToolLayout>

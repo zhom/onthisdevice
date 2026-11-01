@@ -1,0 +1,138 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureIWorkToPdf from '@/components/tools/pdf-convert/PdfSecureIWorkToPdf.tsx'
+---
+
+<ToolLayout slug="numbers-to-pdf">
+  <PdfSecureIWorkToPdf client:load kind="numbers" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Reading a .numbers file on a PC</h2>
+      <p>
+        Apple's Numbers is the least portable of the three iWork formats. Excel and LibreOffice cannot
+        open it, and unlike a Word document it has no widely used reader. But Numbers, like Pages and
+        Keynote, writes a complete PDF rendering of the document into the file each time it saves, and
+        all devices open PDF. This Numbers to PDF tool extracts it.
+      </p>
+    </section>
+
+    <section>
+      <h2>What you get</h2>
+      <p>
+        The document as Numbers would print it: tables with their formatting, charts as vectors,
+        headers and footers, one PDF page per printed page. All sheets in the print layout appear, in
+        order.
+      </p>
+      <p>
+        The result is <strong>a document, not data</strong>. You can read it, search it, print it and
+        quote from it. You cannot recalculate it, sort it or add a column.
+      </p>
+    </section>
+
+    <section>
+      <h2>Numbers vs Excel, structurally</h2>
+      <p>
+        Numbers organises a file differently from Excel, so a clean conversion to .xlsx is harder than
+        it sounds:
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Numbers</th>
+              <th scope="col">Excel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">A sheet is</th>
+              <td>A canvas holding several independent tables, charts and text boxes</td>
+              <td>One grid</td>
+            </tr>
+            <tr>
+              <th scope="row">A table is</th>
+              <td>An object with its own coordinate space and header rows</td>
+              <td>A region of the grid</td>
+            </tr>
+            <tr>
+              <th scope="row">Cell references</th>
+              <td>Often by header name</td>
+              <td>By grid coordinate</td>
+            </tr>
+            <tr>
+              <th scope="row">Storage format</th>
+              <td>Apple's IWA (a Protobuf variant), undocumented</td>
+              <td>OOXML, an ISO standard</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Three tables side by side on one Numbers canvas have no single correct form as an Excel sheet.
+        The printed PDF is exactly what the author intended you to see.
+      </p>
+    </section>
+
+    <section>
+      <h2>If you need the numbers as data</h2>
+      <ol>
+        <li>
+          Best: ask the sender for File → Export To → Excel or CSV from Numbers. It takes them ten
+          seconds and gives a real spreadsheet.
+        </li>
+        <li>
+          Otherwise: convert here, then run the result through <a href="/pdf-to-excel">PDF to Excel</a>.
+          It recovers the values from clusters of text positions, which works well on a plain table and
+          badly on merged cells or charts. Check the totals before you rely on it.
+        </li>
+        <li>
+          For a small table: select the text in the PDF and paste it into a spreadsheet.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Charts come through properly</h2>
+      <p>
+        Numbers renders charts into the preview as vector graphics, not screenshots. Bar charts, pie
+        charts, scatter plots, sparklines and 2-D and 3-D chart types stay sharp at any zoom level and
+        print at full resolution. This is a clear advantage of Apple's own rendering over a redrawn
+        document.
+      </p>
+    </section>
+
+    <section>
+      <h2>Print layout decides what appears</h2>
+      <p>
+        The preview follows Numbers' print view, so:
+      </p>
+      <ul>
+        <li>
+          Sheets excluded from printing are not in the preview, and this tool cannot recover them.
+        </li>
+        <li>
+          Page breaks, scale-to-fit and orientation are as the author set them in the print pane.
+        </li>
+        <li>
+          A very wide table may be split across pages exactly as it would be on paper.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Batches and privacy</h2>
+      <p>
+        If you are moving away from a Mac, drop a whole folder. The tool processes each file in turn,
+        and you can download them one by one or as one zip. Spreadsheets hold budgets, client lists,
+        invoices and payroll. JavaScript in this tab opens the archive, and the PDF goes to your
+        downloads folder.
+      </p>
+      <p>
+        The same technique handles <a href="/pages-to-pdf">Pages documents</a> and
+        <a href="/keynote-to-pdf">Keynote presentations</a>.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

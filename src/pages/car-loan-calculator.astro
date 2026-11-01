@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CarLoanCalculator from '@/components/tools/finance/CarLoanCalculator.tsx'
+---
+
+<ToolLayout slug="car-loan-calculator">
+  <CarLoanCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the car loan calculator</h2>
+    <ol>
+      <li>
+        Enter the <strong>negotiated vehicle price</strong>: the figure before tax and fees, not the
+        sticker price and not the first monthly payment the dealer offered.
+      </li>
+      <li>
+        Add your <strong>trade-in value</strong> and the amount you <strong>still owe</strong> on that
+        vehicle. If you owe more than it is worth, the calculator flags the negative equity.
+      </li>
+      <li>
+        Enter your <strong>cash down payment</strong>, the local <strong>sales tax rate</strong> and
+        the <strong>fees</strong> for title, registration and documentation.
+      </li>
+      <li>
+        Set the <strong>APR</strong> and the <strong>term in months</strong>. Try 48, 60 and 72 to
+        see the real cost of a longer term.
+      </li>
+      <li>
+        Compare the amount financed with the dealer's figure. If they differ, something was added to
+        the deal.
+      </li>
+    </ol>
+
+    <h2>Negotiate the price, not the payment</h2>
+    <p>
+      A longer term can make the monthly payment almost any amount, so do not negotiate the payment.
+      Four numbers set the deal: the vehicle price, the trade-in allowance, the APR and the term. Fix
+      the first two, compare offers for the third, and choose the shortest term you can afford.
+    </p>
+    <p>
+      The calculator shows these separately. The out-the-door price is the cost of the car with tax
+      and fees. The amount financed is what remains after your cash and trade-in. The total cost of
+      borrowing is the interest on top. A dealer can lower one and raise another and keep the same
+      payment.
+    </p>
+
+    <h2>What a longer term costs: 30,000 financed at 7.2% APR</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th style="text-align:right">Monthly payment</th>
+            <th style="text-align:right">Total interest</th>
+            <th style="text-align:right">Extra vs 36 months</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>36 months</td><td style="text-align:right">929.06</td><td style="text-align:right">3,446</td><td style="text-align:right">0</td></tr>
+          <tr><td>48 months</td><td style="text-align:right">721.17</td><td style="text-align:right">4,616</td><td style="text-align:right">+1,170</td></tr>
+          <tr><td>60 months</td><td style="text-align:right">596.87</td><td style="text-align:right">5,812</td><td style="text-align:right">+2,366</td></tr>
+          <tr><td>72 months</td><td style="text-align:right">514.36</td><td style="text-align:right">7,034</td><td style="text-align:right">+3,588</td></tr>
+          <tr><td>84 months</td><td style="text-align:right">455.72</td><td style="text-align:right">8,280</td><td style="text-align:right">+4,834</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      From 36 to 84 months, the payment falls by about half and the interest more than doubles. You
+      also stay underwater much longer: a new car usually loses 20% or more of its value in the first
+      year, and an 84-month balance falls very slowly.
+    </p>
+
+    <h2>Sales tax and the trade-in credit</h2>
+    <p>
+      In most US states, sales tax on a vehicle is charged on the price after the trade-in is deducted,
+      so a 6,000 trade-in at a 6.5% rate saves 390 in tax plus the 6,000 itself. Some states, including
+      California, Michigan (partially capped) and Virginia, do not give the full credit and tax the
+      whole purchase price. The toggle in the calculator switches between the two methods.
+    </p>
+    <p>
+      Outside the US, the equivalent is VAT or GST, which is usually included in the advertised price.
+      In that case, set the tax rate to zero and enter the advertised figure as the vehicle price.
+    </p>
+
+    <h2>Negative equity</h2>
+    <p>
+      If you owe 14,000 on a car that the dealer values at 11,000, the 3,000 shortfall is added to the
+      new loan. You then finance more than the new car is worth, pay interest on the debt of the old
+      car for years, and start the next cycle further underwater. The calculator warns you when this
+      happens and includes the rolled-in amount in the payment.
+    </p>
+
+    <h2>What is not included</h2>
+    <p>
+      This calculator covers financing, not running costs. Insurance, fuel or charging, tyres,
+      servicing, depreciation and parking are not included, and together they usually cost more than
+      the loan payment. If you finance gap insurance, extended warranties or paint protection, put them
+      in the fees field. They are often the most profitable part of the deal for the dealer, and the
+      easiest to decline.
+    </p>
+  </Fragment>
+</ToolLayout>

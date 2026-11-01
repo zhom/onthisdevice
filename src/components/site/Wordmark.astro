@@ -1,0 +1,24 @@
+---
+/**
+ * The mark: your file (the square) held inside the device (the frame).
+ * Ink only, so it follows the theme.
+ */
+import { cn } from '@/lib/utils'
+
+interface Props {
+  markOnly?: boolean
+  class?: string
+  size?: 'sm' | 'md' | 'lg'
+}
+const { markOnly = false, class: className, size = 'md' } = Astro.props
+const markSize = size === 'lg' ? 'size-8' : size === 'sm' ? 'size-5' : 'size-6'
+const textSize = size === 'lg' ? 'text-[1.375rem]' : size === 'sm' ? 'text-[0.9375rem]' : 'text-[1.0625rem]'
+---
+
+<span class={cn('inline-flex items-center gap-2 text-foreground', className)}>
+  <svg viewBox="0 0 24 24" class={cn('shrink-0', markSize)} aria-hidden="true" focusable="false">
+    <rect x="2.25" y="2.25" width="19.5" height="19.5" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"></rect>
+    <rect x="9" y="9" width="6" height="6" rx="1" fill="currentColor" class="mark-core"></rect>
+  </svg>
+  {!markOnly && <span class={cn('font-[720] leading-none', textSize)}>onthisdevice</span>}
+</span>

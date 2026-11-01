@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioToMp3 from '@/components/tools/media/GifAudioToMp3.tsx'
+---
+
+<ToolLayout slug="flac-to-mp3">
+  <GifAudioToMp3
+    client:load
+    accept=".flac,.oga,audio/flac"
+    sourceLabel="FLAC"
+    sourceHint="Drop a whole album: 20 tracks or 300 MB at once"
+    target="mp3"
+    defaultBitrate="320"
+    formatNote="FLAC is lossless, so there is no generation loss on the way in. The MP3 bitrate is purely your own quality-versus-space decision."
+  />
+  <Fragment slot="explainer">
+    <h2>The one conversion where bitrate is entirely your choice</h2>
+    <p>
+      Most lossy-to-lossy conversions limit you: below the source bitrate, artefacts add up; above it, you
+      waste space on information already discarded. FLAC is lossless: decoded, it gives back the original
+      samples bit for bit, so the MP3 encoder starts from a perfect master. The bitrate you choose is the
+      only lossy step in the chain.
+    </p>
+
+    <h2>What each setting costs and saves</h2>
+    <p>
+      The figures are for a five-minute stereo track ripped from CD, which is about 50 MB as WAV and 30 MB as
+      FLAC.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>MP3 setting</th><th>Track size</th><th>12-track album</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>320 kbps</td><td>≈ 12 MB</td><td>≈ 144 MB</td><td>Sounds identical to the source for almost everyone, on almost any system</td></tr>
+          <tr><td>256 kbps</td><td>≈ 9.6 MB</td><td>≈ 115 MB</td><td>Very close; 20% smaller, and few people can hear the difference</td></tr>
+          <tr><td>192 kbps</td><td>≈ 7.2 MB</td><td>≈ 86 MB</td><td>The sensible default for phones and cars</td></tr>
+          <tr><td>128 kbps</td><td>≈ 4.8 MB</td><td>≈ 58 MB</td><td>Audible on cymbals and applause through good headphones</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The table stops at 320 kbps, because that is the maximum of the MP3 format. For better quality than
+      320 kbps MP3, keep the FLAC.
+    </p>
+
+    <h2>How much does FLAC actually compress?</h2>
+    <p>
+      FLAC uses linear prediction and Rice coding: it predicts each sample from the samples before it and
+      stores only the difference. On typical CD-rate music, this gives 55–65% of the WAV size with no loss.
+      Dense, loud, heavily limited modern masters compress worst (about 70%); sparse acoustic recordings and
+      classical music with real dynamic range compress best (sometimes under 50%). The compression level a
+      ripper used does not change the decoded audio; it only changed the encoding time.
+    </p>
+
+    <h2>Why people convert their FLAC library</h2>
+    <ul>
+      <li>Phone storage: a 400 GB FLAC library becomes 90 GB at 192 kbps, so it can fit on the device.</li>
+      <li>Car head units: many read only MP3 from USB, or read FLAC only from some filesystems.</li>
+      <li>DJ software and gym equipment: both support few formats.</li>
+      <li>Sharing: a 30 MB track is awkward to send; a 7 MB one is not.</li>
+    </ul>
+    <p>
+      Keep the FLAC as your archive and treat the MP3s as a copy you can make again at any time. Then a
+      future device with more storage, or a better codec, costs you nothing.
+    </p>
+
+    <h2>Tags and album art</h2>
+    <p>
+      FLAC uses Vorbis comments plus a separate picture block. FFmpeg maps the standard fields onto ID3v2.3,
+      so title, artist, album, album artist, date, track number, disc number and genre are kept. Embedded
+      cover art usually survives; very large images, unusual picture types such as "back cover" or "artist
+      photo", and multiple images per file may not. Fields that exist only in Vorbis comments (MusicBrainz
+      identifiers, ReplayGain values, custom keys) have no ID3v2.3 equivalent and are dropped.
+    </p>
+
+    <h2>Converting an entire album locally</h2>
+    <p>
+      Select all tracks at once. Up to fifty files go into the queue and convert one after another, each
+      with its own progress row, and you can download the set as one ZIP. A whole album takes less than a
+      minute on a modern laptop.
+    </p>
+    <p>
+      Upload converters often limit free use to two files an hour or 100 MB per upload, which does not fit
+      an album of twenty files and 300 MB. Here your processor does the encoding, so the only limit is your
+      device, and your library stays on it.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      For an uncompressed master for an editor or sampler, use <a href="/mp3-to-wav">MP3 to WAV</a> or open
+      the FLAC in a desktop editor. To compress large recordings you made yourself, use
+      <a href="/wav-to-mp3">WAV to MP3</a>. The <a href="/audio-converter">general audio converter</a>
+      handles all other format pairs.
+    </p>
+  </Fragment>
+</ToolLayout>

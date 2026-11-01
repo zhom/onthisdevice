@@ -1,0 +1,68 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PngToWebp from '@/components/tools/image-convert/PngToWebp.tsx'
+---
+
+<ToolLayout slug="png-to-webp">
+  <PngToWebp client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert PNG to WebP</h2>
+    <ol>
+      <li>Drop your PNG files onto the box above: one, or a hundred.</li>
+      <li>Decide between lossy and lossless. The <strong>Lossless WebP</strong> switch reproduces every pixel exactly and still beats PNG on size; leaving it off lets the quality slider trade a little accuracy for a much smaller file.</li>
+      <li>If you chose lossy, set the quality. 80 is a good starting point for photographs and detailed artwork.</li>
+      <li>Transparency is kept automatically. Turn on the flatten option only if you want a solid colour behind the image.</li>
+      <li>Save each WebP, or grab everything in one ZIP.</li>
+    </ol>
+
+    <h2>Lossy or lossless: how to decide</h2>
+    <p>
+      WebP is really two codecs sharing a container. Lossless WebP uses a spatial predictor plus a colour-cache
+      entropy coder, and is a straight upgrade over PNG for the same class of image. Lossy WebP is derived from
+      the VP8 intra-frame coder and behaves like a better JPEG that happens to support alpha.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Source PNG</th>
+            <th align="left">Best mode</th>
+            <th align="left">Typical saving</th>
+            <th align="left">Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Logo, icon, flat illustration</td><td>Lossless</td><td>20–45% smaller</td><td>Hard edges must stay crisp; the colour cache is very effective</td></tr>
+          <tr><td>UI screenshot with text</td><td>Lossless</td><td>25–40% smaller</td><td>Lossy coding produces visible ringing around glyphs</td></tr>
+          <tr><td>Photograph saved as PNG</td><td>Lossy, q80</td><td>85–95% smaller</td><td>PNG is a poor fit for photographic noise in the first place</td></tr>
+          <tr><td>Illustration with soft gradients</td><td>Lossy, q85</td><td>60–80% smaller</td><td>Smooth areas compress extremely well with no visible loss</td></tr>
+          <tr><td>Image with a soft drop shadow</td><td>Either</td><td>varies</td><td>Both modes keep the 8-bit alpha channel intact</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What WebP keeps and what it drops</h2>
+    <ul>
+      <li>Alpha: kept, at full 8-bit precision, in both modes.</li>
+      <li>Colour depth: 8 bits per channel. A 16-bit PNG is reduced to 8-bit. You cannot see this on a display, but it matters for scientific or HDR source data.</li>
+      <li>Animation: WebP supports it, but this converter writes still images only.</li>
+      <li>Metadata: dropped. The file is rebuilt from raw pixels, so no EXIF or XMP survives.</li>
+      <li>Dimensions: WebP has a hard limit of 16383 × 16383 pixels. Larger PNGs must be resized first.</li>
+    </ul>
+
+    <h2>Browser and tooling support</h2>
+    <p>
+      WebP has been supported by every shipping browser since Safari 14 arrived in 2020, which in practice means
+      everything your visitors use. The gaps are elsewhere: some desktop image viewers, older versions of
+      Microsoft Office, a few email clients and the occasional marketplace upload form still reject it. Serve
+      WebP on the web, and keep a <a href="/webp-to-png">WebP to PNG</a> or
+      <a href="/webp-to-jpg">WebP to JPG</a> conversion in your back pocket for anything that complains.
+    </p>
+    <p>
+      Going further, <a href="/image-to-avif">AVIF</a> usually beats WebP by another 20–30% on photographs, at
+      the cost of much slower encoding. To convert a mixed batch of formats in one pass, use the
+      <a href="/image-converter">universal image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

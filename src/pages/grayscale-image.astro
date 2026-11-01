@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GrayscaleImage from '@/components/tools/image-edit/GrayscaleImage.tsx'
+---
+
+<ToolLayout slug="grayscale-image">
+  <GrayscaleImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert an image to black and white</h2>
+    <ol>
+      <li>Drop one or more images onto the box above.</li>
+      <li>Pick a preset (Grayscale, High-contrast B&amp;W, Sepia, Vintage, Faded, Invert or Punchy colour) or use the sliders.</li>
+      <li>Adjust grayscale, sepia, invert, brightness, contrast and saturation while watching the live preview.</li>
+      <li>Press <strong>Apply</strong> to render all images at full resolution, then download them one by one or as a ZIP.</li>
+    </ol>
+
+    <h2>The maths behind a good grayscale conversion</h2>
+    <p>
+      An average of red, green and blue is the obvious way to desaturate an image, and it is wrong. The
+      eye is much more sensitive to green than to blue, so a plain average makes foliage look muddy and
+      skies too bright. This tool uses the Rec. 709 luma coefficients, the same ones that HDTV, sRGB and
+      CSS <code>filter: grayscale()</code> use:
+    </p>
+    <p><code>Y = 0.2126 · R + 0.7152 · G + 0.0722 · B</code></p>
+    <p>
+      Green carries about 71% of perceived brightness, red 21% and blue 7%. The result matches how a
+      scene looks to you with the colour off, so it looks like a black-and-white photograph and not a
+      washed-out colour one.
+    </p>
+
+    <h2>What each slider does</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Slider</th><th>Neutral</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td>Grayscale</td><td>0%</td><td>Blends each pixel towards its luma value; 100% is fully monochrome</td></tr>
+          <tr><td>Sepia</td><td>0%</td><td>Applies the classic warm-brown matrix, mimicking toned darkroom prints</td></tr>
+          <tr><td>Invert</td><td>0%</td><td>Turns each channel into 255 − value; 100% is a photographic negative</td></tr>
+          <tr><td>Brightness</td><td>100%</td><td>Multiplies every channel, lifting or lowering the whole image</td></tr>
+          <tr><td>Contrast</td><td>100%</td><td>Pushes values away from mid-grey (128), widening the tonal range</td></tr>
+          <tr><td>Saturation</td><td>100%</td><td>Scales the distance of each channel from luma; 0% is grayscale</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The tool applies them in a fixed order (brightness, contrast, saturation, grayscale, sepia,
+      invert), the same order as a CSS filter chain. So the presets give the same result as the
+      equivalent CSS or a design tool.
+    </p>
+
+    <h2>Making a black-and-white photo look good</h2>
+    <ul>
+      <li>Add contrast. Colour separates subjects, so without it an image can look flat. 115–145% contrast is a typical start point for monochrome.</li>
+      <li>Watch the highlights. Brightness above about 115% clips bright areas to pure white, and that detail cannot be recovered.</li>
+      <li>Try partial desaturation. Grayscale at 70–85% leaves a hint of colour that often looks more like film than a full conversion.</li>
+      <li>Use sepia as a tone. 40–60% sepia over a full grayscale conversion looks like a toned print. 100% over a colour image looks orange.</li>
+    </ul>
+
+    <h2>Practical uses</h2>
+    <ul>
+      <li>Make a mixed set of headshots consistent for a team page.</li>
+      <li>Prepare artwork for single-colour printing, laser engraving or embroidery digitising.</li>
+      <li>Reduce distraction in screenshots and diagrams for documentation.</li>
+      <li>Check that a design has enough tonal contrast for colour-blind readers. Set saturation to 0% and see if the elements still separate.</li>
+      <li>Make a negative from a scanned film strip with the invert slider.</li>
+    </ul>
+
+    <h2>Transparency and file size</h2>
+    <p>
+      The tool does not change the alpha channel, so transparent PNGs stay transparent. Grayscale images
+      also compress better than colour ones, because they have less chroma information. A monochrome
+      JPEG is about 10–25% smaller than the colour original at the same quality. To get that saving, run
+      it through <a href="/compress-image">compress image</a> afterwards.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,126 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BoxShadowGenerator from '@/components/tools/generators/BoxShadowGenerator.tsx'
+---
+
+<ToolLayout slug="box-shadow-generator">
+  <BoxShadowGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to build a shadow</h2>
+    <ol>
+      <li>Start with the two default layers (a tight contact shadow and a wider ambient one) and adjust them.</li>
+      <li>Set the vertical offset first. It sets how high the element appears to float.</li>
+      <li>For a natural look, set the blur to about one and a half times the vertical offset.</li>
+      <li>Make the spread negative to put the shadow behind the element, so that it shows only at the bottom.</li>
+      <li>Tint the colour towards the background hue and keep the opacity low. Copy the CSS, or the matching Tailwind class.</li>
+    </ol>
+
+    <h2>What the five values do</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Value</th>
+            <th>Effect</th>
+            <th>Typical range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Horizontal offset</td><td>Moves the shadow left or right. Implies a light source to one side.</td><td>0: UI light usually comes from above</td></tr>
+          <tr><td>Vertical offset</td><td>Moves the shadow down. The main cue for how high the element sits.</td><td>1–25 px</td></tr>
+          <tr><td>Blur radius</td><td>Softens the edge. Zero gives a hard-edged copy of the shape.</td><td>1.5× the vertical offset</td></tr>
+          <tr><td>Spread</td><td>Makes the shadow shape larger or smaller before blurring.</td><td>−12 to 0 px</td></tr>
+          <tr><td>Colour</td><td>Any CSS colour, almost always with low alpha.</td><td>5–25% opacity</td></tr>
+          <tr><td><code>inset</code></td><td>Draws the shadow inside the border box.</td><td>Recessed inputs, wells, pressed states</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The order in the declaration is <code>x y blur spread colour</code>, with an optional
+      <code>inset</code> first. You can omit blur and spread, so <code>0 1px #0002</code> is a valid
+      one-pixel hairline shadow.
+    </p>
+
+    <h2>Why one layer never looks right</h2>
+    <p>
+      In real light, an object casts two different shadows: a small, dark contact shadow directly below
+      it, where the light is fully blocked, and a large, very faint ambient shadow that spreads out
+      from bounced light. One CSS layer can be only one of these. For this reason, a single
+      <code>0 4px 8px rgba(0,0,0,.2)</code> looks like a grey smear and not like depth.
+    </p>
+    <p>
+      Good elevation scales stack at least two layers. For example, Tailwind’s <code>shadow-md</code>
+      is a 6 px blur with −1 px spread over a 4 px blur with −2 px spread; Material Design uses three.
+      Add layers in this tool to see the difference on the sample card.
+    </p>
+
+    <h2>Tailwind’s elevation scale, spelled out</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>shadow-2xs</code></td><td><code>0 1px rgb(0 0 0 / 0.05)</code></td></tr>
+          <tr><td><code>shadow-xs</code></td><td><code>0 1px 2px 0 rgb(0 0 0 / 0.05)</code></td></tr>
+          <tr><td><code>shadow-sm</code></td><td><code>0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)</code></td></tr>
+          <tr><td><code>shadow-md</code></td><td><code>0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</code></td></tr>
+          <tr><td><code>shadow-lg</code></td><td><code>0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</code></td></tr>
+          <tr><td><code>shadow-xl</code></td><td><code>0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</code></td></tr>
+          <tr><td><code>shadow-2xl</code></td><td><code>0 25px 50px -12px rgb(0 0 0 / 0.25)</code></td></tr>
+          <tr><td><code>inset-shadow-sm</code></td><td><code>inset 0 2px 4px 0 rgb(0 0 0 / 0.05)</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The “closest built-in” readout compares your first layer with these classes and shows the
+      difference. If the difference is small, the stock class keeps your project consistent. If it
+      matters, the arbitrary-value class above it reproduces your shadow exactly.
+    </p>
+
+    <h2>Shadows in dark mode</h2>
+    <p>
+      A black shadow on a dark background is almost invisible, so a light-mode elevation scale makes
+      dark interfaces look flat. Three methods work:
+    </p>
+    <ul>
+      <li>Raise the surface. The Material dark theme makes the card background lighter as elevation increases, and does not darken what is below it.</li>
+      <li>Increase the opacity substantially, often to 40–60%, and use a larger blur.</li>
+      <li>Add a top inset highlight such as <code>inset 0 1px 0 rgb(255 255 255 / 0.06)</code>. It looks like a lit edge and separates the card from the background better than a shadow.</li>
+    </ul>
+
+    <h2>box-shadow versus filter: drop-shadow()</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th><code>box-shadow</code></th>
+            <th><code>filter: drop-shadow()</code></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Follows</td><td>The border box, including <code>border-radius</code></td><td>The rendered alpha channel</td></tr>
+          <tr><td>Transparent PNGs and SVGs</td><td>Rectangular shadow around the whole box</td><td>Shadow follows the actual artwork</td></tr>
+          <tr><td>Multiple layers</td><td>Comma-separated in one declaration</td><td>Chain several <code>drop-shadow()</code> functions</td></tr>
+          <tr><td>Spread parameter</td><td>Yes</td><td>No</td></tr>
+          <tr><td><code>inset</code></td><td>Yes</td><td>No</td></tr>
+          <tr><td>Cost</td><td>Cheap when static</td><td>More expensive; creates a containing block</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Performance</h2>
+    <p>
+      A static shadow costs almost nothing. An animated shadow is different: the browser must calculate
+      the blur again on each frame, on the main thread, for the full painted area. If a card must lift
+      on hover, do not transition <code>box-shadow</code>. Put the larger shadow on an absolutely
+      positioned pseudo-element with <code>opacity: 0</code> and transition the opacity. This runs on
+      the compositor and stays smooth on a mid-range phone.
+    </p>
+  </Fragment>
+</ToolLayout>

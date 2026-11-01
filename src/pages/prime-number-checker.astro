@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PrimeNumberChecker from '@/components/tools/math/PrimeNumberChecker.tsx'
+---
+
+<ToolLayout slug="prime-number-checker">
+  <PrimeNumberChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <p>
+      The first tab tests a single number: it tells you whether the number is prime, shows the prime
+      factorisation if it is not, counts the divisors, lists them for smaller inputs, and finds the nearest
+      prime on either side. The second tab sieves an interval and lists every prime it contains.
+    </p>
+
+    <h2>What makes a number prime</h2>
+    <p>
+      A prime is a whole number greater than 1 whose only positive divisors are 1 and itself. 7 is prime;
+      9 is not, because 3 divides it. Numbers greater than 1 that are not prime are called composite.
+    </p>
+    <p>
+      1 is deliberately excluded. It has only one positive divisor, and if it counted as prime then unique
+      factorisation would break: 6 could be written as 2 × 3, or 1 × 2 × 3, or 1 × 1 × 2 × 3. Mathematicians
+      call 1 a unit. Zero and negative numbers are outside the definition entirely.
+    </p>
+
+    <h2>How the primality test works</h2>
+    <p>
+      A composite number n always has a factor no larger than √n, because if both factors were bigger their
+      product would exceed n. So trial division only has to test primes up to the square root. For 9,973 that
+      means up to 99, not up to 9,972.
+    </p>
+    <p>
+      For large numbers even that is slow, so this tool uses a deterministic Miller–Rabin test. Miller–Rabin
+      asks whether n behaves the way a prime must behave under modular exponentiation for a set of chosen
+      witnesses. With the first twelve primes as witnesses, the test is proven exact for all values below
+      3.3 × 10²⁴, not a probabilistic guess. Numbers with dozens of digits give an answer at once.
+    </p>
+    <p>
+      Full factorisation is a harder problem than primality testing. This tool factorises by trial division
+      with a 6k ± 1 wheel, which is practical up to about 10¹⁵. Above that it will still tell you whether the
+      number is prime, but not what its factors are. RSA encryption is built on exactly that difference in
+      difficulty.
+    </p>
+
+    <h2>Reading the prime factorisation</h2>
+    <p>
+      Every integer above 1 factors into primes in exactly one way, ignoring order. That is the fundamental
+      theorem of arithmetic. The tool writes it in prime-power form, so 360 = 2³ × 3² × 5.
+    </p>
+    <p>
+      The exponents also give the divisor count without listing anything: multiply each exponent plus one
+      together. For 360 that is (3+1) × (2+1) × (1+1) = 24 divisors, because each prime can appear anywhere
+      from zero times up to its exponent, independently of the others.
+    </p>
+
+    <h2>The sieve of Eratosthenes</h2>
+    <p>
+      To list every prime in a range, the range generator uses a segmented sieve. It first finds all primes up
+      to √(upper bound) by an ordinary sieve, then walks the requested interval in blocks, crossing off the
+      multiples of each of those base primes. Whatever is left standing is prime. This is far faster than
+      testing each number individually and uses memory proportional to the block size rather than the range.
+    </p>
+    <p>
+      Alongside the list you get the count, the density, the number of twin-prime pairs (primes two apart, such
+      as 11 and 13) and the largest gap in the interval.
+    </p>
+
+    <h2>Prime facts worth having</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th scope="col">Range</th><th scope="col">Primes in it</th><th scope="col">Density</th></tr></thead>
+        <tbody>
+          <tr><td>1 – 10</td><td>4</td><td>40%</td></tr>
+          <tr><td>1 – 100</td><td>25</td><td>25%</td></tr>
+          <tr><td>1 – 1,000</td><td>168</td><td>16.8%</td></tr>
+          <tr><td>1 – 10,000</td><td>1,229</td><td>12.29%</td></tr>
+          <tr><td>1 – 100,000</td><td>9,592</td><td>9.59%</td></tr>
+          <tr><td>1 – 1,000,000</td><td>78,498</td><td>7.85%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The thinning out is not random: the prime number theorem says the count below n is approximately
+      n ÷ ln(n), which predicts 72,382 below a million, within 8% of the true 78,498. Euclid proved over two
+      thousand years ago that the primes never run out, so there is no largest prime.
+    </p>
+
+    <h2>Numbers that look prime but are not</h2>
+    <ul>
+      <li>91 = 7 × 13: the classic trap, because it passes the divisibility tests for 2, 3 and 5.</li>
+      <li>561 = 3 × 11 × 17: the smallest Carmichael number, which fools the naive Fermat primality test for every base coprime to it. Miller–Rabin is not fooled.</li>
+      <li>2¹¹ − 1 = 2047 = 23 × 89: a Mersenne number with a prime exponent that is still composite.</li>
+      <li>1: excluded by definition, as above.</li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      All the arithmetic, including the big-integer Miller–Rabin test and the sieve, runs inside your browser.
+      Nothing you enter is sent anywhere, which also means the page keeps working offline.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,135 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ExtractImagesFromPdf from '@/components/tools/pdf/ExtractImagesFromPdf.tsx'
+---
+
+<ToolLayout slug="extract-images-from-pdf">
+  <ExtractImagesFromPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Extracting is not the same as converting</h2>
+      <p>
+        Two very different operations are both called &ldquo;PDF to image&rdquo;, and the wrong one
+        costs you quality.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Extract images (this page)</th>
+            <th scope="col"><a href="/pdf-to-jpg">PDF to JPG</a></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What you get</td>
+            <td>The photographs stored inside the file</td>
+            <td>A picture of each whole page</td>
+          </tr>
+          <tr>
+            <td>Resolution</td>
+            <td>Exactly as embedded, often 3000 px or more</td>
+            <td>The DPI you choose when rendering</td>
+          </tr>
+          <tr>
+            <td>Includes text and background</td>
+            <td>No</td>
+            <td>Yes</td>
+          </tr>
+          <tr>
+            <td>Quality loss</td>
+            <td>None for JPEGs: the original bytes</td>
+            <td>A new encode of a new render</td>
+          </tr>
+          <tr>
+            <td>Use it for</td>
+            <td>Recovering artwork, product shots, figures</td>
+            <td>Previews, thumbnails, sending a page as an image</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>How the originals come out untouched</h2>
+      <p>
+        A PDF is an object graph. A photograph on a page is usually stored as an image XObject whose stream
+        is a complete JPEG file: the same bytes the camera or the design tool made, in a dictionary that
+        records its width, height, colour space and compression.
+      </p>
+      <p>
+        This tool walks that object graph with pdf-lib and finds each image XObject. When the compression is
+        <code>DCTDecode</code> (JPEG), it writes the stream directly to a file, with no decode and no
+        re-encode. The download is byte-for-byte what was in the document. The gallery labels these results
+        <strong>Original</strong>.
+      </p>
+      <p>
+        Images stored with Flate or LZW compression (usually screenshots, logos and images that started as
+        PNG) must be decompressed, un-predicted, converted from their colour space and encoded again. That
+        path is still lossless: the PNG output has exactly the same pixels.
+      </p>
+    </section>
+
+    <section>
+      <h2>What gets skipped, and why we say so</h2>
+      <ul>
+        <li>
+          Images below the size filter. Documents contain many 1 × 1 spacers, gradient strips and hairline
+          rules stored as images. The default 32 px filter removes this noise; lower it to find a small
+          icon.
+        </li>
+        <li>
+          CCITT Group 3/4 and JBIG2: bi-level fax and document-scanner codecs. No browser can decode them,
+          and a custom decoder could easily give wrong results, so the tool lists them with the reason.
+        </li>
+        <li>
+          Unusual filter chains: an image encoded two or three times in sequence is rare, and the tool does
+          not guess.
+        </li>
+      </ul>
+      <p>
+        Each skipped object appears in the collapsible list with its dimensions, its page and the reason. So
+        if the tool returns eleven of your fifteen images, you know why four are missing.
+      </p>
+    </section>
+
+    <section>
+      <h2>&ldquo;It found nothing&rdquo;</h2>
+      <p>
+        There are two likely causes. First, the artwork can be <strong>vector</strong>: charts, diagrams,
+        logos and line drawings are usually drawing instructions, not images. The file has no picture to
+        extract, and the only way to get one is to render the page.
+      </p>
+      <p>
+        Second, the document can be a <strong>scan</strong>. Then there is exactly one image per page, and it
+        is the whole page. The tool finds these, and they are often very large: a 600 DPI A4 scan is about
+        5000 × 7000 pixels.
+      </p>
+    </section>
+
+    <section>
+      <h2>Colour spaces, masks and duplicates</h2>
+      <p>
+        The tool decodes indexed palettes, DeviceGray, DeviceRGB, DeviceCMYK, ICC-based and calibrated
+        spaces, at 1, 2, 4, 8 or 16 bits per component. Soft masks (the alpha channel of a transparent logo,
+        stored as a separate grayscale image) are decoded and applied to the PNG output, so a logo keeps its
+        transparency and is not on a black square.
+      </p>
+      <p>
+        An image used on more than one page is stored once in the PDF and extracted once here, and its tile
+        lists all pages that use it. A watermark on all 200 pages gives you one file, not 200.
+      </p>
+    </section>
+
+    <section>
+      <h2>A note on rights</h2>
+      <p>
+        If you can extract an image, that does not mean you may use it. Photographs in reports, papers and
+        brochures are usually licensed, and the licence is seldom in the PDF. Use extraction to recover your
+        own artwork from a file whose source is lost, to take figures from a paper you cite, or to audit
+        what a document contains, not to take another person&rsquo;s photography.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

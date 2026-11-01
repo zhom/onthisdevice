@@ -1,0 +1,117 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditFlattenPdf from '@/components/tools/pdf/PdfEditFlattenPdf.tsx'
+---
+
+<ToolLayout slug="flatten-pdf">
+  <PdfEditFlattenPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>The problem flattening solves</h2>
+      <p>
+        You fill in a PDF form and email it, and the recipient says the boxes are empty. Or you print it
+        and the answers are not on the paper. Or you upload it to a portal and the answers are removed. All
+        of these are the same bug, and you did not cause it.
+      </p>
+      <p>
+        A PDF page has content (text, lines, images) and annotations, which are separate objects on top of
+        the page: form field widgets, highlights, sticky notes, stamps, ink. Readers do not draw them
+        consistently, printers do not print them consistently, and any process that renders the page again
+        can drop them. Flattening moves all of them into the page content, so they always show.
+      </p>
+    </section>
+
+    <section>
+      <h2>What this tool does that most "flatteners" do not</h2>
+      <p>
+        Flattening form fields is easy, and all tools do it. Annotations are harder: a highlight, a comment,
+        a stamp, an ink signature added in a PDF reader. Many tools delete them, and because they were often
+        invisible in your reader, you notice only when the printed copy is blank.
+      </p>
+      <p>
+        Each annotation has an <strong>appearance stream</strong>: a small form XObject with the drawing
+        instructions the reader uses to show it. This tool takes that stream, calculates the transform that
+        maps the bounding box of the appearance onto the rectangle of the annotation (the algorithm in
+        ISO 32000-1 §12.5.5), and draws it into the content of the page. Only then does it remove the
+        annotation. For this reason, comments survive here.
+      </p>
+      <p>
+        Annotations with no stored appearance stay as they are and are not discarded, and the result panel
+        tells you how many there are. Deleting something visible without notice is worse than not flattening
+        it.
+      </p>
+    </section>
+
+    <section>
+      <h2>When to flatten</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col">Situation</th>
+              <th scope="col">Flatten?</th>
+              <th scope="col">Why</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Returning a completed application form</td>
+              <td>Yes</td>
+              <td>The reader always sees what you typed</td>
+            </tr>
+            <tr>
+              <td>Sending a marked-up draft to a printer</td>
+              <td>Yes</td>
+              <td>Comments print and do not disappear</td>
+            </tr>
+            <tr>
+              <td>Archiving a signed contract</td>
+              <td>Yes</td>
+              <td>No dependency on annotation support in future readers</td>
+            </tr>
+            <tr>
+              <td>Circulating a form for others to complete</td>
+              <td>No</td>
+              <td>Flattening removes the fields they need</td>
+            </tr>
+            <tr>
+              <td>Collaborative review still in progress</td>
+              <td>No</td>
+              <td>Comments become page ink that cannot be deleted</td>
+            </tr>
+            <tr>
+              <td>Hiding confidential text</td>
+              <td>No</td>
+              <td>Flattening is not redaction; see <a href="/redact-pdf">Redact PDF</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Flattening is not rasterising</h2>
+      <p>
+        Some tools "flatten" a PDF by rendering each page to an image. That makes the file uniform, but it
+        also destroys the text layer, removes search and screen-reader access, and usually makes the file
+        several times larger.
+      </p>
+      <p>
+        This tool rasterises nothing. Text stays text, vectors stay vectors, and images keep their original
+        compression. Only the annotation and field layer changes. If you want pages turned into images (for
+        redaction, or to prevent text extraction), use <a href="/redact-pdf">Redact PDF</a> or
+        <a href="/grayscale-pdf">PDF to Grayscale</a>; both state this clearly.
+      </p>
+    </section>
+
+    <section>
+      <h2>Keep the original</h2>
+      <p>
+        Flattening cannot be undone: when the value of a field becomes page ink, there is no field to restore
+        and no value to read. The file you drop in does not change, because the flattened copy is a new
+        download. Keep the original until the recipient accepts the flattened version.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

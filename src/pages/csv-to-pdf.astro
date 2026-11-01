@@ -1,0 +1,166 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureSheetToPdf from '@/components/tools/pdf-convert/PdfSecureSheetToPdf.tsx'
+---
+
+<ToolLayout slug="csv-to-pdf">
+  <PdfSecureSheetToPdf client:load source="csv" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Turning a data file into something printable</h2>
+      <p>
+        A CSV in a text editor is unreadable after about four columns. In a spreadsheet it is readable
+        but not portable: the column widths depend on the machine. This page draws a real table with
+        measured column widths, a repeated header row and consistent page layout, so the PDF looks the
+        same for everyone who opens it.
+      </p>
+      <p>
+        Typical uses: attaching a data export to a ticket or an email, printing a stock list or a
+        delivery manifest, submitting a schedule to a portal that accepts only PDF, or archiving a query
+        result in a format that will still open in ten years.
+      </p>
+    </section>
+
+    <section>
+      <h2>Delimiters are detected, not assumed</h2>
+      <p>
+        "CSV" is a family of formats. The parser checks the content and handles all the usual ones
+        without a setting:
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Separator</th>
+              <th scope="col">Where it comes from</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Comma</td>
+              <td>The default in English-locale exports and almost all APIs</td>
+            </tr>
+            <tr>
+              <td>Semicolon</td>
+              <td>
+                Excel in German, French, Spanish, Italian and Dutch locales, where the comma is the
+                decimal separator
+              </td>
+            </tr>
+            <tr>
+              <td>Tab</td>
+              <td>Data copied from a spreadsheet, and .tsv exports</td>
+            </tr>
+            <tr>
+              <td>Pipe</td>
+              <td>Legacy mainframe and telecoms exports</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The parser handles quoted fields that contain the separator, embedded newlines and doubled
+        quotes, so a free-text column with commas does not shift your table.
+      </p>
+    </section>
+
+    <section>
+      <h2>Pagination and the repeated header</h2>
+      <p>
+        Rows continue onto as many pages as necessary. With the header option on, the first row of the
+        file is drawn in bold with a shaded background at the top of each page, so a fifty-page export
+        stays readable.
+      </p>
+      <p>
+        Row heights come from the content, so a row with a long note wraps to up to four lines and the
+        row grows to fit. Text longer than four lines is cut with an ellipsis, and the result shows how
+        many cells were cut.
+      </p>
+    </section>
+
+    <section>
+      <h2>Layout recipes</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Your file</th>
+              <th scope="col">Suggested setup</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>3–5 narrow columns, many rows</td>
+              <td>A4 portrait, 10 pt, zebra on, grid off</td>
+            </tr>
+            <tr>
+              <td>8–15 columns</td>
+              <td>A4 landscape, 7–8 pt, fit-to-width on</td>
+            </tr>
+            <tr>
+              <td>20+ columns</td>
+              <td>A3 landscape, 5–6 pt, or split the file</td>
+            </tr>
+            <tr>
+              <td>A column of long free text</td>
+              <td>Portrait, grid on, so the wrapped lines stay visually contained</td>
+            </tr>
+            <tr>
+              <td>A file for a printer's tray</td>
+              <td>US Letter in North America, A4 everywhere else</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Encoding notes</h2>
+      <p>
+        Files are decoded as UTF-8, which modern exports use. Two things to know:
+      </p>
+      <ul>
+        <li>
+          The tool handles a byte-order mark at the start of the file (Excel adds one when you use
+          "Save as CSV UTF-8"), and it does not appear in the first cell.
+        </li>
+        <li>
+          Legacy Windows-1252 files show replacement characters on accented letters. Save them as UTF-8
+          first; all spreadsheet applications can do this.
+        </li>
+      </ul>
+      <p>
+        The drawing step can render only characters in the built-in PDF fonts, which cover Western
+        European alphabets. Cyrillic, Greek, Hebrew, Arabic and CJK text becomes a question mark, and
+        the result reports the number of substitutions. The tool does not embed a font, because getting
+        one would need a network request.
+      </p>
+    </section>
+
+    <section>
+      <h2>Large exports</h2>
+      <p>
+        There is no row limit and no file size limit, because there is no upload. A 50,000-row CSV
+        renders to a few hundred pages in less than a minute on a laptop, with per-row progress and a
+        working Cancel button. Memory is the only real limit, and the drawing is streamed row by row,
+        not held as one large layout.
+      </p>
+      <p>
+        If the PDF is too large to email, <a href="/compress-pdf-to-2mb">compress it to 2 MB</a>. For a
+        text-only table, the lossless clean-up in <a href="/compress-pdf">Compress PDF</a> is usually
+        better, because it keeps the text selectable.
+      </p>
+    </section>
+
+    <section>
+      <h2>Related</h2>
+      <ul>
+        <li><a href="/excel-to-pdf">Excel to PDF</a>: the same renderer for .xlsx workbooks.</li>
+        <li><a href="/pdf-to-csv">PDF to CSV</a>: the reverse direction.</li>
+        <li><a href="/csv-to-excel">CSV to Excel</a>: if you need a workbook.</li>
+        <li><a href="/csv-to-json">CSV to JSON</a>: for an API or a script.</li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

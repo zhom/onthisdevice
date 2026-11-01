@@ -1,0 +1,110 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WifiQrCodeGenerator from '@/components/tools/generators/WifiQrCodeGenerator.tsx'
+---
+
+<ToolLayout slug="wifi-qr-code-generator">
+  <WifiQrCodeGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to make a Wi-Fi QR code</h2>
+    <ol>
+      <li>Type the network name exactly as the router broadcasts it. SSIDs are case sensitive and a trailing space counts.</li>
+      <li>Pick the security type. WPA/WPA2 covers almost every home and office router. Choose WPA3 only if the network runs WPA3-Personal, and “Open” only if there is no password.</li>
+      <li>Enter the password. The code is built in this tab, and the password is not sent anywhere.</li>
+      <li>Turn on “hidden network” only if the router hides its SSID.</li>
+      <li>Download the PNG for a screen or the SVG for printing on a card.</li>
+    </ol>
+
+    <h2>Which devices can join from a Wi-Fi QR code</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Device</th>
+            <th>Support</th>
+            <th>How</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>iPhone and iPad, iOS 11+</td><td>Yes</td><td>Point the built-in Camera app at the code and tap the banner</td></tr>
+          <tr><td>Android 10+</td><td>Yes</td><td>Camera app, or Settings → Network → Wi-Fi → Scan QR code</td></tr>
+          <tr><td>Android 6–9</td><td>Usually</td><td>Needs a QR app that handles the WIFI: scheme</td></tr>
+          <tr><td>Windows and macOS</td><td>No</td><td>No built-in support; join manually</td></tr>
+          <tr><td>Smart TVs and consoles</td><td>No</td><td>Enter the password with the on-screen keyboard</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Android can also make a code for a network it is already joined to: Settings, Wi-Fi, tap the network,
+      then Share. This tool works from the credentials, for a code you can print, laminate and leave on a
+      table.
+    </p>
+
+    <h2>The WIFI: format</h2>
+    <p>
+      The payload is a plain-text URI that Google introduced with ZXing and that all major platforms now read.
+      It looks like this:
+    </p>
+    <pre><code>WIFI:T:WPA;S:MyHomeWiFi;P:hunter2hunter2;H:false;;</code></pre>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Meaning</th>
+            <th>Values</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>T</code></td><td>Security type</td><td><code>WPA</code>, <code>SAE</code> for WPA3, <code>WEP</code>, <code>nopass</code></td></tr>
+          <tr><td><code>S</code></td><td>Network name</td><td>The SSID, escaped</td></tr>
+          <tr><td><code>P</code></td><td>Password</td><td>Omitted entirely for open networks</td></tr>
+          <tr><td><code>H</code></td><td>Hidden SSID</td><td><code>true</code> or omitted</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Five characters are reserved and need a backslash before them inside a value: <code>\</code>,
+      <code>;</code>, <code>,</code>, <code>:</code> and <code>"</code>. An SSID or password made only of
+      hexadecimal digits is also ambiguous, because it could be read as raw hex, so it goes in double quotes.
+      The Wi-Fi QR code generator applies both rules, and the panel under the code shows the exact payload.
+    </p>
+
+    <h2>Use a guest network</h2>
+    <p>
+      A printed QR code is a visible password. Anyone who photographs it, or sees it in the background of
+      another person's photo, can join your network. That is acceptable for a guest SSID isolated from your
+      other devices, and a bad idea for the network with your NAS and printer.
+    </p>
+    <ul>
+      <li>Use the guest network. Almost every router has one, and it keeps visitors off the subnet with your file shares and cameras.</li>
+      <li>Turn on client isolation on the guest network so devices cannot see each other.</li>
+      <li>Change the guest password from time to time and print a new card; it takes a minute.</li>
+      <li>Do not put the code in the window. Inside, facing the seating area, is enough.</li>
+    </ul>
+
+    <h2>Troubleshooting a Wi-Fi QR code that does not connect</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Symptom</th>
+            <th>Likely cause</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Camera reads the code but nothing happens</td><td>The app shows the raw text and does not act on it; use the system camera or the Wi-Fi settings scanner</td></tr>
+          <tr><td>“Incorrect password”</td><td>A typo, or a curly quote pasted from a document in place of a straight apostrophe</td></tr>
+          <tr><td>Connects then immediately drops</td><td>The security type is wrong: WPA3-only networks need SAE, not WPA</td></tr>
+          <tr><td>Works on iPhone, fails on Android</td><td>The hidden-network flag is set on a network that is actually broadcasting</td></tr>
+          <tr><td>Nothing scans at all</td><td>Not enough contrast, or the quiet zone was cropped when the image was placed in a document</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 2.4 GHz and 5 GHz bands often share one SSID. If your router gives them two names, the code joins
+      only the one you typed. Guests with older devices can need the 2.4 GHz name.
+    </p>
+  </Fragment>
+</ToolLayout>

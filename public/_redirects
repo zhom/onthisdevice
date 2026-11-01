@@ -1,0 +1,8 @@
+# onthisdevice.com: path redirects (Cloudflare static assets syntax).
+# Tool URLs are flat and slug-exact (/merge-pdf) and are never redirected.
+# www -> apex is a Cloudflare redirect rule (host-based rules cannot live
+# here). Missing pages get dist/404.html with status 404 through
+# `not_found_handling` in wrangler.jsonc.
+
+/categories/*  /category/:splat  301
+/tools/*       /:splat           301

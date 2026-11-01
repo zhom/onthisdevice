@@ -1,0 +1,141 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GpaCalculator from '@/components/tools/everyday/GpaCalculator.tsx'
+---
+
+<ToolLayout slug="gpa-calculator">
+  <GpaCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to calculate your GPA</h2>
+    <ol>
+      <li>
+        List this semester's courses with their credit hours and the letter grade you earned or expect.
+      </li>
+      <li>
+        Set honours, AP or IB courses in the level dropdown so the weighted GPA adds the bonus.
+      </li>
+      <li>
+        Add your GPA and total credits from before this semester to get the new cumulative GPA.
+      </li>
+      <li>
+        Use the target solver to find the average you need in your remaining credits to reach a goal GPA.
+      </li>
+    </ol>
+
+    <h2>The GPA formula</h2>
+    <p><strong>GPA = Σ(credits × grade points) ÷ Σ(credits)</strong></p>
+    <p>
+      Credits × grade points are quality points. A 4-credit course with a B (3.0) earns 12 quality points.
+      A 3-credit A− (3.7) earns 11.1. Add the quality points, add the credits, and divide:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Course</th>
+            <th scope="col">Credits</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Points</th>
+            <th scope="col">Quality points</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>English Literature</td><td>3</td><td>A−</td><td>3.7</td><td>11.1</td></tr>
+          <tr><td>Calculus</td><td>4</td><td>B+</td><td>3.3</td><td>13.2</td></tr>
+          <tr><td>Chemistry</td><td>4</td><td>B</td><td>3.0</td><td>12.0</td></tr>
+          <tr><td>History</td><td>3</td><td>A</td><td>4.0</td><td>12.0</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>14</strong></td><td></td><td></td><td><strong>48.3</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>48.3 ÷ 14 = <strong>3.45 GPA</strong>.</p>
+    <p>
+      Credits drive the result, and the number of courses does not. A 4-credit course pulls the average
+      twice as hard as a 2-credit one, so dropping a heavy course changes a GPA much more than dropping a
+      light one.
+    </p>
+
+    <h2>Weighted versus unweighted GPA</h2>
+    <p>
+      An unweighted GPA caps each grade at 4.0 for all course levels. A weighted GPA adds a bonus for
+      harder classes, usually +0.5 for honours and +1.0 for AP or IB, so a weighted average can exceed 4.0.
+      A straight-A student in all AP courses has 5.0.
+    </p>
+    <p>
+      High schools use the weighted GPA for class rank and honour rolls. University admissions offices
+      usually calculate their own unweighted GPA from your transcript, with their own course list and
+      scale, so the unweighted number is the more portable one.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Letter</th>
+            <th scope="col">Regular</th>
+            <th scope="col">Honours (+0.5)</th>
+            <th scope="col">AP / IB (+1.0)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>4.0</td><td>4.5</td><td>5.0</td></tr>
+          <tr><td>A−</td><td>3.7</td><td>4.2</td><td>4.7</td></tr>
+          <tr><td>B+</td><td>3.3</td><td>3.8</td><td>4.3</td></tr>
+          <tr><td>B</td><td>3.0</td><td>3.5</td><td>4.0</td></tr>
+          <tr><td>C</td><td>2.0</td><td>2.5</td><td>3.0</td></tr>
+          <tr><td>D</td><td>1.0</td><td>1.5</td><td>2.0</td></tr>
+          <tr><td>F</td><td>0.0</td><td>0.0</td><td>0.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Cumulative GPA</h2>
+    <p>
+      Your cumulative GPA is the average of all courses you have taken, weighted by credits. It is not the
+      average of your semester GPAs. First get your banked quality points:
+    </p>
+    <p><strong>banked points = old GPA × old credits</strong></p>
+    <p>
+      <strong>new cumulative = (banked points + this semester's points) ÷ (old credits + new credits)</strong>
+    </p>
+    <p>
+      A 3.42 across 45 credits carries 153.9 quality points. Add the 48.3 points and 14 credits above
+      and the cumulative becomes 202.2 ÷ 59 = <strong>3.43</strong>. The more credits you have banked,
+      the less one semester can move the number. So a low first-year GPA is hard to recover from, and a
+      strong one is hard to lose.
+    </p>
+
+    <h2>Solving for a target GPA</h2>
+    <p><strong>needed = (target × (banked credits + future credits) − banked points) ÷ future credits</strong></p>
+    <p>
+      To lift a 3.43 across 59 credits up to a 3.60 with 15 credits left: (3.60 × 74 − 202.2) ÷ 15 =
+      (266.4 − 202.2) ÷ 15 = <strong>4.28</strong>. That is above 4.0, so it is not reachable in one
+      semester, and the solver tells you so. Over 30 credits, the same goal needs 3.93.
+    </p>
+
+    <h2>Details that trip people up</h2>
+    <ul>
+      <li>
+        Pass/fail courses usually carry credit but no grade points, so leave them out of the list. If you
+        enter them as an A, the result is too high.
+      </li>
+      <li>
+        A repeated course may replace the original grade or be averaged with it, by the institution's
+        policy. Enter the grade your registrar counts.
+      </li>
+      <li>
+        Transfer credits often count towards the degree but not towards the GPA.
+      </li>
+      <li>
+        An A+ is 4.0 at many institutions and 4.3 at others. Use the switch to match yours.
+      </li>
+      <li>
+        Withdrawals usually carry no credits and no points, so they are not in the calculation.
+      </li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      Your courses, grades and transcript figures stay in this browser tab and are not uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

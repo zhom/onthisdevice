@@ -1,0 +1,117 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyTimeCard from '@/components/tools/datetime/CalcMoneyTimeCard.tsx'
+---
+
+<ToolLayout slug="time-card-calculator">
+  <CalcMoneyTimeCard client:load variant="week" />
+
+  <Fragment slot="explainer">
+    <h2>Filling in a time card fast</h2>
+    <p>
+      The time fields accept many formats. <code>9</code>, <code>9:00</code>, <code>0900</code>,
+      <code>9am</code> and <code>09:00</code> all mean nine in the morning; <code>530p</code>,
+      <code>17:30</code> and <code>5:30 pm</code> all mean half past five in the afternoon. There is no
+      dropdown or required separator, and no validation runs while you type.
+    </p>
+    <p>
+      A blank day adds nothing. Enter the unpaid break in minutes; leave paid breaks at zero, because they are
+      part of the shift.
+    </p>
+
+    <h2>Overnight shifts</h2>
+    <p>
+      If the out time is at or before the in time, the calculator treats the shift as crossing midnight and adds
+      twenty-four hours. A shift from 22:00 to 06:00 is eight hours, and the row has a label that shows this.
+      This covers nights, split hospitality shifts and any shift past twelve.
+    </p>
+
+    <h2>The two overtime rules</h2>
+    <p>
+      Overtime law varies widely, so the daily and weekly rules are separate switches.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[520px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Where</th>
+            <th>Rule</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>US federal (FLSA)</td>
+            <td>Time and a half above 40 hours in a workweek, for non-exempt employees. No daily rule.</td>
+          </tr>
+          <tr>
+            <td>California</td>
+            <td>Time and a half above 8 hours a day and above 40 a week; double time above 12 a day.</td>
+          </tr>
+          <tr>
+            <td>Canada (most provinces)</td>
+            <td>Time and a half above 8 a day or 40–44 a week, depending on the province.</td>
+          </tr>
+          <tr>
+            <td>UK and much of the EU</td>
+            <td>No statutory overtime premium. Rates are contractual; working-time limits apply instead.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When both switches are on, the calculator applies daily overtime first and excludes those hours before
+      the weekly threshold, so no hour is paid at the premium rate twice. That double count is the most
+      common error in home-made timesheet spreadsheets.
+    </p>
+
+    <h2>Decimal hours for payroll</h2>
+    <p>
+      Each row shows <code>h:mm</code> and the decimal value. Payroll needs the decimal form, because pay is
+      hours times a rate, and <code>8:45 × 22</code> is not an arithmetic expression. Eight hours forty-five
+      minutes is 8.75, not 8.45. That mistake costs eighteen minutes per shift, which over a year is more than
+      a week's pay.
+    </p>
+
+    <h2>Payroll rounding</h2>
+    <p>
+      The rounding control rounds each entry before the total, as time-clock systems do. Quarter-hour rounding
+      is the most common convention in the US, and tenth-of-an-hour in professional services.
+    </p>
+    <p>
+      Rounding must be neutral. Under the FLSA an employer may round to the nearest increment in both
+      directions, but a policy that always rounds down, or rounds clock-ins forward and clock-outs back, is
+      unlawful wage theft. This calculator always rounds to the nearest increment.
+    </p>
+
+    <h2>Print it, sign it, file it</h2>
+    <p>
+      The print button makes a clean card without the editing controls, ready for a supervisor's signature. If
+      your payroll system needs a file, export the same data to CSV, Excel or PDF. Your browser makes these
+      files, so a timesheet with your name and hours does not go through another server.
+    </p>
+
+    <h2>Saving your week</h2>
+    <p>
+      Saving is off by default, because a timesheet contains your name, your employer and your movements. Turn
+      the switch on and the week is written to this browser's local storage, on this device only, so a
+      refresh does not clear it. The delete button next to the switch removes it at once. The rest of the page
+      works with the switch on or off.
+    </p>
+
+    <h2>What this does not do</h2>
+    <ul>
+      <li>
+        No tax: gross pay only. Income tax, national insurance, pension and other deductions depend on
+        jurisdiction and personal circumstances.
+      </li>
+      <li>
+        No shift differentials: night, weekend and holiday premiums vary by contract. Enter those hours as a
+        separate week or adjust the rate.
+      </li>
+      <li>
+        No accruals: holiday accrual, sick pay and time-off banks are payroll-system features, not timesheet
+        arithmetic.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

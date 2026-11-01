@@ -1,0 +1,132 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditFillForm from '@/components/tools/pdf/PdfEditFillForm.tsx'
+---
+
+<ToolLayout slug="fill-pdf-form">
+  <PdfEditFillForm client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>What a "fillable PDF" really is</h2>
+      <p>
+        A fillable PDF has an <strong>AcroForm</strong>: a dictionary of named fields, each with a type, a
+        value and one or more widgets (rectangles on specific pages where the field is drawn). When you
+        click a box in a PDF reader, you click a widget. When you type, the value of the field changes and
+        the reader draws the appearance of the widget again so you can see it.
+      </p>
+      <p>
+        This tool reads that structure directly. It lists each field with its name, type and page, draws an
+        input over each widget so you can fill the form on the page, and writes the values back into the
+        same field objects. Nothing is approximated and no text is typed on top: the output is a correctly
+        filled AcroForm.
+      </p>
+    </section>
+
+    <section>
+      <h2>Editable or flattened: pick deliberately</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Editable</th>
+              <th scope="col">Flattened</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Fields still exist</td>
+              <td>Yes: anyone can change an answer</td>
+              <td>No: the answers are page content</td>
+            </tr>
+            <tr>
+              <td>Looks identical in every reader</td>
+              <td>Usually, sometimes not</td>
+              <td>Always</td>
+            </tr>
+            <tr>
+              <td>Prints reliably</td>
+              <td>Depends on the reader's settings</td>
+              <td>Always</td>
+            </tr>
+            <tr>
+              <td>Survives an upload portal that rasterises</td>
+              <td>Risky</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Use it when</td>
+              <td>Others must still complete the form</td>
+              <td>You send back the finished copy</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The most common failure (you fill a form, email it, and the recipient sees empty boxes) almost always
+        comes from an editable file opened in a reader that does not regenerate field appearances. A
+        flattened file cannot have this problem.
+      </p>
+    </section>
+
+    <section>
+      <h2>Field types you will meet</h2>
+      <ul>
+        <li>Text: one line or several, sometimes with a maximum length or a comb layout of fixed character cells.</li>
+        <li>Checkbox: on or off. The form author defines the name of the "on" value, so some checkboxes look ticked in one reader and blank in another.</li>
+        <li>Radio group: one field with several widgets, one per option; only one can be selected.</li>
+        <li>Dropdown: one choice from a list. Some are editable, so you can type a value that is not in the list.</li>
+        <li>List: like a dropdown, but with multiple selection.</li>
+        <li>Signature field: a placeholder for a cryptographic signature. This tool leaves these empty, because it does not issue certificates. To place a visual signature, use <a href="/sign-pdf">Sign PDF</a>.</li>
+        <li>Read-only: locked by the author, usually a reference number or a calculated total. Shown greyed out and never changed.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Troubleshooting</h2>
+      <h3>"No form fields in this PDF"</h3>
+      <p>
+        The file is flat. It can be a scan, a design exported without form fields, or a form that the sender
+        already flattened. Use <a href="/add-text-to-pdf">Add Text to PDF</a> to type onto the page; that
+        tool is made for this case.
+      </p>
+      <h3>"This is an XFA form"</h3>
+      <p>
+        XFA is the XML forms architecture of Adobe. The pages you see are often only a placeholder that asks
+        you to open the file in a desktop reader, and the real layout is in an XML payload. No browser can
+        fill one correctly. Open it in a desktop PDF reader that supports XFA, or ask the issuer for a
+        standard AcroForm version; most departments have one.
+      </p>
+      <h3>A field looks empty after saving</h3>
+      <p>
+        Some producers create fields with no appearance stream. This tool generates appearances with
+        Helvetica on save, which handles the common cases, but a field whose default appearance names an
+        unusual font can still look blank in a strict reader. Save the flattened version: the text is then
+        painted into the page and is always visible.
+      </p>
+      <h3>The on-page inputs are in the wrong place</h3>
+      <p>
+        The tool reads widget rectangles from the file and maps them through the rotation and crop box of the
+        page, so this should be rare. A badly generated form can have widgets that do not match its visible
+        boxes. Hide the on-page inputs and use the full field list below, which uses field names, not
+        coordinates.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why the privacy point is not decorative here</h2>
+      <p>
+        PDF forms ask for your address, date of birth, salary, bank details, national insurance or social
+        security number, medical history and immigration status. For most people this is the most valuable
+        data they ever type into a web page, and online form fillers usually send all of it, with the
+        document, to a server.
+      </p>
+      <p>
+        Here nothing is autosaved, stored or transmitted. Your answers exist in the memory of this tab while
+        you type, and go into a file when you press a build button. If you refresh the page, they are gone,
+        which is correct for a tax return on a shared computer.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

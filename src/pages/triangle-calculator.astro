@@ -1,0 +1,112 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TriangleCalculator from '@/components/tools/math/TriangleCalculator.tsx'
+---
+
+<ToolLayout slug="triangle-calculator">
+  <TriangleCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the triangle solver</h2>
+    <p>
+      Fill in any three of the six boxes and leave the rest empty. The standard labelling applies: side
+      <strong>a</strong> is opposite angle <strong>A</strong>, side <strong>b</strong> is opposite angle
+      <strong>B</strong>, and side <strong>c</strong> is opposite angle <strong>C</strong>. Angles are in
+      degrees. The triangle calculator finds which case you entered, picks the right law and shows the working.
+    </p>
+    <p>
+      Sides have no units, so the answer is in the unit of your input: centimetres in, centimetres out.
+    </p>
+
+    <h2>The five solvable cases</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Case</th>
+            <th scope="col">What you know</th>
+            <th scope="col">Method used</th>
+            <th scope="col">Solutions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>SSS</td><td>All three sides</td><td>Law of cosines for each angle</td><td>One, if the triangle inequality holds</td></tr>
+          <tr><td>SAS</td><td>Two sides and the angle between them</td><td>Law of cosines for the third side</td><td>Exactly one</td></tr>
+          <tr><td>ASA</td><td>Two angles and the side between them</td><td>180° sum, then law of sines</td><td>Exactly one</td></tr>
+          <tr><td>AAS</td><td>Two angles and a side not between them</td><td>180° sum, then law of sines</td><td>Exactly one</td></tr>
+          <tr><td>SSA</td><td>Two sides and an angle not between them</td><td>Law of sines</td><td>Zero, one or two (the ambiguous case)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      AAA (three angles) is not on the list. Three angles fix the shape but not the size, so infinitely many
+      similar triangles fit. The solver needs at least one side length.
+    </p>
+
+    <h2>The law of cosines and the law of sines</h2>
+    <h3>Law of cosines</h3>
+    <p>
+      c² = a² + b² − 2ab·cos(C). Rearranged for an angle it becomes cos(C) = (a² + b² − c²) ÷ 2ab. With C = 90°
+      the cosine term is zero and the law becomes Pythagoras, so the law of cosines is Pythagoras with a
+      correction term for the angle.
+    </p>
+    <h3>Law of sines</h3>
+    <p>
+      a ÷ sin(A) = b ÷ sin(B) = c ÷ sin(C). That shared ratio also equals twice the circumradius. It is the
+      quickest method when you have a matched side–angle pair, but it uses arcsine, which has two answers
+      between 0° and 180°. This causes the ambiguous case below.
+    </p>
+
+    <h2>The ambiguous case (SSA)</h2>
+    <p>
+      Suppose you know angle A, its opposite side a, and another side b. Draw angle A, draw side b along one
+      arm, then draw an arc of radius a from its far end. The arc can miss the other arm, touch it once, or
+      cross it twice:
+    </p>
+    <ul>
+      <li>a &lt; b·sin(A): the arc is too short. No triangle exists.</li>
+      <li>a = b·sin(A): the arc just touches. One right-angled triangle.</li>
+      <li>b·sin(A) &lt; a &lt; b: the arc crosses twice. Two different triangles fit, one acute and one obtuse at B.</li>
+      <li>a ≥ b: only one crossing is on the correct side. One triangle.</li>
+    </ul>
+    <p>
+      When two triangles fit, the solver solves and draws both, and you choose the one your problem needs. Most
+      textbook errors happen here, so the solver does not choose for you.
+    </p>
+
+    <h2>Triangle area and its cross-check</h2>
+    <p>
+      When all three sides are known, Heron’s formula gives the area from the semi-perimeter
+      s = (a + b + c) ÷ 2:
+    </p>
+    <p>Area = √( s(s − a)(s − b)(s − c) )</p>
+    <p>
+      The tool also computes ½·a·b·sin(C) and shows both, so you can check that they agree. The area gives the
+      three heights (h = 2·area ÷ base), the inradius (area ÷ s) and the circumradius (abc ÷ 4·area).
+    </p>
+
+    <h2>Classifying the result</h2>
+    <ul>
+      <li>By sides: equilateral (all three equal), isosceles (exactly two equal), scalene (all different).</li>
+      <li>By angles: right-angled (one angle exactly 90°), obtuse (one angle above 90°), acute (all below 90°).</li>
+    </ul>
+    <p>
+      A triangle can be both, for example isosceles and right-angled, like the 45-45-90 set square.
+    </p>
+
+    <h2>When no triangle exists</h2>
+    <p>
+      Two checks catch impossible inputs. The triangle inequality says each side must be shorter than the sum
+      of the other two, so 2, 3, 9 cannot form a triangle. And the three angles must sum to exactly 180°, so
+      120° and 70° leave nothing for the third. In both cases the solver explains the problem and shows no
+      answer.
+    </p>
+
+    <h2>The diagram</h2>
+    <p>
+      The drawing comes from the solved coordinates, scaled to fit, so it matches your numbers: an almost flat
+      triangle looks like a sliver, and an equilateral one looks equilateral. Each vertex shows its angle and
+      each edge its length. The calculation runs in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

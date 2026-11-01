@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFileBase64 from '@/components/tools/dev/DevEncodeFileBase64.tsx'
+---
+
+<ToolLayout slug="svg-to-base64">
+  <DevEncodeFileBase64 client:load mode="svg" />
+  <Fragment slot="explainer">
+    <h2>SVG to Base64 or URL-encoding?</h2>
+    <p>
+      For SVG, Base64 is usually the wrong choice. SVG is text, so it can go into a <code>data:</code> URI
+      directly, with only the few characters that break CSS escaped. The result is shorter than Base64, the
+      markup stays readable in the stylesheet, and it compresses better in transfer.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>Base64</th><th>URL-encoded</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Typical size versus source</td><td>+33%</td><td>+5% to +15%</td></tr>
+          <tr><td>Readable in the stylesheet</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Gzip / Brotli friendly</td><td>Poor: byte alignment is lost</td><td>Good</td></tr>
+          <tr><td>Safe in an <code>&lt;img src&gt;</code></td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Tolerant of hand-editing</td><td>No</td><td>Yes, with care</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Use the toggle above to switch between the two and compare the character counts for your file. Base64
+      is better in one case: a build pipeline or CMS that damages percent signs or quotes in stylesheet
+      values.
+    </p>
+
+    <h2>What must be escaped</h2>
+    <p>
+      In a URL-encoded SVG data URI, you must handle <code>%</code>, <code>#</code>, <code>&lt;</code>,
+      <code>&gt;</code> and the quote characters. This tool uses the method that works in every CSS parser:
+      it replaces the double quotes inside the markup with single quotes, wraps the whole URI in double
+      quotes, and percent-encodes the rest. A raw <code>#</code> is the usual failure: it starts a fragment
+      identifier and cuts off the icon without an error.
+    </p>
+
+    <h2>You cannot recolour a data URI</h2>
+    <p>
+      Inside <code>background-image</code>, an SVG is an image. <code>fill: currentColor</code>, CSS custom
+      properties and <code>:hover</code> rules in your page no longer reach it. There are three workarounds,
+      best first:
+    </p>
+    <ol>
+      <li>
+        Inline the <code>&lt;svg&gt;</code> element in your HTML or component. The icon then inherits
+        <code>currentColor</code> and all other CSS rules.
+      </li>
+      <li>
+        Use <code>mask-image</code> in place of <code>background-image</code>, with a solid
+        <code>background-color</code> behind it. The mask gives the shape and CSS gives the colour.
+      </li>
+      <li>
+        Generate one data URI per colour at build time. This is crude but works for two or three states.
+      </li>
+    </ol>
+
+    <h2>Sanitise before you inline</h2>
+    <p>
+      An SVG is executable markup: it can contain <code>&lt;script&gt;</code>, event handlers and external
+      references. A data URI in <code>background-image</code> renders in a restricted mode where scripts do
+      not run, but the same file inlined as an <code>&lt;svg&gt;</code> element in your DOM can run them. If
+      the file came from a user, an icon marketplace or a design handoff, read it first. It is text, so you
+      can.
+    </p>
+
+    <h2>Trim the markup first</h2>
+    <p>
+      Editor exports are verbose. Before you encode, remove the editor metadata, any <code>&lt;title&gt;</code>
+      and <code>&lt;desc&gt;</code> you do not need, empty groups, and a <code>width</code>/<code>height</code>
+      pair that conflicts with your CSS. Keep the <code>viewBox</code>, which makes the icon scale. The SVG to
+      Base64 converter collapses runs of whitespace, which is always safe. It does not rewrite path data,
+      because rounded coordinates change rendering in ways a preview may not show.
+    </p>
+  </Fragment>
+</ToolLayout>

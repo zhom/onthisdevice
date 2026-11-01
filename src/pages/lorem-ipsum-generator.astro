@@ -1,0 +1,102 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import LoremIpsumGenerator from '@/components/tools/text/LoremIpsumGenerator.tsx'
+---
+
+<ToolLayout slug="lorem-ipsum-generator">
+  <LoremIpsumGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate placeholder text</h2>
+    <ol>
+      <li>Choose what you need: paragraphs, sentences, individual words or list items.</li>
+      <li>Set the amount with the slider or type an exact figure.</li>
+      <li>Pick a style. Classic Latin is traditional. The modern styles help when a client asks what the Latin means.</li>
+      <li>Turn on HTML wrapping if the text goes into a template, and set the paragraph length to match your real content.</li>
+      <li>Copy the result, download it, or press <strong>Generate new text</strong> for different text.</li>
+    </ol>
+
+    <h2>Where lorem ipsum comes from</h2>
+    <p>
+      The lorem ipsum passage is corrupted Latin from <em>De Finibus Bonorum et Malorum</em>, a
+      treatise on ethics that Cicero wrote in 45 BC. The opening words come from section 1.10.32:
+      <em>“Neque porro quisquam est qui dolorem ipsum quia dolor sit amet…”</em> (“Nor is there anyone
+      who loves pain itself because it is pain.”). A Renaissance typesetter scrambled it into a
+      specimen sheet, and the printing industry has used it since. Letraset put it on dry-transfer
+      sheets in the 1960s, and desktop publishing software brought it into the digital era.
+    </p>
+    <p>
+      It is still used because its word lengths and letter frequencies are like those of English and
+      other Latin-alphabet languages. So a block of it has the right visual texture, but it has no
+      meaning, and nobody edits the copy during a layout review.
+    </p>
+
+    <h2>Choosing a style</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Style</th>
+            <th>Best for</th>
+            <th>Watch out for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Classic Latin</td>
+            <td>Print layouts, type specimens, anything a designer will review</td>
+            <td>Clients occasionally think the site is broken or in the wrong language</td>
+          </tr>
+          <tr>
+            <td>Plain English</td>
+            <td>Testing readability and line-breaking with real word shapes</td>
+            <td>People start reading and commenting on the words</td>
+          </tr>
+          <tr>
+            <td>Tech &amp; startup</td>
+            <td>SaaS mock-ups, pitch decks, product pages</td>
+            <td>Can be mistaken for approved marketing copy</td>
+          </tr>
+          <tr>
+            <td>Corporate jargon</td>
+            <td>Slide decks and annual-report layouts</td>
+            <td>Same risk. Label it clearly as placeholder</td>
+          </tr>
+          <tr>
+            <td>Hipster</td>
+            <td>Demos where you want it to be obvious the copy is fake</td>
+            <td>Not appropriate for a formal client presentation</td>
+          </tr>
+          <tr>
+            <td>Recipe &amp; food</td>
+            <td>Food blogs, menus, editorial layouts</td>
+            <td>Slightly longer average word length than Latin</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How much text do you actually need?</h2>
+    <p>
+      Match the placeholder to the real content, or the layout gives a wrong impression. A hero
+      paragraph is usually 20–40 words, a product description 40–70, a blog paragraph 50–80, and a full
+      article section 150–300. If the finished page will have three-sentence paragraphs, ten-sentence
+      ones make the design look much denser than it will be. Set the sentences-per-paragraph control to
+      what you expect.
+    </p>
+
+    <h2>Accessibility and SEO warnings</h2>
+    <ul>
+      <li>Never publish it. A page indexed with lorem ipsum can be classed as thin or low-quality content, and real visitors lose trust when they see it.</li>
+      <li>Do not use it in alt text. Screen-reader users get nothing from “lorem ipsum dolor”. For decorative images, leave the attribute empty.</li>
+      <li>Do not use it in email templates you send. Filler in a live send is a classic mistake.</li>
+      <li>Search for it before launch. A search for “lorem” across your templates and CMS finds almost all stray blocks.</li>
+    </ul>
+
+    <h2>Everything is generated on your device</h2>
+    <p>
+      The word banks and the lorem ipsum generator are part of the page, so pressing generate makes no
+      request. It works offline, makes unlimited text, and adds no “powered by” line to what you copy.
+    </p>
+  </Fragment>
+</ToolLayout>

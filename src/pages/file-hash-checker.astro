@@ -1,0 +1,145 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FileHashChecker from '@/components/tools/security/FileHashChecker.tsx'
+---
+
+<ToolLayout slug="file-hash-checker">
+  <FileHashChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to verify a download's checksum</h2>
+    <ol>
+      <li>
+        Drop the downloaded file onto the panel above, of any size and type. The tool reads it from your
+        disk in slices and does not upload it.
+      </li>
+      <li>
+        Paste the checksum from the publisher. A bare hex string, a whole <code>sha256sum</code> line, a
+        BSD-style <code>SHA256 (file) = …</code> line, or a colon-separated fingerprint all work. The tool
+        detects the algorithm from the digest length and turns it on.
+      </li>
+      <li>
+        Wait for the pass to finish. The tool shows throughput and progress, and you can cancel at any
+        time.
+      </li>
+      <li>
+        Read the result. A match means the file on your disk is byte-for-byte the file the publisher
+        hashed. A mismatch means it is not: do not open it.
+      </li>
+    </ol>
+
+    <h2>Why an upload-based checksum tool is the wrong idea</h2>
+    <p>
+      You verify a checksum to find out if a file you do not fully trust is genuine. If you upload that
+      file to a website, you give the suspicious bytes to a third party and then trust what it says about
+      them. You also upload what can be gigabytes, and you cannot know what happens to the file later.
+    </p>
+    <p>
+      Verification has meaning only where the file already is. This file hash checker reads the file from
+      your disk with the File API, hashes it locally, and makes no network requests after it loads. You can
+      confirm this in the network panel of your browser while it processes a 10 GB image.
+    </p>
+
+    <h2>Which algorithm should you use?</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Algorithm</th>
+          <th>Digest size</th>
+          <th>Hex characters</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MD5</td>
+          <td>128 bits</td>
+          <td>32</td>
+          <td>Broken for security. Collisions are easy to construct. Fine for detecting corruption.</td>
+        </tr>
+        <tr>
+          <td>SHA-1</td>
+          <td>160 bits</td>
+          <td>40</td>
+          <td>Broken since the 2017 SHAttered collision. Legacy checksums only.</td>
+        </tr>
+        <tr>
+          <td>SHA-256</td>
+          <td>256 bits</td>
+          <td>64</td>
+          <td>The current default for release checksums, signatures and integrity checks.</td>
+        </tr>
+        <tr>
+          <td>SHA-512</td>
+          <td>512 bits</td>
+          <td>128</td>
+          <td>SHA-2 with 64-bit words. No stronger in practice, often faster on 64-bit CPUs.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The important distinction is between accidental and deliberate change. To catch a download that a bad
+      connection truncated, MD5 is enough: a corrupted file does not produce a matching digest by chance. To
+      prove that nobody replaced the file with a malicious one, MD5 and SHA-1 are useless, because an
+      attacker who controls the file can construct a different file with the same digest. Use SHA-256 when
+      the publisher offers it, and treat a project that publishes only MD5 as a mild warning sign.
+    </p>
+
+    <h3>A checksum does not prove authenticity on its own</h3>
+    <p>
+      If the checksum is on the same web page as the download link, an attacker who can replace the file can
+      also replace the checksum. Checksums protect against corruption and against a compromised mirror. They
+      protect against tampering only when the digest comes from an independent source: a signed release file,
+      the signing key of the project, a different domain, or a copy you saved earlier.
+    </p>
+
+    <h2>Hashing very large files in a browser</h2>
+    <p>
+      The native <code>crypto.subtle.digest</code> of the browser is fast but has no streaming interface: it
+      needs the whole input in memory at once, so it cannot handle files larger than a few gigabytes. This
+      tool uses native digests for small files and its own incremental implementations of MD5, SHA-1, SHA-256
+      and SHA-512 for large ones. It feeds them 4 MB at a time and yields to the browser between slices, so the
+      page stays responsive.
+    </p>
+    <p>
+      Peak memory stays at a few megabytes for any file size, so the practical limit is the read speed of your
+      disk, not your RAM. The implementations are checked against the standard FIPS 180-4 and RFC 1321 test
+      vectors, including the difficult cases around block and padding boundaries.
+    </p>
+
+    <h2>The checksums do not match: now what?</h2>
+    <ol>
+      <li>
+        Check that you compare the same algorithm. A SHA-256 digest never matches an MD5 one. The tool detects
+        the algorithm from the length, but when a publisher lists several files, it is easy to copy the wrong
+        line.
+      </li>
+      <li>
+        Check that you have the correct file. Different architectures, editions and point releases have
+        different checksums, and browsers sometimes add <code>(1)</code> to a downloaded file instead of
+        replacing the old one.
+      </li>
+      <li>
+        Download it again, if possible from a different mirror. Most mismatches come from interrupted or
+        truncated downloads, and a second attempt fixes them.
+      </li>
+      <li>
+        If it still does not match, stop. Do not run the installer to "see what happens". Report it to the
+        project, and get the file from the official source.
+      </li>
+    </ol>
+
+    <h2>Command-line equivalents</h2>
+    <p>
+      The results match what the tools of your operating system produce, so you can cross-check:
+    </p>
+    <pre><code>sha256sum ubuntu-24.04.iso            # Linux
+shasum -a 256 ubuntu-24.04.iso        # macOS
+certutil -hashfile ubuntu.iso SHA256  # Windows
+Get-FileHash ubuntu.iso -Algorithm SHA256  # PowerShell</code></pre>
+    <p>
+      The digests are identical, because a hash function has exactly one correct answer for a given set of
+      bytes. With this page, you do not need to remember which of these four commands your machine uses.
+    </p>
+  </Fragment>
+</ToolLayout>

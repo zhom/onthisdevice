@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RotateVideo from '@/components/tools/media/RotateVideo.tsx'
+---
+
+<ToolLayout slug="rotate-video">
+  <RotateVideo client:load mode="rotate" />
+  <Fragment slot="explainer">
+    <h2>Why phone video ends up sideways</h2>
+    <p>
+      A phone camera sensor is fixed in one orientation and always records landscape frames. When you hold
+      the phone upright, the camera app does not turn the picture. It records the same landscape frames and
+      writes a <strong>rotation flag</strong> into the file that says "show this turned 90 degrees". Your
+      photo app reads the flag and shows the video the right way up. Software that ignores the flag shows it
+      sideways.
+    </p>
+    <p>
+      Old media players, some upload forms, some web video pipelines and some TVs ignore the flag. The
+      footage is not damaged; only the instruction is lost.
+    </p>
+
+    <h2>Two ways to rotate a video</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Rewrite the rotation flag</th>
+            <th>Write it into the pixels</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What changes</td>
+            <td>One metadata field</td>
+            <td>Each frame is decoded, turned and re-encoded</td>
+          </tr>
+          <tr>
+            <td>Speed on a 2 GB file</td>
+            <td>Seconds</td>
+            <td>About real time</td>
+          </tr>
+          <tr>
+            <td>Quality</td>
+            <td>Unchanged, bit-for-bit identical</td>
+            <td>One generation of H.264 loss</td>
+          </tr>
+          <tr>
+            <td>Works in</td>
+            <td>Software that reads the flag</td>
+            <td>All software</td>
+          </tr>
+          <tr>
+            <td>Container support</td>
+            <td>MP4, MOV, 3GP only</td>
+            <td>Any input; the output is MP4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Try the flag first, because it is fast and lossless. If the problem app still shows the video sideways,
+      come back and write the rotation into the pixels. Then there is no flag left to ignore.
+    </p>
+
+    <h2>Which way should I turn it?</h2>
+    <ul>
+      <li><strong>90° clockwise</strong>: the top of the picture is on the left. This is the usual fix for a phone held with the volume buttons up.</li>
+      <li><strong>90° counter-clockwise</strong>: the top of the picture is on the right.</li>
+      <li><strong>180°</strong>: the video is upside down. Usually the phone was held the other way up, or the clip came from a dashcam or action camera mounted upside down.</li>
+    </ul>
+    <p>
+      The live preview above the button applies the rotation with CSS, so you can check the direction
+      before you start.
+    </p>
+
+    <h2>A quarter turn swaps the resolution</h2>
+    <p>
+      A 90-degree rotation turns 1920×1080 into 1080×1920: the same pixels in a different shape. The tool
+      shows the exact output dimensions before you start. A 180° turn keeps the dimensions.
+    </p>
+
+    <h2>Rotating is not mirroring</h2>
+    <p>
+      If text in the frame reads backwards, or a selfie recording is the wrong way round, the video is
+      mirrored. Fix it on the <a href="/flip-video">flip video</a> page. Rotation only turns the frame; it
+      never swaps left and right.
+    </p>
+
+    <h2>Runs in this tab</h2>
+    <p>
+      The rotation runs in this tab through FFmpeg compiled to WebAssembly, so your personal recordings stay
+      on your device. With the flag-only method, a multi-gigabyte video is fixed in seconds.
+    </p>
+  </Fragment>
+</ToolLayout>

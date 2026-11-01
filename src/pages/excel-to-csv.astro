@@ -1,0 +1,77 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ExcelToCsv from '@/components/tools/data/ExcelToCsv.tsx'
+---
+
+<ToolLayout slug="excel-to-csv">
+  <ExcelToCsv client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert Excel to CSV</h2>
+    <ol>
+      <li>Drop the workbook onto the page. <code>.xlsx</code>, <code>.xls</code>, <code>.xlsm</code>, <code>.xlsb</code> and <code>.ods</code> all work.</li>
+      <li>Choose the worksheet. The tool lists all sheets in the file, and the preview shows the first twelve rows so you can confirm your choice.</li>
+      <li>Set the delimiter and date format: comma for most systems, semicolon for European Excel, tab for a TSV.</li>
+      <li>Download. Save the current sheet as one CSV, or get all sheets at once as a ZIP with one file per worksheet.</li>
+    </ol>
+
+    <h2>What survives the conversion, and what cannot</h2>
+    <p>
+      CSV is a plain grid of text. That is its strength and its limit. Know what will be lost before you send
+      the file to a colleague.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-max border-collapse text-sm">
+        <thead>
+          <tr>
+            <th class="border-b px-3 py-2 text-left font-semibold">Workbook feature</th>
+            <th class="border-b px-3 py-2 text-left font-semibold">In the CSV</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="border-b px-3 py-2">Cell values and text</td><td class="border-b px-3 py-2">Kept</td></tr>
+          <tr><td class="border-b px-3 py-2">Formulas</td><td class="border-b px-3 py-2">Replaced by their last calculated result</td></tr>
+          <tr><td class="border-b px-3 py-2">Number formats (currency, percent)</td><td class="border-b px-3 py-2">Your choice: raw value or the displayed text</td></tr>
+          <tr><td class="border-b px-3 py-2">Dates</td><td class="border-b px-3 py-2">Kept, in the format you select</td></tr>
+          <tr><td class="border-b px-3 py-2">Merged cells</td><td class="border-b px-3 py-2">Value in the top-left cell; the rest empty</td></tr>
+          <tr><td class="border-b px-3 py-2">Multiple worksheets</td><td class="border-b px-3 py-2">One CSV each; download them together as a ZIP</td></tr>
+          <tr><td class="border-b px-3 py-2">Colours, fonts, borders, column widths</td><td class="border-b px-3 py-2">Not representable in CSV</td></tr>
+          <tr><td class="border-b px-3 py-2">Charts, images, pivot tables, macros</td><td class="border-b px-3 py-2">Not representable in CSV</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Raw values versus displayed text</h2>
+    <p>
+      A cell that shows <code>£1,234.50</code> holds the number <code>1234.5</code> with a currency format.
+      The correct value for your CSV depends on where it goes:
+    </p>
+    <ul>
+      <li>Keep <strong>Use underlying numbers</strong> on (the default) when a database, script or BI tool reads the file. You get <code>1234.5</code>, which all systems can parse, with no symbols or thousands separators.</li>
+      <li>Turn it off when a person reads the file, or when you must reproduce a report exactly as it looked on screen. You get <code>£1,234.50</code>.</li>
+    </ul>
+
+    <h2>Getting dates right</h2>
+    <p>
+      Excel stores a date as the number of days since 30 December 1899, and the format controls how it looks.
+      Export “as displayed” keeps what you saw, but <code>03/04/2026</code> is ambiguous: the third of April in
+      London and the fourth of March in New York. If the CSV goes into an automated system, choose ISO 8601
+      (<code>2026-08-16</code>): it sorts correctly as text, has no locale ambiguity, and all databases accept
+      it.
+    </p>
+
+    <h2>Why the browser is the right place for this</h2>
+    <p>
+      Spreadsheets often hold salary bands, patient lists and unreleased financials. A conversion site gets a
+      copy, and many keep the file for hours. Here SheetJS decodes the workbook in your tab, and no request
+      carries the data. The only limit on file size is the memory of your machine, and the tool works with the
+      network turned off.
+    </p>
+
+    <h2>Related conversions</h2>
+    <p>
+      For structured output, <a href="/excel-to-json">Excel to JSON</a> keeps types and nesting. In the other
+      direction, <a href="/csv-to-excel">CSV to Excel</a> writes a real workbook with auto-fitted columns.
+    </p>
+  </Fragment>
+</ToolLayout>

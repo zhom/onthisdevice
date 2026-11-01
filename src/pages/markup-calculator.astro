@@ -1,0 +1,124 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyMarginMarkup from '@/components/tools/finance/CalcMoneyMarginMarkup.tsx'
+---
+
+<ToolLayout slug="markup-calculator">
+  <CalcMoneyMarginMarkup client:load variant="markup" />
+
+  <Fragment slot="explainer">
+    <h2>Markup is what you add to the cost</h2>
+    <pre><code>selling price = cost × (1 + markup)
+markup %      = (price − cost) ÷ cost × 100</code></pre>
+    <p>
+      Markup is a pricing instruction: start from what you paid and add a percentage to get the price.
+      Buy at 8, apply a 150% markup, and sell at 20. It is the natural way to price when you have a cost
+      list and need a price list, so wholesalers, distributors and trades almost always quote markup.
+    </p>
+
+    <h2>Keystone and the multiples</h2>
+    <p>
+      Retail has traditional names for common markups, and multipliers are faster to use than
+      percentages:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[440px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th style="text-align:right">Multiplier</th>
+            <th style="text-align:right">Markup</th>
+            <th style="text-align:right">Margin</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Cost plus a third</td><td style="text-align:right">× 1.33</td><td style="text-align:right">33%</td><td style="text-align:right">25%</td></tr>
+          <tr><td>Half up</td><td style="text-align:right">× 1.50</td><td style="text-align:right">50%</td><td style="text-align:right">33.3%</td></tr>
+          <tr><td>Keystone</td><td style="text-align:right">× 2.00</td><td style="text-align:right">100%</td><td style="text-align:right">50%</td></tr>
+          <tr><td>Keystone plus</td><td style="text-align:right">× 2.50</td><td style="text-align:right">150%</td><td style="text-align:right">60%</td></tr>
+          <tr><td>Triple</td><td style="text-align:right">× 3.00</td><td style="text-align:right">200%</td><td style="text-align:right">66.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      "Keystone" (double the wholesale cost) is the old default in general retail. It gives a clean 50%
+      margin, and you can double a number in your head on a shop floor.
+    </p>
+
+    <h2>The markup you need for the margin you want</h2>
+    <p>
+      Most people need this calculation, and most get it wrong. For a target margin, the markup is
+      <code>margin ÷ (1 − margin)</code>:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[340px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Target margin</th>
+            <th style="text-align:right">Markup required</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>10%</td><td style="text-align:right">11.1%</td></tr>
+          <tr><td>20%</td><td style="text-align:right">25.0%</td></tr>
+          <tr><td>25%</td><td style="text-align:right">33.3%</td></tr>
+          <tr><td>30%</td><td style="text-align:right">42.9%</td></tr>
+          <tr><td>40%</td><td style="text-align:right">66.7%</td></tr>
+          <tr><td>50%</td><td style="text-align:right">100%</td></tr>
+          <tr><td>60%</td><td style="text-align:right">150%</td></tr>
+          <tr><td>75%</td><td style="text-align:right">300%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Up to about 20%, the two numbers are close, so confusing them does little harm. Above 40% they
+      separate fast. A business that thinks a 60% markup gives a 60% margin actually has 37.5%.
+    </p>
+
+    <h2>Cost-plus pricing: when it works and when it fails</h2>
+    <p>
+      Markup pricing works well for high-volume, low-differentiation goods where costs are known and
+      competition sets a narrow band. It is fast, easy to explain to a customer, and hard to get very
+      wrong.
+    </p>
+    <p>
+      It fails in three places. It ignores what the customer will pay, so you lose money on distinctive
+      products. It puts inefficiency into the price: if your costs are high, your price is high, and the
+      market does not care. On slow-moving stock, it charges too little for capital that sits on a
+      shelf for a year.
+    </p>
+
+    <h2>Building a markup up from the parts</h2>
+    <p>
+      A markup must cover more than profit. To set it, work back from the costs it must cover. This is
+      better than a copy of a sector average:
+    </p>
+    <ul>
+      <li>Overhead recovery: rent, wages, software, insurance, spread across expected volume.</li>
+      <li>Shrinkage and returns: a few per cent in most retail, much more in fashion.</li>
+      <li>Markdowns: if a fifth of stock finally sells at 30% off, the full-price items must cover it.</li>
+      <li>Payment and platform fees: 2–3% for cards, up to 15% on some marketplaces.</li>
+      <li>Profit: what is left, and the only part that is yours.</li>
+    </ul>
+
+    <h2>Marking up a whole cost list</h2>
+    <p>
+      Paste a column of costs into the bulk panel (names optional, comma or tab separated) and set the
+      markup once. Each line shows its price, its profit and the margin that markup gives. Export the
+      result as CSV, Excel or PDF for your price list.
+    </p>
+
+    <h2>Mark up the net figure</h2>
+    <p>
+      Apply markup to the cost without recoverable VAT or GST, and add sales tax to the finished price
+      afterwards. A markup on a tax-inclusive cost adds the markup on the tax to the price. If you are
+      VAT-registered, that tax was never a cost to you.
+    </p>
+
+    <h2>Nothing is uploaded</h2>
+    <p>
+      Your cost list stays on your machine. The markup calculator is static HTML and a small JavaScript
+      island, and all calculations, tables and exports also work offline.
+    </p>
+  </Fragment>
+</ToolLayout>

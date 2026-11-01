@@ -1,0 +1,92 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ColorConverter from '@/components/tools/dev/ColorConverter.tsx'
+---
+
+<ToolLayout slug="color-converter">
+  <ColorConverter client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert a colour</h2>
+    <ol>
+      <li>Type or paste a value in any supported notation, or use the swatch picker.</li>
+      <li>The table below shows all other formats immediately, each with its own copy button.</li>
+      <li>Drag the RGB or HSL sliders to try nearby colours. The text field stays in sync.</li>
+      <li>Set a background colour to get the WCAG contrast ratio and pass or fail badges for each level.</li>
+      <li>Click a tint or shade to make it the new working colour.</li>
+    </ol>
+
+    <h2>What each colour space is for</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Space</th><th>Model</th><th>Best used for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HEX</td><td>Three or four bytes of sRGB</td><td>Design handoff, CSS, anywhere compactness matters</td></tr>
+        <tr><td>RGB</td><td>Additive red, green, blue</td><td>What screens emit; canvas and image pixel work</td></tr>
+        <tr><td>HSL</td><td>Hue, saturation, lightness</td><td>Quick manual changes to hue or lightness</td></tr>
+        <tr><td>HSV / HSB</td><td>Hue, saturation, value</td><td>The model behind most colour pickers</td></tr>
+        <tr><td>OKLCH</td><td>Perceptual lightness, chroma, hue</td><td>Generating palettes and states that look evenly spaced</td></tr>
+        <tr><td>CMYK</td><td>Subtractive cyan, magenta, yellow, key</td><td>Print, but only as an approximation without an ICC profile</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Why OKLCH beats HSL for palettes</h2>
+    <p>
+      HSL "lightness" is the average of the highest and lowest RGB channels, and it does not match how
+      the eye works. Pure yellow at <code>hsl(60 100% 50%)</code> and pure blue at
+      <code>hsl(240 100% 50%)</code> have the same HSL lightness, but the yellow is very bright and the
+      blue is nearly black. If you make a set of buttons by rotating the hue at a fixed HSL lightness,
+      some need white text and others need black.
+    </p>
+    <p>
+      OKLCH uses the Oklab model, which was fitted to perceptual data. Equal changes on its L axis look
+      like equal changes in brightness for all hues, so a scale made by stepping L gives a consistent
+      palette. For this reason CSS Color 4 added it, and design systems are moving to it.
+    </p>
+
+    <h2>How WCAG contrast is calculated</h2>
+    <p>
+      Each sRGB channel is divided by 255, then linearised: values at or below 0.04045 are divided by
+      12.92, and the rest go through <code>((c + 0.055) / 1.055)<sup>2.4</sup></code>. Relative
+      luminance is then <code>0.2126R + 0.7152G + 0.0722B</code>. Green has the largest weight because
+      human vision is most sensitive to it. The ratio between two colours is
+      <code>(L<sub>lighter</sub> + 0.05) / (L<sub>darker</sub> + 0.05)</code>, a number between 1:1 and
+      21:1.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Requirement</th><th>Level AA</th><th>Level AAA</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Body text under 18pt (24px)</td><td>4.5:1</td><td>7:1</td></tr>
+        <tr><td>Large text: 18pt (24px), or 14pt (18.66px) bold</td><td>3:1</td><td>4.5:1</td></tr>
+        <tr><td>Icons, borders and other meaningful UI</td><td>3:1</td><td>Not defined</td></tr>
+        <tr><td>Decorative graphics, logos, disabled controls</td><td>Exempt</td><td>Exempt</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      The ratio is a minimum, not proof of legibility. A thin font weight at 4.5:1 is still hard to read,
+      and the formula ignores font size, weight and layout. Check the sample block above as well as the
+      number.
+    </p>
+
+    <h2>Transparency</h2>
+    <p>
+      Contrast is defined only between two opaque colours, so the tool first flattens a translucent
+      foreground onto the background you chose, as the browser does. When you change the background,
+      the ratio changes: a colour at 60% alpha that passes on white can fail on a mid-grey card.
+    </p>
+
+    <h2>About the CMYK figures</h2>
+    <p>
+      The conversion uses the standard device-independent formula with no colour management. Real print
+      output depends on the press, the ink set, the paper and an ICC profile, and many sRGB colours
+      (saturated cyans and greens most of all) cannot be printed in CMYK. Use these numbers as a
+      starting point to discuss with your printer, not as final artwork values.
+    </p>
+  </Fragment>
+</ToolLayout>

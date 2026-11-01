@@ -1,0 +1,118 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PassphraseGenerator from '@/components/tools/security/PassphraseGenerator.tsx'
+---
+
+<ToolLayout slug="passphrase-generator">
+  <PassphraseGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate a passphrase</h2>
+    <ol>
+      <li>
+        Choose how many words. Five is a good default. Four is acceptable behind a rate-limited
+        login. Use six or more for a password manager, a laptop disk or a backup archive that an
+        attacker could copy and attack with no time limit.
+      </li>
+      <li>
+        Pick a separator. Hyphens keep the phrase readable and are accepted almost everywhere. Spaces
+        are more natural to type, but some login forms remove them without a warning.
+      </li>
+      <li>
+        Add a digit or symbol only if a form requires it. The tool shows how many bits each option
+        adds, so you can see it is for compliance, not security.
+      </li>
+      <li>
+        Generate again until you get a phrase you can picture. This is the only step where human
+        judgement helps. Rejecting phrases you dislike does not reduce entropy much, if you do not
+        filter for a pattern.
+      </li>
+      <li>
+        Write it down while you learn it. A passphrase you forget and cannot recover is worse than a
+        slightly weaker one you can. For most people, paper in a drawer is safe enough for the first
+        week.
+      </li>
+    </ol>
+
+    <h2>Why passphrases work</h2>
+    <p>
+      Human memory is good at words and bad at random characters. A passphrase gets its entropy from the
+      number of words, not from complex characters. But a machine must choose the words. A phrase you
+      invent (a song lyric, a saying, a sentence about your dog) has almost no entropy, because natural
+      English is very predictable and attackers have built phrase dictionaries for years.
+    </p>
+    <p>
+      This passphrase generator draws each word independently and uniformly from a list of exactly 1,024
+      words, so each word adds exactly log2(1024) = 10 bits. The arithmetic is simple:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Words</th>
+          <th>Entropy</th>
+          <th>Possible phrases</th>
+          <th>Slow hash (20k/s)</th>
+          <th>Fast hash (100 G/s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>3</td><td>30 bits</td><td>1.1 billion</td><td>7 hours</td><td>under a second</td></tr>
+        <tr><td>4</td><td>40 bits</td><td>1.1 trillion</td><td>10 months</td><td>5 seconds</td></tr>
+        <tr><td>5</td><td>50 bits</td><td>1.1 quadrillion</td><td>892 years</td><td>2 hours</td></tr>
+        <tr><td>6</td><td>60 bits</td><td>1.2 quintillion</td><td>913 thousand years</td><td>2 months</td></tr>
+        <tr><td>7</td><td>70 bits</td><td>1.2 sextillion</td><td>935 million years</td><td>187 years</td></tr>
+        <tr><td>8</td><td>80 bits</td><td>1.2 septillion</td><td>958 billion years</td><td>192 thousand years</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Note the "fast hash" column. If a site stores your password as an unsalted SHA-1, as many breached
+      sites did, four words break in seconds. So use six words for anything that protects other
+      secrets.
+    </p>
+
+    <h3>Diceware, and why this list has 1,024 words</h3>
+    <p>
+      The original Diceware list, published by Arnold Reinhold in 1995, has 7,776 entries because that
+      is 6<sup>5</sup>: five throws of a physical die select a word with no arithmetic. Each word is
+      worth 12.9 bits. This tool uses no dice, so the list has 2<sup>10</sup> words. Each word is worth
+      exactly ten bits, and you can check the total entropy in your head: five words, fifty bits.
+    </p>
+    <p>
+      The words are ordinary English, three to eight lowercase letters, with no apostrophes, no accents,
+      no plural-and-singular pairs, and no words that are easy to mishear when read aloud. You can
+      download the complete list from the tool above and count it yourself.
+    </p>
+
+    <h2>Common mistakes</h2>
+    <ul>
+      <li>
+        Choosing the words yourself. "Correct horse battery staple" is famous, so it is in all
+        wordlists on the internet. So is any phrase you thought of because it felt random.
+      </li>
+      <li>
+        Rejecting phrases until one "sounds right". If you filter for grammatical phrases, the search
+        space becomes much smaller. To reject one or two because they are hard to type is fine. To
+        reject fifty until you get a sentence is not.
+      </li>
+      <li>
+        Thinking capitalisation adds strength. A capital first letter on each word is a rule, and
+        attackers apply rules first. The tool reports zero extra bits for it.
+      </li>
+      <li>
+        Using the passphrase again. A 60-bit passphrase used on ten sites is only as safe as the least
+        careful of those ten.
+      </li>
+    </ul>
+
+    <h2>Where a passphrase is the right choice</h2>
+    <p>
+      Use one wherever you have to type the secret from memory: your password manager's master
+      password, a full-disk encryption key, a laptop or phone login, an SSH key passphrase, a
+      recovery phrase for a backup archive. For all other logins (the hundreds you never type by hand),
+      let the password manager generate long random strings. Use a memorable secret only where you
+      must remember it.
+    </p>
+  </Fragment>
+</ToolLayout>

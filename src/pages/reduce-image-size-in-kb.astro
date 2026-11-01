@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="reduce-image-size-in-kb">
+  <CompressImageToTarget client:load targetKb={150} inputLabel="Drop your images and type the KB limit you were given" />
+
+  <Fragment slot="explainer">
+    <h2>Type the number the form gave you</h2>
+    <p>
+      To reduce an image size in KB, you need the limit, and upload limits differ: 35 KB, 80 KB, 240 KB,
+      3 MB. Type the number and press compress. The encoder finds the highest-quality file that fits under
+      it, then shows the exact byte count and each attempt it made.
+    </p>
+
+    <h2>Common upload limits</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Where</th><th>Typical limit</th><th>Practical advice</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Exam and recruitment portals</td><td>20–50 KB photo, 10–20 KB signature</td><td>Crop tightly first; set the pixel dimensions they specify in the width cap</td></tr>
+          <tr><td>Visa and passport uploads</td><td>50 KB to 1 MB</td><td>Use <a href="/passport-photo-maker">Passport Photo Maker</a> first for the exact crop</td></tr>
+          <tr><td>Web pages and blogs</td><td>100–300 KB</td><td>Cap the width at 1200–1920 px; prefer WebP</td></tr>
+          <tr><td>Email attachments</td><td>500 KB to 2 MB each</td><td>Base64 adds about a third in transit</td></tr>
+          <tr><td>Marketplace and classified listings</td><td>1–5 MB</td><td>Rarely tight; 1 MB keeps full resolution</td></tr>
+          <tr><td>Forum avatars</td><td>50–200 KB, fixed pixel size</td><td>Set the width cap to their pixel size first</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How the search works</h2>
+    <ol>
+      <li>The tool applies your width cap first, so the search works on the dimensions you want.</li>
+      <li>It encodes the image at quality 92 and measures it. If the file fits, it keeps that quality and compresses no further.</li>
+      <li>If not, it binary-searches the quality range over about nine encodes and keeps the highest setting under the target.</li>
+      <li>If the lowest quality is still too large, it searches the pixel scale with a Lanczos3 resample, for up to eight more attempts.</li>
+      <li>If nothing fits, you get the smallest file it made and a warning.</li>
+    </ol>
+
+    <h2>Choosing a target when you have a range</h2>
+    <p>
+      Aim at the top of the range. For “between 20 KB and 50 KB”, submit 49 KB: the largest allowed file is
+      the sharpest one, and a much smaller file gains nothing. Some portals also have a minimum, usually to
+      reject blank or placeholder images. The result shows the achieved size, so you can check both limits.
+    </p>
+
+    <h2>KB, KiB and the 2% margin</h2>
+    <p>
+      The tool treats 1 KB as 1024 bytes and aims 2% below the target. Some validators measure the
+      base64-encoded length in place of the raw one, some count the multipart form overhead, and all of them
+      reject a file one byte over. If your form uses 1000-byte KB, a 100 KB target here still gives about
+      100,000 bytes, so it passes both readings.
+    </p>
+
+    <h2>Getting the best result at any target</h2>
+    <ul>
+      <li>Crop before you compress. Fewer pixels cost no quality.</li>
+      <li>Cap the width, most of all for images shown small.</li>
+      <li>Pick WebP where the form allows it. It is about a third smaller than JPEG at the same visual quality.</li>
+      <li>Do not compress twice. Start from your original file each time, because JPEG generation loss adds up.</li>
+      <li>Check the attempt table. If the chosen quality is above 90, your target is generous; below 55, crop the image.</li>
+    </ul>
+
+    <h2>Batch and ZIP download</h2>
+    <p>
+      Drop in any number of files. Each one gets its own search to the same target, with a progress row and
+      a single or ZIP download. There is no daily limit or watermark. The search loop runs on your CPU, which
+      is what makes an exact byte target practical.
+    </p>
+
+    <h2>Fixed targets</h2>
+    <p>
+      <a href="/compress-image-to-20kb">20 KB</a> ·
+      <a href="/compress-image-to-50kb">50 KB</a> ·
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/compress-image-to-500kb">500 KB</a> ·
+      <a href="/compress-image-to-1mb">1 MB</a>. For a quality slider, use
+      <a href="/compress-image">Compress Image</a>. To change pixel dimensions, use
+      <a href="/resize-image">Resize Image</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

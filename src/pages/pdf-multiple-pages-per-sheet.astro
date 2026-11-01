@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfMultiplePagesPerSheet from '@/components/tools/pdf/PdfMultiplePagesPerSheet.tsx'
+---
+
+<ToolLayout slug="pdf-multiple-pages-per-sheet">
+  <PdfMultiplePagesPerSheet client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>N-up printing, baked into the file</h2>
+      <p>
+        Every desktop print driver can put several pages on a sheet, and every one of them hides the
+        setting somewhere different, forgets it between jobs, and gives you no way to check the
+        result before paper comes out. Producing the N-up layout as a PDF instead makes it part of
+        the document: you can proof it, email it, print it from a phone, or hand it to a print shop
+        and get exactly what you saw.
+      </p>
+    </section>
+
+    <section>
+      <h2>How many pages per sheet is still readable?</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Layout</th>
+            <th scope="col">Grid on A4</th>
+            <th scope="col">Each page becomes</th>
+            <th scope="col">11 pt text reads as</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2-up</td><td>2 × 1 landscape</td><td>~70% of A4</td><td>~7.8 pt, comfortable</td></tr>
+          <tr><td>4-up</td><td>2 × 2 portrait</td><td>~49%</td><td>~5.4 pt, readable close up</td></tr>
+          <tr><td>6-up</td><td>2 × 3 portrait</td><td>~40%</td><td>~4.4 pt, skim only</td></tr>
+          <tr><td>9-up</td><td>3 × 3</td><td>~32%</td><td>~3.5 pt, headings only</td></tr>
+          <tr><td>16-up</td><td>4 × 4</td><td>~24%</td><td>~2.6 pt, a visual index</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The percentages assume a 10 mm outer margin and a 5 mm gap; reduce those and every figure
+        improves slightly. Use 2-up for something you will actually read, 4-up for lecture handouts,
+        and 9-up or 16-up as a contact sheet for finding a page rather than reading it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why the output stays sharp</h2>
+      <p>
+        Each source page becomes a PDF form XObject (a reusable vector description of the page) and
+        goes on the sheet with a scaling matrix. No pixels are involved. Text
+        remains real text, so the output is searchable and copyable, and it prints at the full
+        resolution of the device rather than at whatever DPI a rasteriser would have chosen.
+      </p>
+      <p>
+        The practical consequence: 4-up output from this tool is legibly sharper than 4-up produced
+        by any service that renders pages to images first, which is what most browser-based
+        converters do.
+      </p>
+    </section>
+
+    <section>
+      <h2>Across then down, or down then across</h2>
+      <p>
+        In a 2 × 2 grid, &ldquo;across then down&rdquo; places pages 1 and 2 on the top row and 3
+        and 4 on the bottom. &ldquo;Down then across&rdquo; places 1 and 3 in the left column and 2
+        and 4 in the right. The first matches how a Latin-script reader scans a page and is the
+        default; the second is what you want when the sheets will be guillotined into columns and
+        stacked, which is how small booklets are cut.
+      </p>
+      <p>The numbered preview grid updates live so you can see which one you are getting.</p>
+    </section>
+
+    <section>
+      <h2>Printing it</h2>
+      <ul>
+        <li>
+          Choose <strong>actual size</strong> or 100% in the print dialog. &ldquo;Fit to page&rdquo;
+          scales an already-shrunk sheet a second time.
+        </li>
+        <li>
+          Do <em>not</em> also enable the driver&rsquo;s own multiple-pages-per-sheet option, or you
+          will get 4 pages of 4 pages.
+        </li>
+        <li>
+          Turn on the thin border if you will cut the sheet. It gives you a line to follow.
+        </li>
+        <li>
+          For double-sided N-up, print on both sides with &ldquo;flip on long edge&rdquo; so the
+          grids line up back to back.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>This is not booklet imposition</h2>
+      <p>
+        A saddle-stitched booklet needs pages reordered as 8-1, 2-7, 6-3, 4-5 so that folding the
+        stack gives the correct sequence. That is a different operation, and this tool does not do it.
+        It lays out pages in reading order. For a folded booklet, impose the pages
+        first with <a href="/organize-pdf">Organize PDF</a> and then run 2-up here.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

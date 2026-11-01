@@ -1,0 +1,123 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyAmortization from '@/components/tools/finance/CalcMoneyAmortization.tsx'
+---
+
+<ToolLayout slug="amortization-schedule-calculator">
+  <CalcMoneyAmortization client:load />
+
+  <Fragment slot="explainer">
+    <h2>What an amortization schedule actually tells you</h2>
+    <p>
+      A loan quote gives you one number: the monthly payment. An amortization schedule shows each of
+      the 360 payments and how much of each one reduces the debt and how much is interest. On a long
+      loan, the two parts are very unequal at the start.
+    </p>
+    <p>
+      On a 320,000 loan at 6.25% over thirty years, the payment is 1,970.30. Of the first payment,
+      1,666.67 is interest and only 303.63 reduces the balance. Principal is larger than interest only
+      from payment 228, late in year nineteen. The balance chart above marks this crossover point for
+      your numbers.
+    </p>
+
+    <h2>The formula, and why it looks like that</h2>
+    <p>
+      The level payment on a fixed-rate loan comes from the annuity formula:
+    </p>
+    <pre><code>M = L × i / (1 − (1 + i)^−n)</code></pre>
+    <p>
+      <code>L</code> is the amount borrowed, <code>i</code> is the monthly interest rate (the annual
+      nominal rate divided by twelve) and <code>n</code> is the number of payments. The denominator is
+      the present-value factor of an annuity: the single sum today that is worth n payments of one
+      unit, discounted at i. The loan divided by this factor is the payment that clears the debt in
+      exactly n months.
+    </p>
+    <p>
+      Each month, the schedule does two calculations. Interest is the opening balance times
+      <code>i</code>, and the rest of the payment reduces the principal. The shape of the curve, the
+      crossover point and the effect of overpayments all come from these two lines.
+    </p>
+
+    <h2>Why overpaying works so well</h2>
+    <p>
+      An extra payment cancels all future interest that the money would have generated. Paying 1,000
+      off a 6.25% loan with twenty years left saves the compounding on 1,000 for twenty years, about
+      2,450, and not only 62.50.
+    </p>
+    <p>
+      For this reason, the saving is largest early in the loan. The same 1,000 paid in year 28 saves
+      almost nothing, because almost no interest is left to cancel. When you overpay, timing matters
+      more than size.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Extra per month</th>
+            <th style="text-align:right">Term becomes</th>
+            <th style="text-align:right">Interest saved</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>0</td><td style="text-align:right">30 yr 0 mo</td><td style="text-align:right">0</td></tr>
+          <tr><td>100</td><td style="text-align:right">26 yr 3 mo</td><td style="text-align:right">57,725</td></tr>
+          <tr><td>250</td><td style="text-align:right">22 yr 4 mo</td><td style="text-align:right">115,679</td></tr>
+          <tr><td>500</td><td style="text-align:right">18 yr 1 mo</td><td style="text-align:right">175,303</td></tr>
+          <tr><td>1,000</td><td style="text-align:right">13 yr 3 mo</td><td style="text-align:right">238,435</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      For a 320,000 loan at 6.25% over 30 years, with scheduled interest of 389,303. Enter your own
+      figures above to get the exact saving and the new payoff date.
+    </p>
+
+    <h2>Before you overpay, check two things</h2>
+    <ol>
+      <li>
+        Prepayment penalties: rare on US conventional mortgages, common on some European fixed-rate
+        deals, and normal on subprime car finance. Read the agreement.
+      </li>
+      <li>
+        How the payment is applied: many servicers treat unmarked extra money as a prepaid instalment,
+        not a principal reduction, and this saves you nothing. You usually must write "apply to
+        principal" each time.
+      </li>
+    </ol>
+
+    <h2>Reading the schedule</h2>
+    <ul>
+      <li>Payment: the total that leaves your account, including any extra principal.</li>
+      <li>Interest: the opening balance multiplied by the monthly rate.</li>
+      <li>Principal: the scheduled part of the payment that reduces the debt.</li>
+      <li>Extra: any overpayment, applied to principal in the same month.</li>
+      <li>Interest to date: the running total, which is the figure to watch.</li>
+      <li>Balance: what you owe after that payment clears.</li>
+    </ul>
+    <p>
+      The yearly tab groups the same data by calendar year, which is the view lenders and tax
+      preparers usually want. The Excel export has both views as separate sheets, the CSV export has
+      the monthly schedule, and the PDF prints both.
+    </p>
+
+    <h2>Precision</h2>
+    <p>
+      All figures use 40-digit decimal arithmetic, not floating point, and are rounded to the minor
+      currency unit once, where a servicer would round. Interest is charged on the opening balance and
+      rounded to the cent each month, which is standard for fixed-rate mortgages and instalment loans.
+      For a standard fixed-rate loan, the schedule matches a lender statement to the penny.
+    </p>
+    <p>
+      Loans with daily interest, such as some HELOCs and Canadian variable mortgages, differ by a few
+      units over a full term. The daily method charges slightly more when payment dates fall late in a
+      long month.
+    </p>
+
+    <h2>Nothing here leaves your device</h2>
+    <p>
+      The calculation and all three exports run in your browser, so your balance, rate and payoff plan
+      are not sent anywhere. To check, open the network tab while you type, or turn off Wi-Fi and
+      continue.
+    </p>
+  </Fragment>
+</ToolLayout>

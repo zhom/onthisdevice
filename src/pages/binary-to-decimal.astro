@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeBinary from '@/components/tools/text/DevEncodeBinary.tsx'
+---
+
+<ToolLayout slug="binary-to-decimal">
+  <DevEncodeBinary client:load kind="number" direction="decode" />
+  <Fragment slot="explainer">
+    <h2>Place values, written out</h2>
+    <p>
+      Each position in a binary number is worth twice the position to its right. Add the positions
+      that hold a 1 to get the decimal value. The formula block above shows this with your digits, so
+      you can copy the working and not only the answer.
+    </p>
+    <pre><code>1 0 1 1 0 1
+32 16  8  4  2  1
+32  +  8 + 4  +  1 = 45</code></pre>
+
+    <h2>The doubling method</h2>
+    <p>
+      This method is faster for long numbers, and hardware works in a similar way. Start at zero. For
+      each bit from the left, double the value and add the bit.
+    </p>
+    <pre><code>101101
+0×2 + 1 = 1
+1×2 + 0 = 2
+2×2 + 1 = 5
+5×2 + 1 = 11
+11×2 + 0 = 22
+22×2 + 1 = 45</code></pre>
+    <p>You need no powers of two and no table, at any length.</p>
+
+    <h2>Grouping in fours</h2>
+    <p>
+      Four bits are exactly one hex digit, so binary is usually grouped in nibbles. When you know the
+      sixteen four-bit patterns, you can read a binary number as hex in your head and then convert to
+      decimal if necessary:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Bits</th><th>Hex</th><th>Dec</th><th>Bits</th><th>Hex</th><th>Dec</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0000</td><td>0</td><td>0</td><td>1000</td><td>8</td><td>8</td></tr>
+          <tr><td>0001</td><td>1</td><td>1</td><td>1001</td><td>9</td><td>9</td></tr>
+          <tr><td>0010</td><td>2</td><td>2</td><td>1010</td><td>A</td><td>10</td></tr>
+          <tr><td>0011</td><td>3</td><td>3</td><td>1011</td><td>B</td><td>11</td></tr>
+          <tr><td>0100</td><td>4</td><td>4</td><td>1100</td><td>C</td><td>12</td></tr>
+          <tr><td>0101</td><td>5</td><td>5</td><td>1101</td><td>D</td><td>13</td></tr>
+          <tr><td>0110</td><td>6</td><td>6</td><td>1110</td><td>E</td><td>14</td></tr>
+          <tr><td>0111</td><td>7</td><td>7</td><td>1111</td><td>F</td><td>15</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Is that value signed or unsigned?</h2>
+    <p>
+      The bits alone do not tell you. <code>11111111</code> is 255 as an unsigned byte and −1 as a
+      signed one. The meaning comes from the type that the code declared. If a value suddenly becomes a
+      very large positive number, suspect an unsigned reading of a negative value. Enter a minus sign
+      here to see the two's complement pattern that the hardware stores.
+    </p>
+
+    <h2>Where a stray binary value comes from</h2>
+    <ul>
+      <li>A permission or feature-flag bitmask printed for debugging.</li>
+      <li>A register value in a datasheet or a driver log.</li>
+      <li>A subnet mask, where 24 ones followed by 8 zeros is <code>255.255.255.0</code>.</li>
+      <li>A logic-analyser or oscilloscope capture.</li>
+      <li>A puzzle, which is the most common reason people come to this page.</li>
+    </ul>
+
+    <h2>Precision</h2>
+    <p>
+      The conversion uses BigInt, so a 512-bit number converts exactly, with no rounding. Converters
+      that use ordinary JavaScript numbers give wrong digits above 2⁵³, with no warning.
+    </p>
+  </Fragment>
+</ToolLayout>

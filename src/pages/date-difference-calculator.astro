@@ -1,0 +1,113 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DateDifferenceCalculator from '@/components/tools/datetime/DateDifferenceCalculator.tsx'
+---
+
+<ToolLayout slug="date-difference-calculator">
+  <DateDifferenceCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to count the days between two dates</h2>
+    <ol>
+      <li>Enter the start date and the end date. The order does not matter; the tool swaps reversed dates.</li>
+      <li>
+        Decide if the end date counts. <strong>Include end date</strong> answers "how many days is this
+        booking"; without it, the tool answers "how much time has passed".
+      </li>
+      <li>Turn on <strong>Business days only</strong> to ignore Saturdays and Sundays.</li>
+      <li>
+        Turn on <strong>Include time of day</strong> when you need hours and minutes as well as whole days.
+      </li>
+    </ol>
+
+    <h2>Inclusive or exclusive: the one decision that changes the answer</h2>
+    <p>
+      This causes most "the calculator is wrong" complaints, and it is almost always a question of definition,
+      not arithmetic. Between 3 June and 5 June there are two days of elapsed time, but three days on the
+      calendar. Both numbers are correct; they answer different questions.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Setting</th>
+            <th>3 June to 5 June</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>How long until the deadline?</td>
+            <td>Exclude end date</td>
+            <td>2 days</td>
+          </tr>
+          <tr>
+            <td>How many nights is the hotel stay?</td>
+            <td>Exclude end date</td>
+            <td>2 nights</td>
+          </tr>
+          <tr>
+            <td>How many days am I on holiday?</td>
+            <td>Include end date</td>
+            <td>3 days</td>
+          </tr>
+          <tr>
+            <td>How many days of leave do I book?</td>
+            <td>Include end date</td>
+            <td>3 days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Contracts and statutes usually state this explicitly. Phrases such as "clear days", "inclusive of both
+      dates" or "from and including" exist because the default is ambiguous.
+    </p>
+
+    <h2>Why months are not 30 days</h2>
+    <p>
+      Calendar months have 28, 29, 30 or 31 days, so a "months between" figure needs a convention. This date
+      difference calculator counts whole calendar months from the start date and reports the remaining days
+      separately, as rent, notice periods and subscriptions work. It also shows the average-month approximation
+      (total days divided by 30.436875, the mean Gregorian month) with a clear label, because some financial
+      calculations need exactly that.
+    </p>
+    <p>
+      The average year figure uses 365.2425 days, the length of the mean Gregorian year after the 4-year, 100-year
+      and 400-year leap rules are averaged.
+    </p>
+
+    <h2>Business days here versus the business days calculator</h2>
+    <p>
+      The business-day count on this page removes only Saturdays and Sundays. That answers most quick questions,
+      but SLAs and legal deadlines usually also exclude public holidays, and some regions do not use a
+      Saturday–Sunday weekend. In those cases, use the business days calculator, where you can set the weekend days
+      and keep your own holiday list.
+    </p>
+
+    <h2>Accuracy notes</h2>
+    <ul>
+      <li>
+        Leap years follow the full Gregorian rule: divisible by 4, except centuries, except centuries divisible by
+        400. The year 2000 was a leap year; 1900 and 2100 are not.
+      </li>
+      <li>
+        Day counts use calendar dates, not timestamps, so a daylight-saving change inside the range cannot add or
+        remove a day.
+      </li>
+      <li>
+        With time of day on, hours and minutes are measured in the local timezone of your device, so a day that
+        crosses a DST boundary is correctly 23 or 25 hours long.
+      </li>
+      <li>Dates before 1582 use the proleptic Gregorian calendar, as ISO 8601 specifies.</li>
+    </ul>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Calculating notice periods, probation ends and contract terms.</li>
+      <li>Counting days sober, days since a project started, or days until a wedding.</li>
+      <li>Checking a 90-day visa window or a 30-day return policy.</li>
+      <li>Invoice ageing: how many days past due an unpaid invoice is.</li>
+      <li>Pregnancy and medical timelines given in weeks plus days.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

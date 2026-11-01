@@ -1,0 +1,224 @@
+---
+import BaseLayout from './BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import ToolCard from '@/components/site/ToolCard.astro'
+import ShareBar from '@/components/site/ShareBar.astro'
+import Icon from '@/components/site/Icon.tsx'
+import Toaster from '@/components/site/Toaster.tsx'
+import NextTools from '@/components/site/search/NextTools.tsx'
+import { fitTitle } from '@/lib/seo'
+import { hasPage } from '@/components/site/pages'
+import { cn } from '@/lib/utils'
+import { CATEGORY_BY_ID, categoryHref, relatedTools, requireTool } from '@/lib/tools'
+
+interface Props {
+  slug: string
+  /** Override the generated <title>. */
+  title?: string
+  /** Override the meta description (defaults to the registry description). */
+  description?: string
+  /** Wider working area for canvas editors. */
+  width?: 'default' | 'wide'
+}
+
+const { slug, title: titleOverride, description: descriptionOverride, width = 'default' } = Astro.props
+
+const tool = requireTool(slug)
+const category = CATEGORY_BY_ID[tool.category]
+const heading = tool.h1 ?? tool.title
+const description = descriptionOverride ?? tool.description
+
+const pageTitle = titleOverride ?? fitTitle([`${tool.title} | onthisdevice`, tool.title])
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const toolUrl = new URL(`/${tool.slug}`, SITE).href
+const faqs = tool.faqs ?? []
+const related = relatedTools(tool, 12).filter(hasPage).slice(0, 6)
+const hasExplainer = Astro.slots.has('explainer')
+
+const FILE_CATEGORIES = new Set(['pdf', 'pdf-convert', 'image-convert', 'image-edit', 'media', 'data', 'redact'])
+const handlesFiles = FILE_CATEGORIES.has(tool.category) || (tool.accepts?.length ?? 0) > 0
+const promise = handlesFiles ? 'Runs in your browser. Files are never uploaded.' : 'Runs in your browser. Nothing you enter is sent.'
+
+const crumbs = [
+  { name: 'Home', url: `${SITE.origin}/` },
+  ...(category ? [{ name: category.title, url: new URL(categoryHref(category), SITE).href }] : []),
+  { name: tool.title, url: toolUrl },
+]
+
+const jsonLd: object[] = [
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${toolUrl}#breadcrumbs`,
+    itemListElement: crumbs.map((crumb, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: crumb.name,
+      item: crumb.url,
+    })),
+  },
+  {
+    '@type': 'WebApplication',
+    '@id': `${toolUrl}#app`,
+    name: tool.title,
+    url: toolUrl,
+    description: tool.description,
+    applicationCategory: category?.group === 'calculators' ? 'UtilitiesApplication' : 'MultimediaApplication',
+    applicationSubCategory: category?.title,
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires a modern browser with JavaScript and WebAssembly.',
+    isAccessibleForFree: true,
+    inLanguage: 'en',
+    image: new URL(`/og/${tool.slug}.png`, SITE).href,
+    ...(tool.updated ? { dateModified: tool.updated } : {}),
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    featureList: ['Runs entirely in the browser', 'No upload', 'No account', 'No size limit beyond device memory'],
+    publisher: { '@id': `${SITE.origin}/#organization` },
+  },
+]
+if (faqs.length > 0) {
+  jsonLd.push({
+    '@type': 'FAQPage',
+    '@id': `${toolUrl}#faq`,
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.q,
+      acceptedAnswer: { '@type': 'Answer', text: faq.a },
+    })),
+  })
+}
+
+const PROSE = [
+  'text-[1rem] leading-7 text-muted-foreground',
+  '[&>*:first-child]:mt-0',
+  '[&_h2]:mt-12 [&_h2]:mb-3 [&_h2]:text-[1.5rem] [&_h2]:font-[700] [&_h2]:text-foreground [&_h2]:text-balance',
+  '[&_h3]:mt-8 [&_h3]:mb-2 [&_h3]:text-[1.125rem] [&_h3]:font-[650] [&_h3]:text-foreground',
+  '[&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:text-base [&_h4]:font-[650] [&_h4]:text-foreground',
+  '[&_p]:my-4 [&_p]:text-pretty',
+  '[&_ul]:my-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_ul]:marker:text-muted-foreground',
+  '[&_ol]:my-4 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-5 [&_ol]:marker:text-muted-foreground [&_ol]:marker:font-[600]',
+  '[&_a]:font-[600] [&_a]:text-foreground [&_a]:underline [&_a]:decoration-muted-foreground [&_a]:underline-offset-4 [&_a:hover]:decoration-foreground',
+  '[&_strong]:font-[650] [&_strong]:text-foreground [&_b]:text-foreground',
+  '[&_em]:not-italic [&_i]:not-italic',
+  '[&_code]:rounded-sm [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[0.85em] [&_code]:break-words [&_code]:text-foreground',
+  '[&_pre]:my-5 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:p-4 [&_pre]:text-[0.8125rem]',
+  '[&_pre_code]:bg-transparent [&_pre_code]:p-0',
+  '[&_blockquote]:my-5 [&_blockquote]:pl-4 [&_blockquote]:text-foreground',
+  '[&_hr]:my-10 [&_hr]:border-0',
+  '[&_figure]:my-6 [&_figcaption]:mt-2 [&_figcaption]:text-[0.875rem]',
+  '[&_table]:my-5 [&_table]:block [&_table]:w-max [&_table]:min-w-full [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-[0.875rem]',
+  '[&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-[650] [&_th]:text-foreground',
+  '[&_td]:border-t [&_td]:border-border [&_td]:px-3 [&_td]:py-2 [&_td]:align-top',
+].join(' ')
+
+const inner = width === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={description}
+  canonicalPath={`/${tool.slug}`}
+  ogType="website"
+  ogImageAlt={`${tool.title}, a free tool that runs in your browser`}
+  jsonLd={jsonLd}
+  category={tool.category}
+  depth={2}
+>
+  <Container class="pt-5 sm:pt-8">
+    <div class={cn('mx-auto w-full', inner)}>
+      {
+        category && (
+          <a href={categoryHref(category)} class="link-quiet -ml-0.5 inline-flex items-center gap-1.5 py-1 text-[0.875rem] font-[560]">
+            <Icon name="ArrowLeft" className="size-4" />
+            {category.title}
+          </a>
+        )
+      }
+      <header class="mt-6 min-w-0 sm:mt-8">
+        <span class="vt-tool-icon inline-block text-foreground">
+          <Icon name={tool.icon} className="size-8 sm:size-9" strokeWidth={1.5} />
+        </span>
+        <h1 class="t-title mt-4 text-foreground">
+          <span class="vt-tool-title inline-block">{heading}</span>
+        </h1>
+        <p class="t-lead mt-4 max-w-2xl">{description}</p>
+        <p class="mt-4 inline-flex items-center gap-2 text-[0.875rem] font-[560] text-foreground" data-og-line={promise}>
+          <Icon name="CloudOff" className="size-4 shrink-0" />
+          {promise}
+        </p>
+      </header>
+
+      <div class="mt-8 min-w-0 sm:mt-12" id="tool">
+        <slot />
+      </div>
+
+      <div class="mt-10">
+        <ShareBar url={toolUrl} title={tool.title} text={`${tool.title}: a free tool that runs in your browser.`} />
+      </div>
+
+      {/* Space only when the suggestions render. */}
+      <div class="[&_section]:mt-12">
+        <NextTools slug={tool.slug} client:visible />
+      </div>
+    </div>
+  </Container>
+
+  {
+    hasExplainer && (
+      <Container class="pt-20">
+        <div class={cn('mx-auto w-full', inner)}>
+          <div class={`max-w-3xl ${PROSE}`}>
+            <slot name="explainer" />
+          </div>
+        </div>
+      </Container>
+    )
+  }
+
+  {
+    faqs.length > 0 && (
+      <Container class="pt-20">
+        <div class={cn('mx-auto w-full', inner)}>
+          <h2 class="t-h2 text-foreground">Questions</h2>
+          <div class="mt-4 max-w-3xl">
+            {faqs.map((faq) => (
+              <details class="faq">
+                <summary class="flex cursor-pointer list-none items-start justify-between gap-6 rounded-md py-4 text-[1rem] font-[620] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 [&::-webkit-details-marker]:hidden">
+                  <span class="text-pretty">{faq.q}</span>
+                  <span class="faq-mark mt-0.5 grid size-5 shrink-0 place-items-center">
+                    <Icon name="Plus" className="size-5" />
+                  </span>
+                </summary>
+                <p class="max-w-2xl pb-5 text-[0.9688rem] leading-relaxed text-pretty text-muted-foreground">{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </Container>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <Container class="pt-20">
+        <div class={cn('mx-auto w-full', inner)}>
+          <div class="flex flex-wrap items-baseline justify-between gap-3">
+            <h2 class="t-h2 text-foreground">Related tools</h2>
+            {category && (
+              <a href={categoryHref(category)} class="link text-[0.9375rem] font-[600]">
+                All {category.title}
+              </a>
+            )}
+          </div>
+          <div class="mt-5 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((item) => (
+              <ToolCard tool={item} />
+            ))}
+          </div>
+        </div>
+      </Container>
+    )
+  }
+
+  <Toaster client:idle />
+</BaseLayout>

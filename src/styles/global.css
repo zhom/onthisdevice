@@ -1,0 +1,347 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './motion.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─────────────────────────────────────────────────────────────
+   onthisdevice.com: black ink on white paper, white ink on black.
+   One grey for secondary text, one faint grey fill, one hairline
+   for form fields. Status is ink with an icon and words.
+   Archivo at normal width; weight and size make the hierarchy.
+   ───────────────────────────────────────────────────────────── */
+/* Archivo: written by scripts/subset-fonts.py. Change the script, not these rules. */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  src: url('/fonts/archivo-latin.394a9add.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  src: url('/fonts/archivo-latin-ext.5ed668b1.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF,
+    U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* End of the Archivo rules. */
+
+:root {
+  --radius: 0.5rem;
+
+  /* The five values of the light theme. */
+  --paper: #ffffff;
+  --ink: #000000;
+  --grey: #6b6b6b;
+  --fill: #f3f3f3;
+  --hairline: #949494;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--fill);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--fill);
+  --secondary-foreground: var(--ink);
+  --muted: var(--fill);
+  --muted-foreground: var(--grey);
+  --accent: var(--fill);
+  --accent-foreground: var(--ink);
+  --destructive: var(--ink);
+  --destructive-foreground: var(--paper);
+  --success: var(--ink);
+  --success-foreground: var(--paper);
+  --warning: var(--ink);
+  --warning-foreground: var(--paper);
+  --border: var(--fill);
+  --input: var(--hairline);
+  --ring: var(--ink);
+
+  /* Data series only: a grey ramp from ink to near paper. */
+  --chart-1: #000000;
+  --chart-2: #555555;
+  --chart-3: #888888;
+  --chart-4: #b3b3b3;
+  --chart-5: #d6d6d6;
+
+  --elev-pop: 0 1px 2px rgb(0 0 0 / 0.06), 0 12px 40px -8px rgb(0 0 0 / 0.18);
+}
+
+.dark {
+  --paper: #000000;
+  --ink: #ffffff;
+  --grey: #a3a3a3;
+  --fill: #161616;
+  --hairline: #616161;
+
+  --popover: var(--fill);
+
+  --chart-1: #ffffff;
+  --chart-2: #b3b3b3;
+  --chart-3: #808080;
+  --chart-4: #575757;
+  --chart-5: #383838;
+
+  --elev-pop: 0 16px 48px -8px rgb(0 0 0 / 0.9);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-pop: var(--elev-pop);
+
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    interpolate-size: allow-keywords;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-wrap: break-word;
+    font-optical-sizing: auto;
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  /* No slanted type anywhere. */
+  em,
+  i,
+  cite,
+  var,
+  dfn,
+  address {
+    font-style: normal;
+  }
+  em {
+    font-weight: 600;
+  }
+  /* Narrow screens: a grid with only responsive columns gets one shrinkable column, a fieldset
+     may be narrower than its content, and a visually hidden label never widens the page. */
+  .grid:not([class^='grid-cols-']):not([class*=' grid-cols-']):not([class*='grid-flow-col']) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  fieldset {
+    min-inline-size: 0;
+  }
+  .sr-only {
+    left: 0;
+  }
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
+  }
+  :focus-visible {
+    outline-offset: 2px;
+  }
+  hr {
+    border: 0;
+    height: 0;
+    margin-block: 2rem;
+  }
+  /* Touch: no double-tap zoom delay on controls, no text selection when a
+     control is long-pressed. */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  summary,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+  button,
+  summary,
+  [role='button'] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  input[type='search']::-webkit-search-cancel-button,
+  input[type='search']::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type='range'],
+  input[type='checkbox'],
+  input[type='radio'],
+  progress {
+    accent-color: var(--foreground);
+  }
+  /* iOS zooms into any field under 16px; keep fields at 16px on phones and
+     touch screens whatever size a component asks for. */
+  @media (max-width: 767px), (pointer: coarse) {
+    input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']):not([type='file']),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@layer components {
+  /* Type scale. Weight and size carry the hierarchy; tracking is never below 0. */
+  .t-display {
+    font-weight: 760;
+    font-size: clamp(2.5rem, 1.6rem + 4.6vw, 5.25rem);
+    line-height: 1;
+    text-wrap: balance;
+  }
+  .t-title {
+    font-weight: 720;
+    font-size: clamp(2rem, 1.55rem + 2.2vw, 3.25rem);
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+  .t-h2 {
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+    line-height: 1.15;
+  }
+  .t-h3 {
+    font-weight: 650;
+    font-size: 1.0625rem;
+    line-height: 1.3;
+  }
+  .t-lead {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+    line-height: 1.55;
+    color: var(--muted-foreground);
+    text-wrap: pretty;
+  }
+  .t-small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+  /* A plain text link: ink, underlined on hover. */
+  .link {
+    color: var(--foreground);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-decoration-color: var(--muted-foreground);
+    transition: text-decoration-color 150ms ease;
+  }
+  .link:hover {
+    text-decoration-color: currentColor;
+  }
+  .link-quiet {
+    color: var(--muted-foreground);
+    transition: color 150ms ease;
+  }
+  .link-quiet:hover {
+    color: var(--foreground);
+  }
+  :is(.link, .link-quiet):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  /* A list row that links somewhere: icon, title, one line. */
+  .row-link {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 0.875rem;
+    align-items: start;
+    border-radius: var(--radius-lg);
+    padding: 0.75rem;
+    margin-inline: -0.75rem;
+    transition: background-color 160ms ease;
+  }
+  .row-link:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 0;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .row-link:hover {
+      background-color: var(--muted);
+    }
+  }
+  .row-link:active {
+    background-color: var(--muted);
+  }
+}
+
+@layer utilities {
+  .pad-safe-x {
+    padding-left: max(var(--pad-x, 1rem), env(safe-area-inset-left));
+    padding-right: max(var(--pad-x, 1rem), env(safe-area-inset-right));
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Toasts clear the home indicator and rounded corners. */
+[data-sonner-toaster] {
+  --offset-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+  --mobile-offset-bottom: max(16px, env(safe-area-inset-bottom)) !important;
+}

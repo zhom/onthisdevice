@@ -1,0 +1,92 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PngToIco from '@/components/tools/image-convert/PngToIco.tsx'
+---
+
+<ToolLayout slug="png-to-ico">
+  <PngToIco client:load mode="encode" />
+
+  <Fragment slot="explainer">
+    <h2>What an .ico file really is</h2>
+    <p>
+      An ICO is a container, not an image. It starts with a six-byte directory header, followed by a
+      sixteen-byte entry per image (width, height, colour depth, byte length and offset), and then
+      the image payloads themselves. That is why a single favicon.ico can hold a 16-pixel version
+      drawn for clarity and a 256-pixel version with full detail, and why every consumer picks the
+      entry that suits it best rather than scaling one image on the fly.
+    </p>
+
+    <h2>Which size is used where</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Size</th><th>Used by</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>16 × 16</td><td>Browser tab, address bar, bookmark lists, history</td></tr>
+          <tr><td>24 × 24</td><td>Older Internet Explorer favourites bar</td></tr>
+          <tr><td>32 × 32</td><td>Taskbar, high-DPI browser tabs, desktop shortcuts</td></tr>
+          <tr><td>48 × 48</td><td>Windows desktop and Explorer medium icons</td></tr>
+          <tr><td>64 / 128</td><td>Intermediate scaling steps on high-DPI displays</td></tr>
+          <tr><td>256 × 256</td><td>Explorer “extra large icons”, Alt-Tab, jump lists</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The default selection (16, 32, 48 and 256) covers all those cases with a file that is usually
+      well under 30 KB. All seven sizes do no harm, but the file is slightly larger.
+    </p>
+
+    <h2>PNG payloads, not BMP</h2>
+    <p>
+      Historically each entry inside an ICO was an uncompressed BMP-DIB with a separate one-bit
+      transparency mask. Windows Vista added support for PNG payloads, and every browser and Windows
+      version since reads them. We write PNG for a simple reason: a 256 × 256 BMP entry is 256 KB of
+      raw pixels, while the same image as PNG is usually a few kilobytes. If you need to support
+      Windows XP, leave 256 out of the selection. XP still finds the smaller
+      entries it understands.
+    </p>
+
+    <h2>Designing an icon that survives 16 pixels</h2>
+    <ul>
+      <li>Simplify. A 16 × 16 grid holds 256 pixels in total. Wordmarks, gradients and thin outlines all vanish; a single bold glyph or shape does not.</li>
+      <li>Crop the padding. Logos usually ship with generous whitespace. Trim it before uploading here, otherwise your icon is a small mark floating in an empty square.</li>
+      <li>Maximise contrast. The icon will be seen against both a light and a dark browser theme. A mid-grey mark disappears against one of them.</li>
+      <li>Start at 512 or 1024 px. Downscaling from a large clean source with a Lanczos filter, as this tool does, gives far better small sizes than upscaling from a 64 px original.</li>
+    </ul>
+
+    <h2>Non-square logos</h2>
+    <p>
+      Icons are square by definition. With padding switched on, a wide logo is centred in a square
+      canvas: transparent by default, or filled with a colour if you type a hex value. With padding
+      off, the image is stretched to a square, which distorts nearly everything. If your brand mark
+      is strongly horizontal, consider making a separate square version (an initial, a symbol) rather
+      than squeezing the full logo into a favicon.
+    </p>
+
+    <h2>Installing the favicon</h2>
+    <p>
+      Put the file at the root of your site as <code>/favicon.ico</code>. Browsers request that exact
+      path even when no link tag is present, which is why it is still the most reliable fallback.
+      Then add the explicit tags (the tool gives them to you to copy), so you can also offer a scalable
+      SVG icon and an Apple touch icon for iOS home screens. If the old icon persists after you
+      deploy, that is browser caching: try a hard reload, or a private window, before assuming
+      something is wrong.
+    </p>
+
+    <h2>Built here, not on someone's server</h2>
+    <p>
+      To convert PNG to ICO, the resize, the PNG encoding and the ICO directory assembly all happen in
+      this tab, so your unreleased brand mark is not in someone's temporary directory. There is also no
+      queue: change the size selection and the icon rebuilds at once.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/ico-to-png">ICO to PNG</a> for the reverse direction,
+      <a href="/favicon-generator">Favicon Generator</a> for the full set of PNG sizes and the web
+      app manifest, and <a href="/resize-image">Resize Image</a> if you need to prepare the source
+      first.
+    </p>
+  </Fragment>
+</ToolLayout>

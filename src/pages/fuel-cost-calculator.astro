@@ -1,0 +1,140 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FuelCostCalculator from '@/components/tools/everyday/FuelCostCalculator.tsx'
+---
+
+<ToolLayout slug="fuel-cost-calculator">
+  <FuelCostCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to work out the fuel cost of a trip</h2>
+    <ol>
+      <li>Enter the one-way distance and choose miles or kilometres.</li>
+      <li>Keep <strong>round trip</strong> on if you come back.</li>
+      <li>
+        Enter the fuel economy of your car and pick its unit: US MPG, imperial MPG, litres per 100 km or
+        km per litre.
+      </li>
+      <li>Enter the pump price and choose per gallon or per litre.</li>
+      <li>
+        Optional: set the number of people who share the cost, how often you make the trip, and a second
+        vehicle to compare.
+      </li>
+    </ol>
+    <p>
+      The fuel cost calculator converts all values to litres and kilometres internally, so you can mix a US
+      MPG rating with a price per litre without converting anything.
+    </p>
+
+    <h2>The formulas</h2>
+    <p>
+      <strong>fuel used = distance × consumption ÷ 100</strong> (distance in km, consumption in L/100 km)<br />
+      <strong>cost = fuel used × price per litre</strong>
+    </p>
+    <p>In MPG and gallons:</p>
+    <p><strong>cost = distance ÷ MPG × price per gallon</strong></p>
+    <p>
+      A 320-mile drive in a 32 MPG car with fuel at $3.45 a gallon needs 10 gallons and costs $34.50 one
+      way, $69.00 there and back, or $34.50 each if two people share it.
+    </p>
+
+    <h3>Converting between economy units</h3>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">From</th>
+            <th scope="col">To L/100 km</th>
+            <th scope="col">Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>US MPG</td><td>235.215 ÷ MPG</td><td>32 US MPG = 7.35 L/100 km</td></tr>
+          <tr><td>Imperial MPG</td><td>282.481 ÷ MPG</td><td>40 UK MPG = 7.06 L/100 km</td></tr>
+          <tr><td>km per litre</td><td>100 ÷ km/L</td><td>14 km/L = 7.14 L/100 km</td></tr>
+          <tr><td>L/100 km</td><td>unchanged</td><td>n/a</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The two MPG scales are different. An imperial gallon is 4.546 litres and a US gallon is 3.785, so the
+      same car rates about 20% higher in UK MPG. A car advertised at 40 MPG in Britain is about 33 MPG in the
+      United States. With the wrong unit, your trip cost is wrong by a fifth.
+    </p>
+
+    <h2>Typical trip costs</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Distance</th>
+            <th scope="col">20 MPG at $3.45</th>
+            <th scope="col">30 MPG at $3.45</th>
+            <th scope="col">40 MPG at $3.45</th>
+            <th scope="col">50 MPG at $3.45</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>50 miles</td><td>$8.63</td><td>$5.75</td><td>$4.31</td><td>$3.45</td></tr>
+          <tr><td>100 miles</td><td>$17.25</td><td>$11.50</td><td>$8.63</td><td>$6.90</td></tr>
+          <tr><td>250 miles</td><td>$43.13</td><td>$28.75</td><td>$21.56</td><td>$17.25</td></tr>
+          <tr><td>500 miles</td><td>$86.25</td><td>$57.50</td><td>$43.13</td><td>$34.50</td></tr>
+          <tr><td>1,000 miles</td><td>$172.50</td><td>$115.00</td><td>$86.25</td><td>$69.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The saving gets smaller as MPG rises. From 20 to 30 MPG saves $57.50 over a thousand miles; from 40 to
+      50 saves only $17.25. Consumption, not economy, scales linearly with cost, which is why most countries
+      use litres per 100 km.
+    </p>
+
+    <h2>Getting a realistic economy figure</h2>
+    <p>
+      Manufacturer ratings come from a standardised laboratory cycle. Real-world consumption is usually
+      10–20% worse, and the gap grows with:
+    </p>
+    <ul>
+      <li>
+        Cold weather: a short winter trip can use 20–30% more fuel, because the engine never reaches
+        operating temperature.
+      </li>
+      <li>
+        Motorway speed: aerodynamic drag rises with the square of speed, so 80 mph can cost 15–20% more per
+        mile than 65 mph.
+      </li>
+      <li>
+        Roof boxes and bike racks: often 10–25% at motorway speeds, even when empty.
+      </li>
+      <li>
+        Under-inflated tyres, heavy loads and air conditioning: a few percent each, which adds up on a long
+        drive.
+      </li>
+    </ul>
+    <p>
+      The reliable method: fill the tank, reset the trip meter, drive normally, then fill up again and divide
+      the distance by the fuel added. After two or three tanks, you have a reliable number.
+    </p>
+
+    <h2>What this calculator does not include</h2>
+    <p>
+      This calculator covers fuel only. The full running cost of a car also includes tyres, servicing,
+      insurance, tax and depreciation, which for an average vehicle about double the per-mile figure.
+      Business mileage rates from tax authorities cover all of these, so they are much higher than the fuel
+      cost alone. When you compare driving with a train ticket or a flight, the fuel number is the minimum,
+      not the full answer.
+    </p>
+
+    <h2>Splitting the cost</h2>
+    <p>
+      Set the number of passengers, and the per-person figure appears next to the total. For a regular
+      commute, add the trips per week, and the calculator projects the weekly, monthly and annual cost. This
+      number is often enough to justify a carpool.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      The tool uses no route lookup, map service or location access. You enter the distance, and all
+      calculations run in your browser.
+    </p>
+  </Fragment>
+</ToolLayout>

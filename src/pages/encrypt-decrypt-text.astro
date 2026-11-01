@@ -1,0 +1,146 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import EncryptDecryptText from '@/components/tools/security/EncryptDecryptText.tsx'
+---
+
+<ToolLayout slug="encrypt-decrypt-text">
+  <EncryptDecryptText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to encrypt text with a password</h2>
+    <ol>
+      <li>
+        Paste the text into the <strong>Encrypt</strong> tab: recovery codes, a private note, a
+        credential for a colleague, or any text you do not want to send in the clear.
+      </li>
+      <li>
+        Choose a strong password and type it twice. The confirmation field is there because a typo here
+        cannot be recovered. A passphrase of five or six random words is a good choice.
+      </li>
+      <li>
+        Press <strong>Encrypt</strong>. The short pause is the key derivation: 200,000 rounds of PBKDF2,
+        which an attacker must repeat for each guess.
+      </li>
+      <li>
+        Copy the base64 block. It contains all data needed to decrypt except the password, so you can
+        send it safely by email, chat or a text file.
+      </li>
+      <li>
+        Send the password through a different channel, never in the same message: a phone call, a
+        different app, or the secure-share feature of a password manager.
+      </li>
+    </ol>
+    <p>
+      To decrypt, open the <strong>Decrypt</strong> tab, paste the block and enter the password. The tool
+      reads the envelope header when you paste, before you enter a password, so you see immediately if
+      the text is a valid envelope and how many iterations it uses.
+    </p>
+
+    <h2>What actually happens to your text</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Algorithm</th>
+          <th>Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Salt generation</td>
+          <td>crypto.getRandomValues</td>
+          <td>16 new random bytes per message.</td>
+        </tr>
+        <tr>
+          <td>Key derivation</td>
+          <td>PBKDF2-HMAC-SHA256</td>
+          <td>200,000 iterations, producing a 256-bit key.</td>
+        </tr>
+        <tr>
+          <td>Nonce generation</td>
+          <td>crypto.getRandomValues</td>
+          <td>12 new random bytes, the size specified for AES-GCM.</td>
+        </tr>
+        <tr>
+          <td>Encryption</td>
+          <td>AES-256-GCM</td>
+          <td>Authenticated encryption: confidentiality plus a 128-bit integrity tag.</td>
+        </tr>
+        <tr>
+          <td>Packaging</td>
+          <td>Base64</td>
+          <td>Magic, iteration count, salt, nonce and ciphertext in one printable block.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      All these primitives use the browser's own <code>crypto.subtle</code> implementation: native,
+      audited code, not AES rewritten in JavaScript. The page publishes the exact byte layout of the
+      envelope, so you can verify the format and decrypt it with any other AES-GCM implementation if this
+      page disappears.
+    </p>
+
+    <h3>Why a fresh salt and nonce every time</h3>
+    <p>
+      The salt makes the derived key different for each message, even with the same password. This
+      defeats precomputed tables, and an attacker who cracks one message does not get the others. The
+      nonce is even more important: if a nonce is reused with the same key, AES-GCM fails completely, and
+      an attacker can recover the authentication key and forge messages. Both come new from the CSPRNG for
+      each encryption, so the same text encrypted twice gives two completely different outputs.
+    </p>
+
+    <h3>Why 200,000 iterations</h3>
+    <p>
+      PBKDF2 makes each password guess expensive. Without it, a password is hashed once and an attacker
+      tests billions of candidates per second. With 200,000 iterations of HMAC-SHA256, the same hardware
+      tests a few tens of thousands per second, about a million times slower. You also pay this cost, but
+      only once and for a fraction of a second. The envelope stores the iteration count, so a future
+      version can raise it without breaking messages encrypted today.
+    </p>
+
+    <h2>What this tool does not protect against</h2>
+    <ul>
+      <li>
+        A weak password. AES-256 cannot be broken in practice, but a password from a wordlist can. The key
+        comes from the password, so the password sets the limit. For this reason the tool shows a live
+        strength estimate.
+      </li>
+      <li>
+        A lost password. There is no reset, recovery key or back door. Without the password, the text is
+        lost permanently, by design.
+      </li>
+      <li>
+        Metadata. Anyone who intercepts the message learns its approximate length and that it uses this
+        format. The content is hidden; the fact that a message exists is not.
+      </li>
+      <li>
+        A compromised device. If your machine has a keylogger, encryption on that machine does not help.
+      </li>
+      <li>
+        Key exchange. You must still get the password to the other person. This is the hard part of
+        cryptography, and this tool does not solve it; public-key systems exist for that.
+      </li>
+    </ul>
+
+    <h2>When to use this, and when to use something else</h2>
+    <p>
+      Use this tool for a one-off secret that goes through a channel you do not fully trust: recovery codes
+      in a note-taking app, a temporary credential emailed to a colleague, a small private record in a
+      synced file. It is quick, needs no installation, and the output is plain text you can put anywhere.
+    </p>
+    <p>
+      Use other tools for ongoing key management, signatures that prove who sent a message, or protection
+      of whole files and directories: an end-to-end encrypted messenger for conversations, public-key file
+      encryption for files, an encrypted archive or a full-disk volume for bulk data, and a password
+      manager for credentials you use often.
+    </p>
+
+    <h3>Understanding "decryption failed"</h3>
+    <p>
+      The tool cannot tell you that the password is wrong. It can tell you only that the authentication tag
+      did not verify, which happens when the key is wrong and also when even one bit of the ciphertext has
+      changed. This is a security property: an attacker cannot change your message and make it decrypt to
+      something plausible. First check for a stray character from copy and paste, then check the password.
+    </p>
+  </Fragment>
+</ToolLayout>

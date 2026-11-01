@@ -1,0 +1,130 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import LoanCalculator from '@/components/tools/finance/LoanCalculator.tsx'
+---
+
+<ToolLayout slug="loan-calculator">
+  <LoanCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the loan calculator</h2>
+    <ol>
+      <li>
+        Enter the <strong>loan amount</strong>: the sum you receive, not the total you will repay.
+      </li>
+      <li>
+        Enter the <strong>annual interest rate</strong>. If your offer gives an APR that includes
+        fees, put the interest rate here and the fee in the fee field, so the two stay separate.
+      </li>
+      <li>
+        Set the <strong>term</strong> in years, with extra months if your offer is something like 42
+        or 54 months.
+      </li>
+      <li>
+        If you want, add an <strong>extra monthly principal payment</strong> to see the interest saved
+        and the months removed.
+      </li>
+      <li>
+        Read the payment, the total interest and the cost of borrowing, then export the full
+        schedule as CSV.
+      </li>
+    </ol>
+
+    <h2>What the calculator is modelling</h2>
+    <p>
+      The loan calculator models a standard amortising loan: a fixed rate, equal monthly payments, and
+      a balance that reaches zero on the final payment. That structure covers personal loans, most
+      student loans, home improvement loans, business term loans and almost all car finance.
+    </p>
+    <p>
+      Each month the lender charges interest on the balance at the start of the month. The rest of your
+      payment reduces the principal. The balance falls a little each month, so the interest charge falls
+      too, and the principal part of a fixed payment grows. That is amortisation, and the schedule below
+      the calculator shows it line by line.
+    </p>
+
+    <h2>Monthly payment per 10,000 borrowed</h2>
+    <p>
+      Multiply by your loan amount in units of ten thousand. A 25,000 loan at 10% over five years is
+      2.5 × 212.47 = 531.18 a month.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[520px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Rate</th>
+            <th style="text-align:right">1 year</th>
+            <th style="text-align:right">2 years</th>
+            <th style="text-align:right">3 years</th>
+            <th style="text-align:right">5 years</th>
+            <th style="text-align:right">7 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>4%</td><td style="text-align:right">851.50</td><td style="text-align:right">434.25</td><td style="text-align:right">295.24</td><td style="text-align:right">184.17</td><td style="text-align:right">136.69</td></tr>
+          <tr><td>6%</td><td style="text-align:right">860.66</td><td style="text-align:right">443.21</td><td style="text-align:right">304.22</td><td style="text-align:right">193.33</td><td style="text-align:right">146.09</td></tr>
+          <tr><td>8%</td><td style="text-align:right">869.88</td><td style="text-align:right">452.27</td><td style="text-align:right">313.36</td><td style="text-align:right">202.76</td><td style="text-align:right">155.86</td></tr>
+          <tr><td>10%</td><td style="text-align:right">879.16</td><td style="text-align:right">461.45</td><td style="text-align:right">322.67</td><td style="text-align:right">212.47</td><td style="text-align:right">166.01</td></tr>
+          <tr><td>12%</td><td style="text-align:right">888.49</td><td style="text-align:right">470.73</td><td style="text-align:right">332.14</td><td style="text-align:right">222.44</td><td style="text-align:right">176.53</td></tr>
+          <tr><td>15%</td><td style="text-align:right">902.58</td><td style="text-align:right">484.87</td><td style="text-align:right">346.65</td><td style="text-align:right">237.90</td><td style="text-align:right">192.97</td></tr>
+          <tr><td>18%</td><td style="text-align:right">916.80</td><td style="text-align:right">499.24</td><td style="text-align:right">361.52</td><td style="text-align:right">253.93</td><td style="text-align:right">210.18</td></tr>
+          <tr><td>20%</td><td style="text-align:right">926.35</td><td style="text-align:right">508.96</td><td style="text-align:right">371.64</td><td style="text-align:right">264.94</td><td style="text-align:right">222.06</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Total interest per 10,000 borrowed</h2>
+    <p>
+      The same loans, as the total interest paid. This number shows why a longer term is expensive,
+      even when the payment looks comfortable.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[520px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Rate</th>
+            <th style="text-align:right">1 year</th>
+            <th style="text-align:right">2 years</th>
+            <th style="text-align:right">3 years</th>
+            <th style="text-align:right">5 years</th>
+            <th style="text-align:right">7 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>4%</td><td style="text-align:right">218</td><td style="text-align:right">422</td><td style="text-align:right">629</td><td style="text-align:right">1,050</td><td style="text-align:right">1,482</td></tr>
+          <tr><td>8%</td><td style="text-align:right">439</td><td style="text-align:right">855</td><td style="text-align:right">1,281</td><td style="text-align:right">2,166</td><td style="text-align:right">3,092</td></tr>
+          <tr><td>12%</td><td style="text-align:right">662</td><td style="text-align:right">1,298</td><td style="text-align:right">1,957</td><td style="text-align:right">3,347</td><td style="text-align:right">4,828</td></tr>
+          <tr><td>15%</td><td style="text-align:right">831</td><td style="text-align:right">1,637</td><td style="text-align:right">2,480</td><td style="text-align:right">4,274</td><td style="text-align:right">6,209</td></tr>
+          <tr><td>20%</td><td style="text-align:right">1,116</td><td style="text-align:right">2,215</td><td style="text-align:right">3,379</td><td style="text-align:right">5,896</td><td style="text-align:right">8,653</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At 20%, a 10,000 loan over seven years instead of three has more than double the interest (8,653
+      against 3,379), but the payment is only about 40% lower. The shortest term you can comfortably
+      afford is almost always the cheapest.
+    </p>
+
+    <h2>Interest rate, APR and the cost of borrowing</h2>
+    <p>
+      The interest rate is the price of the money. The APR also includes compulsory fees, as an annual
+      rate, so it is the better number to compare two offers with different fees. The total cost of
+      borrowing (interest plus fees, in currency, not percent) tells you what the loan costs, and this
+      calculator shows it next to the payment.
+    </p>
+    <p>
+      On each quote, check if interest is charged on the reducing balance, as modelled here, or as a
+      flat rate on the original amount for the whole term. Flat-rate quotes look cheap, but are usually
+      close to double the equivalent reducing-balance rate.
+    </p>
+
+    <h2>Accuracy</h2>
+    <p>
+      All arithmetic uses arbitrary-precision decimals and rounds to the minor currency unit exactly
+      once per payment, as servicers do. The final instalment takes the rounding residue, so the
+      balance ends at zero. Results match a standard fixed-rate statement to the penny. Lenders that use
+      daily interest accrual, actual-day counts or a different rounding convention give small
+      differences.
+    </p>
+  </Fragment>
+</ToolLayout>

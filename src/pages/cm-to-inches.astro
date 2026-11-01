@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="cm-to-inches">
+  <UnitsLifePairConverter client:load spec="cm-to-inches" />
+  <Fragment slot="explainer">
+    <h2>Centimetres to inches, exactly</h2>
+    <p>
+      The inch has been a metric unit since 1959. In that year the United States, the United Kingdom,
+      Canada, Australia, New Zealand and South Africa signed the international yard and pound
+      agreement, which fixed the inch at <strong>exactly 2.54 centimetres</strong>. This is a
+      definition, not a measured ratio, so each conversion on this page is exact to as many decimal
+      places as you ask for.
+    </p>
+    <p>There are two ways to write the same arithmetic:</p>
+    <ul>
+      <li>Divide by 2.54: 30 cm &divide; 2.54 = 11.811 in.</li>
+      <li>Multiply by 0.3937007874: 30 &times; 0.3937007874 = 11.811 in.</li>
+    </ul>
+    <p>
+      By hand, division is safer: 2.54 is short and easy to remember, and the reciprocal is a recurring
+      decimal that you must truncate. This page divides with arbitrary-precision decimal arithmetic, not
+      the binary floating point of the browser, so you do not see results such as 11.810999999999998.
+    </p>
+
+    <h2>Why the fraction column matters</h2>
+    <p>
+      Imperial tape measures show sixteenths, not decimal inches. A result of 11.811 in is not useful at
+      the bench until you know it is just under 11 and thirteen-sixteenths, which the fraction readout
+      shows. The three common resolutions are:
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Resolution</th><th scope="col">Step size</th><th scope="col">Used for</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1/16 in</td><td>1.5875 mm</td><td>Builder's tape, general carpentry, fabric</td></tr>
+        <tr><td>1/32 in</td><td>0.7938 mm</td><td>Cabinetmaking, sheet goods</td></tr>
+        <tr><td>1/64 in</td><td>0.3969 mm</td><td>Machining, engraving, model making</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The converter rounds to sixteenths by default, because most tapes show them. The
+      millimetres-to-inches page shows all three side by side for finer work.
+    </p>
+
+    <h2>Common centimetre measurements in inches</h2>
+    <p>
+      Some conversions are worth knowing by heart. A 30 cm ruler is 11.81 in, just under a foot. A4
+      paper is 21 &times; 29.7 cm, which is 8.27 &times; 11.69 in: narrower and taller than US Letter at
+      8.5 &times; 11 in. For this reason, PDFs made for one paper size print with odd margins on the
+      other. Airline cabin bag limits of 55 &times; 40 &times; 20 cm are 21.7 &times; 15.7 &times; 7.9
+      in.
+    </p>
+
+    <h2>Heights and the feet-and-inches readout</h2>
+    <p>
+      For a human height, decimal inches are not useful. 175 cm is 68.9 in, which nobody says; it is
+      5 ft 8.9 in, or "five foot nine". The feet-and-inches readout does that split and carries the
+      remainder correctly, so you never get "5 ft 12 in" from simple rounding.
+    </p>
+
+    <h2>Converting a whole column</h2>
+    <p>
+      The Batch tab takes a pasted spreadsheet column and returns a matching one. Blank lines stay, so
+      the output pastes back in the same rows. A line that is not a number stays blank and the tool
+      does not guess, because a wrong number in a parts list is worse than a visible gap. The
+      conversion runs in this tab, and nothing you paste is sent.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoFaceBlur from '@/components/tools/redact/vision/VideoFaceBlur.tsx'
+---
+
+<ToolLayout slug="blur-faces-in-video" width="wide">
+  <VideoFaceBlur client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to blur faces in a video</h2>
+    <ol>
+      <li>Drop a video on the page. MP4, MOV, WebM and MKV files work if your browser can decode the video in them.</li>
+      <li>Press Find faces. The tool checks 8 frames per second and follows each face through the video.</li>
+      <li>Each person is listed with a picture. Click a person to keep their face visible. You can also click a face in the preview.</li>
+      <li>Play the preview to check the result. Change the style or the strength if you want.</li>
+      <li>Press Export video and download the file.</li>
+    </ol>
+    <p>
+      Turn on Find small faces for people far from the camera. The scan then takes about three times longer.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The faces are found by a small face detection model (230 kB, MIT license) in a model runtime of 15 MB. Both
+      download once from this site and are kept in your browser. A tracker gives each face a number and moves the blur
+      smoothly between the checked frames. Your browser decodes and encodes the video with its own video codecs, in a
+      background thread, so the page stays usable.
+    </p>
+    <p>
+      On a recent laptop a 12-second 1080p clip takes about 7 seconds to scan and 2 seconds to export. Phones and older
+      computers are slower. The progress bar shows the frame count and the time left, and you can cancel at any time.
+    </p>
+
+    <h2>The file you get</h2>
+    <ul>
+      <li>An MP4 file with H.264 video and the original sound. If your browser cannot encode H.264, you get a WebM file.</li>
+      <li>Videos larger than 1080p are scaled down to 1920 by 1080 (or 1080 by 1920 for a vertical video).</li>
+      <li>Location, device and other metadata from the original file are not copied.</li>
+    </ul>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the developer tools of your browser (F12), select the Network tab and drop a video. You see the model files load
+      from this site the first time and no request with your video. You can also load the tool once, turn off your network
+      and use it.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Faces in profile, from behind, very small or in fast motion can be missed for a few frames. Watch the preview before you share the video.</li>
+      <li>A face that appears between two checked frames can be visible for up to a tenth of a second.</li>
+      <li>The browser must be able to encode video in a web page. Current versions of Chrome, Edge, Firefox and Safari can. Some browsers cannot decode HEVC or AV1 videos.</li>
+      <li>The video is held in memory. Very long videos can fail on a phone; cut them into parts first.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/blur-face-in-photo">Blur Face in Photo</a> for photos,
+      <a href="/face-blur-camera">Face Blur Camera</a> for your webcam, and
+      <a href="/compress-video">Compress Video</a> to make the exported file smaller.
+    </p>
+  </Fragment>
+</ToolLayout>

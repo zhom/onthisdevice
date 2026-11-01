@@ -1,0 +1,65 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AvifToJpg from '@/components/tools/image-convert/AvifToJpg.tsx'
+---
+
+<ToolLayout slug="avif-to-jpg">
+  <AvifToJpg client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert AVIF to JPG</h2>
+    <ol>
+      <li>Drop your .avif files onto the box above, or click to browse.</li>
+      <li>If an image has transparent areas, choose a background colour. JPEG cannot store transparency, so those areas must be filled.</li>
+      <li>Leave quality at 88, or adjust it. The default is high on purpose: the source is already lossy, and a high-quality second pass keeps the two sets of artefacts from adding up.</li>
+      <li>Save each JPG, or download the batch as a ZIP.</li>
+    </ol>
+
+    <h2>It works even if your browser cannot show AVIF</h2>
+    <p>
+      This page tries the built-in AVIF decoder of the browser first, because it is fast. If the browser
+      has none (Safari before version 16, older Firefox builds, some embedded browsers), the tool uses a
+      WebAssembly build of libavif that comes with the page. In both cases, the decoding happens on your
+      device and no file is uploaded.
+    </p>
+    <p>
+      The tool also works offline. When the page has loaded, you can disconnect and continue converting.
+    </p>
+
+    <h2>What you gain and what you give up</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left"></th>
+            <th align="left">AVIF</th>
+            <th align="left">JPEG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Opened by old software</td><td>Rarely</td><td>Almost always</td></tr>
+          <tr><td>File size for the same photo</td><td>Baseline</td><td>1.5–2.5× larger</td></tr>
+          <tr><td>Transparency</td><td>Yes</td><td>No; flattened on conversion</td></tr>
+          <tr><td>Colour depth</td><td>Up to 12-bit, HDR capable</td><td>8-bit sRGB</td></tr>
+          <tr><td>Decode speed</td><td>Slower</td><td>Very fast</td></tr>
+          <tr><td>Editing support</td><td>Limited plug-ins</td><td>Universal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Keeping the second encode invisible</h2>
+    <p>
+      A lossy-to-lossy conversion can add artefacts on top of artefacts. Three things control that here:
+    </p>
+    <ul>
+      <li>A high default quality. At 88, MozJPEG uses enough bits to reproduce the AVIF output accurately, without coarse re-quantisation.</li>
+      <li>Progressive, trellis-optimised encoding. MozJPEG makes measurably smaller files than plain libjpeg at the same quality, so a high quality setting costs less space.</li>
+      <li>No resizing. The image keeps its original pixel dimensions, so nothing is resampled.</li>
+    </ul>
+    <p>
+      To keep transparency or get a lossless result, use <a href="/avif-to-png">AVIF to PNG</a>. To
+      convert in the other direction, see <a href="/image-to-avif">image to AVIF</a>. For mixed batches,
+      use the <a href="/image-converter">universal image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

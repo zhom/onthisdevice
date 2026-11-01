@@ -1,0 +1,147 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import InflationCalculator from '@/components/tools/finance/InflationCalculator.tsx'
+---
+
+<ToolLayout slug="inflation-calculator">
+  <InflationCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the inflation calculator</h2>
+    <ol>
+      <li>
+        Stay in <strong>US CPI data</strong> mode to compare two real years. Enter an amount, the
+        year it applies to, and the year you want it expressed in.
+      </li>
+      <li>
+        The comparison works in both directions. Set the second year earlier than the first to ask
+        what today's money was worth back then.
+      </li>
+      <li>
+        Switch to <strong>custom rate</strong> mode to project forward at a rate you choose. Use it for
+        planning, and for countries outside the US.
+      </li>
+      <li>
+        The year-by-year table shows the index, the annual inflation rate, and the value of your amount
+        in each year between. Export it as CSV for a spreadsheet.
+      </li>
+    </ol>
+
+    <h2>How the calculation works</h2>
+    <p>
+      Each result of the inflation calculator comes from one ratio:
+      <code>Value = amount × CPI(to year) / CPI(from year)</code>. The Consumer Price Index measures
+      the cost of a fixed basket of goods and services, so the ratio of two index values is the ratio
+      of two price levels. Cumulative inflation is that ratio minus one. The average annual rate is the
+      ratio to the power of one over the number of years, minus one.
+    </p>
+    <p>
+      The data is the annual average CPI-U series from the US Bureau of Labor Statistics: Consumer Price
+      Index for All Urban Consumers, US city average, all items, with the index base 1982-84 = 100. The
+      complete series from 1913 is in this page, so the calculator works offline.
+    </p>
+
+    <h2>Average annual US inflation by decade</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Decade</th>
+            <th style="text-align:right">Average per year</th>
+            <th style="text-align:right">Cumulative</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>1920–1930</td><td style="text-align:right">−1.79%</td><td style="text-align:right">−17%</td></tr>
+          <tr><td>1930–1940</td><td style="text-align:right">−1.75%</td><td style="text-align:right">−16%</td></tr>
+          <tr><td>1940–1950</td><td style="text-align:right">5.58%</td><td style="text-align:right">+72%</td></tr>
+          <tr><td>1950–1960</td><td style="text-align:right">2.08%</td><td style="text-align:right">+23%</td></tr>
+          <tr><td>1960–1970</td><td style="text-align:right">2.74%</td><td style="text-align:right">+31%</td></tr>
+          <tr><td>1970–1980</td><td style="text-align:right">7.82%</td><td style="text-align:right">+112%</td></tr>
+          <tr><td>1980–1990</td><td style="text-align:right">4.72%</td><td style="text-align:right">+59%</td></tr>
+          <tr><td>1990–2000</td><td style="text-align:right">2.80%</td><td style="text-align:right">+32%</td></tr>
+          <tr><td>2000–2010</td><td style="text-align:right">2.39%</td><td style="text-align:right">+27%</td></tr>
+          <tr><td>2010–2020</td><td style="text-align:right">1.73%</td><td style="text-align:right">+19%</td></tr>
+          <tr><td>2020–2025</td><td style="text-align:right">4.50%</td><td style="text-align:right">+25%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 1920s and 1930s were deflationary: prices fell. In the 1970s, prices more than doubled in a
+      decade. The 2010s were the calmest period on record, which is part of why the 2021–2023 period
+      felt so sharp.
+    </p>
+
+    <h2>What 100 from a past year is worth now</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th style="text-align:right">Equivalent in 2025</th>
+            <th style="text-align:right">Average inflation since</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>1913</td><td style="text-align:right">3,258.59</td><td style="text-align:right">3.16%</td></tr>
+          <tr><td>1950</td><td style="text-align:right">1,338.59</td><td style="text-align:right">3.52%</td></tr>
+          <tr><td>1970</td><td style="text-align:right">831.44</td><td style="text-align:right">3.93%</td></tr>
+          <tr><td>1980</td><td style="text-align:right">391.50</td><td style="text-align:right">3.08%</td></tr>
+          <tr><td>1990</td><td style="text-align:right">246.82</td><td style="text-align:right">2.62%</td></tr>
+          <tr><td>2000</td><td style="text-align:right">187.34</td><td style="text-align:right">2.54%</td></tr>
+          <tr><td>2010</td><td style="text-align:right">147.94</td><td style="text-align:right">2.65%</td></tr>
+          <tr><td>2020</td><td style="text-align:right">124.65</td><td style="text-align:right">4.50%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Recent annual inflation</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[360px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th style="text-align:right">CPI-U annual average</th>
+            <th style="text-align:right">Inflation</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>2019</td><td style="text-align:right">255.657</td><td style="text-align:right">1.8%</td></tr>
+          <tr><td>2020</td><td style="text-align:right">258.811</td><td style="text-align:right">1.2%</td></tr>
+          <tr><td>2021</td><td style="text-align:right">270.970</td><td style="text-align:right">4.7%</td></tr>
+          <tr><td>2022</td><td style="text-align:right">292.655</td><td style="text-align:right">8.0%</td></tr>
+          <tr><td>2023</td><td style="text-align:right">304.702</td><td style="text-align:right">4.1%</td></tr>
+          <tr><td>2024</td><td style="text-align:right">313.689</td><td style="text-align:right">2.9%</td></tr>
+          <tr><td>2025</td><td style="text-align:right">322.600</td><td style="text-align:right">2.8%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 2025 annual average is provisional and may be revised by the BLS. Everything through 2024
+      is a final published figure.
+    </p>
+
+    <h2>Why your personal inflation rate is different</h2>
+    <p>
+      CPI-U tracks one basket weighted to the spending of the average urban US household: about a third
+      housing, an eighth food, a sixth transport, and so on. Your basket is different. Renters in a
+      tight housing market, families who pay for childcare, and people with large medical or tuition
+      costs have had higher inflation than the headline number for most of the past twenty years. A
+      person with a fixed-rate mortgage and a short commute has had less.
+    </p>
+    <p>
+      There are also method caveats. The index here uses annual averages, so a comparison between two
+      years compares two twelve-month averages, not two specific dates. The BLS also applies hedonic
+      quality adjustments and substitution assumptions. These are defensible, but the index is not a
+      simple price tag comparison.
+    </p>
+
+    <h2>Using this outside the United States</h2>
+    <p>
+      The embedded table is US-only. For other countries, switch to custom rate mode and use the average
+      inflation rate for the period from your national statistics office: the ONS in the UK, Eurostat or
+      your national institute in the euro area, Statistics Canada, or the ABS in Australia. The
+      arithmetic is the same. Only the index differs.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AspectRatioCalculator from '@/components/tools/units/AspectRatioCalculator.tsx'
+---
+
+<ToolLayout slug="aspect-ratio-calculator">
+  <AspectRatioCalculator client:load mode="aspect" />
+
+  <Fragment slot="explainer">
+    <h2>The whole calculation, once</h2>
+    <p>
+      An aspect ratio is one number: width divided by height. An aspect ratio calculator uses two
+      rearrangements of it.
+    </p>
+    <pre><code>ratio  = width ÷ height
+height = width ÷ ratio
+width  = height × ratio</code></pre>
+    <p>
+      Type into the width box and the tool solves the height; type into the height box and it solves
+      the width. The page shows the arithmetic with your numbers, so you can check it by hand.
+    </p>
+
+    <h2>Simplifying a ratio</h2>
+    <p>
+      To reduce 1920 × 1080 to 16:9, divide both sides by their greatest common divisor. Euclid's
+      algorithm finds it in a few steps: gcd(1920, 1080) → gcd(1080, 840) → gcd(840, 240) →
+      gcd(240, 120) → gcd(120, 0) = 120. Then 1920 ÷ 120 = 16 and 1080 ÷ 120 = 9. Dimensions that do
+      not reduce to small numbers, such as 1366 × 768 (683:384), show as a decimal ratio, because a
+      large integer pair is not useful.
+    </p>
+
+    <h2>Ratios worth knowing</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Ratio</th><th>Decimal</th><th>Where it is used</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>16:9</td><td>1.778</td><td>HD and 4K video, most monitors and televisions, YouTube</td></tr>
+          <tr><td>9:16</td><td>0.563</td><td>Stories, Reels, Shorts, TikTok</td></tr>
+          <tr><td>4:5</td><td>0.800</td><td>Instagram portrait, the tallest shape allowed in the feed</td></tr>
+          <tr><td>1:1</td><td>1.000</td><td>Square posts, avatars, album art</td></tr>
+          <tr><td>4:3</td><td>1.333</td><td>Classic television, iPad, Micro Four Thirds, most projectors</td></tr>
+          <tr><td>3:2</td><td>1.500</td><td>35 mm film and almost all DSLR and mirrorless sensors</td></tr>
+          <tr><td>64:27 (“21:9”)</td><td>2.370</td><td>Ultrawide monitors: 2560 × 1080 and 3440 × 1440</td></tr>
+          <tr><td>2.39:1</td><td>2.390</td><td>Anamorphic cinema scope</td></tr>
+          <tr><td>√2:1</td><td>1.414</td><td>ISO paper, A0 to A6, so half of A4 is A5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why “21:9” is not 21:9</h2>
+    <p>
+      A literal 21:9 is 2.333. No ultrawide panel has that shape: 2560 × 1080 and 3440 × 1440 both
+      reduce to 64:27, which is 2.370. The name looks good next to “16:9” on a spec sheet. The preset
+      button on this page uses the real 64:27, so its dimensions match the hardware. The same applies
+      to “18:9” phones (really 2:1) and “19.5:9” (2.167).
+    </p>
+
+    <h2>Common resolutions at a glance</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Resolution</th><th>Ratio</th><th>Megapixels</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1280 × 720</td><td>16:9</td><td>0.92</td></tr>
+          <tr><td>1920 × 1080</td><td>16:9</td><td>2.07</td></tr>
+          <tr><td>2560 × 1440</td><td>16:9</td><td>3.69</td></tr>
+          <tr><td>3840 × 2160</td><td>16:9</td><td>8.29</td></tr>
+          <tr><td>1080 × 1350</td><td>4:5</td><td>1.46</td></tr>
+          <tr><td>1080 × 1920</td><td>9:16</td><td>2.07</td></tr>
+          <tr><td>1024 × 768</td><td>4:3</td><td>0.79</td></tr>
+          <tr><td>3440 × 1440</td><td>64:27</td><td>4.95</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Letterboxing, pillarboxing and cropping</h2>
+    <p>
+      When the source and destination ratios differ, there are three choices. Fit keeps everything and
+      adds bars: horizontal bars (letterboxing) when the source is wider, vertical bars (pillarboxing)
+      when it is taller. Fill covers the frame and crops the overflow. Stretch distorts the image and
+      is almost never correct. Calculate the loss before you decide: 16:9 video in a 9:16 frame needs
+      bars over 68% of the height, so vertical video is usually shot again, not converted.
+    </p>
+
+    <h2>Megapixels</h2>
+    <p>
+      Megapixels are width × height ÷ 1,000,000, and they scale with the square of the linear size.
+      Two times both dimensions gives four times the pixels, and about four times the memory the
+      browser needs for the image. Remember this before you make a collage from twenty 24-megapixel
+      photos.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/screen-size-calculator">Screen Size Calculator</a> turns a diagonal into real width
+      and height, <a href="/resize-image">Resize Image</a> applies the dimensions you calculated
+      here, <a href="/crop-video">Crop Video</a> has the social ratios as presets, and
+      <a href="/combine-images">Combine Images</a> helps when you know the output shape.
+    </p>
+  </Fragment>
+</ToolLayout>

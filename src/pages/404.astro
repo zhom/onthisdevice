@@ -1,0 +1,65 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import ToolCard from '@/components/site/ToolCard.astro'
+import Glyph from '@/components/site/Glyph.astro'
+import Icon from '@/components/site/Icon.tsx'
+import { CATEGORIES, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
+import { FEATURED } from '@/lib/featured'
+import { hasPage } from '@/components/site/pages'
+
+const suggestions = FEATURED.slice(0, 6)
+  .map((s) => getTool(s))
+  .filter((t): t is Tool => t !== undefined && hasPage(t))
+const categories = CATEGORIES.map((category) => ({ category, count: toolsByCategory(category.id).filter(hasPage).length }))
+---
+
+<BaseLayout
+  title="Page not found | onthisdevice"
+  description="That page does not exist on onthisdevice.com. Search the tools or open a category."
+  canonicalPath="/404"
+  noindex
+>
+  <Container class="pt-12 pb-4 sm:pt-20">
+    <h1 class="t-title enter max-w-2xl text-foreground">This page does not exist.</h1>
+    <p class="t-lead enter mt-5 max-w-xl" style="--i:2">
+      Error 404. The link may be broken or the page renamed. Search the {TOOL_COUNT} tools or start from a category.
+    </p>
+    <div class="enter mt-8 flex flex-wrap items-center gap-3" style="--i:3">
+      <button
+        type="button"
+        data-search-open
+        class="flex h-12 w-full max-w-md items-center gap-3 rounded-xl bg-muted pr-3 pl-4 text-left transition-[box-shadow] duration-150 hover:ring-1 hover:ring-input hover:ring-inset focus-visible:outline-2 focus-visible:outline-offset-2"
+      >
+        <Icon name="Search" className="size-[1.125rem] shrink-0 text-foreground" />
+        <span class="min-w-0 flex-1 truncate text-[1rem] text-muted-foreground">Search all tools</span>
+      </button>
+      <a href="/" class="inline-flex h-12 items-center rounded-xl bg-primary px-5 text-[0.9375rem] font-[620] text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2">
+        Home
+      </a>
+    </div>
+  </Container>
+
+  <Container class="pt-20">
+    <h2 class="t-h2 text-foreground">Most used</h2>
+    <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+      {suggestions.map((tool) => <ToolCard tool={tool} />)}
+    </div>
+    <h2 class="t-h2 mt-20 text-foreground">Categories</h2>
+    <ul class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        categories.map(({ category, count }) => (
+          <li>
+            <a href={categoryHref(category)} class="row-link items-center py-2.5">
+              <Glyph id={category.id} still class="size-5 text-foreground" />
+              <span class="flex min-w-0 items-baseline gap-2">
+                <span class="truncate text-[0.9375rem] font-[620] text-foreground">{category.title}</span>
+                <span class="num text-[0.8125rem] text-muted-foreground">{count}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</BaseLayout>

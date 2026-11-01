@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="power-converter">
+  <UnitConverter client:load dimension="power" from="kw" to="hp" />
+  <Fragment slot="explainer">
+    <h2>How to convert a power figure</h2>
+    <ol>
+      <li>Type into either field. kW to hp and hp to kW are the same control run in either direction.</li>
+      <li>Choose which horsepower you mean: mechanical, metric (PS) or electrical. They are three different units, and the first two differ by about 1.4 %.</li>
+      <li>Read the formula panel to see the exact factor applied to your number, and the chart below for a whole range at once.</li>
+    </ol>
+
+    <h2>Three different horsepowers</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Unit</th><th>Exact value</th><th>Where it is used</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Mechanical horsepower (hp)</td><td>745.6998716 W</td><td>UK and US car and engine figures; "bhp" is this measured at the crankshaft</td></tr>
+          <tr><td>Metric horsepower (PS)</td><td>735.49875 W exactly</td><td>Germany, France, Italy, Japan, Korea. Also written CV, cv, ch or pk</td></tr>
+          <tr><td>Electrical horsepower</td><td>746 W exactly</td><td>US electric motor nameplates</td></tr>
+          <tr><td>Boiler horsepower</td><td>9,809.5 W</td><td>Steam boilers only; not in this converter to avoid confusion</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      This is why the same car is advertised as 150 PS in Germany and 148 hp in Britain, and why
+      converting a European figure with the wrong factor makes an engine look more powerful than it
+      is. All three are in the unit list, labelled, so you can pick deliberately.
+    </p>
+
+    <h2>Cars, appliances and the numbers you meet</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Thing</th><th>kW</th><th>hp</th><th>PS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Electric kettle</td><td>3</td><td>4.0</td><td>4.1</td></tr>
+          <tr><td>Small city car</td><td>50</td><td>67</td><td>68</td></tr>
+          <tr><td>Family hatchback</td><td>110</td><td>148</td><td>150</td></tr>
+          <tr><td>Performance saloon</td><td>250</td><td>335</td><td>340</td></tr>
+          <tr><td>Formula 1 power unit</td><td>735</td><td>986</td><td>1,000</td></tr>
+          <tr><td>Large wind turbine</td><td>3,000</td><td>4,023</td><td>4,079</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>BTU per hour, tons of refrigeration and air conditioning</h2>
+    <p>
+      Cooling capacity is quoted in BTU per hour in the US and in kilowatts almost everywhere else.
+      The conversion is 1 kW = 3,412.14 BTU/h, so divide a BTU/h figure by 3,412 to get kilowatts. A
+      12,000 BTU/h unit is 3.52 kW. 12,000 BTU/h is also, by definition, one "ton" of refrigeration,
+      a unit from the time when cooling was measured against the rate of melting
+      a ton of ice in a day.
+    </p>
+    <p>
+      Note that an air conditioner's BTU rating describes heat moved, not electricity drawn. A
+      3.5 kW cooling unit might consume only 1 kW of electrical power, because a heat pump moves
+      heat rather than creating it. Converting the units correctly will not tell you the running
+      cost. For that you need the efficiency rating.
+    </p>
+
+    <h2>Power is not energy</h2>
+    <p>
+      Power is a rate: joules per second. Energy is the total: power multiplied by time. A 2 kW
+      heater has a fixed power, but the energy it uses depends on how long it runs: three hours gives
+      6 kWh. Every unit on this page is a rate, so if your figure has an hour in the
+      name (kWh, BTU total, therms) it belongs on the energy converter instead.
+    </p>
+  </Fragment>
+</ToolLayout>

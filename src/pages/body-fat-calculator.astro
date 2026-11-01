@@ -1,0 +1,168 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BodyFatCalculator from '@/components/tools/health/BodyFatCalculator.tsx'
+---
+
+<ToolLayout slug="body-fat-calculator">
+  <BodyFatCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to measure yourself properly</h2>
+    <p>
+      The result of the US Navy method depends on the tape measurements. Five minutes of care here
+      improve the result more than any change to the equation.
+    </p>
+    <ul>
+      <li>
+        Use a flexible tape that does not stretch. A cloth tailor's tape is ideal. A metal builder's
+        tape does not follow the curves of the body.
+      </li>
+      <li>
+        Measure early in the morning, after the bathroom and before eating or drinking. Food and fluid
+        change waist circumference by a centimetre or more.
+      </li>
+      <li>
+        Measure on bare skin, with the tape snug but not compressing. If it leaves a mark, it is too
+        tight. If it sags, it is too loose.
+      </li>
+      <li>
+        Take each measurement three times and use the average. Put the tape on again between attempts;
+        do not read it twice in the same position.
+      </li>
+      <li>Stand relaxed, arms at your sides, breathing normally. Do not pull in your stomach.</li>
+    </ul>
+
+    <h3>Where each measurement goes</h3>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Site</th>
+            <th scope="col">Placement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Neck</td>
+            <td>
+              Just below the larynx, tape sloping slightly downward toward the front. Do not include
+              the shoulders.
+            </td>
+          </tr>
+          <tr>
+            <td>Waist (men)</td>
+            <td>Horizontally at the navel, at the end of a normal breath out.</td>
+          </tr>
+          <tr>
+            <td>Waist (women)</td>
+            <td>At the narrowest point of the torso, usually a little above the navel.</td>
+          </tr>
+          <tr>
+            <td>Hips (women)</td>
+            <td>At the widest point of the buttocks, feet together, tape level all the way round.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The two methods on this page</h2>
+    <h3>US Navy circumference method</h3>
+    <p>
+      The Naval Health Research Center developed this method in 1984 as a practical field standard. It
+      uses the logarithm of a circumference difference, which captures how fat is distributed around
+      the trunk:
+    </p>
+    <p>
+      <strong>Men:</strong> %BF = 495 ÷ (1.0324 − 0.19077 × log₁₀(waist − neck) + 0.15456 × log₁₀(height))
+      − 450
+    </p>
+    <p>
+      <strong>Women:</strong> %BF = 495 ÷ (1.29579 − 0.35004 × log₁₀(waist + hip − neck) + 0.22100 ×
+      log₁₀(height)) − 450
+    </p>
+    <p>
+      All measurements are in centimetres. Imperial entries are converted before the logarithms, so
+      both unit systems give the same results.
+    </p>
+
+    <h3>BMI method (Deurenberg equation)</h3>
+    <p>
+      <strong>%BF = (1.20 × BMI) + (0.23 × age) − (10.8 × sex) − 5.4</strong>, where sex is 1 for men
+      and 0 for women. Deurenberg and colleagues published it in 1991. It needs no tape, but it uses
+      only height, weight, age and sex, so it cannot tell muscle from fat. This page shows it as a
+      cross-check, not as the main figure.
+    </p>
+    <p>
+      When the two disagree, the gap tells you something. If the Navy figure is lower, you have more
+      muscle than average for your weight. If it is higher, you have more fat than your BMI suggests:
+      the "normal weight obesity" pattern.
+    </p>
+
+    <h2>How the methods compare on accuracy</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Method</th>
+            <th scope="col">Typical error vs DEXA</th>
+            <th scope="col">Cost and practicality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>DEXA scan</td><td>Reference standard (±1–2%)</td><td>Clinic visit, £50–150 per scan</td></tr>
+          <tr><td>Hydrostatic weighing</td><td>±2%</td><td>Specialist lab, uncomfortable</td></tr>
+          <tr><td>Air displacement plethysmography</td><td>±2–3%</td><td>Specialist lab</td></tr>
+          <tr><td>Skinfold callipers (7-site)</td><td>±3–4% with a skilled tester</td><td>Cheap, but depends on technique</td></tr>
+          <tr><td>US Navy tape method</td><td>±3–4%</td><td>Free, two minutes, repeatable at home</td></tr>
+          <tr><td>Bioimpedance scales</td><td>±4–8%, very sensitive to hydration</td><td>Cheap and instant, but drifts with fluid status</td></tr>
+          <tr><td>BMI-based estimate</td><td>±5–8%, worse for athletes</td><td>Needs no equipment</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The tape method is about as accurate as equipment that costs hundreds of times more. Its main
+      strength is repeatability: measured the same way every two weeks, it tracks change accurately,
+      even if the absolute number is a few points off.
+    </p>
+
+    <h2>Body fat categories</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Category</th>
+            <th scope="col">Men</th>
+            <th scope="col">Women</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Essential fat</td><td>2–5%</td><td>10–13%</td></tr>
+          <tr><td>Athletes</td><td>6–13%</td><td>14–20%</td></tr>
+          <tr><td>Fitness</td><td>14–17%</td><td>21–24%</td></tr>
+          <tr><td>Average</td><td>18–24%</td><td>25–31%</td></tr>
+          <tr><td>Obese</td><td>25% and above</td><td>32% and above</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      These are the bands of the American Council on Exercise. Women have more essential fat than men
+      for reproductive and hormonal function, so each threshold is about 8 to 10 points higher. Very
+      low body fat over a long time (below about 5 percent in men or 12 percent in women) disrupts
+      hormones, bone density and immune function. Do not aim for it.
+    </p>
+
+    <h2>Waist-to-height ratio: the two-second version</h2>
+    <p>
+      If you measure only one thing, measure your waist and divide it by your height. Keep it below 0.5.
+      This one ratio predicts cardiometabolic risk at least as well as BMI, works across heights and
+      populations, and needs no equations. It shows next to your body fat results above.
+    </p>
+
+    <h2>Tracking change over time</h2>
+    <p>
+      Body fat changes slowly. A realistic rate of loss is 0.5 to 1 percentage point a month with
+      training and a modest calorie deficit. Measure every two to four weeks, always under the same
+      conditions, and compare the trend, not single readings. A tape measure, progress photos and a
+      lifting log tell you more about body composition than one scan.
+    </p>
+  </Fragment>
+</ToolLayout>

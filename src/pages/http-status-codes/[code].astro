@@ -1,0 +1,231 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import { HTTP_STATUSES, STATUS_CLASSES } from '@/components/tools/dev/dev-format-http-data'
+import type { HttpStatus } from '@/components/tools/dev/dev-format-http-data'
+
+export function getStaticPaths() {
+  return HTTP_STATUSES.map((status) => ({
+    params: { code: String(status.code) },
+    props: { status },
+  }))
+}
+
+interface Props {
+  status: HttpStatus
+}
+
+const { status } = Astro.props
+
+const klass = STATUS_CLASSES.find((item) => item.id === status.klass)
+const siblings = HTTP_STATUSES.filter((item) => item.klass === status.klass)
+const index = siblings.findIndex((item) => item.code === status.code)
+const previous = index > 0 ? siblings[index - 1] : null
+const next = index >= 0 && index < siblings.length - 1 ? siblings[index + 1] : null
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const path = `/http-status-codes/${status.code}`
+const pageUrl = new URL(path, SITE).href
+
+const title = `HTTP ${status.code} ${status.title} | onthisdevice`
+const description = `HTTP ${status.code} ${status.title}: what it means, what causes it and how to fix it. ${status.summary}`.slice(0, 300)
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumbs`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/` },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'HTTP status codes',
+        item: new URL('/http-status-codes', SITE).href,
+      },
+      { '@type': 'ListItem', position: 3, name: `${status.code} ${status.title}`, item: pageUrl },
+    ],
+  },
+  {
+    '@type': 'TechArticle',
+    '@id': `${pageUrl}#article`,
+    headline: `HTTP ${status.code} ${status.title}`,
+    description: status.summary,
+    url: pageUrl,
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    publisher: { '@id': `${SITE.origin}/#organization` },
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: `What does HTTP ${status.code} mean?`,
+        acceptedAnswer: { '@type': 'Answer', text: status.summary },
+      },
+      {
+        '@type': 'Question',
+        name: `What causes a ${status.code} error?`,
+        acceptedAnswer: { '@type': 'Answer', text: status.causes.join(' ') },
+      },
+      {
+        '@type': 'Question',
+        name: `How do I fix HTTP ${status.code}?`,
+        acceptedAnswer: { '@type': 'Answer', text: status.fixes.join(' ') },
+      },
+    ],
+  },
+]
+
+const ACCENT: Record<string, string> = {
+  '1xx': 'bg-chart-2/12 text-chart-2 border-chart-2/30',
+  '2xx': 'bg-success/12 text-success border-success/30',
+  '3xx': 'bg-chart-3/12 text-chart-3 border-chart-3/30',
+  '4xx': 'bg-warning/15 text-foreground border-warning/40',
+  '5xx': 'bg-destructive/12 text-destructive border-destructive/30',
+}
+---
+
+<BaseLayout title={title} description={description} canonicalPath={path} jsonLd={jsonLd}>
+  <Container class="py-8 sm:py-10">
+    <div class="mx-auto w-full max-w-3xl">
+      <nav aria-label="Breadcrumb" class="mb-6">
+        <ol class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-muted-foreground">
+          <li><a href="/" class="rounded hover:text-foreground">Home</a></li>
+          <li aria-hidden="true" class="text-muted-foreground/50">/</li>
+          <li><a href="/http-status-codes" class="rounded hover:text-foreground">HTTP status codes</a></li>
+          <li aria-hidden="true" class="text-muted-foreground/50">/</li>
+          <li><span class="font-medium text-foreground" aria-current="page">{status.code}</span></li>
+        </ol>
+      </nav>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <span
+          class={`rounded-lg border px-3 py-1 font-mono text-sm font-semibold ${ACCENT[status.klass]}`}
+        >
+          {klass?.title}
+        </span>
+        {
+          !status.standard && (
+            <span class="rounded-lg border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+              Not part of the HTTP standard
+            </span>
+          )
+        }
+        {
+          status.retryable && (
+            <span class="rounded-lg border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+              Safe to retry
+            </span>
+          )
+        }
+        {
+          status.cacheable && (
+            <span class="rounded-lg border border-border px-3 py-1 text-xs font-medium text-muted-foreground">
+              Cacheable by default
+            </span>
+          )
+        }
+      </div>
+
+      <h1 class="mt-5 text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl">
+        <span class="font-mono">{status.code}</span> {status.title}
+      </h1>
+      <p class="mt-4 text-lg leading-relaxed text-pretty text-muted-foreground">{status.summary}</p>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold tracking-tight text-foreground">What causes it</h2>
+        <ul class="mt-3 list-disc space-y-2 pl-5 text-[15px] leading-7 text-muted-foreground marker:text-primary/70">
+          {status.causes.map((cause) => <li class="text-pretty">{cause}</li>)}
+        </ul>
+      </section>
+
+      <section class="mt-8">
+        <h2 class="text-xl font-semibold tracking-tight text-foreground">How to fix it</h2>
+        <ul class="mt-3 list-disc space-y-2 pl-5 text-[15px] leading-7 text-muted-foreground marker:text-primary/70">
+          {status.fixes.map((fix) => <li class="text-pretty">{fix}</li>)}
+        </ul>
+      </section>
+
+      <section class="mt-8 rounded-xl border border-border bg-card p-5">
+        <h2 class="text-base font-semibold text-foreground">At a glance</h2>
+        <dl class="mt-3 grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+          <div class="flex justify-between gap-4 border-b border-border pb-2">
+            <dt class="text-muted-foreground">Class</dt>
+            <dd class="font-medium text-foreground">{klass?.title}</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-border pb-2">
+            <dt class="text-muted-foreground">Reference</dt>
+            <dd class="font-medium text-foreground">{status.reference}</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-border pb-2">
+            <dt class="text-muted-foreground">Standardised</dt>
+            <dd class="font-medium text-foreground">{status.standard ? 'Yes' : 'No: vendor extension'}</dd>
+          </div>
+          <div class="flex justify-between gap-4 border-b border-border pb-2">
+            <dt class="text-muted-foreground">Retry the request?</dt>
+            <dd class="font-medium text-foreground">
+              {status.retryable ? 'Yes, with backoff' : status.klass === '5xx' ? 'Only if idempotent' : 'No: fix the request first'}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <nav class="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
+        {
+          previous ? (
+            <a
+              href={`/http-status-codes/${previous.code}`}
+              class="rounded-lg border border-border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              ← {previous.code} {previous.title}
+            </a>
+          ) : (
+            <span></span>
+          )
+        }
+        {
+          next ? (
+            <a
+              href={`/http-status-codes/${next.code}`}
+              class="rounded-lg border border-border px-3.5 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              {next.code} {next.title} →
+            </a>
+          ) : (
+            <span></span>
+          )
+        }
+      </nav>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold tracking-tight text-foreground">
+          Other {klass?.title.toLowerCase()} codes
+        </h2>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {
+            siblings
+              .filter((item) => item.code !== status.code)
+              .map((item) => (
+                <li>
+                  <a
+                    href={`/http-status-codes/${item.code}`}
+                    class="inline-flex items-baseline gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+                  >
+                    <span class="font-mono font-semibold text-foreground">{item.code}</span>
+                    <span class="text-muted-foreground">{item.title}</span>
+                  </a>
+                </li>
+              ))
+          }
+        </ul>
+        <p class="mt-6 text-sm text-muted-foreground">
+          <a href="/http-status-codes" class="font-medium text-primary underline underline-offset-4">
+            Back to the full HTTP status code reference
+          </a>
+        </p>
+      </section>
+    </div>
+  </Container>
+</BaseLayout>

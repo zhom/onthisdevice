@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="sha1-hash-generator">
+  <DevEncodeHash client:load algorithm="SHA-1" />
+  <Fragment slot="explainer">
+    <h2>What SHA-1 is</h2>
+    <p>
+      NIST published SHA-1 in 1995. It gives a 160-bit digest, written as 40 hexadecimal characters. For more
+      than a decade it was the default hash of the web, in TLS certificates, Git object names, SSH
+      fingerprints and code signing. It is now retired from every use where it must resist an attacker.
+    </p>
+
+    <h2>How SHA-1 was broken</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Year</th><th>Event</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2005</td><td>Theoretical attack published, well below brute force</td></tr>
+          <tr><td>2011</td><td>NIST formally deprecates SHA-1 for digital signatures</td></tr>
+          <tr><td>2017</td><td>SHAttered: Google and CWI publish two different PDFs with the same SHA-1</td></tr>
+          <tr><td>2020</td><td>Chosen-prefix collision demonstrated for roughly US$45,000 of compute</td></tr>
+          <tr><td>2021</td><td>Browsers and OS vendors complete removal from certificate validation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A chosen-prefix collision is the dangerous kind: the attacker chooses both documents in advance. That
+      makes a forged signature possible.
+    </p>
+
+    <h2>Where SHA-1 is still used</h2>
+    <ul>
+      <li>
+        Git: object names are SHA-1. Git now uses a collision-detecting variant that rejects known attack
+        patterns, and it supports SHA-256 repositories.
+      </li>
+      <li>
+        HMAC-SHA1: collision attacks do not break HMAC. For this reason TOTP still specifies SHA-1 and all
+        authenticator apps implement it.
+      </li>
+      <li>
+        Legacy fingerprints: older SSH and PGP key fingerprints, kept for compatibility, not for security.
+      </li>
+    </ul>
+
+    <h2>Git commit hashes will not match</h2>
+    <p>
+      A file hashed here gives a different value from <code>git hash-object</code>. Git does not hash only the
+      file contents; it hashes a header first:
+    </p>
+    <pre><code>blob &lt;byte length&gt;\0&lt;contents&gt;</code></pre>
+    <p>
+      Commits, trees and tags each have their own header format. This prevents a blob and a tree with the
+      same bytes from colliding in the object database.
+    </p>
+
+    <h2>Verifying an old download</h2>
+    <p>
+      Much archived software still lists only a SHA-1 sum. A SHA-1 check proves that the file was not
+      truncated or corrupted in transit. It does not prove that nobody replaced the file, because an attacker
+      who can do that can also edit the page that lists the hash. If a signature is available, verify the
+      signature.
+    </p>
+
+    <h2>Move to SHA-256</h2>
+    <p>
+      For new work, use SHA-256: it has no known weaknesses, hardware acceleration on every modern CPU and
+      universal support. The comparison table on this page shows the SHA-256 digest of the same input.
+    </p>
+  </Fragment>
+</ToolLayout>

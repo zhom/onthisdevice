@@ -1,0 +1,54 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactText from '@/components/tools/redact/text/RedactText.tsx'
+---
+
+<ToolLayout slug="redact-text" width="wide">
+  <RedactText client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact text</h2>
+    <ol>
+      <li>Paste text into the box, or drop a .txt, .md, .csv, .json, .log or .eml file on it.</li>
+      <li>The result updates as you type. Hidden items are shown as black marks with their replacement.</li>
+      <li>Press a mark to keep that value visible everywhere in the text. Press it again to hide it.</li>
+      <li>Choose what to hide and how to replace it. Add words the detectors missed to the always-hide list.</li>
+      <li>Copy the result or download it as a .txt file.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <p>
+      Two detectors run in your browser. Pattern rules find emails, phone numbers, card numbers (with the Luhn check), IBANs
+      (with the mod 97 check), IP and MAC addresses, links, dates, postcodes, national ID numbers and more than 60 kinds of
+      API keys and tokens. They work at once.
+    </p>
+    <p>
+      A small language model finds names, street addresses, organizations, places, usernames and ID numbers that only the
+      context gives away. It is a 19 MB file with a 14 MB runtime. Both download once from this site and
+      are kept in your browser's storage, so the tool works offline after the first use. The model reads Latin-script text
+      in English, German, French, Spanish, Italian, Dutch, Portuguese and Swedish best.
+    </p>
+
+    <h2>Replacement styles</h2>
+    <ul>
+      <li>Label: every name becomes [NAME], every email [EMAIL].</li>
+      <li>Numbered label: each different value gets its own number, so [NAME 1] is always the same person.</li>
+      <li>Block: a fixed row of squares that does not show the length of the value.</li>
+      <li>Fake values: each person gets one realistic fake name, used every time they appear. "Anna Berg" and later "Anna" become "Laura Smith" and "Laura".</li>
+    </ul>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and paste your text. You see the model files load from
+      this site the first time, and no request after that. You can also load the model once, turn off your network and use
+      the tool.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>No detector finds everything. Names in lower case, nicknames and rare spellings can be missed. Read the result before you share it.</li>
+      <li>Some items are hidden that do not need to be. Press them to keep them.</li>
+      <li>Very long texts take longer for the model: about one to three seconds for every 10,000 characters on a laptop. The pattern rules stay fast.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

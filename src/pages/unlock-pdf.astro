@@ -1,0 +1,200 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureUnlock from '@/components/tools/pdf/PdfSecureUnlock.tsx'
+---
+
+<ToolLayout slug="unlock-pdf">
+  <PdfSecureUnlock client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Two kinds of locked PDF</h2>
+      <p>
+        "Locked" can mean two technically different things. The unlock PDF tool tells you which one you have
+        before you start.
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Restricted (owner password only)</th>
+              <th scope="col">Encrypted (user password)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">What you see</th>
+              <td>It opens normally, but printing, copying or editing is greyed out</td>
+              <td>A password box appears before anything is shown</td>
+            </tr>
+            <tr>
+              <th scope="row">Password needed here</th>
+              <td>None</td>
+              <td>Yes, the one you were given</td>
+            </tr>
+            <tr>
+              <th scope="row">Why it can be removed</th>
+              <td>
+                The content is encrypted with an empty password, so anyone can derive the key
+              </td>
+              <td>The key is derived from your password, so you must supply it</td>
+            </tr>
+            <tr>
+              <th scope="row">Typical source</th>
+              <td>Bank statements, e-books, tender documents, form templates</td>
+              <td>Payslips, medical results, legal discovery, HR letters</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>How the lossless method works</h2>
+      <p>
+        Re-printing a PDF destroys its text layer. This tool tries a structural rewrite first:
+      </p>
+      <ol>
+        <li>
+          It parses the file into its object graph. Encryption hides only the strings and stream data, not the
+          structure, so the catalog, page tree and cross-reference entries are readable from the start.
+        </li>
+        <li>
+          It reads the <code>/Encrypt</code> dictionary to find the revision, cipher and key length, and checks
+          your password against the stored <code>/U</code> or <code>/O</code> hash. A wrong password fails here,
+          before anything is written.
+        </li>
+        <li>
+          It decrypts, inflates and expands the compressed object streams, which a modern PDF uses to pack most
+          of its small objects, so their contents can be reached.
+        </li>
+        <li>
+          It decrypts each remaining string and stream with its per-object key (revisions 2–4) or the file key
+          (revisions 5–6), and deletes the <code>/Encrypt</code> entry from the trailer.
+        </li>
+        <li>
+          It writes the result, then <strong>opens and renders it again</strong> as a check. Only if that check
+          fails does the tool rebuild the pages as images, and the result card tells you so.
+        </li>
+      </ol>
+      <p>
+        With the lossless method, text stays selectable and searchable, links work, bookmarks stay, and form
+        fields stay fillable.
+      </p>
+    </section>
+
+    <section>
+      <h2>Supported PDF encryption schemes</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Revision</th>
+              <th scope="col">Cipher</th>
+              <th scope="col">Introduced with</th>
+              <th scope="col">Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2</td>
+              <td>RC4, 40-bit</td>
+              <td>PDF 1.1</td>
+              <td>Easily broken by modern hardware; still found in old archives</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>RC4, 40–128-bit</td>
+              <td>PDF 1.4</td>
+              <td>Adds the 50-round MD5 key strengthening</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>RC4 or AES-128</td>
+              <td>PDF 1.5 / 1.6</td>
+              <td>Adds crypt filters, so streams and strings can differ</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>AES-256</td>
+              <td>PDF 1.7 extension level 3</td>
+              <td>Deprecated: a single SHA-256, weak against fast guessing</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td>AES-256</td>
+              <td>PDF 1.7 extension level 8 / ISO 32000-2</td>
+              <td>The current scheme, with the iterated Algorithm 2.B hash</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Non-standard handlers are not supported: Adobe Experience Manager rights management, FileOpen,
+        Locklizard and similar enterprise DRM replace the security handler and need their licence server. The
+        tool identifies those files by name and refuses them, so they are not damaged.
+      </p>
+    </section>
+
+    <section>
+      <h2>No password cracking</h2>
+      <p>
+        To recover an unknown password, you must guess it. For revision 6, each guess costs at least
+        sixty-four rounds of SHA-2 plus AES over a 64× expanded buffer, by design of the specification. A
+        browser tab can try a few thousand candidates per second; a rented GPU cluster is much faster but still
+        needs centuries for a good passphrase.
+      </p>
+      <p>
+        Password recovery services either try only a dictionary of common passwords or need your file on their
+        server. This tool does neither.
+      </p>
+    </section>
+
+    <section>
+      <h2>If the password is lost</h2>
+      <ul>
+        <li>
+          Ask the sender. Banks, payroll providers and government agencies use a formula: a date of birth, a
+          national insurance or PAN number, the last four digits of an account, sometimes a surname in capitals.
+          The covering email usually explains it.
+        </li>
+        <li>
+          Check your password manager and browser autofill. Document passwords are often saved with the portal
+          they came from.
+        </li>
+        <li>
+          Try obvious variants. Case matters, and so do trailing spaces copied from an email and a keyboard
+          layout that typed a different character.
+        </li>
+        <li>
+          If you can still open the file somewhere, for example on a phone that remembered the password, print
+          it to PDF there to get an unrestricted copy.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Legal and ethical use</h2>
+      <p>
+        This page cannot tell whether the document is your own payslip or another person's contract, because
+        it never sees the document. It is normal to remove protection from a file you were given, so you can
+        read it on a device that has problems with the password prompt or copy a quote from it. To bypass
+        protection on material you were not meant to have is not, and in many jurisdictions it is unlawful,
+        however easy the tool makes it. You decide.
+      </p>
+    </section>
+
+    <section>
+      <h2>After unlocking</h2>
+      <p>
+        A decrypted PDF is an ordinary PDF, so you can use the other PDF tools: <a href="/merge-pdf"
+          >merge it</a
+        > with other documents, <a href="/split-pdf">split out</a> the pages you need,
+        <a href="/compress-pdf">compress it</a> for email, or
+        <a href="/pdf-to-text">extract the text</a>. To protect it again with your own password,
+        <a href="/password-protect-pdf">Password Protect PDF</a> writes AES-256 in the same tab.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

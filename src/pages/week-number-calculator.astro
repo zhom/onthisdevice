@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WeekNumberCalculator from '@/components/tools/datetime/WeekNumberCalculator.tsx'
+---
+
+<ToolLayout slug="week-number-calculator">
+  <WeekNumberCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>What the week number calculator does</h2>
+    <ul>
+      <li><strong>Date to week</strong> gives the ISO 8601 week number for any date, with the week's Monday and Sunday.</li>
+      <li><strong>Week to dates</strong> gives all seven dates for a week number and year.</li>
+      <li><strong>Whole year</strong> shows every week of a year in one scrollable table, with the current week marked.</li>
+    </ul>
+
+    <h2>The ISO 8601 rule</h2>
+    <p>
+      ISO 8601 defines week 1 of a year as the week that contains the first Thursday of January. The same rule
+      in three equivalent forms:
+    </p>
+    <ul>
+      <li>Week 1 is the week containing 4 January.</li>
+      <li>Week 1 is the first week with at least four days in the new year.</li>
+      <li>Week 1 is the week containing the first Thursday of January.</li>
+    </ul>
+    <p>
+      Weeks always run Monday to Sunday, and a week belongs entirely to the year that contains its Thursday. So 30
+      December can be in week 1 of the next year, and 1 January can be in week 52 or 53 of the previous one. The
+      tool calls this the <strong>ISO week-numbering year</strong> and shows it when it differs from the calendar
+      year.
+    </p>
+
+    <h2>52 or 53 weeks?</h2>
+    <p>
+      A 365-day year is 52 weeks plus one day; a leap year is 52 weeks plus two. The extra days add up, and every
+      five or six years there is a 53rd week. Exactly: a year has 53 ISO weeks when 1 January is a Thursday, or
+      when it is a Wednesday in a leap year.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>1 January falls on</th>
+            <th>ISO weeks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2024</td><td>Monday (leap year)</td><td>52</td></tr>
+          <tr><td>2025</td><td>Wednesday</td><td>52</td></tr>
+          <tr><td>2026</td><td>Thursday</td><td>53</td></tr>
+          <tr><td>2027</td><td>Friday</td><td>52</td></tr>
+          <tr><td>2028</td><td>Saturday (leap year)</td><td>52</td></tr>
+          <tr><td>2029</td><td>Monday</td><td>52</td></tr>
+          <tr><td>2030</td><td>Tuesday</td><td>52</td></tr>
+          <tr><td>2031</td><td>Wednesday</td><td>52</td></tr>
+          <tr><td>2032</td><td>Thursday (leap year)</td><td>53</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 53-week year causes problems in retail and payroll: annual comparisons break, and weekly-paid staff get
+      an extra pay run. Systems that assume 52 weeks often fail in those years.
+    </p>
+
+    <h2>ISO weeks versus US weeks</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>ISO 8601</th>
+            <th>Common US / broadcast</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Week starts</td><td>Monday</td><td>Sunday</td></tr>
+          <tr><td>Week 1 is</td><td>The week containing 4 January</td><td>The week containing 1 January</td></tr>
+          <tr><td>Partial first week</td><td>Never: it belongs to the previous year</td><td>Yes: it can be one day long</td></tr>
+          <tr><td>Weeks per year</td><td>52 or 53</td><td>52 or 53</td></tr>
+          <tr><td>Used by</td><td>Europe, ISO, most software libraries</td><td>US business, broadcast and retail calendars</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The tool shows both numbers side by side. If a colleague's "week 33" does not match yours, this is almost
+      always the reason. Check which convention their system uses before you reschedule anything.
+    </p>
+
+    <h2>Where week numbers are used</h2>
+    <ul>
+      <li>
+        Manufacturing and logistics: European supply chains schedule almost everything by calendar week ("KW" in
+        German, "sem." in French).
+      </li>
+      <li>Project planning: sprint and milestone tracking in Gantt charts and roadmaps.</li>
+      <li>Retail and finance: 4-4-5 and 52/53-week fiscal calendars use week numbers.</li>
+      <li>Payroll: weekly and fortnightly pay cycles are usually numbered.</li>
+      <li>Date stamping: many components are marked with a two-digit year and week of manufacture.</li>
+    </ul>
+
+    <h2>Writing week dates</h2>
+    <p>
+      The ISO format for a week is 2026-W33, and for a specific day 2026-W33-1, where the final digit is the day
+      of the week, from Monday as 1 to Sunday as 7. This form is unambiguous and sorts correctly, so use it for
+      filenames, report titles and anything a machine reads.
+    </p>
+  </Fragment>
+</ToolLayout>

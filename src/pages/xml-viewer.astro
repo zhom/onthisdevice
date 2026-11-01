@@ -1,0 +1,60 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-viewer">
+  <DevFormatXml client:load mode="viewer" />
+  <Fragment slot="explainer">
+    <h2>XML viewer: read the structure as a tree</h2>
+    <p>
+      A formatted XML document is readable up to a few hundred lines. After that, indentation does not help:
+      the element you want is on line 4,000 and its parent is on line 12. A tree collapses the parts you are not
+      looking at, so you can move through the structure.
+    </p>
+    <p>
+      Each branch shows the element name, each attribute with its value, and the text content if the element has
+      any. A count badge on collapsible branches shows how many children are hidden, so you can tell a list of
+      three from a list of three thousand without expanding it.
+    </p>
+
+    <h2>Keyboard navigation</h2>
+    <p>
+      Each branch is a native HTML disclosure element, not a scripted widget. So:
+    </p>
+    <ul>
+      <li><kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> move between branches in document order.</li>
+      <li><kbd>Enter</kbd> or <kbd>Space</kbd> expands and collapses the focused branch.</li>
+      <li>Your browser&rsquo;s find (<kbd>Ctrl</kbd>+<kbd>F</kbd> or <kbd>Cmd</kbd>+<kbd>F</kbd>) searches everything currently expanded.</li>
+      <li>Screen readers announce the expanded or collapsed state without extra ARIA, because the semantics are built in.</li>
+    </ul>
+    <p>
+      The first two levels open automatically, because that usually shows the overall shape. There is no
+      expand-all by design: on a 50,000-node document it would render every node at once and freeze the tab.
+    </p>
+
+    <h2>What the tree does not show</h2>
+    <ul>
+      <li>Whitespace-only text nodes: in an indented document these are formatting, not data. Elements with real text show it inline.</li>
+      <li>Namespace declarations as separate nodes: they appear as ordinary <code>xmlns</code> attributes, as in the document.</li>
+      <li>Entity references: the parser resolves them, so you see the character, not the reference.</li>
+    </ul>
+
+    <h2>File size limits</h2>
+    <p>
+      There is no upload limit. The limits are your device&rsquo;s memory and how many DOM nodes the browser can
+      lay out. A few tens of megabytes work well in a desktop browser. A phone gets slow much earlier: parsing
+      is fast, rendering is not. For large files, use the file button; ten megabytes pasted into a textarea is
+      slower than a file read directly.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Finding the one <code>&lt;fault&gt;</code> element buried in a SOAP response.</li>
+      <li>Checking which namespaces a WSDL actually declares before writing a client.</li>
+      <li>Auditing an Android <code>AndroidManifest.xml</code> or a Maven POM for a specific attribute.</li>
+      <li>Inspecting an RSS or Atom feed to see why an item is not appearing.</li>
+      <li>Reading an SVG&rsquo;s structure to find the path you need to extract.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

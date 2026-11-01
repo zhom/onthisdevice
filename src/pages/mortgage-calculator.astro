@@ -1,0 +1,165 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MortgageCalculator from '@/components/tools/finance/MortgageCalculator.tsx'
+---
+
+<ToolLayout slug="mortgage-calculator">
+  <MortgageCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use this mortgage calculator</h2>
+    <ol>
+      <li>
+        Enter the <strong>home price</strong> and your <strong>down payment</strong>. The toggle
+        switches between a percentage and a cash amount, and the other figure shows underneath.
+      </li>
+      <li>
+        Set the <strong>interest rate</strong> and <strong>term</strong>. Fifteen and thirty years
+        are the common US fixed terms; twenty-five is standard in the UK and Canada.
+      </li>
+      <li>
+        Fill in the escrow items: <strong>property tax</strong> (as a rate or an annual amount),
+        <strong>home insurance</strong>, <strong>HOA or condo fees</strong> and the
+        <strong>PMI rate</strong> if your down payment is under 20%.
+      </li>
+      <li>
+        Add an <strong>extra monthly principal payment</strong> to see how much interest you save and
+        how many months come off the term.
+      </li>
+      <li>
+        Scroll to the schedule for a payment-by-payment breakdown, switch between the monthly and
+        yearly views, and export it as CSV.
+      </li>
+    </ol>
+
+    <h2>What is in a monthly mortgage payment</h2>
+    <p>
+      Lenders call it PITI (principal, interest, taxes and insurance), and most borrowers have two more
+      line items.
+    </p>
+    <ul>
+      <li>
+        Principal is the part of the payment that reduces the debt. It starts small and grows each
+        month.
+      </li>
+      <li>
+        Interest is the lender's charge on the balance you still owe. It starts large and gets smaller
+        each month.
+      </li>
+      <li>
+        Property tax is set by your local authority, usually as a percentage of the assessed value. It
+        is collected monthly into an escrow account and paid once or twice a year for you.
+      </li>
+      <li>
+        Homeowners insurance is required by the lender for the life of the loan, and is escrowed the
+        same way.
+      </li>
+      <li>
+        PMI (private mortgage insurance) protects the lender, not you. It is charged while your
+        loan-to-value ratio is above 80%, usually 0.3% to 1.5% of the original loan amount per year.
+      </li>
+      <li>
+        HOA or condo fees are not part of the mortgage, but you pay them each month and lenders count
+        them when they assess affordability.
+      </li>
+    </ul>
+
+    <h2>The formula behind the payment</h2>
+    <p>
+      The level monthly payment on a fixed-rate loan comes from the standard annuity formula:
+      <code>M = L × i / (1 − (1 + i)^−n)</code>, where <code>L</code> is the loan amount,
+      <code>i</code> is the monthly interest rate (the annual rate divided by twelve) and
+      <code>n</code> is the total number of payments. The mortgage calculator shows this formula with
+      your own numbers in the formula panel.
+    </p>
+    <p>
+      Each month, interest is charged on the remaining balance, and the rest of the payment reduces the
+      principal. So the split changes a lot over the life of the loan. On a 30-year loan at 6.5%, the
+      first payment is about 86% interest, and principal becomes larger than interest only at about
+      year eighteen.
+    </p>
+
+    <h2>Monthly principal and interest per 100,000 borrowed</h2>
+    <p>
+      Multiply the figure for your rate and term by your loan amount in hundreds of thousands. A
+      400,000 loan at 6.5% over 30 years is 4 × 632.07 = 2,528.28 a month before tax and insurance.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Interest rate</th>
+            <th style="text-align:right">15 years</th>
+            <th style="text-align:right">20 years</th>
+            <th style="text-align:right">30 years</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>3.0%</td><td style="text-align:right">690.58</td><td style="text-align:right">554.60</td><td style="text-align:right">421.60</td></tr>
+          <tr><td>3.5%</td><td style="text-align:right">714.88</td><td style="text-align:right">579.96</td><td style="text-align:right">449.04</td></tr>
+          <tr><td>4.0%</td><td style="text-align:right">739.69</td><td style="text-align:right">605.98</td><td style="text-align:right">477.42</td></tr>
+          <tr><td>4.5%</td><td style="text-align:right">764.99</td><td style="text-align:right">632.65</td><td style="text-align:right">506.69</td></tr>
+          <tr><td>5.0%</td><td style="text-align:right">790.79</td><td style="text-align:right">659.96</td><td style="text-align:right">536.82</td></tr>
+          <tr><td>5.5%</td><td style="text-align:right">817.08</td><td style="text-align:right">687.89</td><td style="text-align:right">567.79</td></tr>
+          <tr><td>6.0%</td><td style="text-align:right">843.86</td><td style="text-align:right">716.43</td><td style="text-align:right">599.55</td></tr>
+          <tr><td>6.5%</td><td style="text-align:right">871.11</td><td style="text-align:right">745.57</td><td style="text-align:right">632.07</td></tr>
+          <tr><td>7.0%</td><td style="text-align:right">898.83</td><td style="text-align:right">775.30</td><td style="text-align:right">665.30</td></tr>
+          <tr><td>7.5%</td><td style="text-align:right">927.01</td><td style="text-align:right">805.59</td><td style="text-align:right">699.21</td></tr>
+          <tr><td>8.0%</td><td style="text-align:right">955.65</td><td style="text-align:right">836.44</td><td style="text-align:right">733.76</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What paying extra saves</h2>
+    <p>
+      On a 360,000 loan at 6.5% over 30 years, the scheduled payment is 2,275.44 and the total interest
+      is 459,164, more than the house. A fixed extra amount on each payment changes that a lot, because
+      each extra dollar of principal removes all the future interest that dollar would have generated.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Extra per month</th>
+            <th style="text-align:right">Paid off in</th>
+            <th style="text-align:right">Time saved</th>
+            <th style="text-align:right">Interest saved</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>0</td><td style="text-align:right">30 yr 0 mo</td><td style="text-align:right">0</td><td style="text-align:right">0</td></tr>
+          <tr><td>100</td><td style="text-align:right">26 yr 7 mo</td><td style="text-align:right">3 yr 5 mo</td><td style="text-align:right">62,910</td></tr>
+          <tr><td>250</td><td style="text-align:right">22 yr 10 mo</td><td style="text-align:right">7 yr 2 mo</td><td style="text-align:right">127,719</td></tr>
+          <tr><td>500</td><td style="text-align:right">18 yr 9 mo</td><td style="text-align:right">11 yr 3 mo</td><td style="text-align:right">196,133</td></tr>
+          <tr><td>1,000</td><td style="text-align:right">14 yr 0 mo</td><td style="text-align:right">16 yr 0 mo</td><td style="text-align:right">270,608</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Before you overpay, check two things: that your loan has no prepayment penalty, and that the
+      lender applies the payment to principal and does not hold it as a prepaid instalment. Many
+      lenders require you to tell them explicitly.
+    </p>
+
+    <h2>How accurate is this?</h2>
+    <p>
+      The amortisation is exact. Payments use arbitrary-precision decimal arithmetic and round to the
+      cent as a servicer does, and the final instalment takes the rounding difference. So the schedule
+      matches a lender statement to the penny for a standard fixed-rate loan.
+    </p>
+    <p>
+      The escrow items are estimates. Property tax and insurance stay flat in today's money, but both
+      usually rise each year, and a reassessment after purchase is common in the US. PMI is a fixed
+      percentage of the original loan amount and stops at 80% loan-to-value against the purchase price.
+      Your lender may use an appraised value, and FHA loans have different rules where mortgage
+      insurance can last the life of the loan. Closing costs, discount points, escrow shortfalls and
+      mortgage interest tax relief are not included.
+    </p>
+
+    <h2>Nothing you type leaves your device</h2>
+    <p>
+      A few kilobytes of JavaScript do the arithmetic locally, so your price, savings and payoff plans
+      stay on your device. There is no lead form and no rate-quote broker behind the results.
+    </p>
+  </Fragment>
+</ToolLayout>

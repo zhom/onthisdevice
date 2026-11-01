@@ -1,0 +1,85 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SlugGenerator from '@/components/tools/text/SlugGenerator.tsx'
+---
+
+<ToolLayout slug="slug-generator">
+  <SlugGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to turn a title into a URL slug</h2>
+    <ol>
+      <li>Paste one title, or a list with one title per line. You can also drop a text or CSV file onto the box.</li>
+      <li>Choose the separator. Use hyphens for public URLs.</li>
+      <li>Turn on transliteration if the titles contain accents or non-Latin script, and set a maximum length if your CMS or house style needs one.</li>
+      <li>Optionally remove stop words and leading numbers to shorten long headlines.</li>
+      <li>Copy a single slug from the table, or export the whole batch as a list or CSV.</li>
+    </ol>
+
+    <h2>What makes a good slug</h2>
+    <ul>
+      <li>Lowercase: most web servers treat paths as case sensitive, so <code>/About</code> and <code>/about</code> can be two different pages and two different entries in an index.</li>
+      <li>Hyphen separated: Google treats hyphens as word separators and underscores as joiners, so <code>red-shoes</code> is two words and <code>red_shoes</code> is one.</li>
+      <li>ASCII only: non-ASCII characters are legal but are percent-encoded when copied, so a short URL becomes <code>caf%C3%A9</code> in emails and analytics reports.</li>
+      <li>Short and meaningful: three to six words describe the page and stay readable in a search result.</li>
+      <li>Stable: if you change a slug, you must set up a redirect, so decide before you publish.</li>
+    </ul>
+
+    <h2>Transliteration examples</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Rule applied</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Café Crème</td><td>cafe-creme</td><td>Combining accents removed after NFKD normalisation</td></tr>
+          <tr><td>Zürich im Frühling</td><td>zuerich-im-fruehling</td><td>German umlauts expanded to ue/oe/ae</td></tr>
+          <tr><td>Straße 12</td><td>strasse-12</td><td>ß expanded to ss</td></tr>
+          <tr><td>Кофе и чай</td><td>kofe-i-chay</td><td>Cyrillic romanised character by character</td></tr>
+          <tr><td>Ωμέγα</td><td>omega</td><td>Greek romanised</td></tr>
+          <tr><td>Smørrebrød</td><td>smorrebrod</td><td>ø mapped to o</td></tr>
+          <tr><td>“404 Not Found” (Fast!)</td><td>404-not-found-fast</td><td>Quotes, brackets and punctuation dropped</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Stop words: shorten, but not by default</h2>
+    <p>
+      Removing “a”, “the”, “of” and similar words makes slugs shorter, and search engines mostly ignore them.
+      The cost is readability: <code>/how-to-fix-404-error</code> is clearer than <code>/fix-404-error</code>,
+      and a URL that reads like a phrase gets more clicks in a search result. Remove stop words only from long
+      titles. The same applies to a leading number: remove it from “10 Ways to…” lists, and keep it when the
+      number is part of the identity, as in “2026 Tax Rates”.
+    </p>
+
+    <h2>Batch mode and duplicate handling</h2>
+    <p>
+      Paste a content calendar and each line becomes its own slug. Two different titles often become the
+      same slug when punctuation is removed: “Q&amp;A: Pricing” and “Q and A pricing” both become
+      <code>q-a-pricing</code>. With “Make duplicates unique” on, the second and later collisions get a
+      <code>-2</code>, <code>-3</code> suffix, as most CMSs do internally. The table marks each line that
+      collided, so you can rewrite the title.
+    </p>
+    <p>
+      Export as CSV to get a <code>title,slug</code> pair per row for a spreadsheet or a redirect map.
+    </p>
+
+    <h2>Length limits</h2>
+    <p>
+      No SEO penalty is tied to a specific slug length, but there are practical limits: some CMSs truncate at
+      200 characters, email clients wrap long URLs, and a slug longer than about 60 characters usually means
+      the title says too much. When you set a maximum, the slug generator cuts at a word boundary, so a slug
+      never ends mid-word.
+    </p>
+
+    <h2>Runs locally, works offline</h2>
+    <p>
+      Slug generation, transliteration and the duplicate check run in your browser, so an unpublished content
+      plan or a set of internal page titles stays on your device.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,123 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CropPdf from '@/components/tools/pdf/CropPdf.tsx'
+---
+
+<ToolLayout slug="crop-pdf">
+  <CropPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to crop a PDF</h2>
+      <ol>
+        <li>Drop the PDF above. The first page renders immediately and becomes the canvas you drag on.</li>
+        <li>
+          Drag the blue rectangle to the area you want to keep, or press
+          <strong>Auto-detect margins</strong> to fit it to the ink on the page.
+        </li>
+        <li>
+          To use numbers, type the trim in millimetres for each edge. The two controls stay in sync, so
+          you can use the whole tool from the keyboard.
+        </li>
+        <li>
+          Step through pages to check the crop for the rest of the document, choose if it applies to
+          all, odd, even or a range of pages, then press <strong>Crop PDF</strong>.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Cropping hides content; it does not delete it</h2>
+      <p>
+        This is the most misunderstood fact about PDF cropping. A PDF page has several rectangles. The
+        <strong>MediaBox</strong> is the sheet on which the page was defined. The
+        <strong>CropBox</strong> is the window that a reader shows. Cropping makes those rectangles
+        smaller; all drawing instructions outside the window stay in the file, outside the frame.
+      </p>
+      <p>
+        This is correct for trimming scanner shadows or the grey gutter of a photocopy. It is wrong if
+        the material outside the box is confidential, because anyone can make the boxes wider again and
+        see it. For that case you need redaction, which rasterises the page and destroys the underlying
+        objects.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Page box</th>
+            <th scope="col">What it means</th>
+            <th scope="col">Who reads it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>MediaBox</td>
+            <td>The physical sheet the page is imposed on. Required on every page.</td>
+            <td>Everything, including old printer RIPs</td>
+          </tr>
+          <tr>
+            <td>CropBox</td>
+            <td>The region a viewer shows and a printer images. Defaults to the MediaBox.</td>
+            <td>Desktop PDF readers, browsers, most print drivers</td>
+          </tr>
+          <tr>
+            <td>BleedBox / TrimBox / ArtBox</td>
+            <td>Prepress hints for finished size and bleed. Ignored on screen.</td>
+            <td>Commercial print workflows</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        The <strong>Shrink the MediaBox too</strong> switch is on by default. A crop of only the CropBox
+        looks correct in a desktop reader but prints at full size on a device that reads only the
+        MediaBox. Turn the switch off to keep the original sheet size in the file.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why one crop works on pages of different sizes</h2>
+      <p>
+        The rectangle you draw is stored as a proportion of the page (for example 6% in from the left
+        and 4% down from the top), not as a fixed measurement. When the crop is applied, the tool
+        measures each page and converts the proportion into the points of that page. A report with A4
+        body pages and A3 fold-out tables thus gets a consistent trim, not a fixed 20 mm that is too
+        much for the small pages and too little for the large ones.
+      </p>
+      <p>
+        Rotated pages work the same way. If a page has a 90° rotation flag, the rectangle you drew on
+        screen is mapped back through that rotation before the boxes are written, so the crop is where
+        you saw it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Common reasons to crop</h2>
+      <ul>
+        <li>
+          Reading on a small screen: a trim of 25 mm from each side of an academic paper makes the text
+          about 15% larger on a tablet, with no zoom.
+        </li>
+        <li>
+          Scanner artefacts: a flatbed scan of a smaller original leaves a black or grey border.
+          Auto-detect finds the paper edge and removes it in one step.
+        </li>
+        <li>
+          Slide decks: exported slides are often inside a large canvas. Crop to the slide area to make
+          them fill the screen in a PDF reader.
+        </li>
+        <li>
+          Removing a header or footer band: trim only from the top or bottom. The content is hidden from
+          the printed output, but the text layer is still searchable.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Nothing is uploaded</h2>
+      <p>
+        pdf.js renders the page preview in a web worker in this tab, and pdf-lib writes the crop in the
+        same tab. This product has no server that could receive the file. Load the page, turn off your
+        network, and the tool still works.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

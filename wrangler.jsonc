@@ -1,0 +1,21 @@
+// onthisdevice.com on Cloudflare Workers, static assets only (no Worker code).
+// Headers come from public/_headers, path redirects from public/_redirects.
+// www.onthisdevice.com is redirected to the apex by a Cloudflare redirect rule.
+// Deploy: npm run deploy  (builds, then `npx wrangler@latest deploy`).
+{
+  "name": "onthisdevice",
+  "compatibility_date": "2026-10-01",
+  "account_id": "3d80ae95892c48544332461606e57446",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "onthisdevice.com", "custom_domain": true }],
+  "assets": {
+    "directory": "./dist",
+    // URLs have no trailing slash: /merge-pdf serves dist/merge-pdf/index.html
+    // and /merge-pdf/ redirects to /merge-pdf.
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // No logs, traces or analytics are collected for this site.
+  "observability": { "enabled": false }
+}

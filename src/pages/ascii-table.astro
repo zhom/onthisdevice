@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatReference from '@/components/tools/dev/DevFormatReference.tsx'
+---
+
+<ToolLayout slug="ascii-table">
+  <DevFormatReference client:load dataset="ascii" />
+  <Fragment slot="explainer">
+    <h2>The structure of the table</h2>
+    <p>
+      ASCII is a 7-bit code with 128 positions, standardised in 1963 and almost unchanged since. It
+      divides into four blocks of 32, and the boundaries make common operations single bit flips.
+    </p>
+    <ul>
+      <li>0–31 plus 127: control characters. They are not printable; they give instructions to a device.</li>
+      <li>32–63: space, punctuation and the digits.</li>
+      <li>64–95: <code>@</code>, the uppercase letters, and five brackets.</li>
+      <li>96–126: backtick, the lowercase letters, and the braces.</li>
+    </ul>
+    <p>
+      Two results of that layout are still in daily use. Uppercase and lowercase differ by exactly one
+      bit (0x20), so case conversion is <code>c ^ 32</code>. The numeric value of a digit is its code
+      minus 48, so <code>c - '0'</code> parses a digit in C.
+    </p>
+
+    <h2>Control characters that still matter</h2>
+    <table>
+      <thead><tr><th>Dec</th><th>Name</th><th>Escape</th><th>Still used for</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td>NUL</td><td><code>\0</code></td><td>Terminating C strings; a null byte in input is a classic injection vector</td></tr>
+        <tr><td>7</td><td>BEL</td><td><code>\a</code></td><td>The terminal beep, and the terminator of some OSC escape sequences</td></tr>
+        <tr><td>8</td><td>BS</td><td><code>\b</code></td><td>Backspace</td></tr>
+        <tr><td>9</td><td>HT</td><td><code>\t</code></td><td>Tab: the delimiter in TSV, and in Makefiles</td></tr>
+        <tr><td>10</td><td>LF</td><td><code>\n</code></td><td>Newline on Unix and in all internet protocols</td></tr>
+        <tr><td>12</td><td>FF</td><td><code>\f</code></td><td>Page break in printed output and some source files</td></tr>
+        <tr><td>13</td><td>CR</td><td><code>\r</code></td><td>Paired with LF as CRLF on Windows and in HTTP headers</td></tr>
+        <tr><td>27</td><td>ESC</td><td><code>\e</code></td><td>Starts all ANSI terminal colour and cursor sequences</td></tr>
+        <tr><td>4</td><td>EOT</td><td>None</td><td>What Ctrl+D sends: end of input</td></tr>
+        <tr><td>3</td><td>ETX</td><td>None</td><td>What Ctrl+C sends: interrupt</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Holding Ctrl clears the top two bits, so Ctrl+A is 1, Ctrl+C is 3 and Ctrl+[ is 27. For this
+      reason, Escape and Ctrl+[ are the same keystroke in vim.
+    </p>
+
+    <h2>CR, LF and the line-ending problem</h2>
+    <p>
+      Unix and macOS end a line with LF alone. Windows uses CRLF, from teletypes where the carriage
+      returned and then the paper advanced. HTTP headers, SMTP and most internet protocols specify
+      CRLF.
+    </p>
+    <p>
+      The symptoms are easy to recognise: a stray <code>^M</code> at the end of each line in a diff, a
+      shell script that fails with &ldquo;bad interpreter&rdquo; because the shebang line ends in CR,
+      and a comparison that fails between two strings that look identical. Configure git&rsquo;s
+      <code>core.autocrlf</code> or add a <code>.gitattributes</code> file to stop the problem.
+    </p>
+
+    <h2>Above 127: where mojibake comes from</h2>
+    <p>
+      ASCII stops at 127. Codes above that belong to other standards, and the two main ones disagree in
+      the range people often paste from.
+    </p>
+    <p>
+      ISO-8859-1 (Latin-1) leaves 128–159 as a second block of unused control codes. Windows-1252 fills
+      that block with typographic characters: curly quotes, the em dash, the ellipsis, the euro sign.
+      When a document with those characters is declared as Latin-1 or UTF-8 and decoded as the other,
+      you get the familiar corruption: a curly quote becomes <code>â€œ</code> and an em dash becomes
+      <code>â€”</code>. The table above marks the 128–159 rows, so you can see the source.
+    </p>
+
+    <h2>ASCII and UTF-8</h2>
+    <p>
+      In UTF-8, each ASCII byte encodes itself: a file with only characters 0–127 is valid ASCII and
+      valid UTF-8 at the same time. Characters above 127 use two to four bytes, each with the high bit
+      set, so an ASCII parser that reads UTF-8 never mistakes a continuation byte for a delimiter. This
+      backwards compatibility is the reason UTF-8 replaced the other encodings.
+    </p>
+
+    <h2>Converting in code</h2>
+    <pre><code>JavaScript:  "A".charCodeAt(0)      // 65
+             String.fromCharCode(65)  // "A"
+             "🎉".codePointAt(0)      // 127881; use this above U+FFFF
+Python:      ord("A")   chr(65)
+Go:          rune('A')  string(rune(65))
+Shell:       printf '%d' "'A"   printf '\x41'</code></pre>
+    <p>
+      In JavaScript, use <code>codePointAt</code> and <code>fromCodePoint</code>, not the
+      <code>charCode</code> pair. The older functions work on UTF-16 code units, so they return half of
+      a surrogate pair for emoji and other characters above U+FFFF.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactSignature from '@/components/tools/redact/scan/RedactSignature.tsx'
+---
+
+<ToolLayout slug="redact-signature" width="wide">
+  <RedactSignature client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact a signature</h2>
+    <ol>
+      <li>Drop a PDF or scanned pages as JPG or PNG. You can add several files.</li>
+      <li>The tool checks each page for signatures and stamps and puts a black box on each one it finds.</li>
+      <li>Click a box to keep that area visible. Drag on the page to cover initials or anything else.</li>
+      <li>Download a PDF, or the pages as PNG or JPG images.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <p>
+      A small object detection model (YOLOS-tiny, trained on signatures, 24 MB) looks at each page, first whole and then in
+      overlapping squares, so small signatures are found too. Stamps are found without a model: the tool looks for coloured
+      ink in a ring or a frame. The model and its runtime (15 MB) download once from this site and are kept in your browser.
+    </p>
+    <p>
+      In the PDF, only the pages with a box become images, with the box burned in, so nothing under it is left. The other
+      pages are copied as they are and keep their text.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and drop a file. You see the model load from this site the
+      first time, and no request after that. You can also load it once, turn off your network and use the tool.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The model also marks other handwriting, such as notes in the margin, and sometimes a seal or logo. Click those boxes to keep them.</li>
+      <li>Very faint or very small signatures can be missed. Look at each page before you share it.</li>
+      <li>Stamps in black or grey ink are found only when they are round. Draw a box over other stamps.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

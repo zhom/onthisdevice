@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+---
+
+<ToolLayout slug="upside-down-text">
+  <DevEncodeFancyText
+    client:load
+    sample="flip this text"
+    featured={['upside-down', 'mirrored', 'spaced']}
+  />
+  <Fragment slot="explainer">
+    <h2>How upside-down text is made</h2>
+    <p>
+      Upside-down text needs two steps. First each character is replaced with a Unicode look-alike that
+      appears rotated 180 degrees. Then the whole string is reversed, so that the words read left to right
+      when you turn the page over.
+    </p>
+    <pre><code>hello
+step 1 (substitute):  ɥǝllo
+step 2 (reverse):     ollǝɥ</code></pre>
+    <p>
+      Without the second step, the characters look upside down but read backwards.
+    </p>
+
+    <h2>Where the rotated characters come from</h2>
+    <p>
+      Unicode has no &ldquo;upside-down alphabet&rdquo;. The characters come from wherever a suitable shape
+      exists: mostly the International Phonetic Alphabet, and a few from Latin extensions, Greek, Cyrillic and
+      Deseret:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Letter</th><th>Flipped</th><th>What it actually is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>a</td><td>ɐ</td><td>IPA turned A</td></tr>
+          <tr><td>e</td><td>ǝ</td><td>Turned E, the schwa</td></tr>
+          <tr><td>g</td><td>ƃ</td><td>B with a topbar, from an African orthography</td></tr>
+          <tr><td>t</td><td>ʇ</td><td>IPA turned T</td></tr>
+          <tr><td>A</td><td>∀</td><td>The mathematical &ldquo;for all&rdquo; symbol</td></tr>
+          <tr><td>B</td><td>𐐒</td><td>A Deseret alphabet letter</td></tr>
+          <tr><td>E</td><td>Ǝ</td><td>Turned E, used in Pan-Nigerian orthography</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The letters that will not flip</h2>
+    <p>
+      Some letters are symmetrical and need no substitute: <code>o</code>, <code>x</code>, <code>z</code>,
+      <code>H</code>, <code>I</code>, <code>N</code>, <code>O</code>, <code>S</code>, <code>X</code>,
+      <code>Z</code>. Others have no rotated form in Unicode; capital <code>Q</code> and <code>G</code> are the
+      usual examples and stay unchanged. This is a limit of the character set.
+    </p>
+
+    <h2>Punctuation flips too</h2>
+    <p>
+      Full stops move to the top of the line, commas become apostrophes, and question and exclamation marks
+      become the inverted Spanish forms ¿ and ¡. Brackets and braces change direction, so a pair still encloses
+      the right text after reversal.
+    </p>
+
+    <h2>Flipped versus reversed versus mirrored</h2>
+    <ul>
+      <li>Flipped: substituted and reversed; reads correctly when you rotate the screen.</li>
+      <li>Reversed: the same characters in the opposite order, with no substitution. Useful for palindrome checks.</li>
+      <li>Mirrored: a true left-right mirror needs other glyph shapes, and Unicode has far fewer of those, so real mirror text is normally done with CSS.</li>
+    </ul>
+    <p>The tool above has the first two, so you can compare them.</p>
+
+    <h2>Font and device support</h2>
+    <p>
+      Support is good, because almost every system font has IPA characters. The Deseret capital B is the
+      exception: it is outside the Basic Multilingual Plane and shows as a box on some older Android versions.
+      All other characters render on current phones and desktops.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFileBase64 from '@/components/tools/dev/DevEncodeFileBase64.tsx'
+---
+
+<ToolLayout slug="file-to-base64">
+  <DevEncodeFileBase64 client:load mode="file" />
+  <Fragment slot="explainer">
+    <h2>Why anything gets Base64-encoded</h2>
+    <p>
+      Many systems can carry only text. JSON has no binary type. Email bodies are text. YAML manifests,
+      environment variables, database <code>TEXT</code> columns, XML payloads and log lines are all text.
+      Base64 is the standard way to send arbitrary bytes through those channels, so that nothing in the
+      middle reads a byte as a delimiter or a control character.
+    </p>
+
+    <h2>What people actually encode here</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Where the Base64 goes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>TLS certificate or private key</td><td>A Kubernetes <code>Secret</code>, which requires Base64 for every value</td></tr>
+          <tr><td>Service-account JSON</td><td>A CI environment variable, so a multi-line file survives as one string</td></tr>
+          <tr><td>PDF invoice</td><td>A JSON API field on a billing or e-signature endpoint</td></tr>
+          <tr><td>WOFF2 font subset</td><td>An inline <code>@font-face</code> in a single-file HTML report</td></tr>
+          <tr><td>Small ZIP or firmware blob</td><td>An embedded-device payload sent over a text protocol</td></tr>
+          <tr><td>Short audio clip</td><td>An <code>&lt;audio src&gt;</code> data URI in a self-contained page</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Kubernetes secrets, specifically</h2>
+    <p>
+      Each value under <code>data:</code> in a Secret manifest must be Base64. People often make two
+      mistakes here. First, <code>echo "value" | base64</code> also encodes the trailing newline. Second,
+      Base64 in a Secret is encoding, not encryption: anyone with read access to the object can decode it
+      immediately. Use <code>stringData:</code> to let the API server do the encoding, and use a real secret
+      manager for confidentiality.
+    </p>
+
+    <h2>Size, and when to stop</h2>
+    <p>
+      The file to Base64 encoder works in 3&nbsp;MB slices with a progress bar, so the only hard limit is the
+      memory of your device. The practical limits are in the destination:
+    </p>
+    <ul>
+      <li>Most JSON APIs reject bodies over a few megabytes.</li>
+      <li>Kubernetes limits a Secret to 1&nbsp;MiB of encoded data.</li>
+      <li>Browsers historically limited <code>data:</code> URIs in the address bar to about 2&nbsp;MB.</li>
+      <li>Editors and diff tools become unusable well before any of these limits.</li>
+    </ul>
+    <p>
+      The 33% expansion applies before all of these limits, so a 1&nbsp;MB file is already 1.37&nbsp;MB of
+      text.
+    </p>
+
+    <h2>The trailing-newline trap</h2>
+    <p>
+      Almost all &ldquo;my Base64 does not match the documentation&rdquo; reports come from one byte.
+      <code>echo</code> adds a newline; <code>printf</code> and <code>echo -n</code> do not. Encoding a file,
+      as this page does, never adds one. If the value here differs from your shell output by four characters
+      at the end, this is the cause.
+    </p>
+
+    <h2>Encoding a private key on a web page</h2>
+    <p>
+      This is a fair question. This page runs in your browser, and the Content-Security-Policy of the site
+      lists no third-party origin in <code>connect-src</code>, so the browser would block an upload even if
+      the code tried one. Disconnect from the network, and the tool still works. This is a technical
+      guarantee, not a privacy policy. In 2025 an online PDF service left about 3.5 million user documents
+      publicly reachable.
+    </p>
+  </Fragment>
+</ToolLayout>

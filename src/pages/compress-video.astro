@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressVideo from '@/components/tools/media/CompressVideo.tsx'
+---
+
+<ToolLayout slug="compress-video">
+  <CompressVideo client:load />
+  <Fragment slot="explainer">
+    <h2>How to compress a video</h2>
+    <ol>
+      <li>Drop the video in. The tool reads its length and resolution immediately.</li>
+      <li>Pick a quality target. <strong>Balanced (CRF 24)</strong> usually removes 60-80% of the size of a phone recording with no visible difference.</li>
+      <li>If the file must be smaller, lower the resolution. This saves much more than a higher CRF.</li>
+      <li>Check the estimated output size, then press <strong>Compress video</strong>.</li>
+      <li>Compare the before and after figures, preview the result, and download it.</li>
+    </ol>
+
+    <h2>CRF: the setting that actually matters</h2>
+    <p>
+      The constant rate factor of H.264 sets a quality target and lets the bitrate change to reach it.
+      The scale goes from 0 (lossless, very large) to 51 (unwatchable). Each increase of about 6 halves
+      the bitrate; each decrease of 6 doubles it.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>CRF</th>
+            <th>Typical 1080p30 bitrate</th>
+            <th>Per minute</th>
+            <th>Quality</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>18</td>
+            <td>~8 Mbps</td>
+            <td>60 MB</td>
+            <td>Visually lossless; archival</td>
+          </tr>
+          <tr>
+            <td>20</td>
+            <td>~6 Mbps</td>
+            <td>45 MB</td>
+            <td>Almost identical to the source</td>
+          </tr>
+          <tr>
+            <td>24</td>
+            <td>~3 Mbps</td>
+            <td>22 MB</td>
+            <td>Recommended: good on any screen</td>
+          </tr>
+          <tr>
+            <td>28</td>
+            <td>~1.7 Mbps</td>
+            <td>13 MB</td>
+            <td>Fine for messaging; soft in fast motion</td>
+          </tr>
+          <tr>
+            <td>32</td>
+            <td>~0.9 Mbps</td>
+            <td>7 MB</td>
+            <td>Visible blocking; last resort for hard limits</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      These bitrates assume ordinary handheld motion. A static talking head can need half of them;
+      drone footage over trees can need twice as much. For this reason the tool labels its size as an
+      estimate.
+    </p>
+
+    <h2>Hitting a specific size limit</h2>
+    <p>
+      Common limits: 25 MB for a Gmail attachment, 8 MB on many chat platforms, 512 MB for a Discord
+      upload without Nitro. Calculate back from the limit:
+    </p>
+    <ol>
+      <li>Total bitrate (kbps) = target size (MB) × 8192 ÷ duration (seconds).</li>
+      <li>Subtract the audio bitrate (128 kbps unless you changed it) to get the video budget.</li>
+      <li>Find that budget in the table above. If it needs a CRF above 30, halve the resolution and try again at CRF 24.</li>
+    </ol>
+    <p>
+      Example: a 3-minute clip for a 25 MB inbox limit gives 25 × 8192 ÷ 180 ≈ 1138 kbps total, so about
+      1000 kbps of video. At 1080p that looks poor; at 720p it is reasonable.
+    </p>
+
+    <h2>What the speed preset changes</h2>
+    <p>
+      The x264 preset controls how hard the encoder searches for redundancy. Slower presets give a
+      smaller file at the same CRF: the quality target stays the same, and the efficiency changes. From
+      <code>veryfast</code> to <code>medium</code> saves about 15% of the size and takes about three
+      times longer to encode. In a browser, where encoding uses one thread, <code>veryfast</code> is
+      usually the best compromise.
+    </p>
+
+    <h2>Things that will not help</h2>
+    <ul>
+      <li>Compressing a compressed file again. Each pass removes detail permanently; two passes at CRF 28 look worse than one pass at CRF 24 and are only a little smaller.</li>
+      <li>Changing the container. An MP4 rewrapped as MKV has the same streams in a different box, so the size does not change.</li>
+      <li>Lowering the audio bitrate. Audio is usually less than 5% of a video file.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

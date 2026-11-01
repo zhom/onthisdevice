@@ -1,0 +1,121 @@
+---
+/**
+ * Share this page: the system share sheet where the browser has one, copy
+ * link, and plain links to X, Reddit and email. No third-party scripts; the
+ * links are ordinary navigations that only happen when clicked.
+ */
+import Icon from './Icon.tsx'
+
+interface Props {
+  url: string
+  title: string
+  text?: string
+}
+const { url, title, text = title } = Astro.props
+const enc = encodeURIComponent
+const links = [
+  { label: 'X', href: `https://x.com/intent/post?text=${enc(text)}&url=${enc(url)}` },
+  { label: 'Reddit', href: `https://www.reddit.com/submit?url=${enc(url)}&title=${enc(title)}` },
+  { label: 'Email', href: `mailto:?subject=${enc(title)}&body=${enc(`${text}\n\n${url}`)}` },
+]
+---
+
+<div class="share-bar -ml-2.5 flex flex-wrap items-center gap-x-0.5 gap-y-1" data-share data-url={url} data-title={title} data-text={text}>
+  <span class="mr-1 ml-2.5 text-[0.875rem] text-muted-foreground">Share</span>
+  <button
+    type="button"
+    data-share-native
+    hidden
+    class="inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-[0.875rem] font-[600] text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-0"
+  >
+    <Icon name="Share2" className="size-3.5" />
+    Share…
+  </button>
+  <button
+    type="button"
+    data-share-copy
+    class="inline-flex h-9 items-center gap-1.5 rounded-md px-2.5 text-[0.875rem] font-[600] text-foreground transition-colors duration-150 hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-0"
+  >
+    <span class="share-icon grid size-3.5 place-items-center" aria-hidden="true">
+      <Icon name="Link" className="col-start-1 row-start-1 size-3.5" />
+      <Icon name="Check" className="col-start-1 row-start-1 size-3.5" />
+    </span>
+    <span data-share-copy-label>Copy link</span>
+  </button>
+  {
+    links.map((l) => (
+      <a
+        href={l.href}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        class="inline-flex h-9 items-center rounded-md px-2.5 text-[0.875rem] font-[560] text-muted-foreground transition-colors duration-150 hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-0"
+      >
+        {l.label}
+      </a>
+    ))
+  }
+  <span class="sr-only" role="status" aria-live="polite" data-share-status></span>
+</div>
+
+<style>
+  .share-icon > :global(svg) {
+    transition:
+      transform 260ms var(--ease-out),
+      opacity 160ms ease;
+  }
+  .share-icon > :global(svg:last-child),
+  [data-copied] .share-icon > :global(svg:first-child) {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  [data-copied] .share-icon > :global(svg:last-child) {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<script>
+  for (const bar of document.querySelectorAll<HTMLElement>('[data-share]')) {
+    const url = bar.dataset.url ?? location.href
+    const title = bar.dataset.title ?? document.title
+    const text = bar.dataset.text ?? title
+    const native = bar.querySelector<HTMLButtonElement>('[data-share-native]')
+    const copy = bar.querySelector<HTMLButtonElement>('[data-share-copy]')
+    const label = bar.querySelector<HTMLElement>('[data-share-copy-label]')
+    const status = bar.querySelector<HTMLElement>('[data-share-status]')
+    if (native && typeof navigator.share === 'function' && navigator.canShare?.({ url }) !== false) {
+      native.hidden = false
+      native.addEventListener('click', () => {
+        navigator.share({ title, text, url }).catch(() => {
+          /* dismissed */
+        })
+      })
+    }
+    let timer = 0
+    copy?.addEventListener('click', async () => {
+      let ok = false
+      try {
+        await navigator.clipboard.writeText(url)
+        ok = true
+      } catch {
+        const field = document.createElement('textarea')
+        field.value = url
+        field.setAttribute('readonly', '')
+        field.style.position = 'fixed'
+        field.style.opacity = '0'
+        document.body.appendChild(field)
+        field.select()
+        ok = document.execCommand('copy')
+        field.remove()
+      }
+      if (label) label.textContent = ok ? 'Copied' : 'Copy failed'
+      if (ok && copy) copy.dataset.copied = ''
+      if (status) status.textContent = ok ? 'Link copied' : 'Could not copy the link'
+      window.clearTimeout(timer)
+      timer = window.setTimeout(() => {
+        if (label) label.textContent = 'Copy link'
+        if (copy) delete copy.dataset.copied
+      }, 1800)
+    })
+  }
+</script>

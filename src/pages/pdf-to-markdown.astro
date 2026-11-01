@@ -1,0 +1,159 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureToMarkdown from '@/components/tools/pdf-convert/PdfSecureToMarkdown.tsx'
+---
+
+<ToolLayout slug="pdf-to-markdown">
+  <PdfSecureToMarkdown client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>A PDF does not contain paragraphs</h2>
+      <p>
+        A PDF page is a list of drawing instructions: put this glyph at this coordinate in this font
+        at this size, then the next one. The file has no paragraphs, headings, lists or tables, only
+        positions. So a PDF to Markdown tool must rebuild structure that was never recorded, and the
+        question is how well it does that.
+      </p>
+      <p>Here is what this one infers, and from what:</p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Markdown element</th>
+              <th scope="col">Inferred from</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Lines</td>
+              <td>Glyph runs clustered by baseline, within 40% of the local font size</td>
+            </tr>
+            <tr>
+              <td>Word spaces</td>
+              <td>Horizontal gaps wider than about 0.28 of the font size</td>
+            </tr>
+            <tr>
+              <td>Paragraph breaks</td>
+              <td>A vertical gap more than 1.75× the line height</td>
+            </tr>
+            <tr>
+              <td>Headings</td>
+              <td>
+                Font sizes more than 12% above the size that carries the most characters, ranked
+                descending into levels 1–4
+              </td>
+            </tr>
+            <tr>
+              <td>Bold</td>
+              <td>The embedded font's own bold flag, or "Bold/Black/Semibold" in its name</td>
+            </tr>
+            <tr>
+              <td>Bullets</td>
+              <td>A leading •, ‣, ▪, –, - or * followed by a space</td>
+            </tr>
+            <tr>
+              <td>Numbered lists</td>
+              <td>A leading <code>1.</code>, <code>a)</code> or <code>iv.</code></td>
+            </tr>
+            <tr>
+              <td>Code</td>
+              <td>A line set entirely in a monospaced font</td>
+            </tr>
+            <tr>
+              <td>Tables</td>
+              <td>Three or more consecutive lines that split into the same number of columns</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Why Markdown is the right format for feeding an LLM</h2>
+      <p>
+        Language models read structure. Given a wall of undifferentiated text they will find the
+        answer eventually; given headings, bullets and tables they follow the document's own
+        hierarchy, which measurably improves retrieval and summarisation. Markdown is also the
+        markup they saw most during training, and it is compact: no closing tags use up your context
+        window.
+      </p>
+      <p>
+        The character count under the result includes a rough token estimate at four characters per
+        token, which is close enough to tell you whether a document will fit in a given context
+        window before you paste it.
+      </p>
+      <p>
+        One thing to be clear about: the <strong>conversion</strong> happens here and goes nowhere.
+        The <strong>paste</strong> afterwards goes to whoever runs the chatbot. If the document is
+        one you would not upload to a converter, think about that second step too.
+      </p>
+    </section>
+
+    <section>
+      <h2>Running heads, page numbers and other noise</h2>
+      <p>
+        Printed documents repeat things that make no sense in a Markdown file: the document title at
+        the top of every page, a page number at the bottom, a confidentiality notice in the footer.
+        With "strip running heads" enabled, the tool normalises the top two and bottom two lines of
+        every page (replacing digits with a placeholder so "Page 4" and "Page 5" count as the same
+        line), and drops anything that appears on 60 per cent or more of the pages.
+      </p>
+      <p>
+        Turn it off if your document is short, or if an important line repeats, for example a
+        recurring section label in a form.
+      </p>
+    </section>
+
+    <section>
+      <h2>What will not convert well</h2>
+      <ul>
+        <li>
+          Scans: with no text layer, there is nothing to read. The tool tells you so and does not
+          give an empty file. Reading pixels needs OCR, which this tool does not include, because
+          OCR engines small enough for a browser are not accurate enough.
+        </li>
+        <li>
+          Multi-column layouts. Academic papers and newspapers interleave columns
+          in reading order that geometry alone cannot always recover. Expect lines from two columns
+          to alternate.
+        </li>
+        <li>
+          Complex tables. Merged cells, nested headers and ragged alignment defeat
+          the column detector. Turn table detection off if it is producing nonsense.
+        </li>
+        <li>
+          Mathematics. Equations are laid out as individually positioned glyphs,
+          often in a symbol font. They come out as scrambled characters, not LaTeX.
+        </li>
+        <li>
+          Ligatures and hyphenation. Some PDFs encode "fi" as one glyph with no
+          Unicode mapping, and hyphenated line breaks are rejoined only when the previous line ends
+          in a hyphen.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Where to go instead</h2>
+      <ul>
+        <li>
+          Want the words with no structure at all? <a href="/pdf-to-text">PDF to text</a> is faster
+          and has fewer ways to be wrong.
+        </li>
+        <li>
+          Want an editable document? <a href="/pdf-to-word">PDF to Word</a>.
+        </li>
+        <li>
+          Want the tables as data? <a href="/pdf-to-excel">PDF to Excel</a> or
+          <a href="/pdf-to-csv">PDF to CSV</a> use the same column clustering with a control for the
+          snapping tolerance.
+        </li>
+        <li>
+          Going the other way? <a href="/markdown-to-pdf">Markdown to PDF</a> and
+          <a href="/markdown-to-word">Markdown to Word</a>.
+        </li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

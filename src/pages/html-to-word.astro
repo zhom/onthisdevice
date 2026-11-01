@@ -1,0 +1,154 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureMarkdownToWord from '@/components/tools/data/PdfSecureMarkdownToWord.tsx'
+---
+
+<ToolLayout slug="html-to-word">
+  <PdfSecureMarkdownToWord client:load source="html" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>The old trick, and why it is bad</h2>
+      <p>
+        A common tip is to rename an <code>.html</code> file to <code>.doc</code>. Word opens it,
+        because it still supports an old HTML-based format. But the result is HTML in a Word wrapper.
+        It has no styles, the navigation pane is empty, "Save As .docx" gives a mess, and other
+        applications refuse it.
+      </p>
+      <p>
+        This HTML to Word converter makes a real OOXML .docx: the same zip-of-XML structure Word writes
+        when you press Save.
+      </p>
+    </section>
+
+    <section>
+      <h2>How the conversion runs</h2>
+      <ol>
+        <li>
+          The tool parses the HTML and reduces it to structure. The markup goes through a Markdown
+          conversion step, which removes all presentation and keeps what carries meaning.
+        </li>
+        <li>
+          Tables get their own rule. It reads the rows and cells of each <code>&lt;table&gt;</code>
+          and writes a pipe table, so the reduction keeps the structure.
+        </li>
+        <li>
+          The tool writes the result as OOXML. Headings, lists, quotes, code and tables each map to
+          Word's built-in style ids, so the document uses the theme the reader has applied.
+        </li>
+      </ol>
+      <p>
+        The intermediate step keeps the output clean. A direct HTML-to-Word mapping tries to keep
+        <code>&lt;span style="..."&gt;</code> and makes hundreds of one-off character formats. The
+        structure step removes all of that first.
+      </p>
+    </section>
+
+    <section>
+      <h2>What is kept and what is dropped</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">HTML</th>
+              <th scope="col">Outcome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>h1</code>–<code>h6</code></td>
+              <td>Word Heading 1–6, with outline levels</td>
+            </tr>
+            <tr>
+              <td><code>strong</code>, <code>b</code>, <code>em</code>, <code>i</code>, <code>del</code></td>
+              <td>Character formatting</td>
+            </tr>
+            <tr>
+              <td><code>ul</code>, <code>ol</code>, nested lists</td>
+              <td>Real Word lists that renumber when edited</td>
+            </tr>
+            <tr>
+              <td><code>table</code></td>
+              <td>A Table Grid table with a bold header row</td>
+            </tr>
+            <tr>
+              <td><code>a href</code></td>
+              <td>A clickable hyperlink with a relationship entry</td>
+            </tr>
+            <tr>
+              <td><code>pre</code>, <code>code</code></td>
+              <td>Preformatted paragraphs and inline code style</td>
+            </tr>
+            <tr>
+              <td><code>blockquote</code></td>
+              <td>Word's Quote style</td>
+            </tr>
+            <tr>
+              <td>CSS, classes, inline styles</td>
+              <td>Discarded on purpose</td>
+            </tr>
+            <tr>
+              <td><code>img</code></td>
+              <td>A text placeholder. Nothing is fetched</td>
+            </tr>
+            <tr>
+              <td><code>script</code>, <code>iframe</code>, <code>svg</code></td>
+              <td>Removed</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Where the HTML usually comes from</h2>
+      <ul>
+        <li>
+          From an email or newsletter export, the table-based layout scaffolding disappears. That is
+          almost always what you want.
+        </li>
+        <li>
+          A CMS or documentation site export converts well, because the markup is usually semantic.
+        </li>
+        <li>
+          A saved web page comes through whole, with navigation and footer. Delete those two blocks in
+          Word afterwards. That is faster and more reliable than a heuristic that guesses where the
+          article starts.
+        </li>
+        <li>
+          Rich-text editor output is usually very clean, because editors write simple semantic markup.
+        </li>
+        <li>
+          For rendered Markdown, use <a href="/markdown-to-word">Markdown to Word</a> on the source.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Images, and why they are not embedded</h2>
+      <p>
+        An <code>&lt;img src="https://…"&gt;</code> refers to a file on another server. To embed it,
+        this page would have to make a network request, and the content security policy of the site
+        allows no third-party connections.
+      </p>
+      <p>
+        So each image becomes an italic <em>[image: alt text]</em> marker in place. You can see where the
+        images were and insert the real ones. The same applies to <code>data:</code> URIs, so the rule
+        is the same for all images.
+      </p>
+    </section>
+
+    <section>
+      <h2>Nothing is uploaded</h2>
+      <p>
+        HTML pasted into a converter is often an internal wiki page, a client report from a CRM, or an
+        email thread. The parsing, the reduction and the zipping happen in this browser tab. The .docx
+        is built in memory and saved to your downloads folder.
+      </p>
+      <p>
+        Related: <a href="/html-to-markdown">HTML to Markdown</a> if you want the intermediate form,
+        and <a href="/text-to-word">Text to Word</a> for plain text input.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

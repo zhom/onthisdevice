@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WatermarkImage from '@/components/tools/image-edit/WatermarkImage.tsx'
+---
+
+<ToolLayout slug="watermark-image">
+  <WatermarkImage client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to watermark an image</h2>
+    <ol>
+      <li>Drop the photos you want to mark onto the box above: one, or a hundred.</li>
+      <li>Choose <strong>Text</strong> and type your copyright line, or <strong>Image / logo</strong> and add a transparent PNG.</li>
+      <li>Set the position with the 3 × 3 grid, then adjust opacity, size, rotation and margin. The preview updates as you change them.</li>
+      <li>Turn on <strong>tiling</strong> if the mark must be difficult to crop off.</li>
+      <li>Press <strong>Watermark</strong> and download the results one by one or as a ZIP.</li>
+    </ol>
+
+    <h2>The watermark scales with the image</h2>
+    <p>
+      Text size, logo size and the margin are percentages of the image width, not fixed pixel values. This makes
+      batch watermarking work: in a folder with a 6000 px camera original and an 800 px thumbnail, the mark
+      takes the same proportion of each frame. A text size of 6% puts a readable copyright line along the
+      bottom of almost any photo; 15–25% gives a bold signature across the middle.
+    </p>
+
+    <h2>Recommended watermark settings</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th>Goal</th><th>Position</th><th>Opacity</th><th>Size</th><th>Tiling</th></tr></thead>
+        <tbody>
+          <tr><td>Discreet photo credit</td><td>Bottom right</td><td>45–60%</td><td>4–6%</td><td>Off</td></tr>
+          <tr><td>Portfolio branding</td><td>Bottom left or centre</td><td>60–80%</td><td>8–12%</td><td>Off</td></tr>
+          <tr><td>Proof / preview copy</td><td>Centre, rotated −30°</td><td>25–40%</td><td>18–25%</td><td>Off</td></tr>
+          <tr><td>Anti-theft protection</td><td>Any</td><td>12–25%</td><td>8–12%</td><td>On, 60–100% gap</td></tr>
+          <tr><td>“Confidential” document stamp</td><td>Centre, rotated −45°</td><td>20–30%</td><td>20–30%</td><td>Off</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Text or logo?</h2>
+    <p>
+      Text is drawn as vector type directly onto the full-resolution canvas, so it stays sharp at any photo size;
+      no small graphic is enlarged. The outline option puts a dark stroke behind light text, which keeps it
+      readable over bright skies and dark shadows without a heavy drop shadow.
+    </p>
+    <p>
+      A logo is better when the mark is your brand. Use a PNG with a real alpha channel; a logo on a white
+      rectangle puts that rectangle on every photo. If you only have a version with a solid background, remove
+      the background first. Export your logo at 2–3× its display size so it stays sharp when scaled down.
+    </p>
+
+    <h2>How much protection does a watermark give?</h2>
+    <p>
+      A corner watermark is a credit line, not a lock: anyone can crop it off in seconds. A tiled,
+      semi-transparent mark across the whole frame is much harder to remove without visible damage, so
+      stock-photo previews use that pattern. A determined attacker with modern inpainting tools can remove any
+      watermark, so use watermarks for attribution and deterrence, not security. Keep the originals without
+      watermarks in a safe place: the mark is burnt into the pixels and cannot be undone.
+    </p>
+
+    <h2>Legal note on copyright notices</h2>
+    <p>
+      In most countries copyright exists from the moment a work is created; protection does not need a visible
+      notice. A notice still names the owner, makes accidental infringement harder to claim, and lets people
+      who want to license the image find you. The usual form is © followed by the year of first publication
+      and the name of the rights holder, for example © 2026 Jane Doe.
+    </p>
+
+    <h2>Watermark last</h2>
+    <p>
+      Do your <a href="/crop-image">cropping</a>, <a href="/rotate-image">rotation</a> and
+      <a href="/resize-image">resizing</a> first, then watermark, then
+      <a href="/compress-image">compress</a>. If you mark before you resize, the mark is resampled with the
+      rest of the image and loses sharpness.
+    </p>
+  </Fragment>
+</ToolLayout>

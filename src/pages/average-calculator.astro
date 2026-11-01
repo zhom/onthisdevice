@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AverageCalculator from '@/components/tools/math/AverageCalculator.tsx'
+---
+
+<ToolLayout slug="average-calculator">
+  <AverageCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <p>
+      Paste or type your numbers into the box. Commas, spaces, tabs, semicolons, pipes and newlines are
+      all separators, so a column copied from a spreadsheet or a CSV file works without cleanup. The
+      average calculator lists each entry that is not a number, so a stray header row cannot change your
+      result without notice.
+    </p>
+    <p>
+      All statistics update as you type. Use the copy buttons to copy the whole summary or the sorted
+      list.
+    </p>
+
+    <h2>Mean, median and mode: when each one is right</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Measure</th>
+            <th scope="col">How it is found</th>
+            <th scope="col">Best used when</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mean</td>
+            <td>Sum ÷ count</td>
+            <td>The data is roughly symmetric with no extreme outliers</td>
+          </tr>
+          <tr>
+            <td>Median</td>
+            <td>Middle value of the sorted list</td>
+            <td>The data is skewed: incomes, house prices, response times</td>
+          </tr>
+          <tr>
+            <td>Mode</td>
+            <td>The most frequent value</td>
+            <td>The data is categorical or you want the most common case</td>
+          </tr>
+          <tr>
+            <td>Midrange</td>
+            <td>(min + max) ÷ 2</td>
+            <td>A rough centre when you only have the extremes</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A classic example: nine people who earn 30,000 and one who earns 500,000 have a mean income of
+      77,000 and a median of 30,000. The median describes the typical person much better, so official
+      statistics usually give it for income and property prices.
+    </p>
+
+    <h2>Reading the other numbers</h2>
+    <ul>
+      <li>Range: the distance from smallest to largest. It is simple, but one outlier controls it.</li>
+      <li>Q1 and Q3: the values a quarter and three-quarters of the way through the sorted data.</li>
+      <li>Interquartile range: Q3 − Q1, the spread of the middle half. It is much more robust than the range.</li>
+      <li>Standard deviation: the typical distance of a value from the mean. This tool shows the sample version.</li>
+      <li>Mean absolute deviation: the average distance from the mean, without squaring. It is easier to interpret and harder to use in algebra.</li>
+      <li>Geometric mean: the correct average for growth rates and ratios. It is defined only when all values are positive.</li>
+      <li>Harmonic mean: the correct average for rates such as speed over a fixed distance. It is defined only when no value is zero.</li>
+    </ul>
+
+    <h2>How the median handles even counts</h2>
+    <p>
+      With an odd number of values, the median is the one value in the middle position. With an even
+      count, there are two middle values and the median is their average: the median of 3, 7, 9, 12 is
+      (7 + 9) ÷ 2 = 8. The step list shows the sorted data and the positions used, so you can check the
+      number by eye.
+    </p>
+
+    <h2>When there is no mode, and when there are several</h2>
+    <p>
+      If each value appears exactly once, the data set has no mode, and the tool says so. It does not
+      return the first value. If several values tie for the highest frequency, the tool reports all of
+      them. A data set can be bimodal or multimodal, and that is often its most interesting property.
+    </p>
+
+    <h2>Which average for which job</h2>
+    <ul>
+      <li>Exam marks: the mean, unless a few zeros from absent students pull it down.</li>
+      <li>Salaries and house prices: always the median.</li>
+      <li>Annual investment returns: the geometric mean. The arithmetic average of +50% and −50% suggests break-even, but the real result is a 25% loss.</li>
+      <li>Average speed over a route: the harmonic mean of the leg speeds when the distances are equal.</li>
+      <li>Shoe sizes to stock: the mode. Nobody wants the average shoe.</li>
+    </ul>
+
+    <h2>Performance and privacy</h2>
+    <p>
+      The calculation is one pass over your data plus one sort, so the browser handles tens of
+      thousands of values at once. The frequency table lists the 30 most common values to keep the
+      page fast. Nothing is uploaded, and the tool works with the network disconnected.
+    </p>
+  </Fragment>
+</ToolLayout>

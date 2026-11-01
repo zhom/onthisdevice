@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AvifToPng from '@/components/tools/image-convert/AvifToPng.tsx'
+---
+
+<ToolLayout slug="avif-to-png">
+  <AvifToPng client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert AVIF to PNG</h2>
+    <ol>
+      <li>Drop the .avif files onto the box above.</li>
+      <li>Conversion starts immediately. PNG is lossless, so there is no quality setting.</li>
+      <li>Transparency is kept automatically. Turn on the flatten option only if you want a solid colour behind the artwork.</li>
+      <li>Save each PNG, or download all of them as one ZIP.</li>
+    </ol>
+
+    <h2>The usual reason: getting AVIF into an editor</h2>
+    <p>
+      Creative software does not support AVIF well yet. Many image editors need a plug-in or a recent version,
+      most stock-photo and print-on-demand uploaders reject it, and
+      much internal company software does not know it. PNG is lossless, supports transparency, and
+      almost all software can read it.
+    </p>
+
+    <h2>What survives the conversion</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Property</th>
+            <th align="left">Result in the PNG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Pixel values</td><td>Reproduced exactly as decoded; PNG adds no loss</td></tr>
+          <tr><td>Alpha channel</td><td>Kept at full 8-bit precision</td></tr>
+          <tr><td>Existing AVIF artefacts</td><td>Copied exactly; they are now part of the image</td></tr>
+          <tr><td>10-bit / HDR data</td><td>Converted down to 8-bit sRGB</td></tr>
+          <tr><td>Animation (AVIS sequences)</td><td>First frame only</td></tr>
+          <tr><td>EXIF, XMP, ICC profile</td><td>Not carried over; output is plain sRGB</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Be ready for a much larger file</h2>
+    <p>
+      AVIF is one of the most efficient lossy image codecs; PNG cannot discard anything. The file gets
+      much larger, and this is normal:
+    </p>
+    <ul>
+      <li>A 180 KB AVIF photograph usually becomes a 3–6 MB PNG.</li>
+      <li>A flat vector-style illustration can only double, because PNG handles large areas of one colour well.</li>
+      <li>Screenshots and UI captures often grow very little, for the same reason.</li>
+    </ul>
+    <p>
+      For a copy to view and share that does not need to be lossless, <a href="/avif-to-jpg">AVIF to JPG</a>
+      gives a much smaller file. For transparency and a small file, convert to WebP with the
+      <a href="/image-converter">universal image converter</a>. To convert in the other direction, use
+      <a href="/image-to-avif">image to AVIF</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

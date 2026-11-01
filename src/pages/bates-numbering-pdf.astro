@@ -1,0 +1,122 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BatesNumberingPdf from '@/components/tools/pdf/BatesNumberingPdf.tsx'
+---
+
+<ToolLayout slug="bates-numbering-pdf">
+  <BatesNumberingPdf client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>What Bates numbering is for</h2>
+      <p>
+        In litigation, a document production can have tens of thousands of pages in hundreds of files.
+        Bates numbering gives each page a unique, sequential, permanent identifier such as
+        <code>ABC000123</code>. A deposition transcript, a privilege log and a motion can then cite the
+        same page without doubt, years later, across parties that do not share a file system.
+      </p>
+      <p>
+        Patent filings, clinical trial documentation, audit evidence, insurance claims and
+        construction submittals use sequential page stamping for the same reason.
+      </p>
+    </section>
+
+    <section>
+      <h2>Choosing a format</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Element</th>
+            <th scope="col">Convention</th>
+            <th scope="col">Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Prefix</td>
+            <td>Abbreviation of the party or producing entity, 2–5 letters</td>
+            <td><code>SMITH</code>, <code>DEF</code>, <code>ACME</code></td>
+          </tr>
+          <tr>
+            <td>Digits</td>
+            <td>Fixed width, wide enough for the highest number</td>
+            <td><code>000001</code>: six digits, one million pages</td>
+          </tr>
+          <tr>
+            <td>Suffix</td>
+            <td>Optional confidentiality designation</td>
+            <td><code>-CONF</code>, <code>-AEO</code></td>
+          </tr>
+          <tr>
+            <td>Position</td>
+            <td>Bottom right is almost universal</td>
+            <td><code>ACME000042-CONF</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Never change the digit count during a production. Numbers sort as text, so
+        <code>ABC9999</code> and <code>ABC10000</code> sort in the wrong order, but
+        <code>ABC009999</code> and <code>ABC010000</code> sort correctly. Pick a width that covers the
+        whole matter and keep it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Continuous numbering across files</h2>
+      <p>
+        Add all files in production order (drag the rows to reorder them) and leave continuous
+        numbering on. File two starts at the number after the last page of file one, file three after
+        that, and so on. The result is one unbroken range across the whole set, which a production
+        letter must describe.
+      </p>
+      <p>
+        The tool lists each output file with its first and last stamp. The CSV log records each page:
+        file name, page number in that file, and the Bates number assigned. Attach that log to a
+        production index or load it into a review platform.
+      </p>
+    </section>
+
+    <section>
+      <h2>The white backing box</h2>
+      <p>
+        A stamp in the bottom-right corner of a dense page can fall on a footer, a page number or a
+        table rule and become unreadable. The backing box paints an opaque white rectangle a little
+        larger than the text before the number is drawn, so the number is always legible.
+      </p>
+      <p>
+        Turn it off when the corner is always blank and you do not want to cover anything, or when the
+        formatting rules of a court forbid changes to the underlying image.
+      </p>
+    </section>
+
+    <section>
+      <h2>Real text, not a picture</h2>
+      <p>
+        Each stamp is PDF text in one of the fourteen fonts built into the format. The number is
+        selectable, copyable and searchable in all readers, stays sharp at all zoom levels, and adds a
+        few dozen bytes per page. Review platforms that index the text layer find the Bates numbers
+        automatically.
+      </p>
+      <p>
+        For pages with a rotation flag, the stamp is rotated to match. It appears upright in the corner
+        that the reader sees, not sideways in the corner of the raw coordinates.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why doing this locally matters here more than anywhere</h2>
+      <p>
+        Documents that need Bates numbering are documents in a legal dispute: privileged
+        communications, medical records, financial statements, source code. Uploading them to a
+        third-party web service is a confidentiality problem, and in some jurisdictions one that must
+        be disclosed.
+      </p>
+      <p>
+        This page does not transmit the files. pdf-lib does the stamping in your browser, and it works
+        when you disconnect from the network first. The design makes uploads impossible; this does not
+        depend on a policy.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

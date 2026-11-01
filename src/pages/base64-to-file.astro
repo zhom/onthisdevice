@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFileBase64 from '@/components/tools/dev/DevEncodeFileBase64.tsx'
+---
+
+<ToolLayout slug="base64-to-file">
+  <DevEncodeFileBase64 client:load mode="decode-file" />
+  <Fragment slot="explainer">
+    <h2>Turning a string back into a file</h2>
+    <p>
+      Paste the value, check the detected type, name the file and download it. The decoder accepts
+      raw Base64, a full <code>data:</code> URI, the URL-safe alphabet, and input with line breaks or
+      spaces in it. All of these occur when a value has been through a log, a YAML file or a terminal.
+    </p>
+
+    <h2>Identifying what you have</h2>
+    <p>
+      The file type comes from the decoded bytes, not from a label on the string. Some signatures to
+      recognise:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Decoded bytes begin</th><th>File</th><th>Note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>%PDF</code></td><td>PDF</td><td>Base64 starts <code>JVBERi0</code></td></tr>
+          <tr><td><code>PK</code> 03 04</td><td>ZIP</td><td>Also DOCX, XLSX, PPTX, JAR, APK, EPUB</td></tr>
+          <tr><td>1F 8B</td><td>gzip</td><td>Often a .tar.gz</td></tr>
+          <tr><td><code>-----BEGIN</code></td><td>PEM</td><td>Already text: Base64 inside a wrapper</td></tr>
+          <tr><td>30 82</td><td>DER</td><td>Binary ASN.1: a certificate or key</td></tr>
+          <tr><td>00 01 00 00 / <code>wOFF</code> / <code>wOF2</code></td><td>Font</td><td>TTF, WOFF, WOFF2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>PEM files are a special case</h2>
+    <p>
+      A <code>.pem</code> certificate or key is already Base64, wrapped in
+      <code>-----BEGIN…-----</code> lines. To decode one here, remove the header and footer lines and
+      paste only the body. The result is DER (binary ASN.1), which is what
+      <code>openssl x509 -inform der</code> expects. If you want the PEM itself, keep the header; it is
+      already a text file.
+    </p>
+
+    <h2>When the download will not open</h2>
+    <ul>
+      <li>
+        The string was cut short. Base64 length must divide by four after padding. The usual cause is
+        a partial copy from a terminal that wrapped or a database viewer that truncated the column.
+      </li>
+      <li>
+        It is encoded twice. If the decoded bytes are printable Base64, decode them again.
+      </li>
+      <li>
+        It was JSON-escaped. Sequences such as <code>\/</code> or <code>\n</code> in the value show
+        that it was serialised into a JSON string. Unescape it first.
+      </li>
+      <li>
+        Wrong alphabet. Values from JWTs use <code>-</code> and <code>_</code>. This tool handles them
+        automatically, but other tools may not.
+      </li>
+    </ul>
+
+    <h2>A note on decoding things you were sent</h2>
+    <p>
+      A decoded attachment is a real file that can do real things. Treat a Base64 blob from an email, a
+      support ticket or a webhook like an unexpected download: check the detected type here first, and
+      open it in a place where a mistake does no harm. Decoding is safe; opening may not be.
+    </p>
+
+    <h2>Everything happens in this tab</h2>
+    <p>
+      The bytes are rebuilt with <code>atob</code>, put into a <code>Blob</code> and passed to the
+      download manager of the browser. No request leaves the page, so you can decode a value copied
+      from production.
+    </p>
+  </Fragment>
+</ToolLayout>

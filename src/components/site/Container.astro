@@ -1,0 +1,25 @@
+---
+import { cn } from '@/lib/utils'
+
+interface Props {
+  /** Max width preset. `wide` is the site default. */
+  size?: 'wide' | 'narrow' | 'prose'
+  as?: 'div' | 'section' | 'header' | 'footer' | 'main' | 'nav'
+  class?: string
+  id?: string
+}
+
+const { size = 'wide', as = 'div', class: className, id } = Astro.props
+
+const Tag = as
+
+const WIDTHS = {
+  wide: 'max-w-7xl',
+  narrow: 'max-w-5xl',
+  prose: 'max-w-3xl',
+} as const
+---
+
+<Tag id={id} class={cn('mx-auto w-full px-4 sm:px-6 lg:px-8', WIDTHS[size], className)}>
+  <slot />
+</Tag>

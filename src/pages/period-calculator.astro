@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeCycleCalculator from '@/components/tools/health/UnitsLifeCycleCalculator.tsx'
+---
+
+<ToolLayout slug="period-calculator">
+  <UnitsLifeCycleCalculator client:load mode="period" />
+  <Fragment slot="explainer">
+    <h2>Six cycles ahead, on one printable page</h2>
+    <p>
+      The arithmetic is simple: add your cycle length to the first day of the last period, and
+      repeat. But six times in your head, across month boundaries and a leap year, it is not simple.
+      This period calculator projects six cycles, marks them on a calendar and
+      prints cleanly, which is what you actually want when you are booking a holiday, a wedding, a
+      race or a medical procedure.
+    </p>
+
+    <h2>How cycle length is measured</h2>
+    <p>
+      From the <strong>first day of bleeding</strong> in one period to the day before bleeding
+      starts in the next. Not from the day bleeding stops. Getting this wrong shortens every
+      prediction by the length of your period, usually four to six days. That makes the whole
+      projection useless.
+    </p>
+    <p>
+      If your cycles vary, use the average of the last three to six, and treat the prediction as a
+      centre point with a few days either side rather than a date.
+    </p>
+
+    <h2>What counts as normal</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Measure</th><th scope="col">Typical range</th><th scope="col">Worth mentioning to a clinician</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Cycle length, adults</td><td>21&ndash;35 days</td><td>Consistently under 21 or over 35</td></tr>
+        <tr><td>Cycle length, first years after menarche</td><td>21&ndash;45 days</td><td>Still irregular after about three years</td></tr>
+        <tr><td>Period length</td><td>2&ndash;7 days</td><td>Over 7 days, or a sudden change</td></tr>
+        <tr><td>Variation between cycles</td><td>Up to 7&ndash;9 days</td><td>Sudden new irregularity</td></tr>
+        <tr><td>Bleeding</td><td>Manageable with normal products</td><td>Soaking through hourly, or clots larger than a 10p coin</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Bleeding between periods, after sex, or after menopause is always worth getting checked,
+      regardless of what any calendar says.
+    </p>
+
+    <h2>The premenstrual week</h2>
+    <p>
+      The amber band on the calendar is the seven days before the next period is due: the late
+      luteal phase, when progesterone falls and premenstrual symptoms are most common. About 3 in 4 people
+      who menstruate report some premenstrual symptoms; a much smaller group meet the criteria for
+      premenstrual dysphoric disorder, which is a recognised diagnosis with specific treatments and
+      is worth raising with a clinician rather than enduring.
+    </p>
+    <p>
+      Symptoms that begin at ovulation rather than a week before, or that do not stop when bleeding
+      starts, are usually something other than PMS.
+    </p>
+
+    <h2>Things that shift a cycle</h2>
+    <ul>
+      <li>Illness, particularly with fever, in the first half of the cycle</li>
+      <li>Significant travel across time zones, and sustained sleep disruption</li>
+      <li>Sharp changes in training load or body weight</li>
+      <li>Acute stress, which usually delays ovulation, not the period itself</li>
+      <li>Starting, stopping or missing hormonal contraception</li>
+      <li>Thyroid conditions and PCOS</li>
+    </ul>
+    <p>
+      Almost all of these act by delaying ovulation. Because the luteal phase is fixed, a delayed
+      ovulation delays the period by exactly the same number of days. So this period calculator also
+      shows the fertile window, because it explains the timing.
+    </p>
+
+    <h2>A tracker that cannot leak</h2>
+    <p>
+      Period-tracking apps have had repeated data-sharing scandals and regulatory action, because
+      they collect intimate data on a server and make money from it. Here the dates stay in the page
+      while you use it and are discarded when you close the tab. If you switch on local saving, they
+      go to your own browser only, with a delete button next to the switch.
+    </p>
+  </Fragment>
+</ToolLayout>

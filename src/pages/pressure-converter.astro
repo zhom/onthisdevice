@@ -1,0 +1,88 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="pressure-converter">
+  <UnitConverter client:load dimension="pressure" from="bar" to="psi" />
+  <Fragment slot="explainer">
+    <h2>How to convert a pressure</h2>
+    <ol>
+      <li>Type into either box. Bar to psi and psi to bar are the same control worked in either direction.</li>
+      <li>Choose from the SI units, the practical metric units, psi, or the reference units used in weather, vacuum and medicine.</li>
+      <li>The chart underneath runs a whole column of values, which is quicker than converting a tyre placard one figure at a time.</li>
+    </ol>
+
+    <h2>Tyre pressures, the most common reason to be here</h2>
+    <p>
+      Car door placards are printed in psi in the US and UK, and in bar or kPa almost everywhere
+      else. The conversion is 1 bar = 14.5038 psi = 100 kPa. An error by a factor of ten (220 kPa
+      confused with 22 psi) is a real risk, so here is the range you will meet:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>psi</th><th>bar</th><th>kPa</th><th>Typical use</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>28</td><td>1.93</td><td>193</td><td>Small car, lightly loaded</td></tr>
+          <tr><td>32</td><td>2.21</td><td>221</td><td>Most passenger cars</td></tr>
+          <tr><td>35</td><td>2.41</td><td>241</td><td>Passenger car, fully loaded</td></tr>
+          <tr><td>44</td><td>3.03</td><td>303</td><td>Small van</td></tr>
+          <tr><td>80</td><td>5.52</td><td>552</td><td>Light truck rear axle</td></tr>
+          <tr><td>100</td><td>6.89</td><td>689</td><td>Road bicycle tyre</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      One thing no converter can fix: placard pressures are cold pressures. Driving heats the air
+      and raises the reading by roughly 3 psi, so check before you set off, not after.
+    </p>
+
+    <h2>Which factors are exact</h2>
+    <p>
+      The pascal is the SI unit (one newton per square metre), and all metric units are an exact
+      multiple of it. A bar is exactly 100,000 Pa, a hectopascal exactly 100 Pa, and a millibar is
+      exactly the same size as a hectopascal, which is why meteorologists switched labels without
+      changing any numbers. The standard atmosphere is defined as exactly 101,325 Pa, and the torr
+      as exactly one 760th of that.
+    </p>
+    <p>
+      The psi follows from the exact pound and inch: 6,894.757293168361 Pa. The millimetre of
+      mercury is defined from a specified mercury density and standard gravity, giving
+      133.322387415 Pa, which differs from a torr by about one part in seven million. No
+      blood-pressure cuff can measure that difference.
+    </p>
+
+    <h2>Gauge pressure versus absolute pressure</h2>
+    <p>
+      Most instruments read gauge pressure: the amount above the surrounding air. A tyre gauge
+      showing 32 psi means 32 psi more than atmospheric, so the absolute pressure inside the tyre is
+      about 46.7 psi. US engineering writes this as psig for gauge and psia for absolute.
+    </p>
+    <p>
+      A unit converter cannot tell which one you have, because gauge and absolute use identical
+      units: the difference is the reference point, not the scale. If you mix a weather
+      reading (absolute) with an equipment reading (gauge), add or subtract one atmosphere:
+      101.325 kPa, 1.01325 bar, or 14.696 psi.
+    </p>
+
+    <h2>Reference: pressures worth knowing</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Situation</th><th>Pressure</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sea-level standard atmosphere</td><td>1 atm = 101.325 kPa = 14.696 psi = 1,013.25 hPa</td></tr>
+          <tr><td>Typical high-pressure weather system</td><td>1,030 hPa</td></tr>
+          <tr><td>Deep low / severe storm</td><td>950 hPa</td></tr>
+          <tr><td>Healthy blood pressure</td><td>120/80 mmHg = 16.0/10.7 kPa</td></tr>
+          <tr><td>Espresso machine brew pressure</td><td>9 bar = 130.5 psi</td></tr>
+          <tr><td>Domestic mains water</td><td>2–5 bar = 29–73 psi</td></tr>
+          <tr><td>Ten metres under water</td><td>1 extra atm, so about 2 atm absolute</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </Fragment>
+</ToolLayout>

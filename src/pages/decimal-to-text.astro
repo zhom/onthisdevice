@@ -1,0 +1,70 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="decimal-to-text">
+  <DevEncodeRadixText client:load radix="decimal" direction="decode" />
+  <Fragment slot="explainer">
+    <h2>Decimal character codes</h2>
+    <p>
+      Some systems give you a list of plain numbers instead of hex: <code>72 101 108 108 111</code>. Each
+      is one byte, 0–255. This page converts decimal to text and text to decimal.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Range</th><th>Contents</th><th>Anchors worth remembering</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0–31</td><td>Control codes</td><td>9 tab, 10 line feed, 13 carriage return</td></tr>
+          <tr><td>32</td><td>Space</td><td>The first printable code</td></tr>
+          <tr><td>48–57</td><td>Digits</td><td>48 is <code>0</code>, so 53 is <code>5</code></td></tr>
+          <tr><td>65–90</td><td>A–Z</td><td>65 is <code>A</code></td></tr>
+          <tr><td>97–122</td><td>a–z</td><td>97 is <code>a</code>, exactly 32 above <code>A</code></td></tr>
+          <tr><td>128–255</td><td>Extended</td><td>The meaning depends on the encoding</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Separators are not optional</h2>
+    <p>
+      Unlike hex, decimal byte values have no fixed width: <code>7</code>, <code>72</code> and
+      <code>255</code> have one, two and three digits. So <code>72101108</code> is ambiguous. Use spaces,
+      commas, semicolons or newlines; all are accepted. The one exception is input where each value is
+      padded to three digits, which the parser can split reliably.
+    </p>
+
+    <h2>Codes above 255</h2>
+    <p>
+      Numbers such as 8364 or 128512 are not bytes; they are Unicode codepoints. 8364 is U+20AC, the euro
+      sign; 128512 is U+1F600, the grinning face. This page works on bytes, so it rejects those values and
+      does not truncate them. Convert codepoints to UTF-8 bytes first, or use the hex tools, which show the
+      multi-byte sequences.
+    </p>
+
+    <h2>Where these lists come from</h2>
+    <ul>
+      <li>Spreadsheets: a column made with <code>CODE()</code> or <code>UNICODE()</code>.</li>
+      <li>Databases: <code>ASCII()</code> output while you look for an encoding problem.</li>
+      <li>Teaching material: introductory exercises almost always use decimal.</li>
+      <li>Microcontroller serial output: <code>Serial.println(byte)</code> prints decimal by default, so Arduino logs look like this.</li>
+      <li>Puzzles and CTFs: a comma-separated list of numbers is the most common first-stage encoding.</li>
+    </ul>
+
+    <h2>Why 65 for A, and why the 32 gap</h2>
+    <p>
+      ASCII was designed to make operations cheap in hardware. Capital <code>A</code> is 1000001 in binary
+      and lowercase <code>a</code> is 1100001: one bit apart. Case conversion is one bitwise operation, and
+      32 is the decimal value of that bit. For the same reason the digits are at 48–57, so the numeric value
+      of a digit character is its code minus 48.
+    </p>
+
+    <h2>Going the other way</h2>
+    <p>
+      Use the swap button to turn text into a list of decimal codes. In UTF-8 mode, one accented character
+      gives two numbers and an emoji gives four. This explains many &ldquo;why is my string longer than I
+      typed&rdquo; bugs.
+    </p>
+  </Fragment>
+</ToolLayout>

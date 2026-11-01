@@ -1,0 +1,134 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoSpeed from '@/components/tools/media/VideoSpeed.tsx'
+---
+
+<ToolLayout slug="video-speed-changer">
+  <VideoSpeed client:load />
+  <Fragment slot="explainer">
+    <h2>How the video speed changer works</h2>
+    <p>
+      A new playback speed does not add or remove frames. It rewrites each frame’s presentation timestamp, the
+      instant at which the player shows it. FFmpeg does this with the <code>setpts</code> filter, and the
+      factor is the reciprocal of the speed:
+    </p>
+    <p>
+      new length = original length ÷ speed, and the filter is <code>setpts=(1 ÷ speed)*PTS</code>.
+    </p>
+    <p>
+      So a 6-minute clip at 2× gets <code>setpts=0.5*PTS</code> and runs for 3 minutes; at 0.5× it gets
+      <code>setpts=2.0*PTS</code> and runs for 12. The tool shows this calculation with your own numbers above
+      the button, before it encodes anything.
+    </p>
+
+    <h2>Audio keeps its pitch</h2>
+    <p>
+      Speeding up audio without correction raises its pitch, as when a record plays too fast. FFmpeg’s <code>atempo</code>
+      filter changes the tempo and keeps the pitch, the same technique podcast apps use for 1.5× listening.
+      Speech stays clear and music stays in key.
+    </p>
+    <p>
+      <code>atempo</code> accepts only a factor between 0.5 and 2.0 in one pass, so the tool chains filters for
+      speeds outside that range:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Speed</th>
+            <th>Audio filter chain</th>
+            <th>Video filter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0.25×</td>
+            <td>atempo=0.5, atempo=0.5</td>
+            <td>setpts=4.0*PTS</td>
+          </tr>
+          <tr>
+            <td>0.5×</td>
+            <td>atempo=0.5</td>
+            <td>setpts=2.0*PTS</td>
+          </tr>
+          <tr>
+            <td>1.5×</td>
+            <td>atempo=1.5</td>
+            <td>setpts=0.666667*PTS</td>
+          </tr>
+          <tr>
+            <td>2×</td>
+            <td>atempo=2</td>
+            <td>setpts=0.5*PTS</td>
+          </tr>
+          <tr>
+            <td>4×</td>
+            <td>atempo=2, atempo=2</td>
+            <td>setpts=0.25*PTS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The page shows the exact chain for your setting.
+    </p>
+
+    <h2>Slow motion has a hard limit</h2>
+    <p>
+      No frames are added, so slow motion spreads the existing frames over more time. The effective frame rate
+      falls in direct proportion:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Source frame rate</th>
+            <th>At 0.5×</th>
+            <th>At 0.25×</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>24 fps (film look)</td>
+            <td>12 fps: visibly jerky</td>
+            <td>6 fps: a slideshow</td>
+          </tr>
+          <tr>
+            <td>30 fps (typical phone)</td>
+            <td>15 fps: noticeable</td>
+            <td>7.5 fps: poor</td>
+          </tr>
+          <tr>
+            <td>60 fps</td>
+            <td>30 fps: smooth</td>
+            <td>15 fps: usable</td>
+          </tr>
+          <tr>
+            <td>120 or 240 fps (phone slo-mo mode)</td>
+            <td>Smooth</td>
+            <td>Smooth</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Smooth slow motion must be shot at a high frame rate. Other software interpolates: a model invents
+      intermediate frames. That needs machine-learning tools that this page does not include.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Timelapse from a long recording: 4×, run twice for 16×.</li>
+      <li>Shortening a lecture: 1.25× or 1.5× keeps speech natural.</li>
+      <li>Analysing a golf swing or a technique: 0.5× without the audio.</li>
+      <li>Fitting a clip into a time limit: a small speed increase is much less noticeable than a cut.</li>
+    </ul>
+
+    <h2>Preview first, then encode</h2>
+    <p>
+      The player above uses the browser’s own playback rate, so you can hear and see the result at once before
+      you encode. FFmpeg re-encodes the file only when you press the button. It runs locally, with no
+      watermark or length limit.
+    </p>
+  </Fragment>
+</ToolLayout>

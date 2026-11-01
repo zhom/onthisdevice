@@ -1,0 +1,127 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-500kb">
+  <PdfSecureCompressToSize client:load targetBytes={512000} />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Half a megabyte, and why it is a good default</h2>
+      <p>
+        Forms seldom require 500 KB. People usually choose it after an attachment bounces, and it is a
+        good choice: well under all mail gateways, quick to open on a phone over mobile data, and large
+        enough for a ten-page document to look like a document and not like a fax.
+      </p>
+      <p>
+        Where it is a rule, it usually comes from a content management system, a helpdesk ticketing
+        tool, or a supplier portal that keeps its own storage predictable.
+      </p>
+    </section>
+
+    <section>
+      <h2>Email attachment limits, for reference</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Service</th>
+              <th scope="col">Typical per-message limit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gmail</td>
+              <td class="tabular-nums">25 MB (larger files switch to a Drive link)</td>
+            </tr>
+            <tr>
+              <td>Outlook.com</td>
+              <td class="tabular-nums">20 MB</td>
+            </tr>
+            <tr>
+              <td>Microsoft 365 / Exchange</td>
+              <td class="tabular-nums">Commonly 25–35 MB, often lowered by an administrator</td>
+            </tr>
+            <tr>
+              <td>iCloud Mail</td>
+              <td class="tabular-nums">20 MB</td>
+            </tr>
+            <tr>
+              <td>Older corporate gateways</td>
+              <td class="tabular-nums">5–10 MB, sometimes 2 MB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The published limit is not the only factor. Attachments are base64-encoded in transit, which
+        adds about 33 per cent, and the strictest server in the chain decides: your outbound limit does
+        not help if the gateway of the recipient is tighter. At 500 KB, none of these limits apply.
+      </p>
+    </section>
+
+    <section>
+      <h2>Photo-heavy documents behave differently</h2>
+      <p>
+        Text scans and photographs compress very differently. A page of black text on white is mostly
+        flat area, which JPEG encodes almost free; a photograph has continuous tone in each block, which
+        JPEG cannot encode cheaply.
+      </p>
+      <ul>
+        <li>
+          A twelve-page text scan at 500 KB usually ends at quality 60–75 and looks clean.
+        </li>
+        <li>
+          A twelve-page brochure with full-bleed photography goes down into the thirties and shows
+          banding in skies and gradients.
+        </li>
+      </ul>
+      <p>
+        For a portfolio, a property listing or a product catalogue, start at
+        <a href="/compress-pdf-to-1mb">1 MB</a> or <a href="/compress-pdf-to-2mb">2 MB</a>, and go lower
+        only if a limit requires it.
+      </p>
+    </section>
+
+    <section>
+      <h2>Choosing the resolution yourself</h2>
+      <p>
+        The automatic setting divides your target by the page count and picks a DPI from that. It is a
+        good default, but in two cases a manual setting is better:
+      </p>
+      <ol>
+        <li>
+          Small print matters more than smoothness. A contract with 6-point footnotes reads better at
+          150 DPI and quality 40 than at 96 DPI and quality 75, though the second looks "cleaner" at a
+          glance. Force the higher DPI.
+        </li>
+        <li>
+          The page is a photograph. Then the opposite applies: go down to 96 or 72 DPI so the encoder
+          has quality to spend, because banding in a picture looks worse than softness.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>What is lost, stated once</h2>
+      <p>
+        To reach a byte target, the tool renders pages again as images. You lose three things, and no
+        setting brings them back:
+      </p>
+      <ul>
+        <li>the text layer: the output is no longer searchable or selectable;</li>
+        <li>vector sharpness: a line drawing becomes pixels and does not stay sharp when zoomed;</li>
+        <li>
+          document metadata, bookmarks and links: the file is rebuilt from scratch, so they are not
+          carried over.
+        </li>
+      </ul>
+      <p>
+        If you must keep these, use the lossless clean-up mode in <a href="/compress-pdf">Compress PDF</a>.
+        It rebuilds the file structure without changes to page content. It usually saves much less, but
+        it keeps everything.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

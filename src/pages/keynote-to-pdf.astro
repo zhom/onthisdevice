@@ -1,0 +1,149 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureIWorkToPdf from '@/components/tools/pdf-convert/PdfSecureIWorkToPdf.tsx'
+---
+
+<ToolLayout slug="keynote-to-pdf">
+  <PdfSecureIWorkToPdf client:load kind="keynote" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Opening a Keynote deck without Keynote</h2>
+      <p>
+        Someone sent you a <code>.key</code> file and the presentation is in an hour. PowerPoint does
+        not open it, Google Slides does not import it, and the sender is asleep in another time zone.
+        The slides are already inside the file, and this Keynote to PDF page extracts them.
+      </p>
+    </section>
+
+    <section>
+      <h2>Where the PDF comes from</h2>
+      <p>
+        A Keynote document is a zip archive. Each time Keynote saves, it writes a full PDF rendering
+        of the deck to <code>QuickLook/Preview.pdf</code>, so Finder, Quick Look and Mail can show
+        the slides without the app. That preview has one page per slide, at the deck's own aspect
+        ratio, with the real fonts embedded.
+      </p>
+      <p>
+        This page unzips the archive in your browser and gives you that PDF byte for byte. Nothing is
+        rendered again, so a substituted font cannot move a title off the slide. That is a common
+        failure of server-side deck conversion.
+      </p>
+    </section>
+
+    <section>
+      <h2>What survives and what does not</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Element</th>
+              <th scope="col">In the PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Slide layout, text, shapes, charts</td>
+              <td>Yes, as vectors. Sharp at any zoom</td>
+            </tr>
+            <tr>
+              <td>Images and photographic backgrounds</td>
+              <td>Yes, embedded at the resolution Keynote used</td>
+            </tr>
+            <tr>
+              <td>Builds and animations</td>
+              <td>Flattened to the final built state. PDF has no animation</td>
+            </tr>
+            <tr>
+              <td>Slide transitions</td>
+              <td>Gone, for the same reason</td>
+            </tr>
+            <tr>
+              <td>Presenter notes</td>
+              <td>Not included. The preview is the audience view</td>
+            </tr>
+            <tr>
+              <td>Videos and audio</td>
+              <td>The poster frame only</td>
+            </tr>
+            <tr>
+              <td>Hyperlinks on slides</td>
+              <td>Usually preserved as PDF link annotations</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        These are the same trade-offs as Keynote's own File → Export To → PDF with default settings,
+        because it is the same renderer.
+      </p>
+    </section>
+
+    <section>
+      <h2>Slide size and printing</h2>
+      <p>
+        Keynote decks are usually 16:9 (1920 × 1080 points scaled) or 4:3, so the PDF pages are
+        landscape and not a standard paper size. That is fine on screen. For printing:
+      </p>
+      <ul>
+        <li>
+          Choose <strong>Fit to page</strong> in the print dialogue. The aspect ratios do not match
+          A4 or Letter, so scaling is always necessary.
+        </li>
+        <li>
+          For handouts, use your reader's <strong>multiple pages per sheet</strong> option. Two
+          16:9 slides fit well on a portrait A4.
+        </li>
+        <li>
+          Landscape orientation wastes less paper than portrait for a 16:9 deck, but gives one slide
+          per sheet.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Why the conversion takes seconds</h2>
+      <p>
+        An upload service must receive the whole file before it can start. Decks are big
+        (photographs, embedded video, high-resolution backgrounds), and 300 MB over a typical upload
+        connection takes several minutes before any work starts. Then it renders and you download.
+      </p>
+      <p>
+        Here there is no transfer. The tab reads the archive from disk and inflates one entry. The
+        speed depends only on your disk, which for a 300 MB deck is a second or two.
+      </p>
+    </section>
+
+    <section>
+      <h2>If there is no preview inside</h2>
+      <p>
+        Keynote can be set not to save previews, and very old versions did not save them. For that
+        file, the options are:
+      </p>
+      <ol>
+        <li>
+          Ask the sender to open Keynote → Settings → General, tick <strong>Include preview in
+          document by default</strong>, save again, and send it again.
+        </li>
+        <li>Or ask them for File → Export To → PDF, which takes them ten seconds.</li>
+        <li>
+          If the file is a macOS package and not a single file, compress it to a .zip first and drop
+          that here.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Next steps with the PDF</h2>
+      <ul>
+        <li><a href="/pdf-to-jpg">PDF to JPG</a> gives one image per slide, to embed elsewhere.</li>
+        <li><a href="/merge-pdf">Merge PDF</a> combines several decks into one handout.</li>
+        <li><a href="/compress-pdf-to-2mb">Compress to 2 MB</a> makes a photo-heavy deck small enough to email.</li>
+        <li>
+          <a href="/password-protect-pdf">Password protect it</a> if the deck is confidential and you
+          will share it.
+        </li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

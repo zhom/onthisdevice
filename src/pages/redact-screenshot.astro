@@ -1,0 +1,47 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RedactScreenshot from '@/components/tools/redact/text/RedactScreenshot.tsx'
+---
+
+<ToolLayout slug="redact-screenshot" width="wide">
+  <RedactScreenshot client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact a screenshot</h2>
+    <ol>
+      <li>Drop a screenshot, or copy one and press Ctrl+V (Cmd+V on a Mac) on this page.</li>
+      <li>The tool reads the text on the image and puts a black box on each email, phone number, card number, key, address and name. Faces and round profile pictures get one too.</li>
+      <li>Check the Found list. Uncheck an item, or press its box on the image, to keep it visible. Drag on the image to add a box.</li>
+      <li>Choose a solid fill, blur or pixelation, then make the PNG. Download it or copy it to the clipboard.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <ul>
+      <li>A text reader (OCR) compiled to WebAssembly finds each word and its position. It downloads once from this site, about 7 MB, and then works offline.</li>
+      <li>Light text on a dark background is read too: the image is read as it is, inverted, and with colored text darkened, and the results are merged.</li>
+      <li>Pattern rules check the text for emails, phone numbers, card numbers, IBANs, IP addresses, keys and more than 60 kinds of API tokens.</li>
+      <li>An optional language model finds names, addresses and usernames. It is a 19 MB file plus a 14 MB runtime, downloaded once.</li>
+      <li>A small face detector (0.2 MB) finds faces, and a shape check finds round profile pictures.</li>
+    </ul>
+
+    <h2>Use a solid fill for text</h2>
+    <p>
+      Blur and pixelation can sometimes be reversed for short text such as a phone number, because there are few
+      possible values to try. A solid fill replaces the pixels. The exported PNG is made from the pixels only, so it has
+      no metadata.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the Network tab in your browser's developer tools and drop a screenshot. You see the text reader and the models
+      load from this site the first time, and no request after that.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>OCR can misread small, blurry or stylized text. Check every part of the image before you share it.</li>
+      <li>Square profile pictures and logos are not found. Drag a box over them.</li>
+      <li>The text reader reads Latin script best.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

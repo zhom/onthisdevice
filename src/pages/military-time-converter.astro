@@ -1,0 +1,109 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyTimeConvert from '@/components/tools/datetime/CalcMoneyTimeConvert.tsx'
+---
+
+<ToolLayout slug="military-time-converter">
+  <CalcMoneyTimeConvert client:load variant="military" />
+
+  <Fragment slot="explainer">
+    <h2>The rule, in one sentence</h2>
+    <p>
+      From 1 PM on, <strong>add twelve</strong> to get military time. From 1300 on,
+      <strong>subtract twelve</strong> to get PM time. Times before noon keep the same number with a
+      leading zero. The only two special cases are midnight and noon.
+    </p>
+
+    <h2>The full clock</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Military</th>
+            <th>12-hour</th>
+            <th>Military</th>
+            <th>12-hour</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>0000</td><td>12:00 AM (midnight)</td><td>1200</td><td>12:00 PM (noon)</td></tr>
+          <tr><td>0100</td><td>1:00 AM</td><td>1300</td><td>1:00 PM</td></tr>
+          <tr><td>0200</td><td>2:00 AM</td><td>1400</td><td>2:00 PM</td></tr>
+          <tr><td>0300</td><td>3:00 AM</td><td>1500</td><td>3:00 PM</td></tr>
+          <tr><td>0400</td><td>4:00 AM</td><td>1600</td><td>4:00 PM</td></tr>
+          <tr><td>0500</td><td>5:00 AM</td><td>1700</td><td>5:00 PM</td></tr>
+          <tr><td>0600</td><td>6:00 AM</td><td>1800</td><td>6:00 PM</td></tr>
+          <tr><td>0700</td><td>7:00 AM</td><td>1900</td><td>7:00 PM</td></tr>
+          <tr><td>0800</td><td>8:00 AM</td><td>2000</td><td>8:00 PM</td></tr>
+          <tr><td>0900</td><td>9:00 AM</td><td>2100</td><td>9:00 PM</td></tr>
+          <tr><td>1000</td><td>10:00 AM</td><td>2200</td><td>10:00 PM</td></tr>
+          <tr><td>1100</td><td>11:00 AM</td><td>2300</td><td>11:00 PM</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Midnight and noon, the confusing part</h2>
+    <p>
+      AM means <em>ante meridiem</em>, before midday. PM means <em>post meridiem</em>, after midday.
+      Midday is neither, and midnight is the boundary between two days. The convention that 12 PM is
+      noon and 12 AM is midnight is arbitrary and often remembered wrong, so a hotel checkout "at
+      12 AM" causes confusion.
+    </p>
+    <p>
+      The 24-hour clock removes the ambiguity, so hospitals, airlines, emergency services, railways
+      and the military use it. Midnight at the start of a day is 0000. Some organisations write 2400
+      for midnight at the end of a day, and both mean the same instant. Written schedules usually use
+      0000 for a start and 2359 for an end, so nothing is ambiguous.
+    </p>
+
+    <h2>How it is spoken</h2>
+    <ul>
+      <li><code>0600</code>: "zero six hundred" or "oh six hundred".</li>
+      <li><code>1430</code>: "fourteen thirty".</li>
+      <li><code>1000</code>: "ten hundred hours". There is no "o'clock" and no colon.</li>
+      <li><code>0007</code>: "zero zero zero seven", seven minutes past midnight.</li>
+    </ul>
+    <p>
+      Strictly, "hundred hours" is for whole hours only. "Hours" after a time with minutes, such as
+      "fourteen thirty hours", is common in films and rare in practice.
+    </p>
+
+    <h2>Time-zone letters</h2>
+    <p>
+      Military and NATO usage often adds one letter for the time zone, so a time is unambiguous
+      anywhere on earth. Z ("Zulu") is UTC, the most common, in aviation, shipping and log files. J
+      ("Juliet") means local time where the reader is. The letters A through M (except J) are east of
+      Greenwich, and N through Y are west.
+    </p>
+    <p>
+      This page converts notation, not offsets. <code>1430Z</code> and <code>1430</code> local are
+      different instants, and to convert between them you need a time zone converter.
+    </p>
+
+    <h2>The 24-hour clock outside the military</h2>
+    <p>
+      Most of the world calls it "the clock". It is standard civilian notation across continental
+      Europe, Latin America, and much of Asia and Africa, and it is the ISO 8601 standard for written
+      time. The "military" label comes mostly from American English, because the US, UK, Canada,
+      Australia and a few other English-speaking countries kept 12-hour notation in everyday use.
+    </p>
+    <p>
+      There is one real difference: the civilian 24-hour clock uses a colon (<code>14:30</code>) and
+      the military convention does not (<code>1430</code>). The input above accepts both, and the
+      result shows both.
+    </p>
+
+    <h2>Converting a list</h2>
+    <p>
+      Paste a column of times, and each line converts to the other notation: 24-hour entries become
+      AM/PM, and AM/PM entries become 24-hour. So a mixed roster or log becomes consistent. Minutes
+      after midnight show next to each line, for sorting or for arithmetic in a spreadsheet.
+    </p>
+
+    <h2>No network, no upload</h2>
+    <p>
+      This military time converter is static HTML with a small JavaScript island and makes no external
+      requests, so a pasted duty roster or shift log stays on your device. It works offline.
+    </p>
+  </Fragment>
+</ToolLayout>

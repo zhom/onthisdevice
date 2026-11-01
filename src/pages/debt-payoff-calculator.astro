@@ -1,0 +1,112 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyDebtPayoff from '@/components/tools/finance/CalcMoneyDebtPayoff.tsx'
+---
+
+<ToolLayout slug="debt-payoff-calculator">
+  <CalcMoneyDebtPayoff client:load />
+
+  <Fragment slot="explainer">
+    <h2>Two orders, one engine</h2>
+    <p>
+      Snowball and avalanche use the same budget in a different order. In both, you pay the minimum on
+      each debt and put all remaining money on one target. When that target is cleared, its minimum
+      joins the extra money and the whole payment moves to the next debt. The only difference is which
+      debt goes first.
+    </p>
+    <ul>
+      <li>
+        <strong>Avalanche</strong> targets the highest APR first. It always costs the least interest,
+        because it clears the most expensive debt first.
+      </li>
+      <li>
+        <strong>Snowball</strong> targets the smallest balance first. It costs more, sometimes only
+        slightly, but it clears a debt sooner, and a cleared debt helps people continue.
+      </li>
+    </ul>
+    <p>
+      The comparison above runs both methods on your debts and reports the exact difference. That
+      difference is the cost of the early win, and it is the honest way to choose.
+    </p>
+
+    <h2>Why the rollover matters more than the order</h2>
+    <p>
+      The order changes the total by a few per cent. The rollover changes it by an order of magnitude.
+      For example, three debts with minimums of 35, 110 and 265 and an extra 200 a month:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Stage</th>
+            <th style="text-align:right">Payment at the target debt</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>All three open</td><td style="text-align:right">200 + its own minimum</td></tr>
+          <tr><td>After the first clears</td><td style="text-align:right">200 + 35 + its own minimum</td></tr>
+          <tr><td>After the second clears</td><td style="text-align:right">200 + 35 + 110 + its own minimum</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      At the last debt, the whole monthly budget of 610 goes to one balance. For this reason payoff
+      plans get much faster towards the end. If you stop halfway and spend a freed-up minimum, you lose
+      most of the benefit.
+    </p>
+
+    <h2>Fixing the order, and why</h2>
+    <p>
+      The debt payoff calculator sets the payoff order once, from today's balances and rates, and keeps it
+      for the whole plan. Sorting again each month as balances change gives a slightly different total
+      and a plan that is hard to follow. A debt plan depends on behaviour as much as on finance: if it
+      does not fit on an index card, you will probably stop by month four.
+    </p>
+
+    <h2>What to include, and what to leave out</h2>
+    <ul>
+      <li>
+        Include credit cards, store cards, overdrafts, personal loans, car finance, buy-now-pay-later
+        balances and all debts at a rate above what savings earn.
+      </li>
+      <li>
+        Leave out a low-rate mortgage. Under avalanche it sorts last and stays there for decades,
+        filling the schedule with no useful information. Model it separately with an amortization
+        schedule.
+      </li>
+      <li>
+        Think carefully about student loans. Income-contingent systems (UK Plan 2, US IDR plans) work
+        very differently from a fixed instalment loan, and overpaying can be wasted if the balance will
+        be written off.
+      </li>
+      <li>
+        Build a small emergency buffer first. If you clear a card and borrow on it again after a car
+        repair, you lose money. One month of expenses in cash before the plan starts is usually correct.
+      </li>
+    </ul>
+
+    <h2>Reading the month-by-month plan</h2>
+    <p>
+      Print the plan table. Each row is one month: the total paid, the interest part, the debt removed,
+      and what remains. The milestone column marks the months when a debt clears. Circle those rows;
+      they keep you motivated.
+    </p>
+
+    <h2>Where the numbers come from</h2>
+    <p>
+      Each month, the simulation charges interest on each open balance at its own monthly rate
+      (APR ÷ 12), pays the stated minimum on each debt except the target, then puts the rest of the
+      budget on the target. Balances are arbitrary-precision decimals, rounded to the minor unit at each
+      interest charge, as on a card statement. If the budget cannot exceed the combined interest, the
+      calculator says so and does not show a fifty-year plan.
+    </p>
+
+    <h2>Nothing leaves this tab, and nothing is stored by default</h2>
+    <p>
+      There is no server behind this page and no analytics. Saving is off unless you turn it on. When it
+      is on, it writes to the local storage of this browser on this device only, and the delete button
+      next to the switch removes the data immediately. You can work through the whole plan with the
+      network disconnected.
+    </p>
+  </Fragment>
+</ToolLayout>

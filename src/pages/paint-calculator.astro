@@ -1,0 +1,107 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyArea from '@/components/tools/everyday/CalcMoneyArea.tsx'
+---
+
+<ToolLayout slug="paint-calculator">
+  <CalcMoneyArea client:load variant="paint" />
+
+  <Fragment slot="explainer">
+    <h2>From room dimensions to tins</h2>
+    <p>
+      The paint calculator finds wall area as the perimeter multiplied by the ceiling height:
+    </p>
+    <pre><code>wall area = 2 × (length + width) × wall height
+paint     = wall area × coats ÷ coverage per tin</code></pre>
+    <p>
+      A 14 × 12 ft room with 8 ft ceilings has 416 square feet of wall. Deduct one door and two
+      windows (51 sq ft) and you paint 365. Two coats at 350 sq ft per gallon is 2.09 gallons, so
+      three tins, because paint is not sold in fractions.
+    </p>
+
+    <h2>Coverage: the number that decides the answer</h2>
+    <p>
+      "350 square feet per US gallon" is the manufacturer's figure for a smooth, sound, previously
+      painted wall. Real surfaces are often different.
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[440px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Surface</th>
+            <th style="text-align:right">Sq ft per gallon</th>
+            <th style="text-align:right">m² per litre</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Smooth, previously painted</td><td style="text-align:right">350–400</td><td style="text-align:right">10–11</td></tr>
+          <tr><td>New plaster or drywall (mist coat)</td><td style="text-align:right">250–300</td><td style="text-align:right">7–8</td></tr>
+          <tr><td>Lightly textured</td><td style="text-align:right">250–300</td><td style="text-align:right">7–8</td></tr>
+          <tr><td>Heavy texture, brick, render</td><td style="text-align:right">150–250</td><td style="text-align:right">4–6</td></tr>
+          <tr><td>Ceilings (roller, matt)</td><td style="text-align:right">350–400</td><td style="text-align:right">10–11</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      A US gallon is 3.785 litres. Metric tins are usually 2.5 or 5 litres, so a 5 L tin is about
+      1.32 gallons. Set coverage in the unit your tin is sold in.
+    </p>
+
+    <h2>How many coats</h2>
+    <ul>
+      <li>Same colour on a sound wall: sometimes one coat.</li>
+      <li>Normal repaint: two. This is the realistic default, and the calculator starts at it.</li>
+      <li>Light over dark, or a strong colour: a tinted primer plus two topcoats. Reds and deep yellows are the worst and can need three.</li>
+      <li>Bare plaster: a thinned mist coat first, then two. The mist coat soaks in and does not count as a topcoat.</li>
+    </ul>
+
+    <h2>Doors and windows</h2>
+    <p>
+      Each door is deducted at 21 square feet (a standard 3 × 7 ft opening) and each window at 15
+      (3 × 5 ft). Those are the conventional trade allowances. If your openings are unusually large
+      (patio doors, a picture window), set the counts to zero and subtract a wall row, or leave them in
+      as extra safety margin.
+    </p>
+    <p>
+      Many decorators deduct nothing for a small room, because the allowance is smaller than the
+      wastage. The calculator lets you choose.
+    </p>
+
+    <h2>Ceilings, trim and other surfaces</h2>
+    <p>
+      Set the ceiling field to 1 to add the floor-plan area of each room row to the paintable total:
+      length × width, once per coat. Trim is a different product and a different calculation.
+      Skirting, architrave and door frames are usually estimated by length, not area, and a litre of
+      gloss covers a lot of it. Doors are about 20 square feet per side.
+    </p>
+
+    <h2>Buy the whole job at once</h2>
+    <p>
+      There are two practical reasons. Tinted colours are mixed in batches, and two batches of the same
+      colour can look different on a large wall. If you run out three-quarters of the way along a wall,
+      the wet edge dries before you get back, and a stripe shows under raking light permanently.
+    </p>
+    <p>
+      Always round up. This calculator does it for you: the difference between 2.09 gallons and three
+      tins is a few units of currency, and the difference between finishing and not finishing is an
+      afternoon.
+    </p>
+
+    <h2>A rough order of work</h2>
+    <ol>
+      <li>Measure each room: length, width and ceiling height.</li>
+      <li>Set coats and coverage realistically for your surface.</li>
+      <li>Count doors and windows.</li>
+      <li>Read the tin count, add the ceiling if you are doing it.</li>
+      <li>Add primer separately if you are covering bare plaster or a dark colour.</li>
+      <li>Export the list and take it to the shop.</li>
+    </ol>
+
+    <h2>Works in an empty house with no signal</h2>
+    <p>
+      After the page loads, it runs fully on your device, which helps in an unfurnished room with a tape
+      measure and one bar of signal. Saving is off by default, and when you turn it on it writes only to
+      this browser.
+    </p>
+  </Fragment>
+</ToolLayout>

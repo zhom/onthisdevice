@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PassportPhotoMaker from '@/components/tools/image-edit/PassportPhotoMaker.tsx'
+---
+
+<ToolLayout slug="passport-photo-maker">
+  <PassportPhotoMaker client:load />
+
+  <Fragment slot="explainer">
+    <h2>Taking the source photo</h2>
+    <p>
+      The crop is easy. The photograph is what gets applications rejected. Five minutes of care here
+      prevents a second submission:
+    </p>
+    <ul>
+      <li>Background: a plain, light, evenly lit wall. Stand about a metre away from it, so you do not cast a shadow on it.</li>
+      <li>Light: face a window in daylight, or use two lamps, one on each side. Overhead light alone puts shadows in your eye sockets and under your nose.</li>
+      <li>Camera height: level with your eyes, about a metre away. A phone held low distorts the face and is a common rejection reason.</li>
+      <li>Expression: neutral, mouth closed, both eyes open and visible, looking straight at the lens.</li>
+      <li>Glasses: the UK, US and Schengen authorities now all prefer them removed. If you must wear them, no glare and no frame across the eyes.</li>
+      <li>Head coverings: permitted for religious or medical reasons, if the full face from the bottom of the chin to the top of the forehead is visible.</li>
+      <li>No filters: beauty modes, portrait-blur backgrounds and smoothing all count as manipulation.</li>
+    </ul>
+
+    <h2>Official sizes built in</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Document</th><th>Photo size</th><th>Head height (crown to chin)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>US passport, visa, green card</td><td>2 × 2 in (51 × 51 mm)</td><td>25–35 mm (1–1⅜ in)</td></tr>
+          <tr><td>UK passport &amp; driving licence</td><td>35 × 45 mm</td><td>29–34 mm</td></tr>
+          <tr><td>Schengen visa / EU ID</td><td>35 × 45 mm</td><td>32–36 mm</td></tr>
+          <tr><td>India passport</td><td>51 × 51 mm</td><td>25–35 mm</td></tr>
+          <tr><td>China passport &amp; visa</td><td>33 × 48 mm</td><td>28–33 mm</td></tr>
+          <tr><td>Canada passport</td><td>50 × 70 mm</td><td>31–36 mm</td></tr>
+          <tr><td>Australia / New Zealand</td><td>35 × 45 mm</td><td>32–36 mm</td></tr>
+          <tr><td>Japan passport</td><td>35 × 45 mm</td><td>32–36 mm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Pick your document and the crop frame changes shape at once. The head-height figure below the
+      canvas comes from the position of the two dashed guides, converted to millimetres with the
+      physical size of the finished photo. So the passport photo maker makes the same measurement as
+      the passport office with a ruler.
+    </p>
+
+    <h2>Getting the head height right</h2>
+    <ol>
+      <li>Drag the top guide onto the crown of the head: the top of the hair, not the forehead.</li>
+      <li>Drag the bottom guide onto the underside of the chin.</li>
+      <li>Read the measured height. If it is outside the range, zoom in (head too small) or out (head too large) and check again. The guides stay where you put them, so only the face moves.</li>
+      <li>Drag the photo itself to centre the face left-to-right and to set the amount of space above the head.</li>
+    </ol>
+
+    <h2>DPI, pixels and printing</h2>
+    <p>
+      A 35 × 45 mm photo at 300 DPI is 413 × 531 pixels. A US 2 × 2 in photo is 600 × 600. The tool
+      computes the exact pixel size for your combination, renders at that size, and writes the DPI value
+      into the JPEG header, so print software lays it out correctly and does not assume 72 DPI. If your
+      source photo has fewer pixels than the target needs, you get a warning. Enlarging cannot add
+      detail, and a soft print is another common rejection.
+    </p>
+    <p>
+      The <strong>6 × 4 inch sheet</strong> tiles as many copies as fit, with thin cut guides between
+      them. Print it at 100% (turn off “fit to page”, “scale to fit” and any borderless option), or
+      upload the sheet to any photo print service as a standard 6 × 4 print. That is usually six copies
+      for 35 × 45 mm and six for 2 × 2 in, for the price of one print.
+    </p>
+
+    <h2>About the background whitener</h2>
+    <p>
+      There is no AI background removal here. A segmentation model needs a multi-megabyte download or
+      sends your face to a server. The tool uses an edge flood fill: it starts at the border of the crop,
+      spreads inwards over pixels close in colour to the wall, and replaces them with white. Raise the
+      tolerance until the wall is clean. Lower it when hair or shoulders start to disappear. The fill
+      spreads only from the outside in, so it cannot make a hole in the middle of your face. On a busy or
+      unevenly lit background it does not work well, at any slider setting. Take the photo again
+      against a plain wall.
+    </p>
+
+    <h2>Nothing about this photo leaves your device</h2>
+    <p>
+      A passport photo is a biometric portrait, often of a child. Here the decode, the crop, the guides,
+      the flood fill, the encode and the print sheet are all canvas and WebAssembly operations in this
+      tab. To verify, turn off your network connection before you start.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/change-image-dpi">Change Image DPI</a> if a portal wants a different resolution,
+      <a href="/compress-image-to-100kb">compress to 100 KB</a> when an online application caps the
+      file size, and <a href="/crop-image">Crop Image</a> for ordinary, non-document crops.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,64 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="ml-to-cups">
+  <UnitsLifeKitchenConverter client:load mode="ml-to-cups" />
+  <Fragment slot="explainer">
+    <h2>Five cups, all in use</h2>
+    <p>
+      The cup is the least standardised unit in common use. It has no international definition, and
+      several different volumes are in use, so this ml to cups page shows all of them at once.
+    </p>
+    <table>
+      <thead>
+        <tr><th scope="col">Standard</th><th scope="col">Millilitres</th><th scope="col">Relative to US customary</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>US customary</td><td>236.588</td><td>1.000</td></tr>
+        <tr><td>US legal (labelling)</td><td>240</td><td>1.014</td></tr>
+        <tr><td>Metric (AU, NZ)</td><td>250</td><td>1.057</td></tr>
+        <tr><td>Imperial (old UK)</td><td>284.131</td><td>1.201</td></tr>
+        <tr><td>Japanese</td><td>200</td><td>0.845</td></tr>
+      </tbody>
+    </table>
+    <p>
+      An Australian cup in an American recipe adds nearly 6% to each wet ingredient. You cannot see that
+      in a soup, but you can in a cake batter.
+    </p>
+
+    <h2>The numbers you will actually look up</h2>
+    <ul>
+      <li>250 mL = 1.057 US cups = exactly 1 metric cup</li>
+      <li>240 mL = 1.014 US cups = exactly 1 US legal cup</li>
+      <li>200 mL = 0.845 US cups</li>
+      <li>500 mL = 2.11 US cups = 2 metric cups</li>
+      <li>1 litre = 4.23 US cups = 4 metric cups</li>
+      <li>125 mL = about half a US cup</li>
+      <li>15 mL = 1 metric tablespoon</li>
+    </ul>
+
+    <h2>Fluid ounces, and which one</h2>
+    <p>
+      A US fluid ounce is 29.5735 mL, and an imperial fluid ounce is 28.4131 mL. The imperial one is
+      smaller, but the imperial pint has twenty of them and the US pint has sixteen. So an imperial
+      pint (568 mL) is a fifth bigger than a US pint (473 mL). The results panel shows both figures.
+    </p>
+
+    <h2>Millilitres and grams are only equal for water</h2>
+    <p>
+      One millilitre of pure water weighs one gram at 4 &deg;C. That is true only for water. 250 mL of
+      honey weighs 354 g, 250 mL of vegetable oil weighs 227 g, and 250 mL of flour weighs about 130 g.
+      Pick an ingredient in the tool, and it gives the weight as well as the volume.
+    </p>
+
+    <h2>Measuring liquid accurately</h2>
+    <p>
+      Use a jug on a level surface, read at eye level, and read the bottom of the meniscus (the curved
+      surface a liquid makes against glass). Dry measuring cups are for filling to the brim and
+      levelling. Liquid jugs have the graduation below the rim, so you can carry them. If you use one
+      for the other, the error can be several percent.
+    </p>
+  </Fragment>
+</ToolLayout>

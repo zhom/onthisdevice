@@ -1,0 +1,123 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CalcMoneyArea from '@/components/tools/everyday/CalcMoneyArea.tsx'
+---
+
+<ToolLayout slug="flooring-calculator">
+  <CalcMoneyArea client:load variant="flooring" />
+
+  <Fragment slot="explainer">
+    <h2>Rooms in, boxes out</h2>
+    <p>
+      Flooring is sold by the carton, and each product covers a different area per carton. The calculation
+      always has three steps:
+    </p>
+    <pre><code>area           = Σ (length × width) for every room
+area to buy    = area × (1 + waste)
+boxes          = area to buy ÷ coverage per box, rounded up</code></pre>
+    <p>
+      A 300 square foot job at 10% waste needs 330 square feet. At 20.1 sq ft per carton (a very common
+      laminate figure), that is 17 boxes, which cover 341.7 sq ft. You must round up, because you cannot buy
+      two-thirds of a carton.
+    </p>
+
+    <h2>Coverage per box varies enormously</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[440px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th style="text-align:right">Typical sq ft / box</th>
+            <th style="text-align:right">Typical m² / box</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Laminate</td><td style="text-align:right">18–24</td><td style="text-align:right">1.7–2.2</td></tr>
+          <tr><td>Luxury vinyl plank (LVP)</td><td style="text-align:right">24–36</td><td style="text-align:right">2.2–3.3</td></tr>
+          <tr><td>Engineered hardwood</td><td style="text-align:right">20–30</td><td style="text-align:right">1.9–2.8</td></tr>
+          <tr><td>Solid hardwood</td><td style="text-align:right">18–24</td><td style="text-align:right">1.7–2.2</td></tr>
+          <tr><td>Floor tile (12 × 12 in)</td><td style="text-align:right">15–16</td><td style="text-align:right">1.4–1.5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="text-sm">
+      Always read the end label. Most cartons give the coverage in square feet and square metres, and it
+      changes between ranges from the same manufacturer.
+    </p>
+
+    <h2>How much waste</h2>
+    <ul>
+      <li>7–10%: a simple rectangular room, planks along the long side.</li>
+      <li>10–15%: several rooms, doorways, a hallway, or an irregular plan.</li>
+      <li>15–20%: diagonal or herringbone layouts, which give many angled off-cuts.</li>
+      <li>+ 1 box: keep it sealed for future repairs, because ranges are often discontinued.</li>
+    </ul>
+    <p>
+      Long narrow rooms waste more than square rooms of the same area, because each row has more end cuts
+      and fewer chances to start with an off-cut from the previous row.
+    </p>
+
+    <h2>Measure to the wall, then add the expansion gap</h2>
+    <p>
+      Floating floors (laminate and most LVP) need an expansion gap of 8–12 mm (about 3/8 in) around the
+      whole perimeter, hidden under skirting or beading. Measure from wall face to wall face and let the
+      waste allowance include the gap. Do not subtract it, because you must still buy and cut the material.
+    </p>
+    <p>
+      Include doorways and thresholds in the measurement if the flooring goes through them. The flooring
+      also continues under the skirting or beading, so the visible floor is slightly smaller than the
+      quantity you buy.
+    </p>
+
+    <h2>Which direction should the planks run?</h2>
+    <p>
+      The convention is to lay planks parallel to the longest wall, or towards the main light source,
+      because the room then looks longer and the seams are less visible. On a suspended timber subfloor,
+      planks must be perpendicular to the joists for stability, which can override the appearance. The
+      direction does not change the quantity much, but a diagonal layout adds about five percentage points
+      of waste.
+    </p>
+
+    <h2>What else to order</h2>
+    <ul>
+      <li>
+        Underlay: usually sold in rolls of 100–200 sq ft. Some laminates have it attached; check so you do
+        not buy it twice.
+      </li>
+      <li>
+        Moisture barrier: required over concrete slabs and in basements, sometimes part of the underlay.
+      </li>
+      <li>
+        Transition strips: one per doorway, plus one at each change of material.
+      </li>
+      <li>
+        Beading or new skirting: measured by the perimeter in linear feet or metres, not by area.
+      </li>
+    </ul>
+    <p>
+      To order underlay room by room, add a separate row per room and read the area of each room in the
+      table.
+    </p>
+
+    <h2>Acclimatisation, before you cut anything</h2>
+    <p>
+      Wood and laminate move with humidity. Most manufacturers require the boxes to lie flat in the
+      installation room for 48–72 hours before installation, and refuse a warranty claim if they did not.
+      Order early enough for this.
+    </p>
+
+    <h2>Batch numbers</h2>
+    <p>
+      As with tile, flooring is made in batches, and the shade varies between them. Buy the whole job,
+      including waste, in one order, and check that the batch code is the same on all cartons before you
+      start. It is much easier to exchange a box at the merchant than to remove a finished row.
+    </p>
+
+    <h2>Runs offline, uploads nothing</h2>
+    <p>
+      The flooring calculator, the box count and the CSV, Excel and PDF exports are JavaScript in your
+      browser. The page works in an empty house with no signal, and your room list stays on the device
+      unless you export it.
+    </p>
+  </Fragment>
+</ToolLayout>

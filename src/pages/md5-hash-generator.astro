@@ -1,0 +1,78 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="md5-hash-generator">
+  <DevEncodeHash client:load algorithm="MD5" />
+  <Fragment slot="explainer">
+    <h2>What MD5 produces</h2>
+    <p>
+      An MD5 hash is a 128-bit digest, written as 32 hexadecimal characters, from an input of any
+      length. The same input always gives the same digest, a one-byte change gives a completely
+      different one, and you cannot rebuild the original data from it.
+    </p>
+    <pre><code>""              → d41d8cd98f00b204e9800998ecf8427e
+"hello"         → 5d41402abc4b2a76b9719d911017c592
+"Hello"         → 8b1a9953c4611296a827abf8c47804d7</code></pre>
+    <p>
+      Learn the first value, the digest of the empty string. If a checksum comparison keeps giving it,
+      your input is empty.
+    </p>
+
+    <h2>Broken for security, fine for corruption</h2>
+    <p>
+      MD5 collisions have been practical since 2004, and now take seconds to generate. An attacker who
+      controls both files can give two different documents the same digest. So never use MD5 for
+      anything an attacker can influence: passwords, signatures or deduplication of untrusted uploads.
+    </p>
+    <p>
+      Accidental damage is a different problem. A truncated download, a bad disk sector or a corrupted
+      transfer does not give a matching digest by chance: the odds are 1 in 2¹²⁸. So Linux
+      distributions and vendor download pages still publish MD5 sums next to SHA-256 ones, and MD5 is
+      correct for that purpose.
+    </p>
+
+    <h2>Choosing by digest length</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Hex characters</th><th>Bits</th><th>Algorithm</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>8</td><td>32</td><td>CRC-32</td></tr>
+          <tr><td>32</td><td>128</td><td>MD5</td></tr>
+          <tr><td>40</td><td>160</td><td>SHA-1</td></tr>
+          <tr><td>64</td><td>256</td><td>SHA-256</td></tr>
+          <tr><td>128</td><td>512</td><td>SHA-512</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When a checksum does not say which function made it, count the characters to identify it. The
+      comparison table on this page shows all five for the same input.
+    </p>
+
+    <h2>Hashing large files</h2>
+    <p>
+      The tool computes MD5 as a stream: it reads the file in 4&nbsp;MB slices and each block updates
+      the running state, so an 8&nbsp;GB disk image uses no more memory than a text file. Nothing is
+      uploaded, so there is no size cap and no queue.
+    </p>
+
+    <h2>Why is MD5 not in WebCrypto?</h2>
+    <p>
+      The standard excludes obsolete algorithms on purpose. Browsers provide SHA-1 through SHA-512 and
+      nothing weaker. So this page includes a compact pure-JavaScript MD5 implementation of RFC 1321: a
+      few kilobytes that run in your tab with no network dependency.
+    </p>
+
+    <h2>Why your digest might not match someone else's</h2>
+    <ul>
+      <li>A trailing newline: <code>echo "x" | md5sum</code> hashes two bytes, not one. Use <code>printf</code> or <code>echo -n</code>.</li>
+      <li>Line endings: a file with CRLF has a different hash from the same file with LF. Git may have converted them on checkout.</li>
+      <li>Encoding: the same text in UTF-8 and in UTF-16 is completely different bytes.</li>
+      <li>A BOM: three invisible bytes at the start of a file change the hash.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

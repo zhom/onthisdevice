@@ -1,0 +1,95 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
+---
+
+<ToolLayout slug="hmac-generator">
+  <DevEncodeHash client:load algorithm="HMAC" />
+  <Fragment slot="explainer">
+    <h2>What HMAC adds to a hash</h2>
+    <p>
+      A plain hash does not prove who made it, because anyone can compute one. An HMAC generator mixes a
+      shared secret into the hash in a specific nested construction:
+    </p>
+    <pre><code>HMAC(K, m) = H((K ⊕ opad) ‖ H((K ⊕ ipad) ‖ m))</code></pre>
+    <p>
+      The two padded copies of the key make it secure: the construction is provably resistant to
+      length-extension attacks. So use HMAC, and do not hash a secret and a message together.
+    </p>
+
+    <h2>Debugging a webhook signature</h2>
+    <p>
+      When a provider says your signature does not match, the cause is almost always one of these, most
+      likely first:
+    </p>
+    <ol>
+      <li>
+        The body is not the raw body. Your framework parsed the JSON and serialised it again, with a
+        different key order or whitespace. Capture the bytes before any parsing.
+      </li>
+      <li>
+        A prefix is missing. Stripe signs <code>timestamp + "." + payload</code>. GitHub signs the body
+        alone but puts <code>sha256=</code> before the header value. Read the exact construction in the
+        provider's docs.
+      </li>
+      <li>
+        The key format is wrong. A secret that looks like hex can be meant as UTF-8 text, or the
+        reverse. Try all three formats in the selector above and see which gives the expected signature.
+      </li>
+      <li>
+        The output encoding is different. Some providers send hex, others Base64. The values look
+        different but can be the same bytes.
+      </li>
+      <li>
+        A trailing newline. One extra byte changes the whole code.
+      </li>
+    </ol>
+
+    <h2>Common provider constructions</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Provider</th><th>Algorithm</th><th>Signed value</th><th>Output</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Stripe</td><td>HMAC-SHA256</td><td><code>t.payload</code></td><td>Hex</td></tr>
+          <tr><td>GitHub</td><td>HMAC-SHA256</td><td>Raw body</td><td>Hex, prefixed <code>sha256=</code></td></tr>
+          <tr><td>Shopify</td><td>HMAC-SHA256</td><td>Raw body</td><td>Base64</td></tr>
+          <tr><td>Slack</td><td>HMAC-SHA256</td><td><code>v0:timestamp:body</code></td><td>Hex, prefixed <code>v0=</code></td></tr>
+          <tr><td>AWS SigV4</td><td>HMAC-SHA256, chained</td><td>A derived key over four stages</td><td>Hex</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Always check the provider's current documentation. These constructions change, and the bugs are
+      in the details.
+    </p>
+
+    <h2>Comparing signatures safely</h2>
+    <p>
+      In production code, never compare with <code>==</code>. A byte-by-byte comparison returns early
+      on the first mismatch. Over enough requests the timing difference is measurable, and an attacker
+      can recover a valid signature one byte at a time. Use your platform's constant-time
+      comparison: <code>hmac.compare_digest</code> in Python,
+      <code>crypto.timingSafeEqual</code> in Node, <code>hash_equals</code> in PHP.
+    </p>
+    <p>
+      The comparison on this page is a debugging aid, so a plain equality check is fine here.
+    </p>
+
+    <h2>Also verify the timestamp</h2>
+    <p>
+      A valid signature does not make a request fresh. Without a timestamp check, an attacker who
+      captured one webhook can replay it forever. Reject requests older than a few minutes, and put the
+      timestamp in the signed value so nobody can change it. That is why Stripe and Slack sign it with
+      the body.
+    </p>
+
+    <h2>Pasting a production secret</h2>
+    <p>
+      The secret stays in this tab: WebCrypto runs locally, and the page cannot make a network request.
+      Use a test key if you have one, because a screenshot tool or a person behind you can see the
+      screen.
+    </p>
+  </Fragment>
+</ToolLayout>

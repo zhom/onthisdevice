@@ -1,0 +1,75 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import HashGenerator from '@/components/tools/dev/HashGenerator.tsx'
+---
+
+<ToolLayout slug="hash-generator">
+  <HashGenerator client:load />
+  <Fragment slot="explainer">
+    <h2>How to generate a checksum</h2>
+    <ol>
+      <li>For <strong>Text</strong>, type or paste, and all five digests appear. The tool hashes the exact UTF-8 bytes in the box and adds no trailing newline.</li>
+      <li>For <strong>File</strong>, drop a file, tick the algorithms you need, and press <strong>Compute</strong>. The tool reads files in 4 MB slices with a progress bar, so a multi-gigabyte image is fine.</li>
+      <li>Paste the publisher's checksum into the compare box. The tool flags the matching row, and a badge shows if anything matched.</li>
+      <li>Switch to uppercase output if you are comparing against a value from a Windows tool or a certificate viewer.</li>
+    </ol>
+
+    <h2>Verifying a download</h2>
+    <p>
+      A checksum next to a download lets you prove that the bytes you received are the bytes the publisher
+      shipped, and that no mirror corrupted them and no proxy changed them. A website that uploads your file
+      for this check defeats the purpose: you trust an unknown third party with the file and with the result.
+      This hash generator keeps the file on your machine, so the check is as trustworthy as
+      <code>sha256sum</code> run locally.
+    </p>
+    <p>
+      A checksum alone cannot prove the identity of the publisher. If an attacker controls the download page,
+      they also control the checksum on it. For that you need a signature (GPG, Sigstore, code signing) with a
+      key you got separately.
+    </p>
+
+    <h2>Choosing an algorithm</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Algorithm</th><th>Output</th><th>Status</th><th>Reasonable use today</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MD5</td><td>128 bits, 32 hex characters</td><td>Collision-broken since 2004</td><td>Matching a legacy checksum, cache keys, non-security dedup</td></tr>
+        <tr><td>SHA-1</td><td>160 bits, 40 hex characters</td><td>Collision demonstrated in 2017 (SHAttered)</td><td>Git object ids, legacy checksums</td></tr>
+        <tr><td>SHA-256</td><td>256 bits, 64 hex characters</td><td>Secure</td><td>The default choice for integrity, signatures and fingerprints</td></tr>
+        <tr><td>SHA-384</td><td>384 bits, 96 hex characters</td><td>Secure</td><td>Subresource integrity, TLS suites that specify it</td></tr>
+        <tr><td>SHA-512</td><td>512 bits, 128 hex characters</td><td>Secure</td><td>Often faster than SHA-256 on 64-bit CPUs</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      "Broken" means an attacker can make two different inputs with the same digest. To find an input that
+      matches your existing digest is a preimage attack, and that is still infeasible, even for MD5. So an
+      old MD5 checksum still catches accidental corruption, but it cannot stop a deliberate forger.
+    </p>
+
+    <h2>Never hash a password with these</h2>
+    <p>
+      MD5 and the SHA family are designed to be fast, which is wrong for password storage. A modern GPU
+      computes billions of SHA-256 hashes per second. Passwords need a slow, memory-hard, salted function:
+      Argon2id, scrypt or bcrypt. Use these hashes for integrity only, never for credentials.
+    </p>
+
+    <h2>Why your hash differs from someone else's</h2>
+    <ul>
+      <li>A trailing newline: <code>echo "abc"</code> in a shell adds one, and <code>echo -n "abc"</code> does not. The two give different digests.</li>
+      <li>Line endings: a file checked out with CRLF on Windows has a different hash from the same file with LF.</li>
+      <li>Text encoding: the same characters in UTF-8 and UTF-16 are different bytes. This tool always uses UTF-8.</li>
+      <li>A byte-order mark: an invisible BOM at the start of a file changes the hash.</li>
+    </ul>
+
+    <h2>How the hashing is done</h2>
+    <p>
+      SHA-1, SHA-256, SHA-384 and SHA-512 use <code>crypto.subtle.digest</code>, the browser's native
+      implementation. It is the same code your TLS stack uses, at native speed. WebCrypto does not offer MD5,
+      because it is broken, so this page has a small JavaScript implementation of RFC 1321. It processes the
+      file block by block as it streams in.
+    </p>
+  </Fragment>
+</ToolLayout>

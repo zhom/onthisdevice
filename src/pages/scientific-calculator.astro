@@ -1,0 +1,105 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ScientificCalculator from '@/components/tools/math/ScientificCalculator.tsx'
+---
+
+<ToolLayout slug="scientific-calculator">
+  <ScientificCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the scientific calculator</h2>
+    <p>
+      Type an expression into the box and press Enter, or use the keypad. The result updates as you type.
+      The calculator works on whole expressions, not button sequences, so you can read back exactly what you
+      calculated and edit it.
+    </p>
+    <ul>
+      <li><strong>Enter</strong> evaluates the expression and adds the line to the history tape.</li>
+      <li><strong>Escape</strong> clears the expression.</li>
+      <li>Typing anywhere on the page goes into the expression box.</li>
+      <li>A click on a history line loads that expression again for editing.</li>
+    </ul>
+
+    <h2>Functions the parser understands</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th scope="col">Category</th><th scope="col">Names</th><th scope="col">Example</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Trigonometry</td><td>sin, cos, tan, asin, acos, atan, atan2</td><td><code>sin(30)</code> → 0.5 in degree mode</td></tr>
+          <tr><td>Hyperbolic</td><td>sinh, cosh, tanh, asinh, acosh, atanh</td><td><code>cosh(1)</code></td></tr>
+          <tr><td>Logs and powers</td><td>ln, log, log2, log10, exp</td><td><code>log(2, 1024)</code> → 10</td></tr>
+          <tr><td>Roots</td><td>sqrt, cbrt, root(n, x)</td><td><code>root(5, 32)</code> → 2</td></tr>
+          <tr><td>Rounding</td><td>round, floor, ceil, trunc, abs, sign</td><td><code>round(3.14159, 2)</code> → 3.14</td></tr>
+          <tr><td>Other</td><td>mod, min, max, hypot, fact</td><td><code>hypot(3, 4)</code> → 5</td></tr>
+          <tr><td>Constants</td><td>pi, e, tau, phi</td><td><code>2pi</code> → 6.28318530718</td></tr>
+          <tr><td>Memory</td><td>ans, mem</td><td><code>ans * 2</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      <code>log(x)</code> with one argument is the base-10 logarithm; with two arguments,
+      <code>log(base, x)</code>, it is the logarithm in that base. Multiplication can be implicit:
+      <code>2(3+4)</code>, <code>3pi</code> and <code>2sin(45)</code> all work. A trailing <code>!</code> is
+      factorial and a trailing <code>%</code> divides by 100, so <code>50%</code> is 0.5 and
+      <code>5!</code> is 120.
+    </p>
+
+    <h2>Operator precedence</h2>
+    <ol>
+      <li>Brackets</li>
+      <li>Function calls, factorial and percent</li>
+      <li>Powers (<code>^</code>), evaluated right to left, so <code>2^3^2</code> is 2⁹ = 512</li>
+      <li>Unary minus</li>
+      <li>Multiplication and division, left to right</li>
+      <li>Addition and subtraction, left to right</li>
+    </ol>
+    <p>
+      <code>-2^2</code> is −4: by the usual mathematical convention, the power binds more tightly than the
+      sign. Write <code>(-2)^2</code> to get 4.
+    </p>
+
+    <h2>Degrees and radians</h2>
+    <p>
+      The DEG/RAD key sets the angle mode for sin, cos, tan and their inverses. In degree mode
+      <code>sin(30)</code> is 0.5; in radian mode it is −0.988. Each line in the history tape records the
+      active mode, so a copied tape is unambiguous. Hyperbolic functions do not use the mode, because their
+      argument is never an angle.
+    </p>
+    <p>
+      Values that must be exactly zero, such as <code>sin(180)</code> in degree mode, are rounded to 0 and not
+      shown as 1.2 × 10⁻¹⁶. Real asymptotes such as <code>tan(90)</code> give an error in place of a huge
+      meaningless number.
+    </p>
+
+    <h2>Using the memory keys</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th scope="col">Key</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><td>MS</td><td>Store the current result in memory, replacing what was there</td></tr>
+          <tr><td>MR</td><td>Insert <code>mem</code> into the expression, recalling the stored value</td></tr>
+          <tr><td>M+</td><td>Add the current result to the stored value</td></tr>
+          <tr><td>M−</td><td>Subtract the current result from the stored value</td></tr>
+          <tr><td>MC</td><td>Clear the memory back to zero</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The stored value is always shown next to the result.
+    </p>
+
+    <h2>No eval, and no network</h2>
+    <p>
+      A tokeniser and a recursive-descent parser written for this page process the expression. There is no
+      call to <code>eval</code> and no <code>Function</code> constructor. So code typed in the input box cannot
+      run, and a syntax error points at the exact character that caused it. Arithmetic uses IEEE 754 double
+      precision, about 15 significant digits. Results show 12 digits, so floating-point noise such as
+      0.30000000000000004 does not appear in the answer.
+    </p>
+    <p>
+      Keystrokes, results and history stay in this tab. When you close the tab, the tape is gone.
+    </p>
+  </Fragment>
+</ToolLayout>

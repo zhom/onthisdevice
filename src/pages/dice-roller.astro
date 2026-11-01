@@ -1,0 +1,140 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DiceRoller from '@/components/tools/everyday/DiceRoller.tsx'
+---
+
+<ToolLayout slug="dice-roller">
+  <DiceRoller client:load />
+  <Fragment slot="explainer">
+    <h2>How to use the dice roller</h2>
+    <ol>
+      <li>Type dice notation, or tap one of the presets.</li>
+      <li>Press <strong>Roll</strong>, or press Enter in the notation box.</li>
+      <li>
+        To roll the same expression many times, set the <strong>×</strong> field. The outcome
+        distribution chart then appears below, with the mean and standard deviation of the batch.
+      </li>
+    </ol>
+    <p>
+      The tool shows each die, strikes through dropped dice, and keeps the last forty rolls in the
+      history, so you can settle an argument about what you rolled.
+    </p>
+
+    <h2>Dice notation</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Notation</th>
+            <th scope="col">Meaning</th>
+            <th scope="col">Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>d20</td><td>One twenty-sided die</td><td>1–20</td></tr>
+          <tr><td>3d6</td><td>Three six-sided dice, summed</td><td>3–18</td></tr>
+          <tr><td>3d6+2</td><td>Three d6 plus a flat 2</td><td>5–20</td></tr>
+          <tr><td>1d20-1</td><td>A d20 with a −1 penalty</td><td>0–19</td></tr>
+          <tr><td>2d8+1d6+3</td><td>Mixed dice pools added together</td><td>6–25</td></tr>
+          <tr><td>4d6kh3</td><td>Roll four d6, keep the highest three</td><td>3–18</td></tr>
+          <tr><td>2d20kh1</td><td>Advantage: roll two d20, keep the higher</td><td>1–20</td></tr>
+          <tr><td>2d20kl1</td><td>Disadvantage: keep the lower</td><td>1–20</td></tr>
+          <tr><td>1d100</td><td>Percentile die</td><td>1–100</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Up to 500 dice per term and 1,000 sides per die, with as many terms as you need. If the parser
+      cannot read part of the input, it explains why in plain English.
+    </p>
+
+    <h2>Where the randomness comes from</h2>
+    <p>
+      Each die reads new entropy from <code>crypto.getRandomValues</code>, the cryptographically secure
+      random number generator of the browser, which the operating system seeds. It does not use
+      <code>Math.random</code> or a seed from the clock.
+    </p>
+    <p>
+      The raw values are mapped onto the faces with <strong>rejection sampling</strong>: values in the
+      incomplete last block of the 2³² range are discarded and drawn again. A simple remainder would make
+      the low-numbered faces very slightly more likely (the classic modulo bias). For a d6, nobody could
+      notice the bias, but discarding a value costs nothing.
+    </p>
+
+    <h2>Why 3d6 is not the same as 1d18</h2>
+    <p>
+      Both go from 3 to 18, but they behave very differently. A single die is flat: each face is equally
+      likely. The sum of several dice has a bell-shaped distribution, because there are many more ways to
+      make a middle total than an extreme one.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Total on 3d6</th>
+            <th scope="col">Ways to roll it</th>
+            <th scope="col">Probability</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>3 or 18</td><td>1</td><td>0.46%</td></tr>
+          <tr><td>4 or 17</td><td>3</td><td>1.39%</td></tr>
+          <tr><td>5 or 16</td><td>6</td><td>2.78%</td></tr>
+          <tr><td>6 or 15</td><td>10</td><td>4.63%</td></tr>
+          <tr><td>7 or 14</td><td>15</td><td>6.94%</td></tr>
+          <tr><td>8 or 13</td><td>21</td><td>9.72%</td></tr>
+          <tr><td>9 or 12</td><td>25</td><td>11.57%</td></tr>
+          <tr><td>10 or 11</td><td>27</td><td>12.50%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 216 combinations add up: a 10 or an 11 is twenty-seven times as likely as a 3. Roll a batch of a
+      few hundred here, and the chart draws that curve.
+    </p>
+
+    <h2>Averages worth knowing</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Dice</th>
+            <th scope="col">Average</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1d4</td><td>2.5</td><td>Any single die averages (sides + 1) ÷ 2</td></tr>
+          <tr><td>1d6</td><td>3.5</td><td></td></tr>
+          <tr><td>1d8</td><td>4.5</td><td></td></tr>
+          <tr><td>1d10</td><td>5.5</td><td></td></tr>
+          <tr><td>1d12</td><td>6.5</td><td></td></tr>
+          <tr><td>1d20</td><td>10.5</td><td></td></tr>
+          <tr><td>3d6</td><td>10.5</td><td>Same average as 1d20, much tighter spread</td></tr>
+          <tr><td>4d6 keep highest 3</td><td>≈12.24</td><td>The classic ability-score roll</td></tr>
+          <tr><td>2d20 keep highest</td><td>≈13.83</td><td>Advantage: about +3.3 on average</td></tr>
+          <tr><td>2d20 keep lowest</td><td>≈7.17</td><td>Disadvantage</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Keep-highest and keep-lowest have no simple closed-form average, so the tool shows the exact range for
+      them and leaves the expected value to a batch simulation. Roll 4d6kh3 a thousand times here, and the
+      mean comes very close to 12.24.
+    </p>
+
+    <h2>Uses beyond tabletop games</h2>
+    <ul>
+      <li>Board games with missing dice</li>
+      <li>Classroom probability lessons: batch a thousand rolls and show the distribution as it forms</li>
+      <li>Random selection when a coin flip has too few outcomes</li>
+      <li>Simulation and playtesting of homebrew game mechanics</li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      No server sees your rolls. The history stays in the page and is deleted when you close the tab or
+      press Clear.
+    </p>
+  </Fragment>
+</ToolLayout>

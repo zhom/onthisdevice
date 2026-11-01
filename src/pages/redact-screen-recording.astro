@@ -1,0 +1,45 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ScreencastRedactor from '@/components/tools/redact/screencast/ScreencastRedactor.tsx'
+---
+
+<ToolLayout slug="redact-screen-recording" width="wide">
+  <ScreencastRedactor client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to redact a screen recording</h2>
+    <ol>
+      <li>Drop a screen recording: MP4, MOV or WebM.</li>
+      <li>Press Read the recording. The tool reads the screen each time it changes and lists every email, name, key and number it finds, with the times it is on screen.</li>
+      <li>Switch off an item to keep it visible. Choose types, add words to the always-hide list, and switch faces on or off.</li>
+      <li>Pause on a frame and press Add a box to cover anything else. Set the time span of each box in the list.</li>
+      <li>Play the preview, then download the video.</li>
+    </ol>
+
+    <h2>What runs on your device</h2>
+    <p>
+      Frames are taken three times a second. When the screen has changed, the frame is read with the OCR engine (about 7 MB),
+      and the text is checked by pattern rules for emails, phone numbers, keys and tokens and by a small language model (21 MB)
+      for names and places. A face detector (under 1 MB) looks at every frame, and a tracker follows each face. The models run on
+      a 15 MB runtime. These files download once from this site. The video is decoded and encoded by your browser.
+    </p>
+    <p>
+      A box starts one frame before the text was read and stays until a later reading no longer finds the text there, so the
+      moment the screen changes is covered by both the old and the new boxes.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open your browser's developer tools, select the Network tab and run the tool. You see the engine and models load from
+      this site the first time, and no request after that.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Fast scrolling can show text between two readings for a fraction of a second. Play the preview and add boxes where you see text.</li>
+      <li>Small or low-contrast text can be missed by the OCR. Record at full resolution if you can.</li>
+      <li>A recording with much change takes longer, because more frames are read. A minute of busy screen takes a few minutes.</li>
+      <li>The result is H.264 MP4 when the browser can encode it, otherwise WebM.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

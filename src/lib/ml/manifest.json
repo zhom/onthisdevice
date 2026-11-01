@@ -1,0 +1,174 @@
+{
+  "/models/mdefrance/yolos-tiny-signature-detection/config.json": {
+    "bytes": 819,
+    "wire": 819
+  },
+  "/models/mdefrance/yolos-tiny-signature-detection/onnx/model.onnx": {
+    "bytes": 26089699,
+    "wire": 24018199,
+    "gzip": true
+  },
+  "/models/mdefrance/yolos-tiny-signature-detection/preprocessor_config.json": {
+    "bytes": 441,
+    "wire": 441
+  },
+  "/models/Mozilla/smart-pii-redactor-v1-onnx/config.json": {
+    "bytes": 1778,
+    "wire": 1778
+  },
+  "/models/Mozilla/smart-pii-redactor-v1-onnx/onnx/model_quantized.onnx": {
+    "bytes": 20116600,
+    "wire": 20116600
+  },
+  "/models/Mozilla/smart-pii-redactor-v1-onnx/special_tokens_map.json": {
+    "bytes": 239,
+    "wire": 239
+  },
+  "/models/Mozilla/smart-pii-redactor-v1-onnx/tokenizer_config.json": {
+    "bytes": 265,
+    "wire": 265
+  },
+  "/models/Mozilla/smart-pii-redactor-v1-onnx/tokenizer.json": {
+    "bytes": 983521,
+    "wire": 983521
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/added_tokens.json": {
+    "bytes": 34604,
+    "wire": 34604
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/config.json": {
+    "bytes": 2243,
+    "wire": 2243
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/generation_config.json": {
+    "bytes": 3772,
+    "wire": 3772
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/merges.txt": {
+    "bytes": 493869,
+    "wire": 493869
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/normalizer.json": {
+    "bytes": 52666,
+    "wire": 52666
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/onnx/decoder_model_merged_quantized.onnx": {
+    "bytes": 30730264,
+    "wire": 20370101,
+    "gzip": true
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/onnx/encoder_model_quantized.onnx": {
+    "bytes": 10097109,
+    "wire": 10097109
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/preprocessor_config.json": {
+    "bytes": 339,
+    "wire": 339
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/special_tokens_map.json": {
+    "bytes": 2194,
+    "wire": 2194
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/tokenizer_config.json": {
+    "bytes": 282683,
+    "wire": 282683
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/tokenizer.json": {
+    "bytes": 2480466,
+    "wire": 2480466
+  },
+  "/models/onnx-community/whisper-tiny_timestamped/vocab.json": {
+    "bytes": 1036584,
+    "wire": 1036584
+  },
+  "/models/plate/deimv2-nano-plate.onnx": {
+    "bytes": 16280195,
+    "wire": 16280195
+  },
+  "/models/transformers/4.3.2/transformers.web.min.mjs": {
+    "bytes": 456255,
+    "wire": 456255
+  },
+  "/models/yunet/face_detection_yunet_2026may.onnx": {
+    "bytes": 229738,
+    "wire": 229738
+  },
+  "/ocr/7.0.0/worker.min.js": {
+    "bytes": 111307,
+    "wire": 111307
+  },
+  "/ocr/core-7.0.0/tesseract-core-lstm.js": {
+    "bytes": 89261,
+    "wire": 89261
+  },
+  "/ocr/core-7.0.0/tesseract-core-lstm.wasm": {
+    "bytes": 2855361,
+    "wire": 2855361
+  },
+  "/ocr/core-7.0.0/tesseract-core-lstm.wasm.js": {
+    "bytes": 3896484,
+    "wire": 3896484
+  },
+  "/ocr/core-7.0.0/tesseract-core-relaxedsimd-lstm.js": {
+    "bytes": 89360,
+    "wire": 89360
+  },
+  "/ocr/core-7.0.0/tesseract-core-relaxedsimd-lstm.wasm": {
+    "bytes": 2862266,
+    "wire": 2862266
+  },
+  "/ocr/core-7.0.0/tesseract-core-relaxedsimd-lstm.wasm.js": {
+    "bytes": 3905767,
+    "wire": 3905767
+  },
+  "/ocr/core-7.0.0/tesseract-core-simd-lstm.js": {
+    "bytes": 89271,
+    "wire": 89271
+  },
+  "/ocr/core-7.0.0/tesseract-core-simd-lstm.wasm": {
+    "bytes": 2857601,
+    "wire": 2857601
+  },
+  "/ocr/core-7.0.0/tesseract-core-simd-lstm.wasm.js": {
+    "bytes": 3899472,
+    "wire": 3899472
+  },
+  "/ocr/lang/4.0.0_best_int/eng.traineddata.gz": {
+    "bytes": 2952873,
+    "wire": 2952873
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.asyncify.mjs": {
+    "bytes": 53457,
+    "wire": 53457
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.asyncify.wasm": {
+    "bytes": 28747738,
+    "wire": 7131690,
+    "gzip": true
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.jsep.mjs": {
+    "bytes": 47250,
+    "wire": 47250
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.jsep.wasm": {
+    "bytes": 29520971,
+    "wire": 6915742,
+    "gzip": true
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.jspi.mjs": {
+    "bytes": 51321,
+    "wire": 51321
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.jspi.wasm": {
+    "bytes": 17920659,
+    "wire": 17920659
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.mjs": {
+    "bytes": 24738,
+    "wire": 24738
+  },
+  "/ort/1.31.1/ort-wasm-simd-threaded.wasm": {
+    "bytes": 14848852,
+    "wire": 14848852
+  }
+}

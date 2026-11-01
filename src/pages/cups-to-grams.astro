@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="cups-to-grams">
+  <UnitsLifeKitchenConverter client:load mode="cups-to-grams" />
+  <Fragment slot="explainer">
+    <h2>Turning an American recipe into weights</h2>
+    <p>
+      Most people need this direction: a recipe in cups, a scale on the counter, and a weight to put on
+      it. Pick the ingredient, type the cups (fractions work), and read the grams.
+    </p>
+    <p>
+      For a cup-based recipe, convert it once, write the gram figures in the margin, and do not convert
+      again. Each conversion through a rounded cup measure loses a little accuracy; a written weight
+      list loses none.
+    </p>
+
+    <h2>The staples, in one table</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Ingredient (1 US cup)</th><th scope="col">Grams</th><th scope="col">Ounces</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Flour, all-purpose (spooned)</td><td>123</td><td>4.3</td></tr>
+        <tr><td>Flour, bread</td><td>128</td><td>4.5</td></tr>
+        <tr><td>Flour, cake</td><td>113</td><td>4.0</td></tr>
+        <tr><td>Sugar, granulated</td><td>197</td><td>7.0</td></tr>
+        <tr><td>Sugar, brown (packed)</td><td>210</td><td>7.4</td></tr>
+        <tr><td>Sugar, icing (unsifted)</td><td>118</td><td>4.2</td></tr>
+        <tr><td>Butter</td><td>224</td><td>7.9</td></tr>
+        <tr><td>Milk, whole</td><td>240</td><td>8.5</td></tr>
+        <tr><td>Water</td><td>237</td><td>8.4</td></tr>
+        <tr><td>Cocoa powder</td><td>84</td><td>3.0</td></tr>
+        <tr><td>Rolled oats</td><td>89</td><td>3.1</td></tr>
+        <tr><td>Rice, uncooked white</td><td>182</td><td>6.4</td></tr>
+      </tbody>
+    </table>
+    <p>
+      These figures are for the US customary cup of 236.6 mL. If you change the cup standard in the
+      tool, all of them change: an Australian metric cup is 5.7% larger, so a cup of flour is 130 g, not
+      123 g.
+    </p>
+
+    <h2>Fractions are the normal case</h2>
+    <p>
+      Recipes use halves, thirds and quarters, so the input accepts them directly: <code>1 1/2</code>,
+      <code>3/4</code>, <code>2/3</code>, <code>1&frac14;</code> and plain decimals all work. Two thirds
+      of a cup of sugar is 131 g, which is much easier to measure accurately than two thirds of a cup.
+    </p>
+
+    <h2>Packed, sifted, spooned</h2>
+    <p>
+      Three words in a recipe change the answer substantially:
+    </p>
+    <ul>
+      <li>Packed: brown sugar pressed into the cup is 213 g, against 145 g loose, a 47% difference.</li>
+      <li>Sifted: icing sugar or cake flour aerated before measuring is about 17% lighter than unsifted.</li>
+      <li>Spooned and levelled: flour put in gently and levelled is 125 g, against 145 g scooped.</li>
+    </ul>
+    <p>
+      Also check if the recipe says "1 cup flour, sifted" or "1 cup sifted flour". The first means
+      measure, then sift; the second means sift, then measure, and gives noticeably less flour.
+    </p>
+
+    <h2>Liquids are the easy case</h2>
+    <p>
+      For water, milk, stock and juice, one millilitre weighs about one gram, so a cup is
+      237&ndash;245 g, depending on what is dissolved in it. If you convert only liquids, the volume
+      answer is fine and the scale is optional. For dry ingredients, weighing changes the result.
+    </p>
+  </Fragment>
+</ToolLayout>

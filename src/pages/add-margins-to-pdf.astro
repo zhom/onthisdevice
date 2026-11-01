@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResizePdfPages from '@/components/tools/pdf/ResizePdfPages.tsx'
+---
+
+<ToolLayout slug="add-margins-to-pdf">
+  <ResizePdfPages client:load mode="margins" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Two different ways to add a margin</h2>
+      <p>
+        &ldquo;Add a margin&rdquo; has two meanings, and they produce very different files. This tool
+        asks you which one you want.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Grow the sheet</th>
+            <th scope="col">Keep the paper size</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>What changes</td>
+            <td>The page rectangle gets bigger</td>
+            <td>The content gets smaller</td>
+          </tr>
+          <tr>
+            <td>Content scale</td>
+            <td>100%; nothing moves</td>
+            <td>Shrunk to fit inside the margins</td>
+          </tr>
+          <tr>
+            <td>Final paper size</td>
+            <td>Bigger than the original</td>
+            <td>Same as the original</td>
+          </tr>
+          <tr>
+            <td>Links, bookmarks, form fields</td>
+            <td>Kept</td>
+            <td>Not carried over</td>
+          </tr>
+          <tr>
+            <td>Best for</td>
+            <td>Adding note space before printing large</td>
+            <td>Keeping a strict A4 requirement</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        Grow-the-sheet is lossless: it writes only a larger rectangle into the file. All drawing
+        instructions, annotations and fields stay where they were. For this reason it is the default.
+      </p>
+    </section>
+
+    <section>
+      <h2>How much margin do you actually need?</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Purpose</th>
+            <th scope="col">Suggested margin</th>
+            <th scope="col">Where</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Two-hole punch (EU)</td><td>20 mm</td><td>Left edge</td></tr>
+          <tr><td>Three-ring binder (US)</td><td>25 mm / 1 in</td><td>Left edge</td></tr>
+          <tr><td>Comb or spiral binding</td><td>25–30 mm</td><td>Left edge</td></tr>
+          <tr><td>Perfect-bound book, per side</td><td>15 mm + 5 mm creep</td><td>Inside edge</td></tr>
+          <tr><td>Space for handwritten notes</td><td>50–60 mm</td><td>Right edge</td></tr>
+          <tr><td>Safe printable area</td><td>5 mm</td><td>All four edges</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Mirror margins for double-sided printing</h2>
+      <p>
+        In a bound document, the binding edge is on the left of a right-hand page and on the right of a
+        left-hand page. A fixed 25 mm left margin puts the text of each even page into the spine and
+        leaves an unnecessary gap on the outer edge.
+      </p>
+      <p>
+        Switch off &ldquo;same margin on all four sides&rdquo; and the mirror option appears. When it
+        is on, the left and right values swap on even-numbered pages, so the wide margin is always on
+        the inside. Set left to the binding margin and right to the outer margin.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why the resulting page is not A4 any more</h2>
+      <p>
+        In grow-the-sheet mode, an A4 page with a 20 mm margin on each side becomes 250 × 337 mm. This
+        is intentional: the content stays at full size and the tool adds space around it.
+      </p>
+      <p>
+        When you print, choose <strong>Fit to page</strong>. The printer scales the page back to A4,
+        with your margin and the content at 84% of its original size. To keep the file itself A4, turn
+        grow-the-sheet off. The tool then shrinks the content here, and you can see the result before
+        you print.
+      </p>
+    </section>
+
+    <section>
+      <h2>Everything happens in this tab</h2>
+      <p>
+        pdf-lib rewrites the page rectangles on your machine, so a signed contract, thesis draft or
+        medical report is not sent to a server. This product has no upload endpoint.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

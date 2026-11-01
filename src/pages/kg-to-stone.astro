@@ -1,0 +1,66 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="kg-to-stone">
+  <UnitsLifePairConverter client:load spec="kg-to-stone" />
+  <Fragment slot="explainer">
+    <h2>The decimal-stone trap</h2>
+    <p>
+      People get kg to stone wrong more than any other conversion, and always in the same way. A
+      converter says 75 kg is <strong>11.81 stone</strong>, and the reader hears "eleven stone eight".
+      That is wrong. The 0.81 is a fraction of fourteen pounds, so it is 11.34 pounds: 75 kg is
+      <strong>11 st 11.3 lb</strong>, nearly four pounds more than the misreading.
+    </p>
+    <p>
+      So this page shows stone and pounds as the main answer, and decimal stone as secondary.
+    </p>
+
+    <h2>How the numbers relate</h2>
+    <ul>
+      <li>1 stone = 14 pounds, exactly</li>
+      <li>1 stone = 6.35029318 kg (14 &times; 0.45359237)</li>
+      <li>1 kg = 0.157473 stone</li>
+    </ul>
+    <p>
+      So kilograms to stone is a division by 6.35029318. The whole part is the stone, and the remainder
+      multiplied by fourteen is the pounds.
+    </p>
+
+    <h2>Common body weights</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Kilograms</th><th scope="col">Stone and pounds</th><th scope="col">Pounds</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>50</td><td>7 st 12.2 lb</td><td>110.2</td></tr>
+        <tr><td>55</td><td>8 st 9.3 lb</td><td>121.3</td></tr>
+        <tr><td>60</td><td>9 st 6.3 lb</td><td>132.3</td></tr>
+        <tr><td>65</td><td>10 st 3.3 lb</td><td>143.3</td></tr>
+        <tr><td>70</td><td>11 st 0.3 lb</td><td>154.3</td></tr>
+        <tr><td>75</td><td>11 st 11.3 lb</td><td>165.3</td></tr>
+        <tr><td>80</td><td>12 st 8.4 lb</td><td>176.4</td></tr>
+        <tr><td>90</td><td>14 st 2.4 lb</td><td>198.4</td></tr>
+        <tr><td>100</td><td>15 st 10.5 lb</td><td>220.5</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Why Britain still uses stone</h2>
+    <p>
+      The UK went metric for trade in the 1970s and 1980s, but not for body weight. Scales, gyms and
+      conversation still use stone and pounds, but GP records, prescriptions and official forms use
+      kilograms. So most British adults know their weight in a unit their doctor does not use. Ireland
+      is the same. In all other countries, including the United States, the stone went out of general
+      use over a century ago.
+    </p>
+
+    <h2>Historic stones were not all fourteen pounds</h2>
+    <p>
+      Before standardisation the stone varied by trade: eight pounds for meat, fourteen for wool,
+      sixteen for cheese, twenty-four for some produce. The 14 lb stone survived because it was the
+      wool stone, and wool was the most important trade. It is the only one still in use, and this
+      page uses it.
+    </p>
+  </Fragment>
+</ToolLayout>

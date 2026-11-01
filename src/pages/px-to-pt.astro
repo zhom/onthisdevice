@@ -1,0 +1,86 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="px-to-pt">
+  <DevFormatCssUnits client:load from="px" to="pt" />
+  <Fragment slot="explainer">
+    <h2>The exact relationship</h2>
+    <p>
+      CSS fixes two absolute equivalences, and everything else follows from them:
+      <strong>1 inch = 96 px</strong> and <strong>1 inch = 72 pt</strong>.
+    </p>
+    <pre><code>1pt = 96/72 px = 1.3333px
+1px = 72/96 pt = 0.75pt
+
+12pt = 16px    (the browser default body size)
+ 9pt = 12px
+10.5pt = 14px
+18pt = 24px</code></pre>
+    <p>
+      The 12pt/16px correspondence is not a coincidence. Browsers chose 16px as the default body size
+      precisely because 12pt was the conventional size of body text in print.
+    </p>
+
+    <h2>Both units are absolute, and neither is physical</h2>
+    <p>
+      The point comes from typography, where it is genuinely physical: 1/72 of an inch on paper. The CSS
+      pixel is a reference pixel: a unit of visual angle chosen so content appears the same size at a
+      normal viewing distance regardless of display density. Because CSS pins them together at 96/72, the
+      conversion is exact and independent of any device.
+    </p>
+    <p>
+      What that means in practice: 12pt in CSS is 16px on every screen. 12pt in Word on paper is 12/72
+      of an inch. They are the same nominal size and they are measured against different things, which is
+      why a heading that looks right on screen can look small when printed.
+    </p>
+
+    <h2>Conversion table</h2>
+    <table>
+      <thead><tr><th>pt</th><th>px</th><th>Print convention</th></tr></thead>
+      <tbody>
+        <tr><td>6</td><td>8</td><td>Legal small print</td></tr>
+        <tr><td>8</td><td>10.67</td><td>Footnotes, captions</td></tr>
+        <tr><td>9</td><td>12</td><td>Dense body text, tables</td></tr>
+        <tr><td>10</td><td>13.33</td><td>Newspaper body</td></tr>
+        <tr><td>11</td><td>14.67</td><td>Word&rsquo;s Calibri default</td></tr>
+        <tr><td>12</td><td>16</td><td>Word&rsquo;s Times default; standard manuscript body</td></tr>
+        <tr><td>14</td><td>18.67</td><td>Large print threshold</td></tr>
+        <tr><td>18</td><td>24</td><td>Sub-heading</td></tr>
+        <tr><td>24</td><td>32</td><td>Heading</td></tr>
+        <tr><td>36</td><td>48</td><td>Title</td></tr>
+      </tbody>
+    </table>
+
+    <h2>When to use pt in CSS</h2>
+    <p>
+      Only inside a print stylesheet, and even then only for type. Everywhere else it buys nothing over
+      px and confuses the scale.
+    </p>
+    <pre><code>@media print &#123;
+  body &#123; font-size: 11pt; line-height: 1.4; &#125;
+  h1   &#123; font-size: 20pt; &#125;
+  h2   &#123; font-size: 15pt; &#125;
+  a[href]::after &#123; content: " (" attr(href) ")"; font-size: 9pt; &#125;
+&#125;
+
+@page &#123; margin: 20mm; &#125;</code></pre>
+
+    <h2>Why the printed result may not match</h2>
+    <ul>
+      <li>Shrink to fit. Most browsers scale the page down to fit the paper width unless you turn it off in the print dialog. A 12pt heading can arrive at 11pt.</li>
+      <li>Default margins. Set them explicitly with the <code>@page</code> rule rather than relying on the browser&rsquo;s.</li>
+      <li>Font substitution. A web font that fails to load in the print context is replaced by a fallback with different metrics.</li>
+      <li>Printer DPI. It does not change size. 600dpi and 1200dpi give the same physical dimensions, with different sharpness.</li>
+    </ul>
+
+    <h2>Points are not pica, and DTP points are not PostScript points</h2>
+    <p>
+      One pica is 12 points, or 16px in CSS terms. Historically, several slightly different point sizes
+      existed (the American printer&rsquo;s point was 1/72.27 inch), but all modern systems, CSS
+      included, uses the PostScript point of exactly 1/72 inch. If you are working from a very old
+      typographic specification, that 0.4% difference is the reason numbers do not quite line up.
+    </p>
+  </Fragment>
+</ToolLayout>

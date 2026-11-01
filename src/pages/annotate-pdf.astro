@@ -1,0 +1,129 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="annotate-pdf">
+  <PdfEditOverlayEditor client:load mode="annotate" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Marking up a document without a review server</h2>
+      <p>
+        Commenting on a PDF usually needs a review platform with accounts for everyone and a shared
+        workspace, or it is unreliable: a comment made in one reader may not appear in another and
+        often does not print. Both problems have one cause. PDF comments are annotations, objects that
+        sit on top of the page and not in it, and each reader treats them differently.
+      </p>
+      <p>
+        This tool does not use annotations. Your highlighter strokes, pen marks, boxes and notes are
+        drawn into the page content. There is no comment pane to enable, no author identity attached,
+        and nothing that can be toggled off or that fails to print. The marked-up PDF behaves like a
+        marked-up sheet of paper.
+      </p>
+    </section>
+
+    <section>
+      <h2>A workflow for reviewing a draft</h2>
+      <ol>
+        <li>
+          Read first, mark second. Go through once and highlight the passages you will comment on,
+          then go back and write.
+        </li>
+        <li>
+          Use colour as a code: yellow for "look at this", red for "this is wrong", green for "agreed,
+          no action". Explain the code in a note on the first page, because the file does not record
+          it.
+        </li>
+        <li>
+          Put the note in the margin, not over the text. Click in the white space and type. If the
+          connection is not clear, drag a line from the note to the passage.
+        </li>
+        <li>
+          Box figures and tables; do not highlight them. A highlight makes a chart darker, and an
+          outline box next to it prints clearly.
+        </li>
+        <li>
+          Number your points. Write "1", "2", "3" in the margin and put the detail in a covering email
+          to keep a dense page legible.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Drawn marks versus PDF annotations</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[620px]">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Drawn into the page (this tool)</th>
+              <th scope="col">PDF annotation objects</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Shows in every reader</td>
+              <td>Always</td>
+              <td>Usually, but appearance varies</td>
+            </tr>
+            <tr>
+              <td>Prints</td>
+              <td>Always</td>
+              <td>Depends on the reader's print settings</td>
+            </tr>
+            <tr>
+              <td>Survives conversion to image or upload to a portal</td>
+              <td>Yes</td>
+              <td>Often lost</td>
+            </tr>
+            <tr>
+              <td>Recipient can delete individual marks</td>
+              <td>No</td>
+              <td>Yes, one click each</td>
+            </tr>
+            <tr>
+              <td>Threaded replies, author names, timestamps</td>
+              <td>No</td>
+              <td>Yes</td>
+            </tr>
+            <tr>
+              <td>Requires an account or a server</td>
+              <td>No</td>
+              <td>Only for shared review</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        If you received a PDF with annotations from another reader and want to make them permanent,
+        <a href="/flatten-pdf">Flatten PDF</a> draws each one into the page from its stored appearance.
+      </p>
+    </section>
+
+    <section>
+      <h2>Drawing well with a stylus</h2>
+      <p>
+        The freehand pen uses pointer events, so an Apple Pencil, an S Pen, a Wacom tablet and a Surface
+        Pen all work. For a steady result, zoom in before you draw and set the stroke a little thicker
+        than you think: 2 to 3 points looks like a firm pen mark, and 1 point looks like a scratch when
+        the page is scaled down for print.
+      </p>
+      <p>
+        Strokes are simplified on release: points closer than 0.8 points to each other are removed.
+        This keeps a page of dense annotation from making the file large, with no visible change to the
+        line.
+      </p>
+    </section>
+
+    <section>
+      <h2>Privacy when the document is confidential</h2>
+      <p>
+        Contracts in negotiation, embargoed manuscripts, patient records and internal audits often need
+        annotation and should not go to a web server. Nothing here is transmitted: the file is parsed,
+        marked up and written in your tab. The tool adds no author name, device identifier or timestamp
+        to the file unless you type one.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

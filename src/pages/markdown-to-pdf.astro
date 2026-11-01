@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MarkdownToPdf from '@/components/tools/pdf-convert/MarkdownToPdf.tsx'
+---
+
+<ToolLayout slug="markdown-to-pdf">
+  <MarkdownToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert Markdown to PDF</h2>
+    <ol>
+      <li>Write or paste Markdown in the editor, or drop a <code>.md</code> file to load it. An example document is there to start from.</li>
+      <li>Switch to the <strong>Preview</strong> tab to see the exact block structure the PDF will have: headings, lists, quotes, code and tables.</li>
+      <li>Pick the page size, typeface, body text size and margin. Each heading level scales from the body size, so one slider controls the whole hierarchy.</li>
+      <li>Press <strong>Create PDF</strong> and download.</li>
+    </ol>
+
+    <h2>Supported Markdown</h2>
+    <p>
+      To convert Markdown to PDF, <code>marked</code> parses the text in
+      GitHub-flavoured mode, and the tool typesets the token tree directly. The HTML
+      renderer is not used, because the output is a PDF, not a web page.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Syntax</th>
+            <th>Rendered as</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code># … ######</code></td><td>Six heading levels, bold, scaled from 1.95× down to 1.0× the body size</td></tr>
+          <tr><td>Paragraphs</td><td>Justified to the column with real font metrics</td></tr>
+          <tr><td><code>**bold**</code>, <code>*italic*</code>, <code>***both***</code></td><td>Bold, italic and bold-italic runs inside a wrapped line</td></tr>
+          <tr><td><code>`inline code`</code></td><td>Courier</td></tr>
+          <tr><td><code>- item</code> / <code>1. item</code></td><td>Bullet and numbered lists with hanging indents. Nesting changes the marker</td></tr>
+          <tr><td><code>- [x] task</code></td><td>Task list with a <code>[x]</code> or <code>[ ]</code> prefix</td></tr>
+          <tr><td><code>&gt; quote</code></td><td>Indented block with a vertical rule, set in a muted grey</td></tr>
+          <tr><td>Fenced and indented code</td><td>Monospaced panel with a hairline border, wrapped and split across pages</td></tr>
+          <tr><td><code>---</code></td><td>Horizontal rule</td></tr>
+          <tr><td>GFM tables</td><td>Proportional columns, bold header, hairline row separators</td></tr>
+          <tr><td><code>[text](url)</code></td><td>The link text, optionally followed by the target in parentheses</td></tr>
+          <tr><td><code>~~strikethrough~~</code></td><td>The text, without the strike (standard PDF fonts have no strike glyph)</td></tr>
+          <tr><td><code>![alt](image.png)</code></td><td>Skipped, and counted so you know</td></tr>
+          <tr><td>Raw HTML</td><td>Reduced to its text content</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why images are not included</h2>
+    <p>
+      The converter runs in your browser with no network access. A Markdown image
+      reference is almost always a URL or a relative path to a file the page cannot
+      see, and to fetch it the page would have to send a request. So the tool skips
+      images and shows the count before you export.
+    </p>
+
+    <h2>Why print Markdown at all?</h2>
+    <ul>
+      <li>READMEs and changelogs for a release pack, an audit or an appendix.</li>
+      <li>Meeting notes and agendas for people who do not want a repository link.</li>
+      <li>Technical documentation for a client, as one self-contained file.</li>
+      <li>Runbooks and checklists printed for a maintenance window when the network may be down.</li>
+      <li>Course material and cheat sheets written in Markdown and shared as PDF.</li>
+    </ul>
+
+    <h2>Code blocks and pagination</h2>
+    <p>
+      Code is the hardest part of printing Markdown, because it must not reflow and
+      must not be cut in half. Here, each block wraps to the column width in Courier
+      on a tinted panel. If a block is longer than the space left on the page, it
+      splits at a line boundary and the panel continues on the next page, so no line
+      is lost. There is no syntax highlighting. Colour in a printed listing usually
+      makes it harder to read, and it would need a highlighting engine and a colour
+      palette that works in print and on screen.
+    </p>
+
+    <h2>Character coverage</h2>
+    <p>
+      The standard PDF typefaces cover Western European alphabets and common
+      punctuation. Text outside that range (Cyrillic, Greek, CJK, emoji) needs an
+      embedded font. The converter transliterates what it can and shows the number
+      of characters it replaced, so you know if the export is complete. If your
+      document has many such characters, print it from a Markdown editor that can
+      embed a full Unicode font.
+    </p>
+    <p>
+      Related: <a href="/text-to-pdf">Text to PDF</a> for plain text,
+      <a href="/word-to-pdf">Word to PDF</a> for <code>.docx</code>, and
+      <a href="/pdf-to-text">PDF to Text</a> for the reverse direction.
+    </p>
+  </Fragment>
+</ToolLayout>

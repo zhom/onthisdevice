@@ -1,0 +1,84 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GifAudioSplitGif from '@/components/tools/media/GifAudioSplitGif.tsx'
+---
+
+<ToolLayout slug="split-gif">
+  <GifAudioSplitGif client:load />
+  <Fragment slot="explainer">
+    <h2>How to split a GIF into frames</h2>
+    <ol>
+      <li>Drop the GIF in. Its dimensions, frame count and total length appear at once, read from the file header without decoding.</li>
+      <li>Choose PNG or JPEG, and whether you want every frame or a sample.</li>
+      <li>Press extract. Each frame appears in the contact sheet with its own delay and running timestamp.</li>
+      <li>Save one frame with the button under its thumbnail, or download the whole set as a ZIP.</li>
+    </ol>
+
+    <h2>Where the frame delays come from</h2>
+    <p>
+      A GIF stores timing per frame, not as a frame rate: before each image there is a Graphic Control
+      Extension block with a delay in hundredths of a second. This page reads those blocks directly from the
+      file bytes, so the timings shown are exactly what the file specifies. A tool that only asks the decoder
+      gets an average from a nominal frame rate.
+    </p>
+    <p>
+      This matters often. Hand-made GIFs often hold a title frame for two seconds and then run the rest at
+      40 ms, and screen recordings from capture tools often have irregular timing where nothing moved. A
+      uniform "10 fps" readout hides this; the per-frame table shows it.
+    </p>
+
+    <h2>What is in the ZIP</h2>
+    <ul>
+      <li>Each extracted frame, numbered in playback order with zero-padded names so they sort correctly in any file manager.</li>
+      <li><code>frame-delays.csv</code>, with one row per frame: its number, its frame number in the source, its delay in milliseconds, its running timestamp and its byte size.</li>
+    </ul>
+    <p>
+      With the CSV you can rebuild the animation. Edit or delete some frames, then rebuild with the
+      <a href="/images-to-gif">GIF maker</a> and enter the delays from the CSV. The result plays at exactly
+      the original speed.
+    </p>
+
+    <h2>PNG or JPEG?</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>PNG</th><th>JPEG</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Quality</td><td>Lossless: a pixel-exact copy of the decoded frame</td><td>Lossy, but at quality 2 the loss is very hard to see</td></tr>
+          <tr><td>Transparency</td><td>Kept as a real alpha channel</td><td>Not supported: transparent pixels become black</td></tr>
+          <tr><td>Size</td><td>Small for flat colour, large for photographic content</td><td>Smaller for photographic content</td></tr>
+          <tr><td>Use it for</td><td>Almost everything: screenshots, line art, logos, anything you will edit</td><td>Hundreds of photographic frames you only need to look through</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      GIF transparency is binary: a pixel is fully opaque or fully invisible. So a PNG exported here has a
+      hard-edged alpha channel. This comes from the source format, not from the extraction.
+    </p>
+
+    <h2>Sampling long animations</h2>
+    <p>
+      Extraction stops at 600 frames so the browser can hold all decoded images and stay responsive. For
+      longer animations, use the "every 2nd frame" or "every 5th frame" option. Sampling happens during
+      decoding, so it covers the whole animation and does not stop at frame 600. For a long screen recording
+      where consecutive frames barely differ, a sampled contact sheet is often more useful than the full set.
+    </p>
+
+    <h2>Uses for split GIF frames</h2>
+    <ul>
+      <li>Finding the best still: extract a reaction GIF and pick the one frame that works as a static image.</li>
+      <li>Fixing an animation: extract the frames, delete or retouch the bad ones, and rebuild.</li>
+      <li>Sprite sheets: numbered PNGs are what a game engine’s animation importer expects.</li>
+      <li>Frame-by-frame study: step through a captured bug or a demonstration one frame at a time, with the real timestamps.</li>
+      <li>Rebuilding at a different speed: extract, then reassemble with a uniform delay to even out irregular timing.</li>
+    </ul>
+
+    <h2>Runs on your device</h2>
+    <p>
+      FFmpeg, compiled to WebAssembly, decodes the GIF in this tab, and JSZip builds the ZIP here too. There
+      is no file size limit other than your device’s memory, and no watermark. After the engine is cached
+      once, the page works with the network off.
+    </p>
+  </Fragment>
+</ToolLayout>

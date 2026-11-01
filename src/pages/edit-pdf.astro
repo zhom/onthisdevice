@@ -1,0 +1,136 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditOverlayEditor from '@/components/tools/pdf/PdfEditOverlayEditor.tsx'
+---
+
+<ToolLayout slug="edit-pdf">
+  <PdfEditOverlayEditor client:load mode="full" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to edit a PDF</h2>
+      <ol>
+        <li>Drop the PDF onto the box above. This browser tab opens it, with no upload and no queue.</li>
+        <li>Pick a tool: <strong>Text</strong>, <strong>Image</strong>, <strong>Draw</strong>, <strong>Highlight</strong>, <strong>White-out</strong>, <strong>Box</strong> or <strong>Line</strong>.</li>
+        <li>Click or drag on the page. Text objects appear where you click; for the other tools, drag out a shape.</li>
+        <li>Switch to <strong>Select</strong> to move objects, drag the corner handle to resize, and use the arrow keys for small moves.</li>
+        <li>Press <strong>Apply</strong>, then download. Your original file on disk does not change.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>What "editing a PDF" actually means</h2>
+      <p>
+        A PDF does not contain paragraphs. It contains a content stream that says "put this glyph at
+        these coordinates in this font at this size", thousands of times per page, often out of reading
+        order, and often with one word split across several instructions because of kerning. There is no
+        sentence to click into and no line to reflow.
+      </p>
+      <p>
+        Editors that offer "edit existing text" guess the paragraph structure, let you type into the
+        guess, and then lay out the region again. When the guess is right, this works well. When it is
+        wrong (different fonts on one line, a two-column layout, a table, a form made of underscores), it
+        moves everything on the page, and you cannot undo the damage after you save.
+      </p>
+      <p>
+        This tool never corrupts a document, because it adds a layer on top. Cover the error with a
+        white-out box and type the replacement. The result looks and prints correctly, and the rest of the
+        page does not change by a single byte. A print shop uses the same method with a correction slip.
+      </p>
+    </section>
+
+    <section>
+      <h2>The seven tools</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[640px]">
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">How to use it</th>
+              <th scope="col">What it writes into the PDF</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Text</td>
+              <td>Click, then type in the panel below</td>
+              <td>Real text in a built-in font, selectable and searchable afterwards</td>
+            </tr>
+            <tr>
+              <td>Image</td>
+              <td>Choose a file, then drag and resize</td>
+              <td>The original PNG or JPEG bytes, embedded once</td>
+            </tr>
+            <tr>
+              <td>Draw</td>
+              <td>Freehand with a mouse, finger or stylus</td>
+              <td>A stroked polyline with round caps</td>
+            </tr>
+            <tr>
+              <td>Highlight</td>
+              <td>Drag across a line of text</td>
+              <td>A rectangle in multiply blend mode, so words stay readable</td>
+            </tr>
+            <tr>
+              <td>White-out</td>
+              <td>Drag over the mistake</td>
+              <td>An opaque filled rectangle</td>
+            </tr>
+            <tr>
+              <td>Box</td>
+              <td>Drag; toggle fill in the panel</td>
+              <td>A stroked or filled rectangle at your chosen width</td>
+            </tr>
+            <tr>
+              <td>Line</td>
+              <td>Drag from one point to another</td>
+              <td>A single stroked segment</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Rotated and cropped pages</h2>
+      <p>
+        Scanned documents often have a <code>/Rotate 90</code> or <code>/Rotate 270</code> entry, and many
+        press-ready PDFs have a crop box smaller than their media box. Both break simple editors: your
+        text is sideways, or ninety points from where you put it.
+      </p>
+      <p>
+        This tool stores each object in the displayed coordinate space of the page and converts it at
+        export with the rotation and crop box of that page. Each object is exactly where the preview
+        showed it, and text on a rotated page is upright.
+      </p>
+    </section>
+
+    <section>
+      <h2>Keyboard and accessibility</h2>
+      <p>
+        Each object you add can take focus. Press Tab to reach it, then use the arrow keys to move it one
+        point at a time, Shift and an arrow key for ten points, and Delete or Backspace to remove it. The
+        toolbar buttons are ordinary buttons, the colour swatches announce their state, and the progress
+        region is announced politely while a long document is written.
+      </p>
+      <p>
+        One point is 1/72 inch, the smallest useful adjustment in a PDF. On a touchscreen, zoom in first
+        (the plus button goes to 300%); the same drag gestures work with a finger or stylus.
+      </p>
+    </section>
+
+    <section>
+      <h2>Why nothing is uploaded</h2>
+      <p>
+        Server-based PDF editors upload your document, process it and send back a download link. For this
+        reason they limit file sizes and daily tasks, and their privacy policies say how long your file
+        stays on their disk.
+      </p>
+      <p>
+        This page has no server. WebAssembly in your tab parses the PDF, and the edited copy is built in
+        the memory of your device. To verify, open the network tab of your browser before you start, or
+        turn off Wi-Fi: the tool continues to work.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

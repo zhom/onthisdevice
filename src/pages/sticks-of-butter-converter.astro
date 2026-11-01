@@ -1,0 +1,73 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeKitchenConverter from '@/components/tools/units/UnitsLifeKitchenConverter.tsx'
+---
+
+<ToolLayout slug="sticks-of-butter-converter">
+  <UnitsLifeKitchenConverter client:load mode="sticks-of-butter" />
+  <Fragment slot="explainer">
+    <h2>One stick of butter in other units</h2>
+    <p>
+      A US stick of butter is a quarter of a pound. The other figures follow from that, and each one is
+      exact:
+    </p>
+    <ul>
+      <li>113.4 g (a quarter of 453.59 g)</li>
+      <li>4 ounces</li>
+      <li>1/2 US cup</li>
+      <li>8 tablespoons, which are printed on the wrapper</li>
+      <li>24 teaspoons</li>
+    </ul>
+    <p>
+      A standard American pack holds four sticks: one pound, or 453.6 g.
+    </p>
+
+    <h2>The wrapper is the measuring tool</h2>
+    <p>
+      The paper is marked in tablespoons, so you cut through a mark to measure without a cup or a scale. Two
+      tablespoons of butter is a quarter of a stick; six tablespoons is three quarters.
+    </p>
+
+    <h2>Outside the United States</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Where</th><th scope="col">Typical pack</th><th scope="col">In sticks</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>United States</td><td>4 &times; 113.4 g sticks (1 lb)</td><td>4</td></tr>
+        <tr><td>United Kingdom</td><td>250 g block</td><td>2.20</td></tr>
+        <tr><td>Ireland, much of Europe</td><td>250 g or 500 g block</td><td>2.20 / 4.41</td></tr>
+        <tr><td>Germany</td><td>250 g block</td><td>2.20</td></tr>
+        <tr><td>Australia, New Zealand</td><td>250 g or 500 g block</td><td>2.20 / 4.41</td></tr>
+        <tr><td>Canada</td><td>454 g block, sometimes sticks</td><td>4.00</td></tr>
+      </tbody>
+    </table>
+    <p>
+      With a block, weigh it, or mark it into portions with a ruler before you cut. A 250 g block cut into ten
+      equal slices gives 25 g each. That is close to two tablespoons (28.4 g), and exact enough if you weigh
+      the first slice and adjust.
+    </p>
+
+    <h2>Elgin and Western sticks</h2>
+    <p>
+      American butter comes in two shapes. East of the Rocky Mountains, "Elgin" sticks are long and
+      slim; to the west, "Western" or "stubby" sticks are short and wide. Both weigh exactly 4 oz, so each
+      conversion here applies to both. A butter dish made for one shape does not hold the other.
+    </p>
+
+    <h2>Softened, melted and clarified</h2>
+    <p>
+      Weight does not change with temperature; volume does. A melted stick of butter takes slightly more space
+      than the same stick cold. Whipped butter can be 30% air by volume, so recipes that need whipped butter
+      always say so. Clarified butter and ghee lose about 20% of their mass when the water and milk solids
+      are removed, so 113 g of butter gives about 90 g of ghee.
+    </p>
+
+    <h2>Substituting oil</h2>
+    <p>
+      Oil does not replace butter volume for volume. Butter is about 80% fat and 16% water, so a stick gives
+      about 91 g of fat and 18 g of liquid. Most bakers use about three quarters as much oil by volume and
+      add a little liquid.
+    </p>
+  </Fragment>
+</ToolLayout>

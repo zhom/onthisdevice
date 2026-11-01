@@ -1,0 +1,87 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeBinary from '@/components/tools/text/DevEncodeBinary.tsx'
+---
+
+<ToolLayout slug="text-to-binary">
+  <DevEncodeBinary client:load kind="text" direction="encode" />
+  <Fragment slot="explainer">
+    <h2>How text to binary conversion works</h2>
+    <p>
+      Each character has a numeric code. The code is written in base 2 (ones and zeros) and padded to a fixed
+      width, so a reader knows where one character ends and the next starts. With 8-bit groups, the letter
+      <code>A</code> (code 65) becomes <code>01000001</code>.
+    </p>
+    <pre><code>H  →  72  →  01001000
+e  → 101  →  01100101
+l  → 108  →  01101100
+l  → 108  →  01101100
+o  → 111  →  01101111</code></pre>
+
+    <h2>Reading a byte</h2>
+    <p>
+      The place values double from the right: 1, 2, 4, 8, 16, 32, 64, 128. Add the columns that hold a 1 to get
+      the character code.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>128</th><th>64</th><th>32</th><th>16</th><th>8</th><th>4</th><th>2</th><th>1</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>64 + 8 = 72 = <code>H</code></td></tr>
+          <tr><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>1</td><td>64+32+4+1 = 101 = <code>e</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>7-bit or 8-bit?</h2>
+    <p>
+      Original ASCII was a 7-bit code with 128 characters, enough for English and little else. The eighth bit
+      of a byte was a parity bit for error checking on serial lines. When memory became cheaper, the parity
+      bit was used to extend the character set, and 8 bits became the norm.
+    </p>
+    <ul>
+      <li>Choose <strong>8-bit</strong> when the binary represents bytes as a computer stores them.</li>
+      <li>Choose <strong>7-bit</strong> for classroom exercises that follow the original ASCII table.</li>
+    </ul>
+    <p>For characters below 128 the two differ only by a leading zero, but a decoder set to the wrong width gives nonsense.</p>
+
+    <h2>Unicode makes strings longer than they look</h2>
+    <p>
+      In UTF-8, only plain ASCII is one byte. Other characters take more, and the binary shows it:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Character</th><th>UTF-8 bytes</th><th>Bits</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>A</code></td><td>1</td><td>8</td></tr>
+          <tr><td><code>é</code></td><td>2</td><td>16</td></tr>
+          <tr><td><code>字</code></td><td>3</td><td>24</td></tr>
+          <tr><td><code>😀</code></td><td>4</td><td>32</td></tr>
+          <tr><td><code>👨‍👩‍👧</code></td><td>18</td><td>144</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The last row is a family emoji: three people joined by two zero-width joiners. It is one
+      &ldquo;character&rdquo; on screen and eighteen bytes on disk, so character limits and byte limits are
+      different.
+    </p>
+
+    <h2>Binary hides nothing</h2>
+    <p>
+      Binary is not encryption. It is the same information in base 2, and anyone can reverse it in a second,
+      for example with the binary-to-text tool on this site. Use it to look at data, not to protect it.
+    </p>
+
+    <h2>Translating a file</h2>
+    <p>
+      Drop a text file to convert its first 64&nbsp;KB. Binary is eight characters per byte, so a megabyte of
+      input would give eight million characters: more than a browser shows comfortably or an editor accepts
+      as a paste.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,63 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXml from '@/components/tools/dev/DevFormatXml.tsx'
+---
+
+<ToolLayout slug="xml-escape">
+  <DevFormatXml client:load mode="escape" />
+  <Fragment slot="explainer">
+    <h2>The five characters XML escape handles</h2>
+    <table>
+      <thead><tr><th>Character</th><th>Entity</th><th>Required in text?</th><th>Required in an attribute?</th></tr></thead>
+      <tbody>
+        <tr><td><code>&amp;</code></td><td><code>&amp;amp;</code></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><code>&lt;</code></td><td><code>&amp;lt;</code></td><td>Yes</td><td>Yes</td></tr>
+        <tr><td><code>&gt;</code></td><td><code>&amp;gt;</code></td><td>Only after <code>]]</code></td><td>No</td></tr>
+        <tr><td><code>"</code></td><td><code>&amp;quot;</code></td><td>No</td><td>Yes, if the attribute uses double quotes</td></tr>
+        <tr><td><code>'</code></td><td><code>&amp;apos;</code></td><td>No</td><td>Yes, if the attribute uses single quotes</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The tool escapes the greater-than sign by default, although it is seldom required, because of the
+      <code>]]&gt;</code> sequence: in text, a parser reads it as the end of a CDATA section that was never
+      opened. Escaping every <code>&gt;</code> prevents this for three extra characters, and most serialisers
+      do the same.
+    </p>
+
+    <h2>Escape at insertion, never afterwards</h2>
+    <p>
+      Escape a value when you put it into markup, and escape only that value. If you escape a whole document
+      after you assemble it, the markup you wrote is escaped twice. If you escape before you store data, the
+      escaped form goes to every other consumer of that data, such as a report, a CSV export or a search index,
+      where it appears as literal <code>&amp;amp;</code> text.
+    </p>
+    <p>
+      In practice, use your XML library&rsquo;s text-node API, not string concatenation. Use this page when you
+      write a fragment by hand, paste a value into a config file, or debug why a value came out wrong.
+    </p>
+
+    <h2>Do not escape non-ASCII</h2>
+    <p>
+      Some older tools convert every accented letter to a numeric reference, such as <code>&amp;#233;</code>
+      for é. XML documents are Unicode, normally UTF-8, so this is not necessary: it makes the file larger and
+      harder to read and diff. Declare the encoding in the XML declaration and type the characters.
+    </p>
+
+    <h2>CDATA is not a substitute</h2>
+    <p>
+      A CDATA section lets you include raw <code>&lt;</code> and <code>&amp;</code> without escaping, so people
+      use it to embed HTML or a script in XML. It has two problems. The sequence <code>]]&gt;</code> cannot
+      appear inside CDATA, and there is no escape for it, so you must split the section. And CDATA is only a
+      lexical shortcut, not a data type: to a parser the content is ordinary text, so XPath or a DOM API reads
+      the same string either way. Escaping is simpler and always works.
+    </p>
+
+    <h2>XML escaping versus HTML escaping</h2>
+    <p>
+      They overlap but you cannot swap them. Text escaped for XML is always safe in HTML, because the five XML
+      entities all exist in HTML. The reverse is not true: HTML has about two thousand named entities, and an
+      XML parser rejects each one it does not know. To move content from HTML into XML, run it through
+      <a href="/xml-unescape">unescape</a> first and escape it again here.
+    </p>
+  </Fragment>
+</ToolLayout>

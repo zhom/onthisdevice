@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import JpgToPng from '@/components/tools/image-convert/JpgToPng.tsx'
+---
+
+<ToolLayout slug="jpg-to-png">
+  <JpgToPng client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert JPG to PNG</h2>
+    <ol>
+      <li>Drop your JPG or JPEG files onto the box above. You can add any number of files. The tool converts them one at a time with a progress bar.</li>
+      <li>Leave the transparency option off, because a JPEG has no transparent pixels. Switch it on only if you want a solid colour painted again behind the image.</li>
+      <li>Save each PNG, or download all of them as a single ZIP.</li>
+    </ol>
+    <p>
+      This page has no quality slider, because PNG is lossless. The encoder writes exactly the pixels that came
+      out of the JPEG decoder.
+    </p>
+
+    <h2>JPG to PNG does not repair a JPEG</h2>
+    <p>
+      People often convert JPG to PNG to improve quality. It cannot. JPEG compression is destructive and
+      happens once, when the file is first written. The discarded detail is gone. PNG keeps what remains,
+      including each block artefact and each halo around text.
+    </p>
+    <p>
+      But PNG does not lose more quality. If you will crop, annotate and save an image several times, do that
+      work in PNG, so each save does not add another generation of loss.
+    </p>
+
+    <h2>Expect the file to get much bigger</h2>
+    <p>
+      Lossless compression must describe each pixel, and photographs have millions of slightly different colours
+      that no dictionary compressor can collapse. Rough figures for the same source image:
+    </p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Image type</th>
+            <th align="left">As JPEG (q85)</th>
+            <th align="left">As PNG</th>
+            <th align="left">Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>12 MP phone photo</td><td>~2.5 MB</td><td>~18 MB</td><td>7×</td></tr>
+          <tr><td>1920 × 1080 landscape</td><td>~380 KB</td><td>~3.2 MB</td><td>8×</td></tr>
+          <tr><td>Flat illustration, few colours</td><td>~140 KB</td><td>~90 KB</td><td>0.6×</td></tr>
+          <tr><td>Scanned text page</td><td>~250 KB</td><td>~180 KB</td><td>0.7×</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      In the last two rows, PNG is smaller. For images with large areas of identical colour, converting a JPEG
+      to PNG makes the file smaller and cleaner.
+    </p>
+
+    <h2>Good reasons to convert</h2>
+    <ul>
+      <li>A tool accepts only PNG. Many icon pipelines, game engines and print templates refuse JPEG.</li>
+      <li>You need an alpha channel. Convert first, then cut out a background and keep it transparent.</li>
+      <li>You need a lossless intermediate for editing. Convert once, make all your edits, and export to JPEG at the end.</li>
+      <li>You want to remove metadata. Re-encoding drops all EXIF, which removes GPS coordinates, the camera's serial number and the capture timestamp from a photo before you share it.</li>
+    </ul>
+    <p>
+      Photos taken in portrait orientation have an EXIF rotation flag, not rotated pixels. This converter
+      applies that flag during decoding, so your PNG is the right way up. For a smaller file that is not
+      lossless, try
+      <a href="/jpg-to-webp">JPG to WebP</a> or the universal <a href="/image-converter">image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

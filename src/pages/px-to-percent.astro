@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="px-to-percent">
+  <DevFormatCssUnits client:load from="px" to="percent" />
+  <Fragment slot="explainer">
+    <h2>Percentages are relative to different things</h2>
+    <p>
+      This is the single most important thing to know about percentages in CSS, and it is why they cause
+      more layout surprises than any other unit. The reference depends on the property.
+    </p>
+    <table>
+      <thead><tr><th>Property</th><th>Percentage is of…</th></tr></thead>
+      <tbody>
+        <tr><td><code>font-size</code></td><td>The parent&rsquo;s font size. The converter above computes this</td></tr>
+        <tr><td><code>width</code>, <code>max-width</code>, <code>left</code>, <code>right</code></td><td>The containing block&rsquo;s width</td></tr>
+        <tr><td><code>height</code>, <code>top</code>, <code>bottom</code></td><td>The containing block&rsquo;s height. Ignored if that height is <code>auto</code></td></tr>
+        <tr><td><code>padding</code> and <code>margin</code>, all four sides</td><td>The containing block&rsquo;s width, also for top and bottom</td></tr>
+        <tr><td><code>line-height</code></td><td>The element&rsquo;s own font size</td></tr>
+        <tr><td><code>transform: translate()</code></td><td>The element&rsquo;s own size</td></tr>
+        <tr><td><code>background-position</code></td><td>The positioning area minus the image size</td></tr>
+        <tr><td><code>border-width</code></td><td>Not allowed. Percentages are invalid here</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The padding row is the famous one, and it is genuinely useful: <code>padding-top: 56.25%</code> on
+      an empty box produces a 16:9 aspect ratio, because 9/16 = 0.5625 of the width. Modern CSS has
+      <code>aspect-ratio</code> for this, but the trick is still everywhere in older code.
+    </p>
+
+    <h2>Percentage font sizing</h2>
+    <pre><code>% = px ÷ parent font size × 100
+
+Parent 16px:
+  14px → 87.5%
+  18px → 112.5%
+  20px → 125%</code></pre>
+    <p>
+      A percentage font size is arithmetically identical to em: <code>87.5%</code> and
+      <code>0.875em</code> compute to exactly the same value. So it compounds through nesting in exactly
+      the same way. Four nested levels of 90% leave you at 65.6% of where you started.
+    </p>
+
+    <h2>Where percentage font sizing is still standard</h2>
+    <p>
+      On the root element, where it means something rem and em cannot:
+    </p>
+    <pre><code>html &#123; font-size: 100%; &#125;   /* respect the user's chosen size */
+html &#123; font-size: 62.5%; &#125;  /* the "1rem = 10px" trick */</code></pre>
+    <p>
+      <code>100%</code> is the honest default. It is also the reason not to write
+      <code>html &#123; font-size: 16px &#125;</code>: that pins the root to 16 regardless of what the user
+      asked for, which defeats the whole point of using rem below it.
+    </p>
+
+    <h2>Converting a width to a percentage</h2>
+    <p>
+      Set the parent field to the container&rsquo;s width in pixels rather than a font size, and read the
+      percentage. A 320px sidebar inside a 1200px container is 26.6667%.
+    </p>
+    <p>
+      Two caveats before you use that number. Percentage widths do not account for gaps, padding or
+      borders unless <code>box-sizing: border-box</code> is set, so three columns at 33.3333% with a gap
+      will wrap. In most modern layouts you do not need to compute this: CSS Grid
+      (<code>grid-template-columns: 2fr 1fr</code>) and Flexbox handle the arithmetic and the gaps for
+      you.
+    </p>
+
+    <h2>Repeating decimals</h2>
+    <p>
+      A third is 33.333…%, and where you truncate matters. Browsers work in sub-pixel precision, so
+      33.3333% is close enough that rounding is invisible; 33.33% across three columns of a 1200px
+      container leaves a 0.36px gap, which sounds like nothing and shows up as a one-pixel seam against a
+      contrasting background. Use four decimal places, or use <code>fr</code> units and let the layout
+      engine distribute the remainder exactly.
+    </p>
+  </Fragment>
+</ToolLayout>

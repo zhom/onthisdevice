@@ -1,0 +1,107 @@
+---
+import type { GetStaticPaths } from 'astro'
+import BaseLayout from '@/layouts/BaseLayout.astro'
+import Container from '@/components/site/Container.astro'
+import ToolCard from '@/components/site/ToolCard.astro'
+import Glyph from '@/components/site/Glyph.astro'
+import { fitTitle } from '@/lib/seo'
+import { hasPage } from '@/components/site/pages'
+import { CATEGORIES, categoryHref, toolsByCategory, type Category, type Tool } from '@/lib/tools'
+
+export const getStaticPaths = (() =>
+  CATEGORIES.map((category) => ({
+    params: { slug: category.slug },
+    props: { category },
+  }))) satisfies GetStaticPaths
+
+interface Props {
+  category: Category
+}
+
+const { category } = Astro.props
+const tools: Tool[] = toolsByCategory(category.id).filter(hasPage)
+const ordered = [...tools.filter((t) => t.popular), ...tools.filter((t) => !t.popular)]
+
+const siblings = CATEGORIES.filter((c) => c.id !== category.id).map((c) => ({
+  category: c,
+  count: toolsByCategory(c.id).filter(hasPage).length,
+  sameGroup: c.group === category.group,
+}))
+const rail = [...siblings.filter((s) => s.sameGroup), ...siblings.filter((s) => !s.sameGroup)].filter((s) => s.count > 0)
+
+const SITE = Astro.site ?? new URL('https://onthisdevice.com')
+const path = categoryHref(category)
+const pageUrl = new URL(path, SITE).href
+const pageTitle = fitTitle([`${category.title} | onthisdevice`, category.title])
+
+const jsonLd = [
+  {
+    '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumbs`,
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/` },
+      { '@type': 'ListItem', position: 2, name: category.title, item: pageUrl },
+    ],
+  },
+  {
+    '@type': 'CollectionPage',
+    '@id': `${pageUrl}#page`,
+    name: category.title,
+    url: pageUrl,
+    description: category.description,
+    isPartOf: { '@id': `${SITE.origin}/#website` },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: tools.length,
+      itemListElement: tools.map((tool, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: tool.title,
+        url: new URL(`/${tool.slug}`, SITE).href,
+      })),
+    },
+  },
+]
+---
+
+<BaseLayout title={pageTitle} description={category.description} canonicalPath={path} jsonLd={jsonLd} category={category.id}>
+  <section aria-labelledby="hub-title">
+    <Container class="grid grid-cols-1 items-center gap-8 pt-10 pb-6 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16 lg:pt-20 lg:pb-10">
+      <div class="min-w-0 max-w-2xl">
+        <Glyph id={category.id} class="enter size-14 text-foreground lg:hidden" />
+        <h1 id="hub-title" class="t-title enter mt-6 text-foreground lg:mt-0" style="--i:1">{category.title}</h1>
+        <p class="t-lead enter mt-5" style="--i:2">{category.description}</p>
+        <p class="enter mt-5 text-[0.9375rem] font-[600] text-foreground" style="--i:3" data-og-line={`${tools.length} tools. All run in your browser.`}>
+          <span class="num">{tools.length}</span> tools. All run in your browser.
+        </p>
+      </div>
+      <Glyph id={category.id} class="enter hidden size-52 text-foreground lg:block xl:size-60" label={`${category.title} glyph`} />
+    </Container>
+  </section>
+
+  <Container class="pt-10 sm:pt-14">
+    <h2 class="sr-only">Tools</h2>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+      {ordered.map((tool) => <ToolCard tool={tool} />)}
+    </div>
+  </Container>
+
+  <Container class="pt-20 sm:pt-28">
+    <h2 class="t-h2 text-foreground">Other categories</h2>
+    <ul class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        rail.map((item) => (
+          <li>
+            <a href={categoryHref(item.category)} class="row-link items-center py-2.5">
+              <Glyph id={item.category.id} still class="size-5 text-foreground" />
+              <span class="flex min-w-0 items-baseline gap-2">
+                <span class="truncate text-[0.9375rem] font-[620] text-foreground">{item.category.title}</span>
+                <span class="num text-[0.8125rem] text-muted-foreground">{item.count}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </Container>
+</BaseLayout>

@@ -1,0 +1,127 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureCompressToSize from '@/components/tools/pdf/PdfSecureCompressToSize.tsx'
+---
+
+<ToolLayout slug="compress-pdf-to-1mb">
+  <PdfSecureCompressToSize client:load targetBytes={1048576} />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>A megabyte is a lot of budget</h2>
+      <p>
+        For most documents, compression at this target has almost no cost. A ten-page scan gets about
+        100 KB a page, which is enough for 150 DPI at a JPEG quality in the seventies. At that point the
+        difference from the original is invisible on screen and hard to see in print.
+      </p>
+      <p>
+        At 1 MB, the useful question is usually why the file was 47 MB at the start.
+      </p>
+    </section>
+
+    <section>
+      <h2>Where the original size came from</h2>
+      <p>
+        PDFs are almost never large because of text. A forty-page report exported from a word processor
+        is often under 300 KB in total, because each page is a few kilobytes of drawing operators plus a
+        shared font. The size comes from images, mostly these:
+      </p>
+      <ul>
+        <li>
+          Phone-camera scans: a modern sensor makes a 12-megapixel JPEG per page. At three or four
+          megabytes each, twelve pages are 40 MB before anything else.
+        </li>
+        <li>
+          Flatbed scans at 600 DPI: four times the pixels of 300 DPI, with no benefit unless you
+          digitise artwork.
+        </li>
+        <li>
+          Losslessly compressed images: some scanners write PNG or Flate-compressed bitmaps, which are
+          much larger than a JPEG of the same visual quality.
+        </li>
+        <li>
+          Repeated embedded fonts: merging twenty documents can embed twenty copies of the same font
+          subset. This is small in comparison, but it adds up.
+        </li>
+      </ul>
+      <p>
+        Rendering again at 150 DPI removes about 90 per cent of the pixels of a 600 DPI scan before the
+        JPEG encoder starts. For this reason the reduction is often 95 per cent or more with no visible
+        loss.
+      </p>
+    </section>
+
+    <section>
+      <h2>1 MB targets you will actually meet</h2>
+      <ul>
+        <li>Web forms built on a CMS, where 1 MB is a common default upload limit.</li>
+        <li>Learning-management systems that collect coursework.</li>
+        <li>Court e-filing portals, several of which specify 1 MB per exhibit.</li>
+        <li>Older intranet document libraries and SharePoint list attachments.</li>
+        <li>Files sent over a slow or metered connection.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Checking the result properly</h2>
+      <p>
+        On a document of this size, look at the per-page table below the result. Check for:
+      </p>
+      <ol>
+        <li>
+          A page with a scale below 100%. That page did not fit even at minimum quality, so its
+          resolution was reduced. At a 1 MB target, this usually means the page is a full-bleed
+          photograph.
+        </li>
+        <li>
+          A wide spread of quality values. This shows the budget roll-over: a title page at 94 and a
+          dense chart page at 55 is the correct behaviour.
+        </li>
+        <li>
+          All pages at 94. This is the maximum. Your document had headroom, so a smaller target was
+          possible, or no compression was necessary.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Very large source files</h2>
+      <p>
+        There is no upload, so the input size limit is the memory of your device, not a plan tier. In
+        practice:
+      </p>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Source</th>
+              <th scope="col">Expect</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Up to ~100 MB, desktop browser</td>
+              <td>Comfortable</td>
+            </tr>
+            <tr>
+              <td>100–500 MB, desktop browser</td>
+              <td>Works; allow a minute or two and close other tabs</td>
+            </tr>
+            <tr>
+              <td>Over 500 MB</td>
+              <td>Desktop Chrome or Edge only, and slow</td>
+            </tr>
+            <tr>
+              <td>Over ~150 MB on a phone</td>
+              <td>Likely to use up the memory of the tab; split the document first</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        The tool holds only one page in memory at a time, so the page count matters much less than the
+        size of the image data on each page.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

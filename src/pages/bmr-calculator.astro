@@ -1,0 +1,142 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BmrCalculator from '@/components/tools/health/BmrCalculator.tsx'
+---
+
+<ToolLayout slug="bmr-calculator">
+  <BmrCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to use this BMR calculator</h2>
+    <ol>
+      <li>Choose metric or imperial. All calculators on the site share this toggle.</li>
+      <li>Enter sex, height, weight and age. All equations on this page need all four.</li>
+      <li>
+        If you know your body fat percentage, turn on the toggle. This adds Katch-McArdle, which uses
+        lean mass and is usually the most accurate of the three for lean or muscular people.
+      </li>
+      <li>
+        Compare the three results, then look at the activity table below to see what each one becomes
+        over a real day.
+      </li>
+    </ol>
+
+    <h2>What BMR actually measures</h2>
+    <p>
+      Basal metabolic rate is the energy your body uses to stay alive with no activity: breathing,
+      pumping blood, running the brain and kidneys, making proteins and keeping body temperature
+      steady. A true BMR measurement is done lying still in a thermoneutral room after an overnight
+      fast, awake but fully at rest, with direct measurement of gas exchange.
+    </p>
+    <p>
+      For most adults, BMR is 60 to 70 percent of total daily energy expenditure. The brain alone uses
+      about 20 percent of it. For this reason, a large calorie cut does not give a proportional weight
+      loss: you cannot consciously change most of your energy use.
+    </p>
+    <p>
+      Resting metabolic rate (RMR) is the same measurement under less strict conditions and is usually
+      5 to 10 percent higher. Predictive equations give values between the two, and in everyday use the
+      terms are interchangeable.
+    </p>
+
+    <h2>The three equations</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Equation</th>
+            <th scope="col">Men</th>
+            <th scope="col">Women</th>
+            <th scope="col">Inputs</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Mifflin-St Jeor (1990)</td>
+            <td>10W + 6.25H − 5A + 5</td>
+            <td>10W + 6.25H − 5A − 161</td>
+            <td>weight kg, height cm, age</td>
+          </tr>
+          <tr>
+            <td>Harris-Benedict (revised 1984)</td>
+            <td>88.362 + 13.397W + 4.799H − 5.677A</td>
+            <td>447.593 + 9.247W + 3.098H − 4.330A</td>
+            <td>weight kg, height cm, age</td>
+          </tr>
+          <tr>
+            <td>Katch-McArdle (1996)</td>
+            <td colspan="2">370 + 21.6 × lean body mass in kg</td>
+            <td>weight kg, body fat %</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Mifflin-St Jeor</h3>
+    <p>
+      Published in 1990 and validated on 498 healthy adults, it is the equation that the Academy of
+      Nutrition and Dietetics recommends for both non-obese and obese adults. In validation studies, it
+      predicts measured RMR within 10 percent for about 82 percent of people, the best record of any
+      general equation. If you look at only one number on this page, use this one.
+    </p>
+
+    <h3>Harris-Benedict</h3>
+    <p>
+      The original 1919 study by James Harris and Francis Benedict is the ancestor of all equations
+      here. Its sample was leaner and more active than a modern population, so the original
+      coefficients now over-predict by about 5 percent. Roza and Shizgal re-fitted them in 1984, and
+      this calculator uses those revised numbers. It still reads a little high for sedentary adults.
+    </p>
+
+    <h3>Katch-McArdle</h3>
+    <p>
+      This equation ignores total weight and uses only lean body mass, because fat tissue uses little
+      energy and muscle and organs use much more. It is the best choice at both extremes: equations
+      based only on weight do not work well for a bodybuilder at 8 percent body fat or for a person at
+      45 percent. Its result is only as good as your body fat estimate.
+    </p>
+
+    <h2>How accurate is any of this?</h2>
+    <p>
+      Two people of the same sex, age, height and weight can have measured BMRs 200 to 300 kcal apart.
+      Thyroid function, organ size, genetics, past dieting and brown fat activity all change the
+      number, and no equation can see them.
+    </p>
+    <p>
+      Use the output as a starting estimate. Set your intake from it, track your weight for two to three
+      weeks, and adjust. This feedback gives a personal number within about 50 kcal, which is better
+      than any laboratory equation used alone.
+    </p>
+
+    <h2>Things that genuinely change your BMR</h2>
+    <ul>
+      <li>
+        Muscle mass: skeletal muscle burns about 13 kcal per kg per day at rest. 5 kg more muscle adds
+        about 65 kcal a day. This is real, but much less than fitness marketing suggests.
+      </li>
+      <li>
+        Body size in general: bigger bodies of any composition use more energy. For this reason, BMR
+        falls as you lose weight, and diets get harder over time.
+      </li>
+      <li>
+        Age: BMR falls about 1 to 2 percent per decade after about age 20, mostly from lost lean mass and
+        not from a slower metabolism.
+      </li>
+      <li>
+        Prolonged dieting: long, large deficits can lower BMR by 10 to 15 percent more than weight loss
+        alone predicts (adaptive thermogenesis). Diet breaks at maintenance help.
+      </li>
+      <li>
+        Thyroid function and some medications: both can change resting metabolism substantially. Talk
+        to a doctor about an unexpectedly low number.
+      </li>
+    </ul>
+
+    <h2>BMR is not a calorie target</h2>
+    <p>
+      Eating at your BMR means eating as if you were in a coma. Even a fully sedentary day costs about
+      20 percent more, from the thermic effect of food and normal movement around a house. For a target
+      you can eat to, multiply BMR by an activity factor. The TDEE calculator does this, and its result
+      goes directly into the calorie and macro calculators.
+    </p>
+  </Fragment>
+</ToolLayout>

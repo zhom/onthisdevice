@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DecimalToFractionConverter from '@/components/tools/math/DecimalToFractionConverter.tsx'
+---
+
+<ToolLayout slug="decimal-to-fraction-converter">
+  <DecimalToFractionConverter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a decimal to a fraction</h2>
+    <ol>
+      <li>Type the decimal. For a repeating decimal, put the repeating block in brackets: <code>0.(3)</code> is 0.333…, and <code>1.8(3)</code> is 1.8333….</li>
+      <li>Read the exact fraction, the mixed number and the unreduced form.</li>
+      <li>Check the algebra in the step list. For repeating decimals, it shows the subtraction that cancels the infinite tail.</li>
+    </ol>
+    <p>
+      The converter also reads <code>0.333...</code> with a trailing ellipsis, and text with combining
+      overlines pasted from a document or PDF. Use the second tab to convert a fraction into its exact
+      decimal, with cycle detection.
+    </p>
+
+    <h2>Terminating decimals: count the places</h2>
+    <p>
+      A decimal that stops is already a fraction with a power of ten as the denominator. 0.75 has two
+      decimal places, so it is 75/100; divide top and bottom by 25 to get 3/4. The method:
+    </p>
+    <ol>
+      <li>Count the digits after the point. Call this number <em>k</em>.</li>
+      <li>Write the digits as a whole number over 10<sup>k</sup>.</li>
+      <li>Divide both parts by their greatest common divisor.</li>
+    </ol>
+
+    <h2>Repeating decimals: make the tail cancel</h2>
+    <p>
+      For a repeating decimal, multiply by a power of ten so the repeating parts line up, then subtract.
+      Take x = 0.(3):
+    </p>
+    <ul>
+      <li>10x = 3.(3)</li>
+      <li>10x − x = 3.(3) − 0.(3) = 3</li>
+      <li>9x = 3, so x = 3/9 = 1/3</li>
+    </ul>
+    <p>
+      When there are non-repeating digits before the cycle, shift twice. For x = 1.8(3): 10x = 18.(3) and
+      100x = 183.(3), so 90x = 165 and x = 165/90 = 11/6. The tool does these two shifts and shows both.
+    </p>
+    <p>
+      The general result: a decimal with <em>m</em> fixed digits and a <em>k</em>-digit repeating block equals
+      (all digits − fixed digits) ÷ (10<sup>k</sup> − 1)·10<sup>m</sup>. For this reason 0.(142857) is
+      142857/999999 = 1/7.
+    </p>
+
+    <h2>Which fractions terminate?</h2>
+    <p>
+      A fraction in lowest terms has a terminating decimal only when the prime factors of its denominator
+      are 2 and 5, the primes that divide ten. 3/8 terminates because 8 = 2³. 1/6 does not, because
+      6 = 2 × 3, and 3 never divides a power of ten. The length of the repeating cycle for 1/n is the
+      multiplicative order of 10 modulo n, which is always less than n.
+    </p>
+
+    <h2>Reference table</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Decimal</th>
+            <th scope="col">Exact fraction</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>0.5</td><td>1/2</td><td>terminates</td></tr>
+          <tr><td>0.125</td><td>1/8</td><td>terminates (8 = 2³)</td></tr>
+          <tr><td>0.(3)</td><td>1/3</td><td>1-digit cycle</td></tr>
+          <tr><td>0.(6)</td><td>2/3</td><td>1-digit cycle</td></tr>
+          <tr><td>0.1(6)</td><td>1/6</td><td>one fixed digit, then a cycle</td></tr>
+          <tr><td>0.(142857)</td><td>1/7</td><td>6-digit cycle, the longest possible for 7</td></tr>
+          <tr><td>0.(09)</td><td>1/11</td><td>2-digit cycle</td></tr>
+          <tr><td>0.8(3)</td><td>5/6</td><td>one fixed digit, then a cycle</td></tr>
+          <tr><td>0.(9)</td><td>1</td><td>exactly 1, not an approximation</td></tr>
+          <tr><td>2.375</td><td>19/8 = 2 3/8</td><td>improper and mixed forms</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why 0.999… equals 1</h2>
+    <p>
+      Use the same algebra: if x = 0.(9), then 10x = 9.(9), so 9x = 9 and x = 1. There is no rounding and
+      no “infinitely small gap”: 0.999… and 1 are two decimal names for the same real number, as 0.5 and
+      0.50 are. The converter reports 1/1 for that input, which is correct.
+    </p>
+
+    <h2>Precision and privacy</h2>
+    <p>
+      All conversions use arbitrary-precision integer arithmetic, so a 20-digit repeating block is exact
+      and not rounded through a floating-point double. The reverse direction uses real long division and
+      stops when a remainder repeats, so it reports 5/7 as 0.(714285), not as a truncated decimal. All of
+      it runs in your browser, and nothing is uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

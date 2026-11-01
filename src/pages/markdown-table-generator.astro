@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatMarkdownTable from '@/components/tools/data/DevFormatMarkdownTable.tsx'
+---
+
+<ToolLayout slug="markdown-table-generator">
+  <DevFormatMarkdownTable client:load mode="grid" />
+  <Fragment slot="explainer">
+    <h2>Why Markdown tables are annoying to write by hand</h2>
+    <p>
+      The syntax is simple. The work is around it: a new column means you edit each row, the pipes stop
+      lining up when a value gets longer, alignment is in a separate row of colons that easily gets out
+      of step with the header, and a pipe character inside a value breaks the row without a warning. This
+      Markdown table generator uses a grid, which removes all four problems, and generates the Markdown
+      for you.
+    </p>
+
+    <h2>The GFM table rules the generator applies</h2>
+    <ul>
+      <li>The header row is mandatory. A table cannot start with data. If your first row is data, turn off <strong>first row is a header</strong> and the generator adds a generic header above it.</li>
+      <li>The separator row must have the same number of cells as the header, and each cell must be at least three dashes.</li>
+      <li>Alignment is expressed with colons in the separator row: <code>:---</code> left, <code>:---:</code> centre, <code>---:</code> right.</li>
+      <li>A literal pipe inside a cell must be escaped as <code>\|</code>. The generator does this for you.</li>
+      <li>A cell cannot contain a line break. A newline in your data becomes <code>&lt;br&gt;</code>, which GitHub and most renderers honour.</li>
+      <li>Cells can contain inline Markdown (bold, code, links), but not block elements such as lists or nested tables.</li>
+    </ul>
+
+    <h2>Padding: cosmetic, but not pointless</h2>
+    <p>
+      A renderer ignores whether the pipes line up. Two audiences do not: the people who read the raw
+      Markdown in a pull request, and your diff tool. A padded table where only one cell changed gives a
+      one-line diff. An unpadded table where one cell got longer changes no other rows, so it is also
+      fine. The problem is a switch between the two, which rewrites each row. Pick one and keep it.
+      Padding is on by default, because most repositories store padded tables.
+    </p>
+
+    <h2>Pasting from other tools</h2>
+    <table>
+      <thead><tr><th>Source</th><th>What arrives on the clipboard</th><th>Detected as</th></tr></thead>
+      <tbody>
+        <tr><td>Excel, Numbers, Google Sheets</td><td>Tab-separated text</td><td>TSV</td></tr>
+        <tr><td>A <code>.csv</code> file</td><td>Comma-separated, quoted fields</td><td>CSV</td></tr>
+        <tr><td>A European CSV export</td><td>Semicolon-separated</td><td>Semicolon-separated values</td></tr>
+        <tr><td>A web page&rsquo;s table markup</td><td>HTML</td><td>HTML table, alignment included</td></tr>
+        <tr><td>An existing Markdown table</td><td>Pipe table</td><td>Markdown, alignment preserved</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The paste box shows the detected format with the row and column count, so you see a wrong guess
+      at once, before you copy the output.
+    </p>
+
+    <h2>Four output formats from one grid</h2>
+    <p>
+      The grid is the source of truth, so you can paste CSV and export HTML, or build a table by hand
+      and export it as JSON records for a test fixture. Markdown, CSV, HTML and JSON all come from the
+      same data, and a switch between them does not change the content.
+    </p>
+
+    <h2>Keyboard and screen-reader behaviour</h2>
+    <p>
+      Each cell is a real <code>&lt;input&gt;</code> inside a real <code>&lt;table&gt;</code>, so
+      <kbd>Tab</kbd> moves across a row and on to the next, <kbd>Shift</kbd>+<kbd>Tab</kbd> goes back,
+      and each field has a label with its row and column for a screen reader. The alignment control is
+      a button that announces the current alignment and changes it when you activate it, also from the
+      keyboard.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,98 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfPageCounter from '@/components/tools/pdf/PdfPageCounter.tsx'
+---
+
+<ToolLayout slug="pdf-page-counter">
+  <PdfPageCounter client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>How to count the pages in a PDF</h2>
+      <ol>
+        <li>Drop one PDF, or a whole folder of them, onto the box above.</li>
+        <li>Each file gets a card with its page count, metadata and page-size breakdown.</li>
+        <li>The summary at the top adds everything up; copy it as text or download a CSV.</li>
+        <li>
+          Press <strong>Measure page weights</strong> on any file to see which pages carry the bulk
+          of the file size.
+        </li>
+      </ol>
+      <p>
+        The PDF page counter is fast because a PDF stores its page count in the document catalogue, so
+        the tool does not need to render anything.
+      </p>
+    </section>
+
+    <section>
+      <h2>Standard paper sizes in points</h2>
+      <p>
+        PDF measures everything in PostScript points: 1 point = 1/72 inch = 0.3528 mm. The tool
+        matches each page against these sizes with a small tolerance and reports anything else as a
+        custom size.
+      </p>
+      <div class="overflow-x-auto">
+        <table class="min-w-[560px]">
+          <thead>
+            <tr>
+              <th scope="col">Size</th>
+              <th scope="col">Points</th>
+              <th scope="col">Millimetres</th>
+              <th scope="col">Inches</th>
+            </tr>
+          </thead>
+          <tbody class="tabular-nums">
+            <tr>
+              <td>A3</td><td>842 × 1191</td><td>297 × 420</td><td>11.69 × 16.54</td>
+            </tr>
+            <tr>
+              <td>A4</td><td>595 × 842</td><td>210 × 297</td><td>8.27 × 11.69</td>
+            </tr>
+            <tr>
+              <td>A5</td><td>420 × 595</td><td>148 × 210</td><td>5.83 × 8.27</td>
+            </tr>
+            <tr>
+              <td>Letter</td><td>612 × 792</td><td>216 × 279</td><td>8.5 × 11</td>
+            </tr>
+            <tr>
+              <td>Legal</td><td>612 × 1008</td><td>216 × 356</td><td>8.5 × 14</td>
+            </tr>
+            <tr>
+              <td>Tabloid</td><td>792 × 1224</td><td>279 × 432</td><td>11 × 17</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Reading the metadata</h2>
+      <ul>
+        <li><strong>Producer</strong> is the library that wrote the file; <strong>Creator</strong> is the application the content came from. Together they usually show how a document was made: a scanner driver, a word processor, a LaTeX toolchain.</li>
+        <li><strong>PDF version</strong> tells you which feature set the file relies on. 1.4 is the old universal baseline, 1.7 is the ISO standard used by most current software, 2.0 is the newest revision.</li>
+        <li><strong>Linearized</strong> means the file is arranged so a reader can display page one before the rest has downloaded. This is common for documents published on the web.</li>
+        <li><strong>Contains a form</strong> flags an AcroForm, which is worth knowing before you flatten or rasterise the file and lose the fields.</li>
+      </ul>
+      <p>
+        Metadata is stored in plain text inside the file. If you are sending a document outside your
+        organisation, check the Author and Title fields. They often still hold the name of a
+        template's original owner.
+      </p>
+    </section>
+
+    <section>
+      <h2>How per-page weight is measured</h2>
+      <p>
+        No field in a PDF says how many bytes a page uses, because content is shared, compressed and
+        interleaved. To get a usable number, each page is exported on its own into a
+        minimal one-page document and that document is measured. Pages carrying a big scan or photo
+        stand out immediately.
+      </p>
+      <p>
+        Two caveats: resources shared between pages (fonts, logos) are counted once per page, so the
+        individual figures add up to more than the file size, and the measurement re-saves every page,
+        which takes a moment on long documents. Use it as a relative ranking, not an audit.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

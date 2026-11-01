@@ -1,0 +1,74 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="time-converter">
+  <UnitConverter client:load dimension="time" from="min" to="h" />
+  <Fragment slot="explainer">
+    <h2>How to convert a time interval</h2>
+    <ol>
+      <li>Type a duration into either field. The time converter converts lengths of time, such as 90 minutes into hours or 3 days into seconds. It does not convert clock times or dates.</li>
+      <li>Pick the units: sub-second units for performance work first, then everyday units, then calendar units.</li>
+      <li>For the gap between two dates, or a deadline, use the date-difference calculator. Calendar arithmetic must handle month lengths and daylight saving, which a unit converter cannot.</li>
+    </ol>
+
+    <h2>Exact units and averaged units</h2>
+    <p>
+      All units from nanoseconds to weeks are exact. A minute is 60 seconds, an hour 3,600, a day 86,400 and a
+      week 604,800. Leap seconds sometimes make a real day one second longer, but ordinary calculations, and
+      this one, ignore them.
+    </p>
+    <p>
+      Months and years are calendar units, not fixed intervals. This converter uses the long-run Gregorian
+      averages:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Unit</th><th>Days</th><th>Seconds</th><th>Why</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Year</td><td>365.2425</td><td>31,556,952</td><td>Leap years every 4 years, skipping 3 in every 400</td></tr>
+          <tr><td>Month</td><td>30.436875</td><td>2,629,746</td><td>Exactly one twelfth of that year</td></tr>
+          <tr><td>Week</td><td>7</td><td>604,800</td><td>Exact</td></tr>
+          <tr><td>Day</td><td>1</td><td>86,400</td><td>Exact by convention</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      So "3 months" here means 91.3 days, not "the next three calendar months", which can be 89 to 92 days
+      depending on the start date. For contracts, notice periods and billing cycles, count the actual dates.
+    </p>
+
+    <h2>Common time conversions</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Duration</th><th>In minutes</th><th>In hours</th><th>In seconds</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>45 minutes</td><td>45</td><td>0.75</td><td>2,700</td></tr>
+          <tr><td>90 minutes</td><td>90</td><td>1.5</td><td>5,400</td></tr>
+          <tr><td>1 day</td><td>1,440</td><td>24</td><td>86,400</td></tr>
+          <tr><td>1 week</td><td>10,080</td><td>168</td><td>604,800</td></tr>
+          <tr><td>1 working month (160 h)</td><td>9,600</td><td>160</td><td>576,000</td></tr>
+          <tr><td>1 year</td><td>525,949</td><td>8,765.8</td><td>31,556,952</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Sub-second units and why they matter</h2>
+    <p>
+      Performance work happens below the second. A millisecond is a thousandth of a second, a microsecond a
+      millionth and a nanosecond a billionth. For scale: a modern SSD answers a read request in about 100
+      microseconds, main memory in about 100 nanoseconds, and one CPU cycle at 3 GHz takes about a third of a
+      nanosecond. Network round trips across an ocean take tens of milliseconds: about 150 ms from London to
+      Sydney, a minimum set by the speed of light in fibre, not by equipment.
+    </p>
+    <p>
+      In these units the numbers get long quickly, so the formatting keeps twelve significant digits and
+      changes to scientific notation only above 10¹⁸.
+    </p>
+  </Fragment>
+</ToolLayout>

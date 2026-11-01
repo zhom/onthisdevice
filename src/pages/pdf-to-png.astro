@@ -1,0 +1,104 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfToPng from '@/components/tools/pdf-convert/PdfToPng.tsx'
+---
+
+<ToolLayout slug="pdf-to-png">
+  <PdfToPng client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert a PDF to PNG</h2>
+    <ol>
+      <li>Drop a PDF into the box above. pdf.js opens and renders it locally, and the file stays on your device.</li>
+      <li>Pick a resolution: 72 DPI for a quick screen-sized copy, 150 DPI for general use, 300 DPI for print or OCR.</li>
+      <li>Turn on <strong>Transparent background</strong> if you want the page drawn without a white fill behind it.</li>
+      <li>Press <strong>Convert to PNG</strong> and watch the gallery fill up page by page.</li>
+      <li>Download the whole document as a ZIP, or take individual pages from their thumbnails.</li>
+    </ol>
+
+    <h2>PNG or JPG?</h2>
+    <p>
+      Both formats produce a flat picture of the page; they differ entirely in how
+      they compress it. PNG is lossless: each pixel is reproduced exactly. JPG
+      discards detail that the eye is unlikely to miss in a photograph.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>PNG</th>
+            <th>JPG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Compression</td>
+            <td>Lossless</td>
+            <td>Lossy</td>
+          </tr>
+          <tr>
+            <td>Text and line art</td>
+            <td>Perfectly crisp edges</td>
+            <td>Visible halos below ~85 quality</td>
+          </tr>
+          <tr>
+            <td>Photographs</td>
+            <td>Very large files</td>
+            <td>Small files, excellent quality</td>
+          </tr>
+          <tr>
+            <td>Transparency</td>
+            <td>Supported (alpha channel)</td>
+            <td>Not supported</td>
+          </tr>
+          <tr>
+            <td>Typical A4 page at 150 DPI</td>
+            <td>0.5–3 MB</td>
+            <td>100–400 KB</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The rule of thumb: choose PNG when the page is a document, a diagram, a
+      screenshot or anything with sharp edges you intend to look at closely, and
+      <a href="/pdf-to-jpg">JPG</a> when the page is a photograph or when file size
+      matters more than the last few percent of fidelity.
+    </p>
+
+    <h2>How transparency actually works here</h2>
+    <p>
+      A PDF page has no background object. What you see as "white paper" is the
+      viewer painting white behind the page before drawing anything. When the
+      transparent option is on, we skip that fill, so every pixel the page does not
+      explicitly draw stays fully transparent in the PNG. That is what you want
+      when you need a logo, a signature, a stamp or a diagram to sit on a coloured
+      slide.
+    </p>
+    <p>
+      There is one important limitation. If the page is a <em>scan</em>, the white
+      background is part of the scanned image, not the viewer's background. The
+      result will be opaque no matter what this option says, because there is
+      genuinely a white photograph covering the page.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Design assets: a vector logo or diagram from a PDF at high resolution, with a clean alpha channel.</li>
+      <li>Documentation: an exact page image in a wiki, README or knowledge base.</li>
+      <li>OCR pipelines: most engines prefer lossless 300 DPI input, and JPG artefacts reduce recognition accuracy.</li>
+      <li>Archiving: a pixel-exact record of a page as it looked, independent of future PDF readers.</li>
+    </ul>
+
+    <h2>Privacy and limits</h2>
+    <p>
+      Rendering happens on your device with pdf.js and the browser's own PNG
+      encoder, so contracts, medical records and identity documents never touch a
+      server. The only real limit is memory: a 300 DPI render of a large-format
+      page is a very big bitmap, so the tool automatically reduces the scale rather
+      than failing with a blank canvas. Password-protected files must be unlocked
+      in your PDF reader first. The tool tells you when that is the problem.
+    </p>
+  </Fragment>
+</ToolLayout>

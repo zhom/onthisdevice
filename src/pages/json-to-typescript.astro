@@ -1,0 +1,79 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJsonCode from '@/components/tools/dev/DevFormatJsonCode.tsx'
+---
+
+<ToolLayout slug="json-to-typescript">
+  <DevFormatJsonCode client:load target="typescript" />
+  <Fragment slot="explainer">
+    <h2>How the inference works</h2>
+    <p>
+      The JSON to TypeScript generator does not guess. It reads the parsed value and builds a shape tree,
+      then merges shapes where the same position holds more than one value: each element of an array,
+      and each occurrence of the same nested object.
+    </p>
+    <ol>
+      <li>Scalars map directly: string, number, boolean, null.</li>
+      <li>Objects merge field by field. A field present in all merged samples is required. A field present in only some gets <code>?</code>.</li>
+      <li>Arrays merge their elements into one element type. If the merged type has more than one possibility, it becomes a union.</li>
+      <li>Identical shapes become one interface, so a document with author objects in three places gives one <code>Author</code>.</li>
+      <li>Names come from the key that holds the object, in PascalCase, and singular for array elements: <code>line_items</code> gives <code>LineItem</code>.</li>
+    </ol>
+
+    <h2>Paste more than one record</h2>
+    <p>
+      This improves the result more than any other step. From one record, the generator can only decide
+      that all fields are required and each type is exactly what it saw. From ten records, it can see
+      that <code>gift_wrap</code> is on two of them and mark it optional, that <code>discount_code</code>
+      is sometimes a string and sometimes null, and that <code>quantity</code> is always an integer.
+    </p>
+    <p>
+      Put several responses in an array and paste that. The generated root is an array type, and the
+      element interface is the merged, accurate one.
+    </p>
+
+    <h2>What generated types cannot tell you</h2>
+    <table>
+      <thead><tr><th>Reality</th><th>What the generator sees</th><th>What to do</th></tr></thead>
+      <tbody>
+        <tr><td>A field is nullable in production but was populated in your sample</td><td><code>string</code></td><td>Check the API docs and widen to <code>string | null</code></td></tr>
+        <tr><td>A field is one of four fixed values</td><td><code>string</code></td><td>Replace with a union of literals</td></tr>
+        <tr><td>An ISO date</td><td><code>string</code></td><td>Keep as string, or use a branded type</td></tr>
+        <tr><td>A 19-digit ID sent as a number</td><td><code>number</code></td><td>Ask for it as a string. JavaScript cannot hold it exactly</td></tr>
+        <tr><td>An empty array</td><td><code>unknown[]</code></td><td>Get a sample with elements in it</td></tr>
+        <tr><td>A map keyed by ID</td><td>One field per key in the sample</td><td>Replace with <code>Record&lt;string, T&gt;</code></td></tr>
+      </tbody>
+    </table>
+    <p>
+      Look for the last case. An object used as a dictionary (keys are user IDs, values are user objects)
+      gives one optional field per ID in your sample. You can see it as an interface with a dozen
+      numeric-looking field names.
+    </p>
+
+    <h2>Interface or type alias?</h2>
+    <p>
+      You can switch between them here. <code>interface</code> supports declaration merging and gives
+      slightly clearer error messages for a deep mismatch. <code>type</code> can express unions,
+      intersections and mapped types that an interface cannot. For plain object shapes from JSON the two
+      are interchangeable, so use the one your codebase already uses.
+    </p>
+
+    <h2>Runtime validation is the missing half</h2>
+    <p>
+      A TypeScript interface is erased at compile time. A cast such as <code>as User</code> on a
+      <code>fetch</code> response tells the compiler what you believe and checks nothing at runtime. When
+      the API changes, you get <code>undefined is not an object</code> three functions away from the
+      cause. If the response crosses a network boundary, generate a
+      <a href="/json-to-zod-schema">Zod schema</a> and let <code>z.infer</code> give you the type. You
+      get the same static safety plus a check at the boundary.
+    </p>
+
+    <h2>Paste a real response</h2>
+    <p>
+      Good types come from real data, and real data has customer names, email addresses, internal IDs
+      and sometimes a token. The inference and the output here are plain JavaScript in your tab. The
+      panel under the tool counts the page&rsquo;s network requests, so you can confirm that nothing is
+      sent.
+    </p>
+  </Fragment>
+</ToolLayout>

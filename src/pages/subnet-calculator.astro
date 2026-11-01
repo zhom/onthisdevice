@@ -1,0 +1,92 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeSubnet from '@/components/tools/dev/DevEncodeSubnet.tsx'
+---
+
+<ToolLayout slug="subnet-calculator">
+  <DevEncodeSubnet client:load mode="subnet" />
+  <Fragment slot="explainer">
+    <h2>What the subnet prefix does</h2>
+    <p>
+      An IPv4 address has 32 bits. The prefix says how many of those bits identify the network; the other
+      bits identify a host in it. A <code>/24</code> fixes the first 24 bits, which leaves 8 host bits and so
+      2⁸ = 256 addresses.
+    </p>
+    <pre><code>address 192.168.  1. 10  = 11000000 10101000 00000001 00001010
+mask    255.255.255.  0  = 11111111 11111111 11111111 00000000
+AND ---------------------------------------------------------
+network 192.168.  1.  0  = 11000000 10101000 00000001 00000000</code></pre>
+    <p>
+      All other figures follow from that AND. The broadcast address is the network with all host bits set,
+      the wildcard mask is the inverted mask, and the host range is everything between them.
+    </p>
+
+    <h2>Subnet reference table</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Prefix</th><th>Mask</th><th>Addresses</th><th>Usable hosts</th><th>Cloud usable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>/16</td><td>255.255.0.0</td><td>65,536</td><td>65,534</td><td>65,531</td></tr>
+          <tr><td>/20</td><td>255.255.240.0</td><td>4,096</td><td>4,094</td><td>4,091</td></tr>
+          <tr><td>/24</td><td>255.255.255.0</td><td>256</td><td>254</td><td>251</td></tr>
+          <tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td><td>123</td></tr>
+          <tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td><td>59</td></tr>
+          <tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td><td>27</td></tr>
+          <tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td><td>11</td></tr>
+          <tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2</td><td>Not allowed</td></tr>
+          <tr><td>/31</td><td>255.255.255.254</td><td>2</td><td>2 (RFC 3021)</td><td>Not allowed</td></tr>
+          <tr><td>/32</td><td>255.255.255.255</td><td>1</td><td>1 (single host)</td><td>Not allowed</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Why the cloud column is different</h2>
+    <p>
+      AWS, Azure and GCP each reserve five addresses in every subnet, not two. In an AWS VPC subnet
+      <code>10.0.0.0/24</code>:
+    </p>
+    <ul>
+      <li><code>10.0.0.0</code>: network address</li>
+      <li><code>10.0.0.1</code>: the VPC router</li>
+      <li><code>10.0.0.2</code>: DNS resolver</li>
+      <li><code>10.0.0.3</code>: reserved for future use</li>
+      <li><code>10.0.0.255</code>: broadcast address (reserved although VPCs do not support broadcast)</li>
+    </ul>
+    <p>
+      AWS also rejects subnets smaller than /28, which leaves eleven usable addresses after reservations.
+      Turn on cloud mode above to see the correct count for your block.
+    </p>
+
+    <h2>Planning with VLSM</h2>
+    <p>
+      Variable-length subnet masking gives each subnet only the space it needs, in place of an even split.
+      The method:
+    </p>
+    <ol>
+      <li>List each subnet you need with its host count, largest first.</li>
+      <li>Round each up to the next power of two. Add two for network and broadcast, or five in a cloud VPC.</li>
+      <li>Allocate the largest from the start of the block, then the next, and so on.</li>
+      <li>Leave the end of the block free for growth; expansion later is much easier than renumbering.</li>
+    </ol>
+    <p>
+      The split table above lists every subnet at a chosen prefix, which you can use as the working document.
+    </p>
+
+    <h2>How IPv6 differs</h2>
+    <p>
+      IPv6 has no broadcast address and no host-count arithmetic, because every LAN gets a /64 however many
+      devices it has; SLAAC requires this. Site allocations are usually /48, which holds 65,536 of those
+      /64s. The IPv6 panel above uses BigInt, so a /32 shows its 79,228,162,514,264,337,593,543,950,336
+      addresses exactly, not as a rounded float.
+    </p>
+
+    <h2>No lookups</h2>
+    <p>
+      The subnet calculator does arithmetic on the bits you typed. There is no WHOIS, geolocation or reverse
+      DNS, because each needs a network call and this site makes none. The tool works with the network
+      disconnected, for example on a plane.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,76 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatJson from '@/components/tools/dev/DevFormatJson.tsx'
+---
+
+<ToolLayout slug="json-validator">
+  <DevFormatJson client:load mode="validate" />
+  <Fragment slot="explainer">
+    <h2>Reading the error message</h2>
+    <p>
+      JSON is a tiny grammar, so a failure always has one of a few causes. The JSON validator shows
+      what it expected at that point, what it found, and the line and column. Then it shows the bad
+      line with a caret under the exact character. That is more than <code>JSON.parse</code> gives,
+      and it is the same in all browsers, which the built-in messages are not.
+    </p>
+    <table>
+      <thead><tr><th>What you wrote</th><th>Why it fails</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td><code>&#123;"a": 1,&#125;</code></td><td>Trailing comma before the closing brace</td><td>Delete the comma</td></tr>
+        <tr><td><code>&#123;'a': 1&#125;</code></td><td>Single quotes are not JSON strings</td><td>Use double quotes</td></tr>
+        <tr><td><code>&#123;a: 1&#125;</code></td><td>Unquoted key</td><td>Quote every key</td></tr>
+        <tr><td><code>&#123;"a": 01&#125;</code></td><td>Leading zeros are not valid numbers</td><td>Write <code>1</code></td></tr>
+        <tr><td><code>&#123;"a": 1.&#125;</code></td><td>A decimal point needs a digit after it</td><td>Write <code>1.0</code></td></tr>
+        <tr><td><code>&#123;"a": NaN&#125;</code></td><td>NaN and Infinity are JavaScript, not JSON</td><td>Use <code>null</code> or a string</td></tr>
+        <tr><td><code>// note</code></td><td>JSON has no comments</td><td>Strip them, or use JSONC in your own tooling</td></tr>
+        <tr><td><code>&#123;"a": "b<br />c"&#125;</code></td><td>A raw line break inside a string</td><td>Escape it as <code>\n</code></td></tr>
+        <tr><td><code>"C:\path"</code></td><td>A lone backslash starts an escape</td><td>Double it: <code>"C:\\path"</code></td></tr>
+        <tr><td>Starts with <code>&lt;</code></td><td>An HTML error page arrived instead of JSON</td><td>Check the request, not the JSON</td></tr>
+      </tbody>
+    </table>
+
+    <h2>What the one-click repair changes</h2>
+    <p>
+      The repair pass is one left-to-right rewrite that knows about strings: text between a pair of
+      quotes is copied as it is, so a comma inside <code>"Doe, Jane"</code> is never read as a trailing
+      comma. The tool counts each category before you apply it, so you see exactly what will change:
+    </p>
+    <ul>
+      <li>A byte-order mark before the first character (invisible, and a very common cause of &ldquo;unexpected token&rdquo; at position 0).</li>
+      <li>Single-quoted strings converted to double quotes, with any internal double quotes escaped.</li>
+      <li>Typographic &ldquo;smart quotes&rdquo; from a word processor or a chat app replaced with straight ones.</li>
+      <li><code>//</code>, <code>#</code> and <code>/* … */</code> comments removed.</li>
+      <li>Trailing commas before <code>&#125;</code> or <code>]</code> removed.</li>
+      <li><code>NaN</code>, <code>Infinity</code> and <code>undefined</code> replaced with <code>null</code>.</li>
+      <li>Bare object keys wrapped in double quotes.</li>
+    </ul>
+    <p>
+      Repair changes your input in place, and validation runs again at once. If the result is still
+      invalid, the remaining error is structural (an unclosed bracket, or two documents joined
+      together), and you must fix it by hand.
+    </p>
+
+    <h2>Two warnings that appear on valid documents</h2>
+    <p>
+      Duplicate keys: <code>&#123;"a": 1, "a": 2&#125;</code> is legal JSON. All mainstream parsers keep
+      the last occurrence and discard the first without a warning. In a config file that is an override
+      you did not intend. In an API payload it usually means two code paths wrote the same field. The
+      validator shows the key and the line.
+    </p>
+    <p>
+      Unsafe integers: JavaScript numbers are IEEE-754 doubles, so an integer above
+      9,007,199,254,740,991 loses precision. A 19-digit Snowflake or Twitter-style ID rounds to a
+      different number when it is parsed, without a warning, in both directions. The standard fix is to
+      send large identifiers as strings.
+    </p>
+
+    <h2>Why local validation matters</h2>
+    <p>
+      JSON that you validate is usually a payload that does not work: a real request or response, with
+      bearer tokens, customer records, internal identifiers and webhook secrets. In 2025, about 80,000
+      saved snippets were recovered from public formatter sites, many with live cloud credentials. This
+      page parses in your tab. The panel under the tool counts the network requests the page makes, so
+      you can confirm the count is zero.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,82 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifeOvenTemp from '@/components/tools/units/UnitsLifeOvenTemp.tsx'
+---
+
+<ToolLayout slug="oven-temperature-converter">
+  <UnitsLifeOvenTemp client:load />
+  <Fragment slot="explainer">
+    <h2>Four scales for one dial</h2>
+    <p>
+      An oven temperature has four forms, and a recipe uses the one its author knows: degrees
+      Fahrenheit in the US, degrees Celsius almost everywhere else, gas marks in Britain and Ireland,
+      and a fan or convection setting, about 20 &deg;C lower than the conventional number for the same
+      result.
+    </p>
+    <p>
+      This oven temperature converter handles all four, including gas marks and fan settings, which
+      cause most ruined dinners.
+    </p>
+
+    <h2>The fan oven rule</h2>
+    <p>
+      A fan (convection) oven moves the air, which removes the insulating boundary layer that stays
+      against food in still air. So heat transfers faster at the same air temperature, and the standard
+      correction is to <strong>reduce the setting by 20 &deg;C</strong>, or about 25&ndash;30 &deg;F.
+    </p>
+    <p>
+      So 180 &deg;C conventional is 160 &deg;C fan. 200 &deg;C conventional is 180 &deg;C fan. If a
+      recipe says "180 &deg;C (160 &deg;C fan)", it has already done this. If it gives one number and
+      you have a fan oven, subtract.
+    </p>
+    <p>
+      Cooking time also drops, usually by about 10%, and most for food with an exposed surface. Fan is
+      excellent for roasting and batch baking, but can be too strong for delicate custards, soufflés
+      and rich fruit cakes, so many ovens let you switch it off.
+    </p>
+
+    <h2>Gas marks</h2>
+    <p>
+      Above mark 1 the scale follows a clean formula: <strong>&deg;F = 25 &times; (mark + 10)</strong>.
+      Mark 4 is 25 &times; 14 = 350 &deg;F. Mark 7 is 425 &deg;F. Below mark 1 the pattern breaks:
+      mark 1/2 is 250 &deg;F and mark 1/4 is 225 &deg;F, because those settings were added later for
+      slow cooking and meringues.
+    </p>
+    <p>
+      Gas ovens also have a stronger vertical temperature gradient than electric ones: the top shelf
+      can be a full gas mark hotter than the bottom. So British recipes often specify a shelf position.
+    </p>
+
+    <h2>The descriptive terms</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Term</th><th scope="col">Conventional &deg;C</th><th scope="col">&deg;F</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Very cool / very slow</td><td>110&ndash;120</td><td>225&ndash;250</td></tr>
+        <tr><td>Cool / slow</td><td>140&ndash;150</td><td>275&ndash;300</td></tr>
+        <tr><td>Warm</td><td>170</td><td>325</td></tr>
+        <tr><td>Moderate</td><td>180</td><td>350</td></tr>
+        <tr><td>Moderately hot</td><td>190&ndash;200</td><td>375&ndash;400</td></tr>
+        <tr><td>Hot</td><td>220&ndash;230</td><td>425&ndash;450</td></tr>
+        <tr><td>Very hot</td><td>240&ndash;260</td><td>475&ndash;500</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Recipes written before ovens had thermostats used only these terms, and they still appear in
+      reprints of older cookbooks.
+    </p>
+
+    <h2>Your oven dial is probably wrong</h2>
+    <p>
+      Domestic ovens often run 10&ndash;20 &deg;C away from their dial, and the thermostat switches the
+      element on and off, so the air temperature moves around the set point. An oven thermometer costs
+      a few pounds and tells you more about your baking than any conversion chart, including which
+      shelf is the hot one.
+    </p>
+    <p>
+      Preheat fully. When the light goes out, the air is at temperature, but the walls and the shelves
+      are not, and a pizza stone can take forty minutes to heat up.
+    </p>
+  </Fragment>
+</ToolLayout>

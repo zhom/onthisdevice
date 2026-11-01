@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-50kb">
+  <CompressImageToTarget client:load targetKb={50} inputLabel="Drop the photo that has to come in under 50 KB" />
+
+  <Fragment slot="explainer">
+    <h2>The most common form limit there is</h2>
+    <p>
+      The 50 KB limit is on job applications, university admissions, visa portals, bank KYC forms and
+      exam registrations. A phone photo never passes without editing: a modern camera file is 3–8 MB,
+      sixty to a hundred and sixty times too large. But 50 KB is enough for a well-cropped portrait to
+      look good.
+    </p>
+
+    <h2>What 50 KB buys you</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Subject</th><th>Comfortable dimensions</th><th>Typical quality chosen</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Headshot, plain background</td><td>600 × 800 px</td><td>75–85</td></tr>
+          <tr><td>Document or certificate scan</td><td>1000 px wide</td><td>70–80</td></tr>
+          <tr><td>Simple product photo</td><td>800 px wide</td><td>70–80</td></tr>
+          <tr><td>Busy outdoor scene</td><td>500 × 700 px</td><td>55–70</td></tr>
+          <tr><td>Group photo with faces to stay recognisable</td><td>700 px wide, crop tightly</td><td>60–75</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When the form says “between 20 KB and 50 KB”</h2>
+    <p>
+      Aim at 50, not the middle. Set the target to 50 KB and read the size in the result card. The
+      search always returns the largest file that fits, which is also the sharpest. If the result is
+      well under 20 KB (this happens with a small, plain source image), the original is too small. Use
+      a larger original; do not try to make the file bigger.
+    </p>
+
+    <h2>Reading the search</h2>
+    <p>
+      Expand “Show the search” in the result to see the full working: each encode, its quality, and if
+      the byte count fitted. The algorithm is: try 92, then do a binary search of the range and keep the
+      best file that fits. Look at it the first time: it shows how fast size falls with quality for your
+      image, and so if you have room to spare or are at the limit.
+    </p>
+
+    <h2>Dimensions are usually specified too</h2>
+    <p>
+      Forms that limit the file size almost always limit the pixel size too; 200 × 230 px is a classic
+      pair with a 20–50 KB limit. Put the required width into the width field before you press
+      compress. The resize happens first, and the quality search then works inside the dimensions the
+      form wants, so the file passes both the byte check and the pixel check.
+    </p>
+
+    <h2>Signature scans</h2>
+    <p>
+      A signature is mostly white with a thin dark line, which is very easy to compress. Scan or
+      photograph it on plain white paper in even light, and consider PNG output: a clean signature can
+      go under 20 KB losslessly, without the grey blur that JPEG puts around thin strokes.
+    </p>
+
+    <h2>Nothing is uploaded, so retrying is free</h2>
+    <p>
+      Each encode runs on your CPU. The photo of your face and your ID documents stay on the device, and
+      you can try a different crop, format or target as often as you like, with no queue, daily quota
+      or account.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-20kb">20 KB</a> ·
+      <a href="/compress-image-to-100kb">100 KB</a> ·
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>. For document photos, see also
+      <a href="/passport-photo-maker">Passport Photo Maker</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

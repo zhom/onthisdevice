@@ -1,0 +1,97 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BarcodeGenerator from '@/components/tools/generators/BarcodeGenerator.tsx'
+---
+
+<ToolLayout slug="barcode-generator">
+  <BarcodeGenerator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to generate a barcode</h2>
+    <ol>
+      <li>Pick the symbology. If you are not sure, use Code 128 for anything inside your own systems.</li>
+      <li>Type the value. The validator checks it against the rules of that symbology and explains each rejection, so the tool does not draw a code that will not scan.</li>
+      <li>For EAN, UPC and ITF-14, enter the number without the check digit, and the tool calculates it. If you paste the full number, the tool verifies it.</li>
+      <li>Set the bar width and height for your medium, then export the SVG for print or the 4× PNG for a label printer.</li>
+    </ol>
+
+    <h2>Choosing a symbology</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Symbology</th>
+            <th>Character set</th>
+            <th>Length</th>
+            <th>Where you meet it</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Code 128</td><td>All 128 ASCII characters</td><td>Any</td><td>Shipping labels, GS1-128, asset tags, warehouses</td></tr>
+          <tr><td>Code 39</td><td>A–Z, 0–9, space, <code>- . $ / + %</code></td><td>Any</td><td>Defence, automotive, older badge systems</td></tr>
+          <tr><td>EAN-13</td><td>Digits</td><td>12 + check digit</td><td>Retail outside North America, ISBN-13</td></tr>
+          <tr><td>EAN-8</td><td>Digits</td><td>7 + check digit</td><td>Small packaging where EAN-13 will not fit</td></tr>
+          <tr><td>UPC-A</td><td>Digits</td><td>11 + check digit</td><td>Retail in the US and Canada</td></tr>
+          <tr><td>ITF-14</td><td>Digits</td><td>13 + check digit</td><td>Cases, cartons and pallets</td></tr>
+          <tr><td>MSI Plessey</td><td>Digits</td><td>Any</td><td>Supermarket shelf edges, warehouse racking</td></tr>
+          <tr><td>Pharmacode</td><td>A number, 3–131070</td><td>n/a</td><td>Medicine cartons and package inserts</td></tr>
+          <tr><td>Codabar</td><td>Digits, <code>- $ : / . +</code>, A–D start/stop</td><td>Any</td><td>Blood banks, libraries, photo labs, waybills</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Code 128 is about 30% narrower than Code 39 for the same content. It switches between three
+      character subsets automatically and packs pairs of digits into one symbol character in set C.
+      Use Code 128 unless a system requires Code 39.
+    </p>
+
+    <h2>How the check digit works</h2>
+    <p>
+      EAN-8, EAN-13, UPC-A and ITF-14 all use the same modulo-10 scheme. From the right of the payload,
+      digits alternate between weights of 3 and 1. The weighted digits are added, and the check digit
+      brings that sum up to the next multiple of ten.
+    </p>
+    <pre><code>Payload      5 9 0 1 2 3 4 1 2 3 4 5
+Weights      1 3 1 3 1 3 1 3 1 3 1 3
+Products     5 27 0 3 2 9 4 3 2 9 4 15   → sum 83
+Check digit  (10 − 83 mod 10) mod 10 = 7
+Full code    5901234123457</code></pre>
+    <p>
+      This one digit catches all single-digit errors and most transpositions, so a scanner does not
+      read one product as another. If you paste a full number and the tool says the check digit is
+      wrong, the number is wrong. Do not “fix” it by changing the last digit unless you know the first
+      twelve are correct.
+    </p>
+
+    <h2>Printing barcodes that actually scan</h2>
+    <ul>
+      <li>The narrow bar width (X-dimension) is the important number. Retail EAN and UPC require at least 0.264 mm. At 300 dpi that is about three printer dots; smaller bars merge.</li>
+      <li>Never scale a raster barcode up. Interpolation softens the bar edges and the scanner must guess. Export the SVG and let the RIP render it at device resolution.</li>
+      <li>Keep the quiet zone. EAN and UPC need a blank margin of at least ten narrow-bar widths on the left and right. Designers often crop it, and this is the most common cause of a “barcode that stopped working”.</li>
+      <li>Use dark bars on a light background. Laser scanners read in red light at about 660 nm, so they cannot see red, orange and pink bars. Black on white, or a very dark blue-black, is the only safe choice.</li>
+      <li>On thermal printers, print bars parallel to the paper feed. Bars perpendicular to the print head blur from dot-placement error.</li>
+      <li>Keep the human-readable text on for retail codes. When the scan fails, a cashier types the number.</li>
+    </ul>
+
+    <h2>Getting real retail numbers</h2>
+    <p>
+      You can print all these symbologies here, but a number you invent is valid only inside your own
+      systems. Retail EAN-13 and UPC-A numbers contain a GS1 company prefix that is licensed to one
+      business, and retailers verify it before they stock a product. A “cheap barcode” from a reseller
+      is usually a number rented from a prefix issued in the 1990s, and many large retailers now reject
+      these. If you sell through shops, register with GS1 in your country.
+    </p>
+    <p>
+      ISBN-13 is a special case: your national ISBN agency issues the number, and it is encoded as
+      EAN-13 with the 978 or 979 prefix.
+    </p>
+
+    <h2>Everything runs on your device</h2>
+    <p>
+      The symbol is encoded and drawn in this tab, so product codes, internal asset numbers and patient
+      identifiers stay on your machine. The SVG export is plain vector paths for Illustrator, InDesign
+      or a label template. The PNG is a canvas render at the multiple of the on-screen size that you
+      choose.
+    </p>
+  </Fragment>
+</ToolLayout>

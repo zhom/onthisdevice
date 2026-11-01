@@ -1,0 +1,91 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeTotp from '@/components/tools/security/DevEncodeTotp.tsx'
+---
+
+<ToolLayout slug="totp-generator">
+  <DevEncodeTotp client:load mode="totp" />
+  <Fragment slot="explainer">
+    <h2>How a six-digit TOTP code is made</h2>
+    <p>
+      TOTP is RFC 6238, a thin layer over HOTP from RFC 4226. The algorithm has four steps:
+    </p>
+    <ol>
+      <li>Take the current Unix time in seconds and divide it by the step, normally 30. That integer is the counter.</li>
+      <li>Write the counter as an 8-byte big-endian value and compute its HMAC-SHA1 with the shared secret.</li>
+      <li>
+        Take the low four bits of the last byte as an offset, read four bytes from that offset, and clear the
+        top bit. This &ldquo;dynamic truncation&rdquo; turns 160 bits into 31.
+      </li>
+      <li>Take that number modulo 10⁶ and pad it to six digits.</li>
+    </ol>
+    <p>
+      All of these steps run in this tab, with the browser's native WebCrypto for the HMAC. When the countdown
+      ends, the code changes, and no request is made.
+    </p>
+
+    <h2>Why local execution matters for 2FA secrets</h2>
+    <p>
+      A 2FA secret is the whole second factor. If a website sends it anywhere, the second factor is
+      compromised, and a visitor cannot tell from the interface what a site does with it.
+    </p>
+    <p>
+      So test this page. Open DevTools, clear the Network panel and let the code change: no request appears.
+      Turn off Wi-Fi and reload: the page still works. The response headers have a Content-Security-Policy with
+      no third-party origin in <code>connect-src</code>, so the browser would block an upload even if the code
+      tried one.
+    </p>
+
+    <h2>Reading the otpauth URI</h2>
+    <pre><code>otpauth://totp/Example:alice@example.com
+  ?secret=JBSWY3DPEHPK3PXP
+  &amp;issuer=Example
+  &amp;algorithm=SHA1
+  &amp;digits=6
+  &amp;period=30</code></pre>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Meaning</th><th>Practical note</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>secret</code></td><td>The shared key, Base32</td><td>The only secret part</td></tr>
+          <tr><td><code>issuer</code></td><td>Service name</td><td>Shown as the heading in the app; also repeated in the label</td></tr>
+          <tr><td><code>algorithm</code></td><td>SHA1, SHA256 or SHA512</td><td>Some authenticator apps ignore anything but SHA1</td></tr>
+          <tr><td><code>digits</code></td><td>6, 7 or 8</td><td>Most apps ignore 7 and 8</td></tr>
+          <tr><td><code>period</code></td><td>Seconds per step</td><td>30 almost everywhere; some banks use 60</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      A QR code is that string drawn as a bitmap. Scanning it transfers the URI and nothing else.
+    </p>
+
+    <h2>When codes are rejected</h2>
+    <ul>
+      <li>
+        Clock skew: TOTP depends on the time. A device more than about 30 seconds off fails. Servers usually
+        accept ±1 step, and this page verifies with the same tolerance.
+      </li>
+      <li>
+        Wrong algorithm: if a service issued a SHA-256 secret and your app assumes SHA-1, every code is wrong
+        and nothing tells you why.
+      </li>
+      <li>
+        Secret typed by hand: Base32 excludes 0, 1 and 8 because people mistype them. If your secret contains
+        one of those digits, it is not valid Base32.
+      </li>
+      <li>
+        Code already used: well-built servers reject a code used a second time, even inside its window.
+      </li>
+    </ul>
+
+    <h2>What the TOTP generator is for</h2>
+    <p>
+      Use it to test a 2FA integration, check whether a secret is valid, generate a key for a service you
+      build, or read a code from a secret you already have. It is not an authenticator app: it stores nothing,
+      so a refresh clears everything. Keep your real secrets in a dedicated app or hardware key, and keep the
+      recovery codes in a different place.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,106 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MergeAlternatePdfPages from '@/components/tools/pdf/MergeAlternatePdfPages.tsx'
+---
+
+<ToolLayout slug="merge-alternate-pdf-pages">
+  <MergeAlternatePdfPages client:load />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>The duplex scan problem</h2>
+      <p>
+        Cheap sheet-feed scanners and most multifunction printers scan only one side at a time. For a
+        double-sided document, you feed the stack and get a PDF of the fronts, then turn the stack
+        over, feed it again and get a second PDF of the backs. Neither file is usable alone, and the
+        second is in reverse order, because the turned stack puts the last sheet on top.
+      </p>
+      <p>
+        To merge alternate PDF pages fixes it in one step: front 1, back 1, front 2, back 2, and so
+        on, in one document with the pages in reading order.
+      </p>
+    </section>
+
+    <section>
+      <h2>Worked example</h2>
+      <p>A ten-page, five-sheet document scanned in two passes:</p>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Output page</th>
+            <th scope="col">Comes from</th>
+            <th scope="col">Which page of that file</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>File A (fronts)</td><td>1</td></tr>
+          <tr><td>2</td><td>File B (backs, reversed)</td><td>5 (was scanned last)</td></tr>
+          <tr><td>3</td><td>File A</td><td>2</td></tr>
+          <tr><td>4</td><td>File B, reversed</td><td>4</td></tr>
+          <tr><td>5</td><td>File A</td><td>3</td></tr>
+          <tr><td>6</td><td>File B, reversed</td><td>3</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td></tr>
+        </tbody>
+      </table>
+      <p>
+        The order preview above the button shows this mapping for your two files before the tool
+        writes anything, so you see a wrong reverse setting at once, before you print 200 sheets.
+      </p>
+    </section>
+
+    <section>
+      <h2>When to turn the reverse switch off</h2>
+      <ul>
+        <li>
+          Off if you rotated the stack and did not turn it over, or if your scanner software already
+          reversed the second pass.
+        </li>
+        <li>
+          Off if the two files come from different sources, for example alternate pages of a
+          translation and its original.
+        </li>
+        <li>
+          On (the default) for the usual case, where you turn the stack over.
+        </li>
+      </ul>
+      <p>
+        If you are not sure, look at the preview. If output page 2 comes from the highest page number
+        in file B, the reverse is on.
+      </p>
+    </section>
+
+    <section>
+      <h2>Uneven page counts</h2>
+      <p>
+        Most real documents have them, usually because the last sheet was printed on one side. With
+        the default, <strong>keep the extra pages at the end</strong>, the extra pages are added at the
+        end. Choose <strong>stop when the shorter file runs out</strong> when the backs are blank and
+        you do not want them.
+      </p>
+      <p>
+        A difference of more than one page usually means a misfeed: two sheets went through together on
+        one pass. Scan again, and do not patch. The preview shows which pass is short.
+      </p>
+    </section>
+
+    <section>
+      <h2>Nothing is re-compressed</h2>
+      <p>
+        The tool copies pages between documents as complete PDF objects. The scan images keep their
+        original resolution and compression, colour profiles stay, and an OCR text layer from your
+        scanner stays complete and searchable. The output is the same page content in a new order,
+        not a new render.
+      </p>
+    </section>
+
+    <section>
+      <h2>Related fixes for a bad scan</h2>
+      <ul>
+        <li><a href="/reverse-pdf-page-order">Reverse PDF Page Order</a> when only one file is in the wrong direction.</li>
+        <li><a href="/split-pdf-pages-in-half">Split PDF Pages in Half</a> when two pages are on one scan.</li>
+        <li><a href="/rotate-pdf">Rotate PDF</a> when the backs came out upside down.</li>
+        <li><a href="/delete-pages-from-pdf">Delete Pages from PDF</a> for the blank backs of single-sided sheets.</li>
+      </ul>
+    </section>
+  </Fragment>
+</ToolLayout>

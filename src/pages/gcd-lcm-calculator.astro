@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GcdLcmCalculator from '@/components/tools/math/GcdLcmCalculator.tsx'
+---
+
+<ToolLayout slug="gcd-lcm-calculator">
+  <GcdLcmCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <p>
+      Type two or more whole numbers separated by commas, spaces or newlines. The GCD and LCM calculator
+      shows the greatest common divisor and least common multiple as you type. It also shows the Euclidean
+      algorithm table for the first pair, the prime factorisation of each input, and the steps for both
+      answers.
+    </p>
+    <p>
+      Negative signs are ignored. GCD and LCM are defined on magnitudes, so GCD(−12, 18) is the same as
+      GCD(12, 18).
+    </p>
+
+    <h2>What the two quantities mean</h2>
+    <ul>
+      <li>
+        The greatest common divisor (GCD) is the largest whole number that divides all of your inputs
+        exactly. It is also called the greatest common factor (GCF) or highest common factor (HCF). The three
+        names mean the same thing.
+      </li>
+      <li>
+        The least common multiple (LCM) is the smallest positive number that all of your inputs divide into
+        exactly.
+      </li>
+    </ul>
+    <p>
+      If the GCD is 1, the numbers are coprime: they share no prime factor, but neither has to be prime
+      itself. 8 and 9 are coprime.
+    </p>
+
+    <h2>The Euclidean algorithm</h2>
+    <p>
+      This is the oldest algorithm still in everyday use. Divide the larger number by the smaller, keep the
+      remainder, and repeat with the smaller number and that remainder. When the remainder is zero, the last
+      non-zero divisor is the GCD.
+    </p>
+    <p>For 1071 and 462:</p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th scope="col">a</th><th scope="col">b</th><th scope="col">a ÷ b</th><th scope="col">Remainder</th></tr></thead>
+        <tbody>
+          <tr><td>1071</td><td>462</td><td>2</td><td>147</td></tr>
+          <tr><td>462</td><td>147</td><td>3</td><td>21</td></tr>
+          <tr><td>147</td><td>21</td><td>7</td><td>0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The remainder reached zero with a divisor of 21, so GCD(1071, 462) = 21. Any number that divides both
+      a and b also divides their remainder, so the pair can shrink without a change to the answer. The
+      number of steps grows only logarithmically, so hundred-digit inputs take no noticeable time.
+    </p>
+
+    <h2>The prime factorisation method</h2>
+    <p>
+      Factor each number into primes, then:
+    </p>
+    <ul>
+      <li>For the GCD, take the lowest power of each prime that appears in every number.</li>
+      <li>For the LCM, take the highest power of each prime that appears in any number.</li>
+    </ul>
+    <p>
+      For 48 = 2⁴ × 3 and 180 = 2² × 3² × 5: the GCD takes 2² × 3 = 12, and the LCM takes 2⁴ × 3² × 5 = 720.
+      This method is slower for large numbers, because factoring is hard, but the answer is easy to see and
+      most classrooms teach it. The tool shows both methods.
+    </p>
+
+    <h2>The identity that links them</h2>
+    <p>
+      For any two numbers, GCD(a, b) × LCM(a, b) = a × b. So the LCM is a × b ÷ GCD. The calculator uses
+      this, so it does not have to factor anything. The identity holds for pairs only. For three or more
+      numbers, fold pairwise: LCM(a, b, c) = LCM(LCM(a, b), c).
+    </p>
+
+    <h2>Where you need these</h2>
+    <ul>
+      <li>To add fractions, use the LCM of the denominators as the least common denominator. This keeps the numbers small.</li>
+      <li>To simplify fractions and ratios, divide by the GCD. This reduces them to lowest terms in one step.</li>
+      <li>Two buses that leave every 12 and 18 minutes leave together every LCM(12, 18) = 36 minutes.</li>
+      <li>The largest square tile that fits a 48 × 180 cm floor exactly has side GCD(48, 180) = 12 cm.</li>
+      <li>Two gears with 8 and 12 teeth return to their start alignment after LCM(8, 12) = 24 teeth pass.</li>
+      <li>RSA key generation uses the GCD to test that the public exponent is coprime to Euler’s totient.</li>
+    </ul>
+
+    <h2>Quick reference</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead><tr><th scope="col">Numbers</th><th scope="col">GCD</th><th scope="col">LCM</th></tr></thead>
+        <tbody>
+          <tr><td>12, 18</td><td>6</td><td>36</td></tr>
+          <tr><td>8, 9</td><td>1 (coprime)</td><td>72</td></tr>
+          <tr><td>48, 180</td><td>12</td><td>720</td></tr>
+          <tr><td>15, 25, 35</td><td>5</td><td>525</td></tr>
+          <tr><td>4, 6, 8, 12</td><td>2</td><td>24</td></tr>
+          <tr><td>1071, 462</td><td>21</td><td>23,562</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Precision and privacy</h2>
+    <p>
+      GCD and LCM use arbitrary-precision integers, so inputs of any practical length are exact. The tool
+      factors a number into primes only when it is small enough for quick trial division. All work runs in
+      your browser and nothing is uploaded.
+    </p>
+  </Fragment>
+</ToolLayout>

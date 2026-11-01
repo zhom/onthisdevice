@@ -1,0 +1,65 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WebpToPng from '@/components/tools/image-convert/WebpToPng.tsx'
+---
+
+<ToolLayout slug="webp-to-png">
+  <WebpToPng client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert WebP to PNG</h2>
+    <ol>
+      <li>Drop the .webp files onto the box above, or click to browse for them.</li>
+      <li>Conversion starts at once. There is no quality setting, because PNG is lossless: the decoded pixels are written exactly.</li>
+      <li>Transparency is kept by default. Use the flatten switch only if you want a solid colour behind the image.</li>
+      <li>Save each PNG, or download the whole batch as a ZIP.</li>
+    </ol>
+
+    <h2>Why your computer will not open a .webp file</h2>
+    <p>
+      Google designed WebP for the web, and more and more websites serve it in place of JPEG or PNG. When you
+      right-click and save an image, you get the format the site served, so you can end up with files that your
+      programs cannot open.
+    </p>
+    <p>Support depends on the program:</p>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th align="left">Where</th>
+            <th align="left">WebP</th>
+            <th align="left">PNG</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Chrome, Edge, Firefox, Safari 14+</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Windows Photos / macOS Preview (current)</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Photoshop CC 2022+ / GIMP 2.10+</td><td>Yes</td><td>Yes</td></tr>
+          <tr><td>Older desktop editors and viewers</td><td>Often not</td><td>Yes</td></tr>
+          <tr><td>Microsoft Word, PowerPoint (older builds)</td><td>Often not</td><td>Yes</td></tr>
+          <tr><td>Print shops, marketplace uploaders, CMS forms</td><td>Frequently rejected</td><td>Accepted</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      PNG is the most widely supported lossless raster format, and all of these programs read it.
+    </p>
+
+    <h2>What to expect from the output</h2>
+    <ul>
+      <li>No further quality loss: PNG stores the decoded image exactly. If the WebP was lossy, its artefacts are copied, but no new ones are added.</li>
+      <li>A larger file: lossy WebP is much more space-efficient than lossless PNG, so a 300 KB WebP photo often becomes a 4–8 MB PNG. This is normal.</li>
+      <li>Transparency kept: WebP's 8-bit alpha maps directly onto PNG's, so anti-aliased edges and soft shadows stay the same.</li>
+      <li>First frame only for animated WebP: PNG is a still format, so the animation is lost.</li>
+      <li>No metadata: EXIF or XMP blocks in the WebP container are discarded during re-encoding.</li>
+    </ul>
+
+    <h2>Would JPG be a better target?</h2>
+    <p>
+      If the image is a photo and you only need to view or share it, <a href="/webp-to-jpg">WebP to JPG</a> gives
+      a much smaller file with no visible difference. Choose PNG when you need transparency, will edit the image
+      further, or the destination requires a lossless format. To convert a folder of mixed formats in one pass,
+      use the <a href="/image-converter">universal image converter</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

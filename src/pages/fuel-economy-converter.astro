@@ -1,0 +1,87 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="fuel-economy-converter">
+  <UnitConverter client:load dimension="fuel" from="mpg-us" to="l100km" value="30" />
+  <Fragment slot="explainer">
+    <h2>How to convert fuel economy</h2>
+    <ol>
+      <li>Type your figure into either field. The tool handles the reciprocal relation, so you do not need to remember the direction of the division.</li>
+      <li>Pick the units, and read the group labels: the first group counts fuel per distance (lower is better) and the second counts distance per fuel (higher is better).</li>
+      <li>Check the formula panel. It shows a division, not a multiplication, which is why this conversion causes errors.</li>
+    </ol>
+
+    <h2>Why this conversion is not a multiplication</h2>
+    <p>
+      Miles per gallon and litres per 100 km measure the same thing in opposite directions. One is distance
+      divided by fuel; the other is fuel divided by distance. The conversion takes a reciprocal:
+    </p>
+    <p>
+      <strong>L/100 km = 235.214583 ÷ mpg (US)</strong>, and <strong>mpg (US) = 235.214583 ÷
+      L/100 km</strong>.
+    </p>
+    <p>
+      For imperial gallons the constant is 282.480936. Both constants come from exact definitions:
+      3.785411784 L per US gallon and 1.609344 km per mile, so 100 × 3.785411784 ÷ 1.609344 = 235.214583.
+    </p>
+    <p>
+      As a result, improvements are not linear. From 15 to 20 mpg saves 1.67 gallons per 100 miles; from 40 to
+      45 mpg saves only 0.28 gallons over the same distance. Replacing the least efficient vehicle in a fleet
+      saves much more fuel than a small improvement to an efficient one. The L/100 km scale shows this
+      clearly; mpg hides it.
+    </p>
+
+    <h2>US mpg and UK mpg are different numbers</h2>
+    <p>
+      The imperial gallon is 4.54609 litres; the US gallon is 3.785411784. The UK gallon is 20 % larger, so the
+      same car gets about 20 % more miles per gallon in UK figures. A car advertised at 40 mpg in Britain is a
+      33 mpg car in America. Both figures are correct; they use different gallons.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>L/100 km</th><th>mpg (US)</th><th>mpg (UK)</th><th>km/L</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>4</td><td>58.8</td><td>70.6</td><td>25.0</td></tr>
+          <tr><td>5</td><td>47.0</td><td>56.5</td><td>20.0</td></tr>
+          <tr><td>6</td><td>39.2</td><td>47.1</td><td>16.7</td></tr>
+          <tr><td>7</td><td>33.6</td><td>40.4</td><td>14.3</td></tr>
+          <tr><td>8</td><td>29.4</td><td>35.3</td><td>12.5</td></tr>
+          <tr><td>10</td><td>23.5</td><td>28.2</td><td>10.0</td></tr>
+          <tr><td>12</td><td>19.6</td><td>23.5</td><td>8.3</td></tr>
+          <tr><td>15</td><td>15.7</td><td>18.8</td><td>6.7</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What counts as good</h2>
+    <ul>
+      <li>Under 5 L/100 km (over 47 US mpg): excellent; small diesels and full hybrids.</li>
+      <li>5 to 8 L/100 km: typical for a modern petrol family car driven sensibly.</li>
+      <li>8 to 12 L/100 km: larger petrol cars, SUVs, or mostly short urban trips.</li>
+      <li>Over 12 L/100 km (under 20 US mpg): high consumption; big engines, towing, or heavy city driving.</li>
+    </ul>
+    <p>
+      Manufacturer figures come from standardised test cycles (WLTP in Europe, EPA in the US), and real-world
+      consumption is usually 10 to 25 % higher. To know your own number, fill the tank, reset the trip meter,
+      and divide at the next fill.
+    </p>
+
+    <h2>Electric cars and the kWh option</h2>
+    <p>
+      Electric vehicles are rated in kWh per 100 km, or in miles per kWh in the US. This fuel economy converter
+      has a kWh/100 km unit that maps onto the fuel scale with the EPA equivalence of about 33.7 kWh per US
+      gallon of petrol, about 8.9 kWh per litre. You can then put an EV and a petrol car on the same axis for
+      an energy comparison.
+    </p>
+    <p>
+      Use it only as an energy comparison, not a fuel comparison. An EV that uses 18 kWh/100 km is not "doing
+      2 L/100 km" in a physical sense. It uses the energy of two litres of petrol, and an internal combustion
+      engine loses most of that energy as heat. For running costs, compare the price of a kWh with the price
+      of a litre directly.
+    </p>
+  </Fragment>
+</ToolLayout>

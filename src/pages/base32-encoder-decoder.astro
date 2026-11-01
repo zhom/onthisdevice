@@ -1,0 +1,81 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeRadixText from '@/components/tools/dev/DevEncodeRadixText.tsx'
+---
+
+<ToolLayout slug="base32-encoder-decoder">
+  <DevEncodeRadixText client:load radix="base32" direction="encode" />
+  <Fragment slot="explainer">
+    <h2>What Base32 is for</h2>
+    <p>
+      Base32 encodes binary data with 32 characters: A–Z and 2–7. That is five bits per character,
+      against six for Base64, so the output is 60% larger, not 33%. In exchange, the alphabet is
+      case-insensitive, has no characters that look alike, and you can speak, handwrite or type it
+      from a screen without errors.
+    </p>
+
+    <h2>Why 0, 1 and 8 are missing</h2>
+    <p>
+      They were removed on purpose. Zero and capital O look the same in many fonts; one, capital I and
+      lowercase L are worse; eight and capital B are similar on a low-resolution display. Without those
+      digits, the usual transcription errors cannot occur. For this reason, two-factor authentication
+      secrets use Base32 and not Base64.
+    </p>
+
+    <h2>Two alphabets</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th></th><th>RFC 4648 standard</th><th>base32hex (§7)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Alphabet</td><td>A–Z then 2–7</td><td>0–9 then A–V</td></tr>
+          <tr><td>Sorts in byte order</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Used by</td><td>TOTP secrets, Tor v3 addresses, some S3 keys</td><td>DNSSEC NSEC3 records</td></tr>
+          <tr><td>Value of the character A</td><td>0</td><td>10</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The two give completely different output for the same input, so decoding with the wrong one gives
+      data that looks plausible but is wrong, with no error. If a decode is nonsense, try the other
+      alphabet before you assume the data is corrupt.
+    </p>
+
+    <h2>Padding</h2>
+    <p>
+      Base32 works in 40-bit groups: five bytes in, eight characters out. When the input does not
+      divide evenly, the RFC pads to a multiple of eight with <code>=</code>. For this reason you see
+      one, three, four or six equals signs, but never two, five or seven. Most implementations accept
+      unpadded input, and TOTP secrets are almost always shared without padding. This decoder ignores
+      padding.
+    </p>
+
+    <h2>Reading a TOTP secret</h2>
+    <p>
+      When an authenticator app shows a secret such as <code>JBSW Y3DP EHPK 3PXP</code>, that is Base32
+      with a space after every four characters for legibility. Decode it here to get the raw key bytes:
+      10 bytes for that example, 20 for the 160-bit secret that the RFC recommends. The decoder accepts
+      spaces and lowercase, so paste the secret as shown. To see the codes that a secret produces, use
+      the TOTP generator on this site, which also works offline.
+    </p>
+
+    <h2>Size comparison</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Encoding</th><th>Bits per character</th><th>Growth</th><th>Case-sensitive</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hex</td><td>4</td><td>+100%</td><td>No</td></tr>
+          <tr><td>Base32</td><td>5</td><td>+60%</td><td>No</td></tr>
+          <tr><td>Base64</td><td>6</td><td>+33%</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Use hex when a person must read individual bytes, Base32 when a person must copy the whole value,
+      and Base64 when nobody reads it and size matters.
+    </p>
+  </Fragment>
+</ToolLayout>

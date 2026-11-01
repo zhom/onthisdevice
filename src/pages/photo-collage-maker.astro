@@ -1,0 +1,83 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CombineImages from '@/components/tools/image-edit/CombineImages.tsx'
+---
+
+<ToolLayout slug="photo-collage-maker">
+  <CombineImages client:load defaultLayout="grid" collage={true} />
+
+  <Fragment slot="explainer">
+    <h2>Building a grid collage</h2>
+    <p>
+      The photo collage maker opens on a two-column grid with a 16 px gap and 12 px rounded corners, a
+      layout that looks designed at once. Three controls shape the result: the number of
+      columns, the gap, and the background colour behind the gaps. Every cell is the size of your
+      largest photo, and each image is fitted inside its cell without cropping or distortion, so
+      portrait and landscape shots can share a grid without anything being squashed.
+    </p>
+
+    <h2>Choosing the column count</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Photos</th><th>Columns</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2</td><td>2</td><td>A pair, side by side</td></tr>
+          <tr><td>3</td><td>3 or 1</td><td>A strip: wide for a banner, tall for a story</td></tr>
+          <tr><td>4</td><td>2</td><td>The classic square quad</td></tr>
+          <tr><td>6</td><td>3</td><td>Two rows of three; good for a 3:2 print</td></tr>
+          <tr><td>9</td><td>3</td><td>Square grid, the Instagram-panel look</td></tr>
+          <tr><td>12–16</td><td>4</td><td>Contact sheet; consider capping input width first</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      As a general rule, take the square root of your photo count and round: four photos want two
+      columns, nine want three, sixteen want four. If you break that rule on purpose (one column, or
+      one row), you get a story strip or a banner.
+    </p>
+
+    <h2>Gaps, corners and background</h2>
+    <ul>
+      <li>Gap. Roughly 1–2% of the collage width reads as a designed margin. Zero gap gives a seamless mosaic, which suits photos of the same subject; a large gap in white gives a Polaroid-wall feel.</li>
+      <li>Corner rounding. 8–16 px is contemporary. It applies per photo, so the background colour shows at the corners. Pick a background you want to see.</li>
+      <li>Background. White for printing, black for a gallery look, or your brand colour for social. Switch on transparency and export PNG if the collage will be placed on an unknown background.</li>
+    </ul>
+
+    <h2>Order and arrangement</h2>
+    <p>
+      The grid fills row by row, left to right, in the order of the file chips above the preview.
+      Drag the chips to rearrange. A useful trick for mixed orientations: put your one landscape
+      photo first so it fills the top-left cell, and put the portraits after it. The largest image
+      sets the cell size, so the layout stays even.
+    </p>
+
+    <h2>Collages for print</h2>
+    <p>
+      Export PNG for the sharpest result, then tag the physical size with
+      <a href="/change-image-dpi">Change Image DPI</a>. For a 6 × 4 inch print at 300 DPI you want a
+      1800 × 1200 pixel collage; the pixel dimensions of your canvas are shown above the preview, so
+      you can check before you export. If the collage comes out smaller than that, your source
+      photos are the limit. Enlarging afterwards only invents pixels.
+    </p>
+
+    <h2>Memory, not policy, is the only limit</h2>
+    <p>
+      There is no cap on how many photos you can add, because there is no server to protect: the
+      canvas is built in your own browser. The practical ceiling is device memory. A sixteen-photo
+      grid of 12-megapixel images is a canvas of roughly 200 million pixels, which is around 800 MB
+      of RAM before encoding. That is fine on a desktop, but likely to fail on an older phone. If your browser
+      gives up, shrink the inputs first with <a href="/resize-image">Resize Image</a>, or build the
+      collage in two halves and merge them with
+      <a href="/merge-images-side-by-side">Merge Images Side by Side</a>.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/combine-images">Combine Images</a> for the plain side-by-side and stacked layouts,
+      <a href="/add-text-to-image">Add Text to Image</a> to title the finished collage, and
+      <a href="/compress-image-to-1mb">compress to 1 MB</a> if it needs to fit an upload limit.
+    </p>
+  </Fragment>
+</ToolLayout>

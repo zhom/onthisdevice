@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Base64EncoderDecoder from '@/components/tools/dev/Base64EncoderDecoder.tsx'
+---
+
+<ToolLayout slug="base64-encoder-decoder">
+  <Base64EncoderDecoder client:load />
+  <Fragment slot="explainer">
+    <h2>How to encode and decode Base64</h2>
+    <ol>
+      <li><strong>Text</strong> tab: paste text and choose Encode, or paste Base64 and choose Decode. The result appears immediately in the second pane.</li>
+      <li><strong>File → Base64</strong>: drop a file to get its Base64 form, or turn on the switch to get a complete <code>data:</code> URI with the correct MIME type.</li>
+      <li><strong>Base64 → File</strong>: paste raw Base64 or a data URI, confirm the detected file type, and download the rebuilt file.</li>
+      <li>Use the URL-safe switch when the value goes inside a URL, and the wrap switch when a protocol requires 76-character lines.</li>
+    </ol>
+
+    <h2>What Base64 actually does</h2>
+    <p>
+      Base64 takes three bytes (24 bits) and writes them as four characters from a 64-symbol alphabet,
+      each with 6 bits. For this reason, the output is always about 133% of the input size, and the
+      length is a multiple of four after padding. When the input length does not divide by three, the
+      encoder adds one or two <code>=</code> characters, so the decoder knows how many bytes to discard.
+    </p>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Input bytes</th><th>Base64 characters</th><th>Padding</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>3 (e.g. <code>abc</code>)</td><td>4: <code>YWJj</code></td><td>none</td></tr>
+        <tr><td>2 (e.g. <code>ab</code>)</td><td>4: <code>YWI=</code></td><td>one <code>=</code></td></tr>
+        <tr><td>1 (e.g. <code>a</code>)</td><td>4: <code>YQ==</code></td><td>two <code>=</code></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h2>Why other tools break on accents and emoji</h2>
+    <p>
+      The browser function <code>btoa()</code> accepts only characters with a code point below 256,
+      because it was made for binary strings, not Unicode text. <code>café</code> makes it throw an
+      error, and a badly converted string comes back as mojibake. This tool converts your text to UTF-8
+      bytes with <code>TextEncoder</code> before encoding, and decodes with a strict UTF-8 decoder, so
+      <code>café</code>, <code>日本語</code> and 👋 all round-trip byte for byte.
+    </p>
+
+    <h2>Standard versus URL-safe alphabet</h2>
+    <div class="overflow-x-auto">
+    <table>
+      <thead>
+        <tr><th>Position 62</th><th>Position 63</th><th>Padding</th><th>Where it is used</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>+</code></td><td><code>/</code></td><td><code>=</code></td><td>MIME, email, most APIs (RFC 4648 §4)</td></tr>
+        <tr><td><code>-</code></td><td><code>_</code></td><td>usually omitted</td><td>JWTs, URLs, file names (RFC 4648 §5)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>
+      The decoder accepts both alphabets, with or without padding, and ignores line breaks. You can
+      paste a value from a log line or a config file without cleanup.
+    </p>
+
+    <h2>Data URIs for CSS and HTML</h2>
+    <p>
+      A data URI puts a file directly in a document: <code>data:image/svg+xml;base64,PHN2Zy…</code>. It
+      removes a network request, which helps for very small assets such as an inline SVG icon, a
+      1-pixel spacer, or a font subset used above the fold. For large files it is a bad trade: the
+      payload cannot be cached separately, compresses less well than the raw binary, and delays the
+      stylesheet or HTML that contains it.
+    </p>
+    <p>As a guide, inline files below about 2 KB, link larger files, and always measure.</p>
+
+    <h2>Base64 is not encryption</h2>
+    <p>
+      Security reviews find this often. Base64 is a transport encoding with a published, reversible
+      alphabet, and anyone can decode it, for example on this page. A password, API key or session
+      token stored as Base64 is stored in plain text. For confidentiality, encrypt first, then
+      Base64-encode the ciphertext if the transport requires text.
+    </p>
+
+    <h2>Everything stays on your device</h2>
+    <p>
+      Files are read with the browser <code>File</code> API and processed in chunks, so inputs of
+      several megabytes do not freeze the tab. Nothing is uploaded, so encoding an internal certificate,
+      a signed document or a private key here is as safe as running <code>base64</code> in your own
+      terminal.
+    </p>
+  </Fragment>
+</ToolLayout>

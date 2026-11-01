@@ -1,0 +1,120 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DaysUntilChristmas from '@/components/tools/datetime/DaysUntilChristmas.tsx'
+---
+
+<ToolLayout slug="days-until-christmas">
+  <DaysUntilChristmas client:load />
+  <Fragment slot="explainer">
+    <h2>How the countdown works</h2>
+    <p>
+      The Christmas clock at the top counts down to midnight at the start of 25 December in the timezone you
+      select. It calculates from your device clock on each tick, so it stays exact even after hours in a
+      background tab. Below it, each tracked holiday shows the number of whole calendar days remaining, counted
+      from today where you are.
+    </p>
+    <p>
+      The page has no stored lookup table. Each date comes from the rule that defines the holiday, calculated when
+      the page loads. For this reason, the list updates automatically the day after each holiday, and the six-year
+      table works for any span.
+    </p>
+
+    <h2>Fixed-date holidays</h2>
+    <p>
+      These are on the same calendar date each year, but the weekday changes. The Gregorian year is 365.2425 days
+      long, so a fixed date moves forward one weekday each year, and two across a leap year.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Holiday</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>New Year's Day</td><td>1 January</td></tr>
+          <tr><td>Valentine's Day</td><td>14 February</td></tr>
+          <tr><td>St Patrick's Day</td><td>17 March</td></tr>
+          <tr><td>Juneteenth</td><td>19 June</td></tr>
+          <tr><td>Independence Day (US)</td><td>4 July</td></tr>
+          <tr><td>Halloween</td><td>31 October</td></tr>
+          <tr><td>Veterans Day</td><td>11 November</td></tr>
+          <tr><td>Christmas Eve</td><td>24 December</td></tr>
+          <tr><td>Christmas Day</td><td>25 December</td></tr>
+          <tr><td>Boxing Day</td><td>26 December</td></tr>
+          <tr><td>New Year's Eve</td><td>31 December</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Holidays defined by a weekday rule</h2>
+    <p>
+      These move within a fixed window each year. The page stores the rule, not the date.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Holiday</th>
+            <th>Rule</th>
+            <th>Possible dates</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Martin Luther King Jr. Day</td><td>3rd Monday of January</td><td>15–21 January</td></tr>
+          <tr><td>Presidents' Day</td><td>3rd Monday of February</td><td>15–21 February</td></tr>
+          <tr><td>Mother's Day (US)</td><td>2nd Sunday of May</td><td>8–14 May</td></tr>
+          <tr><td>Memorial Day</td><td>Last Monday of May</td><td>25–31 May</td></tr>
+          <tr><td>Father's Day (US)</td><td>3rd Sunday of June</td><td>15–21 June</td></tr>
+          <tr><td>Labor Day (US)</td><td>1st Monday of September</td><td>1–7 September</td></tr>
+          <tr><td>Thanksgiving (US)</td><td>4th Thursday of November</td><td>22–28 November</td></tr>
+          <tr><td>Black Friday</td><td>Day after Thanksgiving</td><td>23–29 November</td></tr>
+          <tr><td>Cyber Monday</td><td>Monday after Thanksgiving</td><td>26 November to 2 December</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Easter and the computus</h2>
+    <p>
+      Easter is the hardest date in the western calendar to calculate. The rule agreed at the Council of Nicaea in
+      325 puts Easter Sunday on the first Sunday after the first ecclesiastical full moon on or after 21 March.
+      "Ecclesiastical" is important: the church uses a tabular approximation of the lunar cycle, not the real moon,
+      so Easter can differ from the astronomical answer by a week.
+    </p>
+    <p>
+      This page uses the anonymous Gregorian algorithm, usually credited to Meeus, Jones and Butcher, which
+      calculates the date for any Gregorian year. Easter falls between 22 March and 25 April, a 35-day window, and
+      Good Friday, Ash Wednesday, Ascension and Pentecost move with it. Eastern Orthodox churches apply the same
+      rule to the Julian calendar, so their Easter is usually on a different Sunday.
+    </p>
+
+    <h2>Why the day count can differ by one</h2>
+    <p>
+      "Days until" is a count of calendar days, not elapsed hours divided by 24. At 23:00 on 20 December where you
+      are, Christmas is 5 days away, although only about 4 days and 1 hour of real time remain. People usually mean
+      this answer. For this reason the reference timezone matters near midnight: it is already tomorrow in Auckland
+      while it is still today in Los Angeles.
+    </p>
+
+    <h2>Planning ahead</h2>
+    <ul>
+      <li>
+        Shipping deadlines: most carriers publish last-posting dates in the first half of December. For
+        international post, count back about 10 to 14 days from the 25th.
+      </li>
+      <li>
+        Black Friday: it is tied to Thanksgiving, so it can be as early as 23 November or as late as the 29th,
+        which moves the whole retail calendar from year to year.
+      </li>
+      <li>
+        Bank holidays on a weekend: the UK gives a substitute weekday; in the US, a federal holiday on a Saturday
+        is observed the Friday before, and on a Sunday the Monday after. This page does not list substitute days.
+      </li>
+      <li>
+        Working days, not calendar days: for the number of working days before a holiday, use the business days
+        calculator, which handles weekends and your own holiday list.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

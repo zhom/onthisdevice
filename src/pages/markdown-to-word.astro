@@ -1,0 +1,170 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureMarkdownToWord from '@/components/tools/data/PdfSecureMarkdownToWord.tsx'
+---
+
+<ToolLayout slug="markdown-to-word">
+  <PdfSecureMarkdownToWord client:load source="markdown" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why this exists</h2>
+      <p>
+        Most technical writing is now in Markdown: READMEs, notes, documentation, and chatbot output.
+        Organisations still use Word. A paste into Word usually means twenty minutes to fix headings
+        that arrived as plain bold text and bullets that arrived as literal hyphens.
+      </p>
+      <p>
+        This Markdown to Word converter writes a real .docx: a zip with
+        <code>[Content_Types].xml</code>, <code>word/document.xml</code>, a styles part and a
+        numbering part, in the same OOXML structure that Word produces.
+      </p>
+    </section>
+
+    <section>
+      <h2>What maps to what</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Markdown</th>
+              <th scope="col">Word</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code># … ######</code></td>
+              <td>Heading 1 to Heading 6, with real outline levels</td>
+            </tr>
+            <tr>
+              <td><code>**bold**</code>, <code>*italic*</code>, <code>~~strike~~</code></td>
+              <td>Character formatting on the run</td>
+            </tr>
+            <tr>
+              <td><code>`inline code`</code></td>
+              <td>The HTML Code character style: Consolas on a grey background</td>
+            </tr>
+            <tr>
+              <td>Fenced code blocks</td>
+              <td>HTML Preformatted paragraphs, one per line, shaded</td>
+            </tr>
+            <tr>
+              <td><code>- item</code> / <code>1. item</code></td>
+              <td>List Paragraph with a real numbering definition, three levels deep</td>
+            </tr>
+            <tr>
+              <td><code>- [x] task</code></td>
+              <td>A bulleted item prefixed with ☑ or ☐</td>
+            </tr>
+            <tr>
+              <td><code>&gt; quote</code></td>
+              <td>The Quote style: indented, italic, with a left rule</td>
+            </tr>
+            <tr>
+              <td><code>[text](url)</code></td>
+              <td>A real hyperlink with a relationship entry, clickable in Word</td>
+            </tr>
+            <tr>
+              <td>GFM pipe tables</td>
+              <td>A Table Grid table with a bold, repeating header row</td>
+            </tr>
+            <tr>
+              <td><code>---</code></td>
+              <td>A bottom paragraph border</td>
+            </tr>
+            <tr>
+              <td><code>![alt](src)</code></td>
+              <td>An italic <em>[image: alt]</em> placeholder. See below</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Styles, not hard formatting</h2>
+      <p>
+        A heading written as "18 pt bold dark blue" looks the same as Heading 1, but with hard
+        formatting:
+      </p>
+      <ul>
+        <li>
+          <strong>References → Table of Contents</strong> finds nothing, because a TOC is built from
+          outline levels.
+        </li>
+        <li>
+          The navigation pane is empty, so you cannot jump through a long document.
+        </li>
+        <li>
+          Your organisation's template does nothing, because there are no styles to change.
+        </li>
+        <li>
+          Accessibility checkers flag the document, and screen readers cannot skim it by heading.
+        </li>
+        <li>
+          <strong>Export to PDF</strong> gives no bookmarks.
+        </li>
+      </ul>
+      <p>
+        This converter uses Word's built-in style ids, so all five work when the file opens.
+      </p>
+    </section>
+
+    <section>
+      <h2>The AI-output workflow</h2>
+      <p>
+        A common case: a chatbot gave a useful answer, and it must become a document. A sensible
+        sequence:
+      </p>
+      <ol>
+        <li>Ask for the answer in Markdown. Most models do this consistently.</li>
+        <li>Copy the whole reply, including the heading hierarchy and any tables.</li>
+        <li>Paste it here and set a document title, which also names the downloaded file.</li>
+        <li>
+          Open the .docx and apply your organisation's template. The headings are real styles, so the
+          whole document changes style at once.
+        </li>
+      </ol>
+      <p>
+        Note: this conversion is local, but the text you pasted into the chatbot already went to that
+        company. If the source material was confidential, that happened before this page.
+      </p>
+    </section>
+
+    <section>
+      <h2>Images and other limits</h2>
+      <ul>
+        <li>
+          Images are placeholders. An <code>![alt](url)</code> almost always points to a remote
+          address, and this page makes no network requests. The tool marks the position, and you
+          insert the image yourself.
+        </li>
+        <li>
+          Raw HTML in the Markdown becomes its text only. Use <a href="/html-to-word">HTML to Word</a>
+          if HTML is the main source.
+        </li>
+        <li>
+          Footnotes and definition lists are not part of core GFM and become ordinary paragraphs.
+        </li>
+        <li>
+          Nested lists work to three levels, which is also Word's practical limit for one numbering
+          definition.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Opening the result elsewhere</h2>
+      <p>
+        The file is standard OOXML, so it opens in Microsoft Word (2007 onwards), LibreOffice Writer,
+        Google Docs, Apple Pages and other apps that read .docx. Google Docs and LibreOffice map
+        Word's built-in style names to their own, so headings stay headings there too.
+      </p>
+      <p>
+        For a PDF, use <a href="/markdown-to-pdf">Markdown to PDF</a>. For HTML, use
+        <a href="/markdown-to-html">Markdown to HTML</a>. For the other direction,
+        <a href="/docx-to-markdown">DOCX to Markdown</a> converts .docx back to Markdown.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

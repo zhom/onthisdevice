@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatReference from '@/components/tools/dev/DevFormatReference.tsx'
+import { HTTP_STATUSES, STATUS_CLASSES } from '@/components/tools/dev/dev-format-http-data'
+
+const byClass = STATUS_CLASSES.map((klass) => ({
+  ...klass,
+  codes: HTTP_STATUSES.filter((status) => status.klass === klass.id),
+}))
+---
+
+<ToolLayout slug="http-status-codes">
+  <DevFormatReference client:load dataset="http" />
+
+  <div class="mx-auto mt-10 w-full max-w-4xl space-y-8">
+    {
+      byClass.map((klass) => (
+        <section>
+          <h2 class="text-xl font-semibold tracking-tight text-foreground">{klass.title}</h2>
+          <p class="mt-1 max-w-3xl text-[15px] leading-7 text-pretty text-muted-foreground">
+            {klass.blurb}
+          </p>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            {klass.codes.map((status) => (
+              <li>
+                <a
+                  href={`/http-status-codes/${status.code}`}
+                  class="inline-flex items-baseline gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  <span class="font-mono font-semibold text-foreground">{status.code}</span>
+                  <span class="text-muted-foreground">{status.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <Fragment slot="explainer">
+    <h2>How to read a status code you have never seen</h2>
+    <p>
+      The first digit of an HTTP status code tells you whose problem it is. The other digits give detail.
+    </p>
+    <ul>
+      <li>1xx is handshake traffic. A client library handles these, and you rarely see one in an application log.</li>
+      <li>2xx means it worked. The codes differ in what the body contains and whether the client should change its view.</li>
+      <li>3xx means go somewhere else. What matters is permanent or temporary, and whether the method can change.</li>
+      <li>4xx means the request was wrong. The same request sent again fails the same way, so an automatic retry does not help. The two exceptions are 408 and 429, which are about timing.</li>
+      <li>5xx means the server failed. The request may have been valid, so retry an idempotent request with exponential backoff.</li>
+    </ul>
+
+    <h2>The distinctions that cause real bugs</h2>
+    <table>
+      <thead><tr><th>Pair</th><th>The difference</th><th>If you get it wrong</th></tr></thead>
+      <tbody>
+        <tr><td>401 vs 403</td><td>&ldquo;Who are you?&rdquo; versus &ldquo;I know, and no&rdquo;</td><td>A token-refresh loop that can never succeed</td></tr>
+        <tr><td>400 vs 422</td><td>Unparseable versus parsed-but-invalid</td><td>Clients cannot tell a bug from a user-input error</td></tr>
+        <tr><td>301 vs 302</td><td>Permanent versus temporary</td><td>A mistaken 301 is cached by browsers for a very long time</td></tr>
+        <tr><td>302 vs 307</td><td>Method may change versus must not</td><td>A POST silently becomes a GET and the body vanishes</td></tr>
+        <tr><td>301 vs 308</td><td>Same, for permanent redirects</td><td>Same</td></tr>
+        <tr><td>404 vs 410</td><td>Not here versus deliberately gone</td><td>Search engines keep re-crawling a 404 for months</td></tr>
+        <tr><td>500 vs 503</td><td>Unhandled failure versus temporarily unavailable</td><td>Planned maintenance gets pages de-indexed</td></tr>
+        <tr><td>502 vs 504</td><td>Bad upstream response versus upstream too slow</td><td>You debug the wrong layer</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Retry policy in one paragraph</h2>
+    <p>
+      Retry 408, 429, 500, 502, 503 and 504, but only for idempotent requests (GET, HEAD, PUT, DELETE) or
+      POSTs with an idempotency key. When <code>Retry-After</code> is present, obey it exactly. Otherwise
+      back off exponentially with jitter, because synchronised retries from many clients turn a brief
+      blip into a long outage. Limit the number of attempts, and never retry a 4xx other than 408 and
+      429.
+    </p>
+
+    <h2>Choosing status codes for your own API</h2>
+    <ol>
+      <li>Never return 200 with an error in the body. Generic clients, retry policies, caches and monitors all read the status line.</li>
+      <li>Return 201 with a <code>Location</code> header when you create something.</li>
+      <li>Return 204 with no body for a successful delete. A 204 must not have a body.</li>
+      <li>Put machine-readable detail in the body, and keep the status code coarse. RFC 9457&rsquo;s <code>application/problem+json</code> is a good default.</li>
+      <li>Include <code>Retry-After</code> on each 429 and 503. Clients act on this header.</li>
+    </ol>
+
+    <h2>Sources</h2>
+    <p>
+      The definitions here follow RFC 9110 (HTTP Semantics) and the extension RFCs cited on each
+      code&rsquo;s page, checked against the IANA HTTP Status Code Registry. The causes and fixes are
+      practitioner notes, not part of a specification. Vendor-specific codes are marked as vendor-specific.
+    </p>
+  </Fragment>
+</ToolLayout>

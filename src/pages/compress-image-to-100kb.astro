@@ -1,0 +1,91 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CompressImageToTarget from '@/components/tools/image-edit/CompressImageToTarget.tsx'
+---
+
+<ToolLayout slug="compress-image-to-100kb">
+  <CompressImageToTarget client:load targetKb={100} />
+
+  <Fragment slot="explainer">
+    <h2>Why “100 KB exactly” is hard, and how this page does it</h2>
+    <p>
+      No formula turns a quality setting into a file size. Quality 74 can give 42 KB for a studio
+      portrait and 380 KB for a photo of a hedge, because JPEG spends its bits on detail, and the
+      amount of detail in those two images is very different. With a quality slider alone, you must
+      guess, upload again, and guess again.
+    </p>
+    <p>
+      This page measures. It encodes at quality 92 and checks the byte count. If that fits, it stops,
+      and you keep the best quality. If not, it does a binary search: it encodes at the midpoint of the
+      remaining range; if the result fits, it keeps it and raises the floor; if not, it lowers the
+      ceiling. Nine or ten rounds narrow the range to one quality point, and you download the highest
+      encode that fits. The result card lists each attempt with its quality and byte count.
+    </p>
+
+    <h2>The reason upload sites cannot do this</h2>
+    <p>
+      On a server-based compressor, each attempt is a round trip: your photo goes up, an encoder runs,
+      and the result comes back. Ten attempts are ten uploads. For this reason those services offer
+      one quality slider and one attempt, and their free tiers allow two or three jobs a day. Here the
+      encoder is MozJPEG compiled to WebAssembly, on your own CPU. Ten encodes of a 12-megapixel photo
+      take less than a second, so an exact target is practical.
+    </p>
+
+    <h2>What actually fits in 100 KB</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Content</th><th>Comfortable size at 100 KB</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Passport-style portrait, plain background</td><td>1200 × 1600 px at quality 80+</td></tr>
+          <tr><td>Product shot on white</td><td>1600 px wide, visually lossless</td></tr>
+          <tr><td>Ordinary outdoor snapshot</td><td>1200 px wide at quality 70–80</td></tr>
+          <tr><td>Foliage, crowds, water, film grain</td><td>800 px wide, and it still looks soft</td></tr>
+          <tr><td>Screenshot with text</td><td>Use PNG and resize; JPEG adds rings around letters</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>If quality alone cannot get there</h2>
+    <p>
+      When even quality 5 is too large (usual for very large or very detailed photos), the tool starts
+      a second binary search on the pixel dimensions, with a Lanczos3 resample. It reports the scale it
+      used. If the dimensions must not change, turn that fallback off. You then get the smallest file
+      the quality search can make, with a warning that the target was missed.
+    </p>
+
+    <h2>Get more out of the same 100 KB</h2>
+    <ul>
+      <li>Crop first. The encoder spends no bits on pixels you remove. A tight crop at 100 KB always looks better than a wide scene at 100 KB.</li>
+      <li>Limit the width with the width field. A photo shown at 800 px does not need 4000 px of data.</li>
+      <li>Try WebP. Where the destination accepts it, WebP keeps about 25–35% more detail than JPEG at the same byte count.</li>
+      <li>Start from the original. Compressing an already-compressed JPEG adds to the errors of the first generation. Always use the camera file.</li>
+    </ul>
+
+    <h2>Kilobytes, kibibytes and the 2% margin</h2>
+    <p>
+      The tool counts 1 KB as 1024 bytes, as the file browser of your operating system does, and aims
+      2% under the limit. Upload validators compare against a hard byte limit and reject a file one byte
+      over, and some measure the base64-encoded size, not the raw size. A 100 KB target thus gives a
+      file of about 100,000 bytes or less, which satisfies both the 1024 and the 1000 interpretation.
+    </p>
+
+    <h2>Batch and ZIP</h2>
+    <p>
+      Drop in as many images as you like. Each one gets its own search to the same target, with a
+      progress row, and you can download them one by one or as one ZIP. There is no file cap, daily
+      quota or account, because there is no server cost.
+    </p>
+
+    <h2>Other targets</h2>
+    <p>
+      <a href="/compress-image-to-50kb">50 KB</a> ·
+      <a href="/compress-image-to-200kb">200 KB</a> ·
+      <a href="/compress-image-to-500kb">500 KB</a> ·
+      <a href="/compress-image-to-1mb">1 MB</a> ·
+      <a href="/reduce-image-size-in-kb">any target you type</a>. For a quality slider, use
+      <a href="/compress-image">Compress Image</a>.
+    </p>
+  </Fragment>
+</ToolLayout>

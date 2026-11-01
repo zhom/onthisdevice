@@ -1,0 +1,113 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ScreenRecorder from '@/components/tools/media/ScreenRecorder.tsx'
+---
+
+<ToolLayout slug="screen-recorder">
+  <ScreenRecorder client:load />
+  <Fragment slot="explainer">
+    <h2>How to record your screen</h2>
+    <ol>
+      <li>Decide whether you want your microphone and the computer’s own audio, then press <strong>Start recording</strong>.</li>
+      <li>Your browser shows a picker with your screens, open windows and tabs. Choose one. The page cannot see or change this picker: only you decide what is shared.</li>
+      <li>Switch to what you want to record. This tab keeps capturing in the background, and the length and file size counters keep running.</li>
+      <li>Press <strong>Stop and save</strong> here, or the browser’s own "Stop sharing" bar. Preview the result, download it, and optionally convert it to MP4.</li>
+    </ol>
+
+    <h2>Where the video goes</h2>
+    <p>
+      Frames go from the browser’s capture API into the MediaRecorder API and into memory in this tab. When
+      you press stop, they become a file in your downloads folder. There is no upload step, processing
+      server or storage bucket, and this site’s content security policy lists no third-party origin that a
+      request could go to.
+    </p>
+    <p>
+      A screen recording contains everything that was on your screen: an email client, a bank tab, an
+      internal dashboard, customer data, a password manager you forgot was open. To check that nothing is
+      sent, open the Network panel in your developer tools and record for a minute, or disconnect your
+      network; the screen recorder keeps working.
+    </p>
+
+    <h2>Audio capture by browser</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Browser</th>
+            <th>Microphone</th>
+            <th>Tab audio</th>
+            <th>Whole-system audio</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chrome / Edge on Windows</td>
+            <td>Yes</td>
+            <td>Yes: tick "Share tab audio"</td>
+            <td>Yes: tick "Share system audio"</td>
+          </tr>
+          <tr>
+            <td>Chrome / Edge on macOS</td>
+            <td>Yes</td>
+            <td>Yes: tick "Share tab audio"</td>
+            <td>No (an operating-system restriction)</td>
+          </tr>
+          <tr>
+            <td>Firefox</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Safari</td>
+            <td>Yes</td>
+            <td>No</td>
+            <td>No</td>
+          </tr>
+          <tr>
+            <td>Mobile browsers</td>
+            <td colspan="3">Screen capture is not available; use your phone’s built-in recorder</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      When a microphone and a system source are both available, the Web Audio API mixes them into one track
+      before recording. The result is one file with your commentary over the audio from your screen. The
+      on-page preview stays muted, because playing your own system audio through the speakers would cause a
+      feedback loop.
+    </p>
+
+    <h2>Recording length and memory</h2>
+    <p>
+      There is no watermark, time limit or resolution cap. The limit is memory: the tab holds the recording
+      until you save it. At the balanced quality preset, allow about 30 MB per minute, and save very long
+      sessions in parts.
+    </p>
+
+    <h2>WebM, MP4, and the missing duration</h2>
+    <p>
+      Browsers record WebM natively. MediaRecorder does not write the duration into the WebM header, so many
+      players show no timeline and cannot seek. Recent Chrome versions can record H.264 in MP4 directly, and
+      the setup panel shows that option when it is available. If not, the convert button re-encodes the WebM
+      to MP4 with FFmpeg on this page, which also fixes the header. If your editor accepts WebM, skip that
+      step.
+    </p>
+
+    <h2>Troubleshooting</h2>
+    <ul>
+      <li>Nothing happens when you press start: the picker was closed or screen capture is blocked. On macOS, allow your browser under System Settings → Privacy &amp; Security → Screen Recording, then restart the browser.</li>
+      <li>The recording is silent: the audio checkbox in the picker was not ticked, or your browser cannot capture system audio (see the table above).</li>
+      <li>The recording stopped early: closing the shared window or tab ends the capture. The tool keeps what it captured before that point.</li>
+      <li>The file is very large: choose the small quality preset. For a screen recording it usually looks the same, because most of the frame does not change.</li>
+    </ul>
+
+    <h2>After recording</h2>
+    <p>
+      Recordings often need more work: <a href="/trim-video">trim</a> the silence at the start,
+      <a href="/crop-video">crop</a> to the important region, <a href="/compress-video">compress</a> to fit
+      an upload limit, or <a href="/mp4-to-mp3">extract the audio</a> for a transcript. These tools also run
+      in the browser, so the recording stays on your computer.
+    </p>
+  </Fragment>
+</ToolLayout>

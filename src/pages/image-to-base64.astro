@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeFileBase64 from '@/components/tools/dev/DevEncodeFileBase64.tsx'
+---
+
+<ToolLayout slug="image-to-base64">
+  <DevEncodeFileBase64 client:load mode="image" />
+  <Fragment slot="explainer">
+    <h2>How to convert an image to Base64</h2>
+    <ol>
+      <li>Drop a PNG, JPG, GIF, WebP, AVIF, SVG or ICO onto the panel above, or click to browse.</li>
+      <li>
+        The tool reads the file in 3&nbsp;MB slices with a progress bar, so a 40&nbsp;MB scan encodes
+        without freezing the tab.
+      </li>
+      <li>
+        Copy the form you need: raw Base64 for a JSON field, a <code>data:</code> URI for a stylesheet,
+        or the ready <code>&lt;img&gt;</code>, CSS and Markdown snippets.
+      </li>
+    </ol>
+
+    <h2>What Base64 does to an image</h2>
+    <p>
+      Base64 writes each three bytes of binary as four printable characters. Nothing is lost: decode the
+      string and you get a byte-identical file. But the text is always about 33% longer than the
+      original, plus a few padding characters and the <code>data:image/png;base64,</code> prefix.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Original file</th><th>Base64 length</th><th>What it is reasonable for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 KB icon</td><td>≈ 1.4 KB</td><td>Inline it. The request costs more than the bytes</td></tr>
+          <tr><td>10 KB logo</td><td>≈ 13.4 KB</td><td>Borderline. Inline only if it is above the fold</td></tr>
+          <tr><td>200 KB photo</td><td>≈ 267 KB</td><td>Link to it. Inlining blocks the document</td></tr>
+          <tr><td>2 MB scan</td><td>≈ 2.7 MB</td><td>Never inline. Use a normal file reference</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When inlining an image is the right call</h2>
+    <p>
+      The classic reason to inline was to remove an HTTP request, when browsers opened six connections
+      per host and each round trip cost 100&nbsp;ms. Over HTTP/2 and HTTP/3 that reason is much weaker.
+      These cases remain:
+    </p>
+    <ul>
+      <li>Tiny above-the-fold assets: an icon in the header, a 1&nbsp;px gradient tile.</li>
+      <li>Single-file deliverables: an HTML email, a self-contained report, a bookmarklet.</li>
+      <li>Assets that must always load: a fallback image that must render when the CDN is unreachable.</li>
+    </ul>
+    <p>
+      The costs: an inlined image cannot be cached separately from the document, cannot be lazy-loaded,
+      downloads again each time the CSS changes, and compresses worse than the raw binary because Base64
+      breaks byte alignment.
+    </p>
+
+    <h2>Using the output</h2>
+    <h3>In HTML</h3>
+    <pre><code>&lt;img src="data:image/png;base64,iVBORw0KGgo…" alt="Company logo"&gt;</code></pre>
+    <h3>In CSS</h3>
+    <pre><code>.badge &#123;
+  background-image: url("data:image/png;base64,iVBORw0KGgo…");
+  background-size: 24px 24px;
+&#125;</code></pre>
+    <h3>In JSON, for an API</h3>
+    <p>
+      Send the raw Base64 without the <code>data:</code> prefix, and put the MIME type in a separate
+      field. Most upload APIs, including the major cloud vision and document services, reject a payload
+      that still has the prefix.
+    </p>
+
+    <h2>The +33% is not negotiable</h2>
+    <p>
+      You cannot avoid the overhead: six bits of information per character is the mathematical limit
+      for a 64-symbol alphabet. If the payload must travel as text, it is 4/3 the size. To avoid it,
+      send the binary. For SVG, use percent-encoding, which is usually 20–30% smaller than Base64 for
+      the same markup.
+    </p>
+
+    <h2>Nothing is uploaded</h2>
+    <p>
+      The image to Base64 encoding uses the browser <code>File</code> API and <code>btoa</code> in this
+      tab. People convert signatures, ID scans, internal screenshots and product photos under embargo
+      here. Open the Network panel and run the tool: it shows no requests.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,60 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="km-to-miles">
+  <UnitsLifePairConverter client:load spec="km-to-miles" />
+  <Fragment slot="explainer">
+    <h2>Divide by 1.609344</h2>
+    <p>
+      Km to miles is a division by the exact figure 1.609344, or a multiplication by 0.621371192. Both
+      give the same answer. The division is easier to remember and harder to mistype. 100 km is 62.14
+      miles, 10 km is 6.21 miles, and 1 km is 0.621 miles.
+    </p>
+
+    <h2>Three mental shortcuts, ranked</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Trick</th><th scope="col">How</th><th scope="col">Error</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Multiply by 0.6</td><td>100 km &rarr; 60 mi</td><td>3.4% low. Fine for a rough idea</td></tr>
+        <tr><td>Fibonacci</td><td>Adjacent Fibonacci numbers: 8 km &asymp; 5 mi, 13 km &asymp; 8 mi, 21 km &asymp; 13 mi</td><td>Under 0.5%</td></tr>
+        <tr><td>Halve and add a tenth of the half twice</td><td>100 &rarr; 50 &rarr; 55 &rarr; 60.5, then a nudge</td><td>About 2% low</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The Fibonacci trick works because the golden ratio, 1.618, is within 0.6% of 1.609344. It is the
+      most accurate mental conversion in any unit system, and it is easy to remember.
+    </p>
+
+    <h2>Driving in a metric country</h2>
+    <ul>
+      <li>50 km/h = 31 mph, the standard European urban limit</li>
+      <li>80 km/h = 50 mph</li>
+      <li>100 km/h = 62 mph</li>
+      <li>120 km/h = 75 mph, a common motorway limit in Spain, Italy and Ireland</li>
+      <li>130 km/h = 81 mph, the French autoroute limit in dry weather</li>
+    </ul>
+    <p>
+      Fuel economy converts differently. Litres per 100 km is an inverse measure, so you cannot scale it
+      directly into miles per gallon. You must invert and convert, and the gallon differs between the US
+      (3.785 L) and the UK (4.546 L).
+    </p>
+
+    <h2>Race distances the other way</h2>
+    <p>
+      A 5K is 3.11 miles, a 10K is 6.21, a half marathon is 13.11 and a full marathon is 26.22. If
+      your watch uses miles and the course uses kilometres, the markers and your splits drift apart:
+      at 20 km you are at 12.43 miles, not 12.5.
+    </p>
+
+    <h2>Elevation, and why it is usually feet</h2>
+    <p>
+      Even in fully metric countries, aviation altitude is in feet, and many cycling and running apps
+      use feet for climb by default. A 1,000 m ascent is 3,280.8 ft. The extras panel on this page shows
+      feet next to miles, because one screen often gives climb and distance in different systems.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,89 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CaseConverter from '@/components/tools/text/CaseConverter.tsx'
+---
+
+<ToolLayout slug="case-converter">
+  <CaseConverter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert text case</h2>
+    <ol>
+      <li>Paste your text, one line or a thousand. The case converter handles each line separately, so a list stays a list.</li>
+      <li>Look at the preview grid: each style shows what your first line becomes.</li>
+      <li>Press Copy on a style to copy the full converted text, or select a style to see the whole result and download it.</li>
+      <li>Use “Use as input” to chain conversions. For example, make everything lowercase first, then apply Title Case for a consistent headline.</li>
+    </ol>
+
+    <h2>The thirteen cases, and when each one is right</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Style</th>
+            <th>Example</th>
+            <th>Use it for</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>UPPER CASE</td><td>USER PROFILE SETTINGS</td><td>Warnings, short labels, legal headings</td></tr>
+          <tr><td>lower case</td><td>user profile settings</td><td>Normalising input, email addresses, tags</td></tr>
+          <tr><td>Title Case</td><td>The Art of the Deal</td><td>Headlines and page titles in editorial style</td></tr>
+          <tr><td>Capitalised Each Word</td><td>The Art Of The Deal</td><td>Names, menu labels, table headers</td></tr>
+          <tr><td>Sentence case</td><td>User profile settings</td><td>UI copy, buttons, modern documentation</td></tr>
+          <tr><td>camelCase</td><td>userProfileSettings</td><td>JavaScript, Java and Swift variables</td></tr>
+          <tr><td>PascalCase</td><td>UserProfileSettings</td><td>Class names, React components, C# members</td></tr>
+          <tr><td>snake_case</td><td>user_profile_settings</td><td>Python, Ruby, SQL columns</td></tr>
+          <tr><td>kebab-case</td><td>user-profile-settings</td><td>URLs, CSS classes, file names</td></tr>
+          <tr><td>CONSTANT_CASE</td><td>USER_PROFILE_SETTINGS</td><td>Environment variables, enum members</td></tr>
+          <tr><td>dot.case</td><td>user.profile.settings</td><td>Config keys, namespaces, i18n paths</td></tr>
+          <tr><td>aLtErNaTiNg</td><td>uSeR pRoFiLe</td><td>Sarcasm on the internet, nothing else</td></tr>
+          <tr><td>iNVERSE cASE</td><td>uSER pROFILE</td><td>Repairing text typed with Caps Lock on</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>How Title Case is decided</h2>
+    <p>
+      Title case is not “capitalise every word”. The convention of AP, Chicago and most house styles:
+      capitalise the first and last word and all other words, but keep articles (<em>a, an, the</em>),
+      coordinating conjunctions (<em>and, but, or, nor</em>) and short prepositions (<em>at, by, for,
+      in, of, on, to, with</em>) lowercase in the middle. This converter follows that rule. It always
+      capitalises the word after a colon, dash or question mark, capitalises both halves of a
+      hyphenated compound, and keeps all-caps acronyms such as NASA, API or PDF as you typed them.
+    </p>
+    <p>
+      Sentence case is the opposite approach and is now the norm in software: capitalise only the
+      first word and proper nouns. It is easier to read at small sizes and easier to translate, and the
+      design systems of Apple, Google and GOV.UK all specify it. The converter makes all text lowercase,
+      capitalises the first letter after each sentence-ending punctuation mark or line break, and
+      restores the pronoun “I”.
+    </p>
+
+    <h2>Identifier cases and how words are detected</h2>
+    <p>
+      To convert to camelCase or snake_case, the text must first be split into words. The splitter
+      breaks on spaces, hyphens, underscores and dots. It breaks between a lowercase letter and a
+      capital after it (<code>userName</code> → <code>user name</code>), handles runs of capitals
+      before a word (<code>HTTPResponse</code> → <code>http response</code>), and separates letters
+      from digits (<code>address2</code> → <code>address 2</code>). You can paste an identifier in any
+      convention and convert it to any other.
+    </p>
+
+    <h2>Practical uses</h2>
+    <ul>
+      <li>Fixing accidental Caps Lock: one click of iNVERSE cASE restores a whole paragraph.</li>
+      <li>Renaming code across conventions: paste a column of field names and get the snake_case or camelCase versions at once.</li>
+      <li>Cleaning imported data: spreadsheet exports full of SHOUTING NAMES get correct capitals.</li>
+      <li>Headline consistency: apply the same title rules across a whole content calendar.</li>
+      <li>Environment variables: turn a settings list into CONSTANT_CASE keys for a <code>.env</code> file.</li>
+    </ul>
+
+    <h2>Nothing leaves your browser</h2>
+    <p>
+      The conversion runs locally, so internal field names, unreleased headlines and customer data are
+      not uploaded. Large inputs are processed in chunks, and the interface stays responsive between
+      them, so a file of several megabytes converts without freezing the tab.
+    </p>
+  </Fragment>
+</ToolLayout>

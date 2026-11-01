@@ -1,0 +1,130 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BreakEvenCalculator from '@/components/tools/finance/BreakEvenCalculator.tsx'
+---
+
+<ToolLayout slug="break-even-calculator">
+  <BreakEvenCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the break-even calculator</h2>
+    <ol>
+      <li>
+        Add up your fixed costs for the period (a month, a quarter or a year) and enter the total: rent,
+        salaried staff, software subscriptions, insurance, accounting.
+      </li>
+      <li>
+        Enter the variable cost per unit: all costs that occur only because you made or sold one more
+        unit. Materials, packaging, shipping, payment processing, per-unit labour, affiliate
+        commission.
+      </li>
+      <li>
+        Enter the selling price per unit without sales tax or VAT, because you collect tax for the tax
+        authority and do not earn it.
+      </li>
+      <li>
+        Optionally add a target profit and the units you expect to sell, to get the volume you need and
+        your margin of safety.
+      </li>
+    </ol>
+
+    <h2>The formulas</h2>
+    <p>
+      Each unit you sell contributes its price minus its variable cost towards the fixed costs. This
+      amount is the <strong>contribution margin</strong>. Break-even is the point where the
+      contributions add up to the fixed costs:
+    </p>
+    <ul>
+      <li><code>Contribution margin = price − variable cost per unit</code></li>
+      <li><code>Contribution margin ratio = contribution margin / price</code></li>
+      <li><code>Break-even units = fixed costs / contribution margin</code></li>
+      <li><code>Break-even revenue = fixed costs / contribution margin ratio</code></li>
+      <li><code>Units for a target profit = (fixed costs + target profit) / contribution margin</code></li>
+      <li><code>Margin of safety = (expected units − break-even units) / expected units</code></li>
+    </ul>
+
+    <h2>How the margin changes the answer</h2>
+    <p>With fixed costs of 50,000 for the period:</p>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[520px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Price</th>
+            <th style="text-align:right">Variable cost</th>
+            <th style="text-align:right">Contribution</th>
+            <th style="text-align:right">CM ratio</th>
+            <th style="text-align:right">Break-even units</th>
+            <th style="text-align:right">Break-even revenue</th>
+          </tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>10</td><td style="text-align:right">4</td><td style="text-align:right">6</td><td style="text-align:right">60%</td><td style="text-align:right">8,334</td><td style="text-align:right">83,333</td></tr>
+          <tr><td>30</td><td style="text-align:right">12</td><td style="text-align:right">18</td><td style="text-align:right">60%</td><td style="text-align:right">2,778</td><td style="text-align:right">83,333</td></tr>
+          <tr><td>30</td><td style="text-align:right">20</td><td style="text-align:right">10</td><td style="text-align:right">33.3%</td><td style="text-align:right">5,000</td><td style="text-align:right">150,000</td></tr>
+          <tr><td>50</td><td style="text-align:right">20</td><td style="text-align:right">30</td><td style="text-align:right">60%</td><td style="text-align:right">1,667</td><td style="text-align:right">83,333</td></tr>
+          <tr><td>100</td><td style="text-align:right">40</td><td style="text-align:right">60</td><td style="text-align:right">60%</td><td style="text-align:right">834</td><td style="text-align:right">83,333</td></tr>
+          <tr><td>100</td><td style="text-align:right">70</td><td style="text-align:right">30</td><td style="text-align:right">30%</td><td style="text-align:right">1,667</td><td style="text-align:right">166,667</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      All rows with a 60% contribution margin ratio break even at the same revenue, 83,333, at any
+      price. Break-even revenue depends only on the ratio; break-even units depend on the price. For
+      this reason, defend the margin, not the price, when a customer asks for a discount.
+    </p>
+
+    <h2>Sorting fixed from variable</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[420px] border-collapse text-sm">
+        <thead>
+          <tr>
+            <th>Fixed</th>
+            <th>Variable</th>
+            <th>Semi-fixed (steps up)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Rent and rates</td><td>Raw materials</td><td>Extra production shift</td></tr>
+          <tr><td>Salaried staff</td><td>Packaging and shipping</td><td>Additional machine or vehicle</td></tr>
+          <tr><td>Insurance</td><td>Payment processing fees</td><td>Second warehouse</td></tr>
+          <tr><td>Software subscriptions</td><td>Sales commission</td><td>Support headcount per 1,000 customers</td></tr>
+          <tr><td>Accounting and legal</td><td>Per-unit labour</td><td>Tiered hosting plan</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Semi-fixed costs can make one break-even number misleading. They are flat inside a range of
+      volumes and jump at the boundary, so run this calculator once for each capacity band you might
+      operate in.
+    </p>
+
+    <h2>Margin of safety: the number worth watching</h2>
+    <p>
+      Break-even shows where the floor is. Margin of safety shows how far above it you are. If you
+      expect 3,500 units and break even at 2,223, your margin of safety is about 36%: sales can fall by
+      more than a third before you lose money. A business at 5% is profitable but one bad quarter from
+      trouble.
+    </p>
+
+    <h2>Limits of a single-product model</h2>
+    <ul>
+      <li>
+        Product mix: with several products, use a weighted average price and variable cost from your
+        expected mix, or model each line separately and split the fixed costs. If the mix moves
+        towards low-margin items, the real break-even point moves too.
+      </li>
+      <li>
+        Volume discounts: materials usually cost less per unit at scale, so the real cost line bends
+        down and the true break-even point is slightly lower than the straight-line model shows.
+      </li>
+      <li>
+        Timing: break-even is an accounting concept. Cash break-even can come much later if customers
+        pay on 60-day terms and suppliers want payment in 30.
+      </li>
+      <li>
+        Inventory: the model assumes that you sell all you produce. Unsold stock holds cash and is
+        eventually discounted, which lowers the effective price.
+      </li>
+    </ul>
+  </Fragment>
+</ToolLayout>

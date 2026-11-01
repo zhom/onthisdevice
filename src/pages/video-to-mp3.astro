@@ -1,0 +1,95 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import VideoToMp3 from '@/components/tools/media/VideoToMp3.tsx'
+---
+
+<ToolLayout slug="video-to-mp3">
+  <VideoToMp3 client:load />
+  <Fragment slot="explainer">
+    <h2>How to convert a video to MP3</h2>
+    <ol>
+      <li>Drop the video in. FFmpeg reads MP4, MOV, MKV, WebM, AVI and more.</li>
+      <li>Pick a bitrate. 192 kbps is the default and sounds the same as the source for most music; 96 kbps is enough for speech.</li>
+      <li>For only part of the soundtrack, turn on <strong>Trim before extracting</strong>, then drag the handles or type exact timecodes.</li>
+      <li>Press <strong>Extract MP3</strong>. The estimated size updates as you change the settings.</li>
+      <li>Play the result in the built-in player and download it.</li>
+    </ol>
+
+    <h2>Choosing a bitrate</h2>
+    <p>
+      A higher MP3 bitrate gives better fidelity and a larger file. The figures below are for stereo audio;
+      mono halves them.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Bitrate</th>
+            <th>Per minute</th>
+            <th>One hour</th>
+            <th>Sounds like</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>320 kbps</td>
+            <td>2.4 MB</td>
+            <td>144 MB</td>
+            <td>The MP3 maximum; use it for music you will edit again</td>
+          </tr>
+          <tr>
+            <td>256 kbps</td>
+            <td>1.9 MB</td>
+            <td>115 MB</td>
+            <td>Very good; the difference from 320 is hard to hear</td>
+          </tr>
+          <tr>
+            <td>192 kbps</td>
+            <td>1.4 MB</td>
+            <td>86 MB</td>
+            <td>Recommended default for music</td>
+          </tr>
+          <tr>
+            <td>128 kbps</td>
+            <td>0.9 MB</td>
+            <td>58 MB</td>
+            <td>Fine on phone speakers, thin on headphones</td>
+          </tr>
+          <tr>
+            <td>96 kbps</td>
+            <td>0.7 MB</td>
+            <td>43 MB</td>
+            <td>Speech, lectures, podcasts</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Generation loss, and how to avoid it</h2>
+    <p>
+      The soundtrack in an MP4 is almost always AAC, which is already lossy. Re-encoding it to MP3 is a second
+      lossy pass, so some detail is lost, mostly in cymbals, sibilance and room reverb. A higher bitrate
+      limits the loss but cannot undo the first pass.
+    </p>
+    <p>
+      To get the audio exactly as it is in the video, use
+      <a href="/extract-audio-from-video">extract audio from video</a> in stream-copy mode. It copies the AAC
+      track unchanged into an <code>.m4a</code> file. Convert to MP3 only when your workflow needs MP3.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+      <li>Lectures and webinars: 96 kbps mono turns a 1 GB screen recording into a file you can listen to on a walk.</li>
+      <li>Interviews for transcription: most transcription apps accept MP3 and charge by the minute, so trim first.</li>
+      <li>Music from your own recordings: take the audio from a camera recording of a rehearsal.</li>
+      <li>Voice notes: extract, trim to the useful part, and keep the file small enough to email.</li>
+    </ul>
+
+    <h2>Privacy</h2>
+    <p>
+      The conversion runs in this tab with FFmpeg compiled to WebAssembly, so interviews, medical recordings and
+      unreleased material stay on your computer. To confirm, go offline after the engine has loaded once; the
+      tool still works.
+    </p>
+  </Fragment>
+</ToolLayout>

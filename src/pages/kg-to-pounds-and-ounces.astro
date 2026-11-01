@@ -1,0 +1,64 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitsLifePairConverter from '@/components/tools/units/UnitsLifePairConverter.tsx'
+---
+
+<ToolLayout slug="kg-to-pounds-and-ounces">
+  <UnitsLifePairConverter client:load spec="kg-to-pounds-and-ounces" />
+  <Fragment slot="explainer">
+    <h2>Two numbers, not one</h2>
+    <p>
+      Birth weights, parcels and small goods are given in pounds and ounces, and the conversion of kg
+      to pounds and ounces often goes wrong at the second number. 3.4 kg is 7.4957 pounds. The
+      fractional part, 0.4957 lb, is <strong>7.9 ounces</strong>, not 5 ounces and not 49 ounces. To
+      get it right, multiply the remainder by sixteen. The composite readout here does that.
+    </p>
+
+    <h2>How the split works</h2>
+    <ol>
+      <li>Convert to decimal pounds: 3.4 kg &divide; 0.45359237 = 7.4957 lb.</li>
+      <li>Keep the whole pounds: 7 lb.</li>
+      <li>Multiply the remainder by 16: 0.4957 &times; 16 = 7.93 oz.</li>
+      <li>Round the ounces last, and roll over to another pound if they reach 16.</li>
+    </ol>
+    <p>
+      Naive converters skip that final rollover, and then a form shows "7 lb 16 oz".
+    </p>
+
+    <h2>Birth weight reference</h2>
+    <table>
+      <thead>
+        <tr><th scope="col">Kilograms</th><th scope="col">Grams</th><th scope="col">Pounds and ounces</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2.0</td><td>2,000</td><td>4 lb 6.5 oz</td></tr>
+        <tr><td>2.5</td><td>2,500</td><td>5 lb 8.2 oz</td></tr>
+        <tr><td>3.0</td><td>3,000</td><td>6 lb 9.8 oz</td></tr>
+        <tr><td>3.2</td><td>3,200</td><td>7 lb 0.9 oz</td></tr>
+        <tr><td>3.4</td><td>3,400</td><td>7 lb 7.9 oz</td></tr>
+        <tr><td>3.6</td><td>3,600</td><td>7 lb 15.0 oz</td></tr>
+        <tr><td>4.0</td><td>4,000</td><td>8 lb 13.1 oz</td></tr>
+        <tr><td>4.5</td><td>4,500</td><td>9 lb 14.7 oz</td></tr>
+      </tbody>
+    </table>
+    <p>
+      The average birth weight in most high-income countries is about 3.3&ndash;3.5 kg, so "seven and
+      a half pounds" sounds like the default. The WHO low-birth-weight threshold is 2.5 kg, or
+      5 lb 8 oz.
+    </p>
+
+    <h2>Parcels and hand luggage</h2>
+    <p>
+      US courier rate cards step in ounces below a pound and in whole pounds above. European ones step
+      in grams. A 500 g parcel is 1 lb 1.6 oz, which prices as a 2 lb item in a whole-pound band. Near a
+      boundary, weigh in the unit the carrier prices in. Do not convert a rounded figure.
+    </p>
+
+    <h2>This converter goes both ways</h2>
+    <p>
+      Type into the right-hand box to convert pounds back to kilograms, or press the swap button to
+      reverse the pair. The composite pounds-and-ounces readout works in both directions, because it
+      comes from the underlying mass, not from the box you typed in.
+    </p>
+  </Fragment>
+</ToolLayout>

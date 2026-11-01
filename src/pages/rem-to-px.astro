@@ -1,0 +1,71 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatCssUnits from '@/components/tools/dev/DevFormatCssUnits.tsx'
+---
+
+<ToolLayout slug="rem-to-px">
+  <DevFormatCssUnits client:load from="rem" to="px" />
+  <Fragment slot="explainer">
+    <h2>The rem to px formula</h2>
+    <pre><code>px = rem × root font size
+
+At the 16px browser default:
+  1.5rem   × 16 = 24px
+  0.875rem × 16 = 14px
+  2rem     × 16 = 32px</code></pre>
+
+    <h2>Why convert rem to px</h2>
+    <p>
+      Outside CSS, sizes are in pixels: design files, screenshots, the numbers a designer writes on a spec,
+      the size a stakeholder measures on their screen. Converting rem to px answers questions that come from
+      outside the codebase.
+    </p>
+    <ul>
+      <li>&ldquo;The heading looks smaller than the mockup.&rdquo; 1.75rem is 28px and the mockup says 30px, so the difference is measurable.</li>
+      <li>&ldquo;Is this tap target big enough?&rdquo; WCAG 2.2 asks for at least 24×24 CSS pixels, and both Apple and Google recommend about 44px. A 2.5rem button is 40px, which is borderline.</li>
+      <li>&ldquo;Does this fit on a 320px screen?&rdquo; Add up the rem widths in px.</li>
+      <li>Debugging a third-party component whose CSS is in px while yours is in rem.</li>
+    </ul>
+
+    <h2>A CSS pixel is not a device pixel</h2>
+    <p>
+      The CSS pixel is a logical unit. Formally it is a reference pixel: the visual angle of one pixel on a
+      96dpi display at arm&rsquo;s length. On a 2× display, the browser paints one CSS pixel with four device
+      pixels. The content has the same physical size and is sharper.
+    </p>
+    <p>
+      So <code>1.5rem</code> is 24 CSS pixels on every device and measures about the same on a phone as on
+      a monitor. The device pixel ratio changes rendering sharpness, not layout size.
+    </p>
+
+    <h2>Quick reference at a 16px root</h2>
+    <table>
+      <thead><tr><th>rem</th><th>px</th><th>Typical use</th></tr></thead>
+      <tbody>
+        <tr><td>0.75</td><td>12</td><td>Captions, footnotes, badge text</td></tr>
+        <tr><td>0.875</td><td>14</td><td>Secondary text, dense UI, table cells</td></tr>
+        <tr><td>1</td><td>16</td><td>Body text; the minimum for comfortable reading</td></tr>
+        <tr><td>1.125</td><td>18</td><td>Lead paragraph, comfortable long-form body</td></tr>
+        <tr><td>1.25</td><td>20</td><td>Small heading</td></tr>
+        <tr><td>1.5</td><td>24</td><td>Section heading, or a standard spacing step</td></tr>
+        <tr><td>2</td><td>32</td><td>Page heading on mobile</td></tr>
+        <tr><td>3</td><td>48</td><td>Hero heading</td></tr>
+      </tbody>
+    </table>
+
+    <h2>rem ignores nesting entirely</h2>
+    <p>
+      This is the difference between rem and em. A <code>1.5rem</code> value is 24px when the element is a
+      direct child of body and when it is fifteen levels deep inside components that each set their own
+      font size. For a value that follows its container&rsquo;s type size, use <a href="/em-to-px">em</a>.
+    </p>
+
+    <h2>One place rem is not root-relative</h2>
+    <p>
+      Inside a media query, <code>rem</code> and <code>em</code> both resolve against the browser&rsquo;s
+      initial font size, not your declared <code>html</code> font size. If your project sets the root to
+      10px with the 62.5% trick, a <code>48rem</code> breakpoint still fires at 768px, not 480px. This is
+      specified behaviour.
+    </p>
+  </Fragment>
+</ToolLayout>

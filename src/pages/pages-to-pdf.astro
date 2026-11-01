@@ -1,0 +1,133 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfSecureIWorkToPdf from '@/components/tools/pdf-convert/PdfSecureIWorkToPdf.tsx'
+---
+
+<ToolLayout slug="pages-to-pdf">
+  <PdfSecureIWorkToPdf client:load kind="pages" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Somebody sent you a .pages file and you are not on a Mac</h2>
+      <p>
+        Apple's Pages saves in its own format, which no app on Windows or Linux opens. You do not need
+        an online account, a new export from the sender, or an upload converter, because the PDF is
+        already inside the file. This Pages to PDF tool extracts it.
+      </p>
+    </section>
+
+    <section>
+      <h2>How the trick works</h2>
+      <p>
+        A <code>.pages</code> document is a zip archive. Inside it, alongside Apple's proprietary
+        IWA-encoded document data, Pages writes a complete PDF rendering of the document at
+        <code>QuickLook/Preview.pdf</code>, so Finder, Quick Look, Spotlight and Mail can show a
+        preview without Pages.
+      </p>
+      <p>
+        This page opens the archive in your browser, finds that entry, and gives it to you unchanged.
+        There is no rendering step and no font substitution. It is the file Pages made with its real
+        layout engine on the machine where the document was written.
+      </p>
+      <p>
+        So it is fast even for a large document, because the tool unzips only one entry. A 200 MB
+        document with embedded photographs takes about a second.
+      </p>
+    </section>
+
+    <section>
+      <h2>When it will not work, and what to do</h2>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Message</th>
+              <th scope="col">Cause</th>
+              <th scope="col">Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>No QuickLook preview inside</td>
+              <td>
+                Saved with "Include preview in document" turned off, or by an old Pages version
+              </td>
+              <td>
+                Ask the sender to tick that box in Pages → Settings → General and save again, or to
+                export a PDF directly
+              </td>
+            </tr>
+            <tr>
+              <td>Not a zipped .pages package</td>
+              <td>
+                The document is a macOS package (a folder that Finder shows as one item), not a
+                single file
+              </td>
+              <td>
+                Right-click it on the Mac and choose Compress, then drop the resulting .zip here
+              </td>
+            </tr>
+            <tr>
+              <td>The preview is not a valid PDF</td>
+              <td>The archive is truncated, usually from a failed transfer</td>
+              <td>Get the file again. Check that the byte count matches</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>What you can and cannot do with the result</h2>
+      <ul>
+        <li>
+          You can read, print and search it. The preview is a normal PDF with a real text layer, so
+          Ctrl-F works and you can copy passages from it.
+        </li>
+        <li>
+          You cannot edit the layout. A PDF is a final-form document. To change the content, the sender
+          must export to .docx from Pages, which keeps editable text.
+        </li>
+        <li>
+          You cannot see tracked changes and comments. The preview is the clean rendering of the
+          document as it is.
+        </li>
+        <li>
+          You get the exact fonts, because they are embedded in the preview. A conversion that renders
+          again on a machine without those fonts cannot do this.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Converting several at once</h2>
+      <p>
+        Drop as many <code>.pages</code> files as you need. Each one unzips in turn with its own
+        progress, and you can save them one by one or all as one zip. The tool lists failed files
+        separately with the reason, so one bad document does not stop the batch.
+      </p>
+      <p>
+        The work happens on your machine, so there is no daily limit and no queue. This helps most
+        when you receive a folder of somebody's old Pages documents.
+      </p>
+    </section>
+
+    <section>
+      <h2>The privacy angle, briefly</h2>
+      <p>
+        <code>.pages</code> files are often letters, contracts, dissertations and personal
+        correspondence, written on someone's own laptop. Here JavaScript in this tab opens the archive,
+        and the extracted PDF goes to your downloads folder.
+      </p>
+    </section>
+
+    <section>
+      <h2>The other two iWork formats</h2>
+      <p>
+        Keynote and Numbers use exactly the same package structure, so the same technique works for
+        both: <a href="/keynote-to-pdf">Keynote to PDF</a> for <code>.key</code> presentations, and
+        <a href="/numbers-to-pdf">Numbers to PDF</a> for <code>.numbers</code> spreadsheets.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

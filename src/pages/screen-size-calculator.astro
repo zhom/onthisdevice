@@ -1,0 +1,101 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AspectRatioCalculator from '@/components/tools/units/AspectRatioCalculator.tsx'
+---
+
+<ToolLayout slug="screen-size-calculator">
+  <AspectRatioCalculator client:load mode="screen" />
+
+  <Fragment slot="explainer">
+    <h2>The diagonal is the least useful screen size</h2>
+    <p>
+      Screens are sold by diagonal because it is one large-sounding number. You seldom need it: what
+      matters is whether the panel fits the desk, the wall recess or the AV cabinet, and how tall it is on
+      a stand. Two screens with the same diagonal can differ by ten centimetres in width and by a third in
+      area, because their shapes differ. The screen size calculator gives the width, height and area.
+    </p>
+
+    <h2>The screen size formula</h2>
+    <p>
+      A screen is a rectangle, so the diagonal is its hypotenuse. With <code>r = width ÷ height</code>:
+    </p>
+    <pre><code>width  = diagonal × r ÷ √(r² + 1)
+height = diagonal ÷ √(r² + 1)
+area   = width × height</code></pre>
+    <p>
+      For a 27-inch 16:9 panel, r = 1.7778 and √(r² + 1) = 2.0396, which gives 23.53 in wide and 13.24 in
+      tall (59.8 × 33.6 cm). The calculator shows those two lines with your own numbers, so you can check
+      the result.
+    </p>
+
+    <h2>Common screen sizes</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Diagonal</th><th>Ratio</th><th>Width</th><th>Height</th><th>Area</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>24 in</td><td>16:9</td><td>20.9 in / 53.1 cm</td><td>11.8 in / 29.9 cm</td><td>246 in²</td></tr>
+          <tr><td>27 in</td><td>16:9</td><td>23.5 in / 59.8 cm</td><td>13.2 in / 33.6 cm</td><td>311 in²</td></tr>
+          <tr><td>32 in</td><td>16:9</td><td>27.9 in / 70.8 cm</td><td>15.7 in / 39.8 cm</td><td>437 in²</td></tr>
+          <tr><td>34 in</td><td>64:27</td><td>31.4 in / 79.7 cm</td><td>13.2 in / 33.6 cm</td><td>414 in²</td></tr>
+          <tr><td>55 in</td><td>16:9</td><td>47.9 in / 121.7 cm</td><td>27.0 in / 68.6 cm</td><td>1294 in²</td></tr>
+          <tr><td>65 in</td><td>16:9</td><td>56.7 in / 143.9 cm</td><td>31.9 in / 81.0 cm</td><td>1806 in²</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The 34-inch ultrawide is wider than a 32-inch 16:9 monitor, but it is shorter and has a smaller total
+      area. A bigger diagonal does not always mean more screen.
+    </p>
+
+    <h2>Pixel density, and what counts as sharp</h2>
+    <p>
+      PPI is the diagonal in pixels divided by the diagonal in inches: <code>PPI = √(w² + h²) ÷ diagonal</code>.
+      A 27-inch 1440p monitor is 109 PPI; the same size at 4K is 163; a 14-inch laptop at 2880 × 1800 is
+      about 243.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>PPI</th><th>Impression at desk distance</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Under 90</td><td>Visibly pixelated; text edges look stepped</td></tr>
+          <tr><td>90–110</td><td>The traditional desktop norm; fully usable</td></tr>
+          <tr><td>110–140</td><td>Noticeably cleaner text</td></tr>
+          <tr><td>140–200</td><td>Sharp; most people stop noticing pixels</td></tr>
+          <tr><td>Over 200</td><td>Retina-class: individual pixels are invisible at normal distance</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Sharpness depends on distance as much as density. A 65-inch 4K television is only 68 PPI, but at three
+      metres it looks sharp. The eye resolves about one arcminute, so pixels per degree of vision matter, not
+      pixels per inch of glass.
+    </p>
+
+    <h2>Buying and fitting</h2>
+    <ul>
+      <li>Add the bezel and stand. The calculated figures are the active display area. Real products are 1–3 cm wider and much taller with the stand.</li>
+      <li>Check the height for wall mounts. A 65-inch television is 81 cm tall, which in an alcove is often the limit, more than the width.</li>
+      <li>Two 24-inch monitors ≠ one 32-inch. Two 24s give 42 in of width and 492 in² of area; a 32 gives 28 in and 437 in². The pair is larger on both counts but has a bezel down the middle.</li>
+      <li>Ultrawide versus dual: a 34-inch 21:9 is close to two 19-inch panels side by side, without the seam, but you cannot angle the halves.</li>
+    </ul>
+
+    <h2>Phones and tablets</h2>
+    <p>
+      The same maths applies. Enter the diagonal, the ratio (19.5:9 and 20:9 for modern phones, 4:3 or 3:2
+      for tablets) and the resolution. Manufacturers measure the diagonal as if the display were a plain
+      rectangle, so a phone with a notch or rounded corners has slightly less usable area than the number
+      suggests.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/aspect-ratio-calculator">Aspect Ratio Calculator</a> for pixel dimensions,
+      <a href="/cm-to-inches">CM to Inches</a> for the unit conversion, and
+      <a href="/px-to-rem-converter">PX to REM Converter</a> for the CSS side of screen sizing.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,80 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitConverter from '@/components/tools/units/UnitConverter.tsx'
+---
+
+<ToolLayout slug="area-converter">
+  <UnitConverter client:load dimension="area" from="m2" to="ft2" />
+  <Fragment slot="explainer">
+    <h2>How to convert an area</h2>
+    <ol>
+      <li>Enter the area in either box. Both boxes convert as you type.</li>
+      <li>Pick your units: metric, land units (hectares and acres), or imperial and US squares.</li>
+      <li>If you have a length and a width, multiply them first in the same unit, then convert the result. You can also convert each side and then multiply, but that rounds twice.</li>
+    </ol>
+
+    <h2>Area factors are the square of length factors</h2>
+    <p>
+      This is the most common error. One metre is 3.280839895 feet, so one square metre is
+      3.280839895² = 10.76391042 square feet, not 3.28. The same applies to smaller units: 1 m is
+      100 cm, but 1 m² is 10,000 cm², and 1 km² is a million square metres, not a thousand.
+    </p>
+    <p>
+      A room of 4 m by 5 m is 20 m², which is 215.28 ft². A common mistake is to convert 20 to 65.6
+      with the linear factor, which gives a room three times too small.
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Length factor</th><th>Area factor</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 m = 3.280839895 ft</td><td>1 m² = 10.76391042 ft²</td></tr>
+          <tr><td>1 in = 2.54 cm</td><td>1 in² = 6.4516 cm²</td></tr>
+          <tr><td>1 yd = 3 ft</td><td>1 yd² = 9 ft²</td></tr>
+          <tr><td>1 mi = 1,609.344 m</td><td>1 mi² = 2,589,988.11 m²</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Land units: acres, hectares and sections</h2>
+    <p>
+      An acre is exactly 43,560 square feet, which is 4,046.8564224 m². It comes from medieval field
+      measurement (in theory, the area a team of oxen could plough in a day) and has no simple
+      relation to metric units. A hectare is a square 100 m on each side, so exactly 10,000 m².
+    </p>
+    <p>
+      1 hectare = 2.4710538 acres, and 1 acre = 0.40468564 hectares. As a rough guide, an acre is a
+      little smaller than a standard football pitch and a hectare is a little larger. In the US survey
+      system, a square mile is a section and contains exactly 640 acres. For this reason, rural
+      American parcels are often 40 or 160 acres.
+    </p>
+
+    <h2>Reference: sizes to calibrate against</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Thing</th><th>Metric</th><th>Imperial</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A4 sheet of paper</td><td>0.06237 m²</td><td>0.6713 ft²</td></tr>
+          <tr><td>Parking space</td><td>12.5 m²</td><td>135 ft²</td></tr>
+          <tr><td>Average UK new-build home</td><td>76 m²</td><td>818 ft²</td></tr>
+          <tr><td>Average US new-build home</td><td>216 m²</td><td>2,325 ft²</td></tr>
+          <tr><td>Tennis court (singles)</td><td>195.6 m²</td><td>2,106 ft²</td></tr>
+          <tr><td>Football pitch (typical)</td><td>7,140 m²</td><td>1.76 acres</td></tr>
+          <tr><td>Hectare</td><td>10,000 m²</td><td>2.471 acres</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Buying flooring, paint or turf</h2>
+    <p>
+      Materials are sold by area, and errors in this arithmetic break budgets. Calculate the area in
+      the unit your supplier uses, convert once, then add a waste allowance. Trade practice is 5 % for
+      a simple rectangular room, 10 % for diagonal or patterned laying, and 15 % where there are many
+      cuts around fixtures. Paint is sold by coverage per litre or per gallon, so convert the wall
+      area first and divide. Two coats need twice the paint.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,133 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PdfEditRecolorPdf from '@/components/tools/pdf/PdfEditRecolorPdf.tsx'
+---
+
+<ToolLayout slug="grayscale-pdf">
+  <PdfEditRecolorPdf client:load mode="grayscale" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Why a mono-looking document still bills as colour</h2>
+      <p>
+        University print shops, libraries and managed office printers charge per page by ink model. A
+        page counts as colour if the print job has any non-grey colour on it: a faint blue heading, a
+        coloured hyperlink, a logo in the footer, a highlighter mark, or a table rule in dark navy.
+      </p>
+      <p>
+        So a hundred-page dissertation with a coloured header on each page prints as a hundred colour
+        pages, at five to ten times the mono rate. Convert the PDF to grayscale first, and the driver
+        sends only grey, so the job prices as mono.
+      </p>
+    </section>
+
+    <section>
+      <h2>The four methods, and when each is right</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-[680px]">
+          <thead>
+            <tr>
+              <th scope="col">Method</th>
+              <th scope="col">What it does</th>
+              <th scope="col">Best for</th>
+              <th scope="col">Effect on size</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Perceptual grey</td>
+              <td>0.2126·R + 0.7152·G + 0.0722·B (the Rec. 709 luma weights)</td>
+              <td>Anything with photographs, charts or design</td>
+              <td>Usually smaller than colour</td>
+            </tr>
+            <tr>
+              <td>Flat average</td>
+              <td>(R + G + B) ÷ 3</td>
+              <td>Keeping separation between colours of similar brightness</td>
+              <td>Similar</td>
+            </tr>
+            <tr>
+              <td>Pure black and white</td>
+              <td>Every pixel above the cut-off becomes white, the rest black</td>
+              <td>Text scans, faxes, forms</td>
+              <td>Often 70–90% smaller</td>
+            </tr>
+            <tr>
+              <td>Dithered black and white</td>
+              <td>Floyd–Steinberg error diffusion into neighbouring pixels</td>
+              <td>Photographs that must survive 1-bit output</td>
+              <td>Larger than plain 1-bit, far smaller than grey</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Human vision is about three times more sensitive to green than to red, and about ten times more
+        sensitive to green than to blue. The perceptual grey weights follow this. A flat average makes
+        reds too light and blues too dark, so a photograph converted by averaging looks slightly wrong.
+      </p>
+    </section>
+
+    <section>
+      <h2>Setting the black-and-white cut-off</h2>
+      <p>
+        In 1-bit mode, the tool compares each pixel with one brightness value from 0 (black) to 255
+        (white). The default of 160 suits a typical scan of white paper with black ink.
+      </p>
+      <ul>
+        <li>If faint pencil or a light scan disappears, raise the cut-off toward 200 so more of the greyscale stays black.</li>
+        <li>If grey or yellowed paper comes out black, lower it toward 110 so the background goes white.</li>
+        <li>If a phone photo has shadows down one edge, no single cut-off fixes it. Use perceptual grey, or scan again flat.</li>
+      </ul>
+      <p>
+        The preview uses the same pixel pipeline as the export, at screen resolution, so it matches the
+        output. Hold the compare button to see the original.
+      </p>
+    </section>
+
+    <section>
+      <h2>The cost: your text stops being text</h2>
+      <p>
+        A browser cannot recolour a PDF's content without redrawing its pages. The output is a picture
+        of each page, so it has no selectable text, search, copy and paste, screen-reader access or
+        working links. Keep the colour original for search, and use the grayscale version for print.
+      </p>
+      <p>
+        If you only need a smaller file, use <a href="/compress-pdf">Compress PDF</a>. It can often
+        reduce a document a lot and keeps the text layer.
+      </p>
+    </section>
+
+    <section>
+      <h2>Will the file get bigger or smaller?</h2>
+      <p>
+        Both can happen. It depends on the original.
+      </p>
+      <ul>
+        <li>
+          A colour scan converted to 1-bit black and white usually gets much smaller. Flat two-tone
+          images compress very well.
+        </li>
+        <li>
+          A brochure with many photos converted to grey gets a little smaller, because two of the three
+          colour channels are gone.
+        </li>
+        <li>
+          A compact text-only PDF converted to grey almost always gets bigger. A page of text stored as
+          font instructions is a few kilobytes. The same page as a 150 DPI image is a few hundred.
+        </li>
+      </ul>
+      <p>The result panel shows the size before and after.</p>
+    </section>
+
+    <section>
+      <h2>Related</h2>
+      <p>
+        For a dark background for night reading, see
+        <a href="/invert-pdf-colors">Invert PDF Colors</a>, which uses the same rendering pipeline. To
+        desaturate one image, <a href="/grayscale-image">Grayscale Image</a> is faster. To turn PDF
+        pages into image files, try <a href="/pdf-to-jpg">PDF to JPG</a>.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

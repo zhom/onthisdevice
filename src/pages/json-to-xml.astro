@@ -1,0 +1,69 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevFormatXmlJson from '@/components/tools/dev/DevFormatXmlJson.tsx'
+---
+
+<ToolLayout slug="json-to-xml">
+  <DevFormatXmlJson client:load direction="json-to-xml" />
+  <Fragment slot="explainer">
+    <h2>How JSON structures become XML</h2>
+    <table>
+      <thead><tr><th>JSON</th><th>XML</th></tr></thead>
+      <tbody>
+        <tr><td><code>&#123;"a": "x"&#125;</code></td><td><code>&lt;a&gt;x&lt;/a&gt;</code></td></tr>
+        <tr><td><code>&#123;"@id": "1"&#125;</code> on an object</td><td><code>id="1"</code> as an attribute of that element</td></tr>
+        <tr><td><code>&#123;"#text": "x"&#125;</code> alongside other keys</td><td>The element&rsquo;s text content</td></tr>
+        <tr><td><code>&#123;"a": [1, 2]&#125;</code></td><td><code>&lt;a&gt;1&lt;/a&gt;&lt;a&gt;2&lt;/a&gt;</code>: the element repeats</td></tr>
+        <tr><td><code>&#123;"a": null&#125;</code></td><td><code>&lt;a/&gt;</code>: an empty element</td></tr>
+        <tr><td><code>true</code>, <code>42</code>, <code>1.5</code></td><td>Their text form. XML has no types</td></tr>
+        <tr><td>A bare top-level array</td><td>Wrapped in the root element, one <code>&lt;item&gt;</code> per entry</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The single-root rule</h2>
+    <p>
+      Each XML document must have exactly one root element. JSON has no such rule, so a JSON to XML
+      conversion must add one when the input is an array or an object with several top-level keys. When
+      your JSON has exactly one top-level key (the shape that the <a href="/xml-to-json">XML to JSON</a>
+      converter gives), that key becomes the root and no extra wrapper is added. Otherwise the tool uses
+      the root name field.
+    </p>
+
+    <h2>Why some keys get renamed</h2>
+    <p>
+      XML element names have many more rules than JSON keys. A name must start with a letter, underscore
+      or colon. It can contain only letters, digits, hyphens, underscores, colons and full stops. It must
+      not begin with the letters &ldquo;xml&rdquo; in any mix of cases, which is reserved. JSON keys have
+      no restrictions: spaces, emoji, empty strings and leading digits are all legal.
+    </p>
+    <p>
+      The tool replaces illegal characters with underscores and adds a prefix before a leading digit. The
+      list under the output shows each rename, because a rename without notice can make a downstream
+      XPath stop matching.
+    </p>
+
+    <h2>Escaping is handled for you</h2>
+    <p>
+      The tool escapes <code>&amp;</code>, <code>&lt;</code> and <code>&gt;</code> in values when it
+      writes them into element text, and also escapes double quotes in attribute values. That is the
+      correct place to escape: at insertion, on the value alone. Do not escape your JSON first, or you
+      get <code>&amp;amp;amp;</code> in the output.
+    </p>
+
+    <h2>When JSON to XML is the right move</h2>
+    <ul>
+      <li>Legacy integrations: a modern service gives JSON, and a SOAP endpoint, an EDI gateway or a mainframe interface wants XML.</li>
+      <li>Feeds: RSS, Atom and sitemaps are XML formats with fixed element names. Generate the structure here and adjust the names.</li>
+      <li>Config formats: Maven, Android, .NET and Spring all read XML, so a generator that works in JSON must write it.</li>
+      <li>XSLT: to transform data with XSLT, it must be XML first.</li>
+    </ul>
+
+    <h2>What the output is not</h2>
+    <p>
+      It is well-formed XML, not schema-valid XML. Element names, order and cardinality come from your
+      JSON, not from an XSD, so a service that expects a specific grammar will probably reject the first
+      attempt. Use this to get the shape and the escaping correct, then change the names to match the
+      target schema, and validate with the <a href="/xml-validator">XML validator</a> before you send.
+    </p>
+  </Fragment>
+</ToolLayout>

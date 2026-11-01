@@ -1,0 +1,389 @@
+---
+/**
+ * Site header, rendered on the server. Menus and the phone sheet run on a few
+ * lines of plain script; the theme switch lives in BaseLayout.
+ */
+import Wordmark from './Wordmark.astro'
+import Glyph from './Glyph.astro'
+import Icon from './Icon.tsx'
+
+export interface NavTool {
+  slug: string
+  title: string
+}
+export interface NavCategory {
+  id: string
+  title: string
+  href: string
+  tagline: string
+  icon: string
+  count: number
+  tools: NavTool[]
+}
+export interface NavGroup {
+  id: string
+  title: string
+  categories: NavCategory[]
+}
+
+interface Props {
+  groups: NavGroup[]
+  toolCount: number
+}
+const { groups, toolCount } = Astro.props
+const cols = (n: number) => (n <= 1 ? 'grid-cols-1' : n === 2 ? 'grid-cols-2' : n === 3 ? 'grid-cols-3' : 'grid-cols-3 2xl:grid-cols-6')
+---
+
+<header class="site-header sticky top-0 z-50 bg-background pt-[env(safe-area-inset-top)]" data-header>
+  <div class="relative mx-auto flex h-16 w-full max-w-7xl items-center gap-2 px-[max(1rem,env(safe-area-inset-left))] sm:px-6 lg:px-8">
+    <a href="/" aria-label="onthisdevice, home" class="mr-2 shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4">
+      <Wordmark />
+    </a>
+
+    <nav aria-label="Main" class="hidden items-center lg:flex" data-menubar>
+      {
+        groups.map((group) => (
+          <button
+            type="button"
+            class="nav-trigger h-10 rounded-md px-3 text-[0.875rem] font-[560] whitespace-nowrap text-muted-foreground transition-colors duration-150 hover:text-foreground aria-expanded:text-foreground focus-visible:outline-2 focus-visible:outline-offset-0"
+            aria-expanded="false"
+            aria-controls={`menu-${group.id}`}
+            data-menu-trigger={group.id}
+          >
+            {group.title}
+          </button>
+        ))
+      }
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1">
+      <button
+        type="button"
+        data-search-open
+        aria-label={`Search ${toolCount} tools`}
+        aria-keyshortcuts="/ Meta+K Control+K"
+        class="inline-flex h-10 items-center gap-2.5 rounded-lg px-2.5 text-[0.875rem] text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-0 md:w-60 md:bg-muted md:px-3 lg:w-10 lg:justify-center lg:bg-transparent lg:px-0 xl:w-60 xl:justify-start xl:bg-muted xl:px-3"
+      >
+        <Icon name="Search" className="size-[1.125rem] shrink-0" />
+        <span class="hidden md:inline lg:hidden xl:inline">Search {toolCount} tools</span>
+        <kbd class="ml-auto hidden h-6 min-w-6 items-center justify-center rounded-md bg-background px-1.5 font-sans text-[0.75rem] font-[600] text-muted-foreground md:inline-flex lg:hidden xl:inline-flex">/</kbd>
+      </button>
+
+      <button
+        type="button"
+        data-theme-toggle
+        aria-label="Switch to dark theme"
+        class="theme-toggle grid size-10 place-items-center rounded-lg text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-0"
+      >
+        <Icon name="Moon" className="col-start-1 row-start-1 size-[1.125rem] dark:hidden" />
+        <Icon name="Sun" className="col-start-1 row-start-1 hidden size-[1.125rem] dark:block" />
+      </button>
+
+      <button
+        type="button"
+        data-mobile-toggle
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        class="group -mr-2 grid size-10 place-items-center rounded-lg text-foreground focus-visible:outline-2 focus-visible:outline-offset-0 lg:hidden"
+      >
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+
+  </div>
+
+  {
+    groups.map((group) => (
+      <div id={`menu-${group.id}`} role="region" aria-label={group.title} hidden data-menu-panel={group.id} class="menu-panel">
+        <div class={`mx-auto grid max-w-7xl gap-x-10 gap-y-8 px-8 pt-5 pb-9 ${cols(group.categories.length)}`}>
+          {group.categories.map((cat, i) => (
+            <div class="menu-col min-w-0" style={`--i:${i}`}>
+              <a href={cat.href} class="group/cat flex items-center gap-2.5 rounded-md py-1 focus-visible:outline-2 focus-visible:outline-offset-2">
+                <Glyph id={cat.id} class="size-4" />
+                <span class="text-[0.9375rem] font-[680] text-foreground group-hover/cat:underline group-hover/cat:underline-offset-4">{cat.title}</span>
+                <span class="num text-[0.8125rem] text-muted-foreground">{cat.count}</span>
+              </a>
+              <ul class={group.categories.length === 1 ? 'mt-2.5 columns-3 gap-x-10 xl:columns-4' : 'mt-2.5'}>
+                {cat.tools.map((tool) => (
+                  <li class="break-inside-avoid">
+                    <a href={`/${tool.slug}`} class="link-quiet block truncate py-1 text-[0.875rem]">
+                      {tool.title}
+                    </a>
+                  </li>
+                ))}
+                {cat.count > cat.tools.length && (
+                  <li>
+                    <a href={cat.href} class="mt-1 inline-flex items-center gap-1 py-1 text-[0.875rem] font-[600] text-foreground hover:underline hover:underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">
+                      All {cat.count}
+                      <Icon name="ArrowRight" className="size-3.5" />
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+
+  <div id="mobile-nav" hidden data-mobile-panel class="mobile-sheet lg:hidden">
+    <nav aria-label="All categories" class="mx-auto max-w-xl px-4 pt-2 pb-16 sm:px-6">
+      {
+        groups.map((group, gi) => (
+          <section class="sheet-group pt-6" style={`--i:${gi}`}>
+            <h2 class="text-[0.8125rem] font-[600] text-muted-foreground">{group.title}</h2>
+            <ul class="mt-1.5 grid grid-cols-1 sm:grid-cols-2 sm:gap-x-6">
+              {group.categories.map((cat) => (
+                <li>
+                  <a href={cat.href} class="flex items-center gap-3 rounded-md py-2.5 text-[1rem] font-[620] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2">
+                    <Glyph id={cat.id} still class="size-4" />
+                    <span class="min-w-0 flex-1 truncate">{cat.title}</span>
+                    <span class="num text-[0.875rem] font-normal text-muted-foreground">{cat.count}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+      <div class="sheet-group mt-8 flex flex-wrap items-center gap-2" style={`--i:${groups.length}`}>
+        <a
+          href="/all-tools"
+          class="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-4 text-[0.9375rem] font-[620] text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          All {toolCount} tools
+          <Icon name="ArrowRight" className="size-4" />
+        </a>
+        <button
+          type="button"
+          data-theme-toggle
+          aria-label="Switch to dark theme"
+          class="inline-flex h-11 items-center gap-2 rounded-lg bg-muted px-4 text-[0.9375rem] font-[560] text-foreground focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          <Icon name="Moon" className="size-4 dark:hidden" />
+          <Icon name="Sun" className="hidden size-4 dark:block" />
+          <span class="dark:hidden">Dark theme</span>
+          <span class="hidden dark:inline">Light theme</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .menu-panel {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    z-index: 50;
+    background: var(--popover);
+    box-shadow: var(--elev-pop);
+    clip-path: inset(0 0 -64px 0);
+  }
+  .mobile-sheet {
+    position: fixed;
+    inset-inline: 0;
+    top: calc(4rem + env(safe-area-inset-top));
+    bottom: 0;
+    z-index: 50;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--background);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Two bars that turn into a cross. */
+  .burger {
+    position: relative;
+    display: block;
+    width: 18px;
+    height: 12px;
+  }
+  .burger > span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform 280ms var(--ease-out);
+  }
+  .burger > span:first-child {
+    top: 2px;
+  }
+  .burger > span:last-child {
+    bottom: 2px;
+  }
+  [aria-expanded='true'] > .burger > span:first-child {
+    transform: translateY(3px) rotate(45deg);
+  }
+  [aria-expanded='true'] > .burger > span:last-child {
+    transform: translateY(-3px) rotate(-45deg);
+  }
+  .theme-toggle :global(svg) {
+    transition: transform 420ms var(--ease-out);
+  }
+  .theme-toggle:active :global(svg) {
+    transform: rotate(-30deg) scale(0.9);
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
+
+  if (header) {
+    const triggers = [...header.querySelectorAll<HTMLButtonElement>('[data-menu-trigger]')]
+    const panelOf = (id: string) => header.querySelector<HTMLElement>(`[data-menu-panel="${id}"]`)
+    let open: string | null = null
+    let openTimer = 0
+    let closeTimer = 0
+
+    const enter = (panel: HTMLElement, fresh: boolean) => {
+      if (reduce.matches) return
+      if (fresh) {
+        panel.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 -64px 0)' }], { duration: 320, easing: EASE })
+      }
+      panel.querySelectorAll<HTMLElement>('.menu-col').forEach((col, i) => {
+        col.animate([{ opacity: 0, transform: 'translateY(-6px)' }, { opacity: 1, transform: 'none' }], {
+          duration: fresh ? 360 : 220,
+          delay: fresh ? 40 + i * 30 : 0,
+          easing: EASE,
+          fill: 'backwards',
+        })
+      })
+    }
+    const leave = (panel: HTMLElement) => {
+      if (reduce.matches) {
+        panel.hidden = true
+        return
+      }
+      panel
+        .animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: 'ease' })
+        .finished.then(() => {
+          if (panel.dataset.menuPanel !== open) panel.hidden = true
+        })
+        .catch(() => {})
+    }
+    const setOpen = (id: string | null) => {
+      const was = open
+      if (was === id) return
+      open = id
+      for (const t of triggers) {
+        const tid = t.dataset.menuTrigger!
+        const on = tid === id
+        t.setAttribute('aria-expanded', String(on))
+        const p = panelOf(tid)
+        if (!p) continue
+        if (on) {
+          p.hidden = false
+          enter(p, was === null)
+        } else if (tid === was) {
+          if (id === null) leave(p)
+          else p.hidden = true
+        }
+      }
+    }
+    const clear = () => {
+      window.clearTimeout(openTimer)
+      window.clearTimeout(closeTimer)
+    }
+    for (const t of triggers) {
+      const id = t.dataset.menuTrigger!
+      t.addEventListener('click', () => {
+        clear()
+        setOpen(open === id ? null : id)
+      })
+      t.addEventListener('pointerenter', (e) => {
+        if ((e as PointerEvent).pointerType !== 'mouse') return
+        clear()
+        openTimer = window.setTimeout(() => setOpen(id), open ? 0 : 120)
+      })
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowDown') {
+          e.preventDefault()
+          setOpen(id)
+          panelOf(id)?.querySelector<HTMLElement>('a')?.focus()
+        }
+      })
+    }
+    const zone = [header.querySelector('[data-menubar]'), ...header.querySelectorAll('[data-menu-panel]')]
+    for (const el of zone) {
+      el?.addEventListener('pointerleave', (e) => {
+        if ((e as PointerEvent).pointerType !== 'mouse') return
+        clear()
+        closeTimer = window.setTimeout(() => setOpen(null), 180)
+      })
+      el?.addEventListener('pointerenter', () => window.clearTimeout(closeTimer))
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !open) return
+      const t = triggers.find((x) => x.dataset.menuTrigger === open)
+      setOpen(null)
+      t?.focus()
+    })
+    document.addEventListener('pointerdown', (e) => {
+      if (open && !header.contains(e.target as Node)) setOpen(null)
+    })
+    header.addEventListener('focusout', (e) => {
+      if (open && !header.contains(e.relatedTarget as Node | null)) setOpen(null)
+    })
+
+    // Phone sheet
+    const toggle = header.querySelector<HTMLButtonElement>('[data-mobile-toggle]')
+    const sheet = header.querySelector<HTMLElement>('[data-mobile-panel]')
+    let sheetOpen = false
+    const setSheet = (on: boolean) => {
+      if (!toggle || !sheet || on === sheetOpen) return
+      sheetOpen = on
+      toggle.setAttribute('aria-expanded', String(on))
+      toggle.setAttribute('aria-label', on ? 'Close menu' : 'Open menu')
+      document.documentElement.style.overflow = on ? 'hidden' : ''
+      if (on) {
+        sheet.hidden = false
+        if (reduce.matches) return
+        sheet.animate([{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 380, easing: EASE })
+        sheet.querySelectorAll<HTMLElement>('.sheet-group').forEach((g, i) => {
+          g.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], {
+            duration: 420,
+            delay: 60 + i * 35,
+            easing: EASE,
+            fill: 'backwards',
+          })
+        })
+      } else if (reduce.matches) {
+        sheet.hidden = true
+      } else {
+        sheet
+          .animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 220, easing: 'cubic-bezier(0.65, 0, 0.35, 1)' })
+          .finished.then(() => {
+            if (!sheetOpen) sheet.hidden = true
+          })
+          .catch(() => {})
+      }
+    }
+    toggle?.addEventListener('click', () => setSheet(!sheetOpen))
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sheetOpen) {
+        setSheet(false)
+        toggle?.focus()
+      }
+    })
+    // Leaving the page: close menus so the snapshot shows a plain header.
+    window.addEventListener('pageswap', () => {
+      setOpen(null)
+      for (const t of triggers) {
+        const p = panelOf(t.dataset.menuTrigger!)
+        if (p) p.hidden = true
+      }
+    })
+    window.addEventListener('pageshow', (e) => {
+      if ((e as PageTransitionEvent).persisted) {
+        setSheet(false)
+        if (sheet) sheet.hidden = true
+      }
+    })
+  }
+</script>

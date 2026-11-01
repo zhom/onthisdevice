@@ -1,0 +1,96 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResizePdfPages from '@/components/tools/pdf/ResizePdfPages.tsx'
+---
+
+<ToolLayout slug="resize-pdf-pages">
+  <ResizePdfPages client:load mode="resize" />
+
+  <Fragment slot="explainer">
+    <section>
+      <h2>Changing the paper size of a PDF</h2>
+      <p>
+        A PDF page has no fixed &ldquo;size&rdquo; the way a photo has a pixel count. It has a rectangle
+        measured in PostScript points (72 to the inch) and drawing instructions placed inside it. To resize
+        PDF pages, you decide how big the new rectangle is and what happens to the drawing instructions.
+      </p>
+      <p>
+        This tool lets you set both. You choose the sheet, and you choose whether the content is scaled to
+        fit it or kept at its original size and centred. The content stays vector, so nothing is rasterised
+        and no quality is lost.
+      </p>
+    </section>
+
+    <section>
+      <h2>Standard paper sizes in points</h2>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Size</th>
+            <th scope="col">Millimetres</th>
+            <th scope="col">Inches</th>
+            <th scope="col">Points (portrait)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>A3</td><td>297 × 420</td><td>11.7 × 16.5</td><td>841.89 × 1190.55</td></tr>
+          <tr><td>A4</td><td>210 × 297</td><td>8.27 × 11.69</td><td>595.28 × 841.89</td></tr>
+          <tr><td>A5</td><td>148 × 210</td><td>5.83 × 8.27</td><td>419.53 × 595.28</td></tr>
+          <tr><td>US Letter</td><td>216 × 279</td><td>8.5 × 11</td><td>612 × 792</td></tr>
+          <tr><td>US Legal</td><td>216 × 356</td><td>8.5 × 14</td><td>612 × 1008</td></tr>
+          <tr><td>Tabloid</td><td>279 × 432</td><td>11 × 17</td><td>792 × 1224</td></tr>
+        </tbody>
+      </table>
+      <p>
+        A4 and Letter are the difficult pair. Letter is 6 mm wider and 18 mm shorter, so neither contains
+        the other. A4 content scaled onto Letter is at about 94%, with white bands at the top and bottom;
+        Letter onto A4 is at about 97%, with bands at the sides. A conversion between the two without bands
+        must crop or stretch the content.
+      </p>
+    </section>
+
+    <section>
+      <h2>Scale to fit versus keep original size</h2>
+      <ul>
+        <li>
+          <strong>Scale to fit</strong> multiplies the content by the smaller of the width and height ratios
+          and centres it. The aspect ratio stays the same, so nothing is stretched or cut off. This is almost
+          always the right choice.
+        </li>
+        <li>
+          <strong>Keep original size and centre</strong> keeps the content at 100% on the new sheet. Use it to
+          shrink the paper around a small drawing, or to put an A5 page on A4 for printing. Content larger
+          than the sheet overhangs and is clipped when printed.
+        </li>
+      </ul>
+      <p>
+        The results table shows the exact scale factor for each of the first pages, so you can see whether
+        a document was shrunk by 3% or by 30%.
+      </p>
+    </section>
+
+    <section>
+      <h2>What is lost</h2>
+      <p>
+        The tool draws each page onto a new sheet, so it rebuilds the page object. Link annotations,
+        bookmark destinations, form fields and comment markers belong to the old page object and are not
+        copied. Text, fonts, images and vector art are copied.
+      </p>
+      <p>
+        If your document needs its links or form fields and you only need more white space, use
+        <a href="/add-margins-to-pdf">Add Margins to PDF</a> in its lossless mode. It enlarges only the page
+        rectangle and leaves each object where it was.
+      </p>
+    </section>
+
+    <section>
+      <h2>Mixed-size documents</h2>
+      <p>
+        Reports assembled from several sources often mix page sizes, which shows when the printer starts to
+        alternate trays. Set the orientation to <strong>match each page</strong> and each page goes on the
+        same sheet size in its own orientation. The document then uses one tray and landscape tables stay
+        landscape.
+      </p>
+    </section>
+  </Fragment>
+</ToolLayout>

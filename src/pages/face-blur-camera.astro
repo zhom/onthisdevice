@@ -1,0 +1,54 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FaceBlurCamera from '@/components/tools/redact/vision/FaceBlurCamera.tsx'
+---
+
+<ToolLayout slug="face-blur-camera" width="wide">
+  <FaceBlurCamera client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use it</h2>
+    <ol>
+      <li>Press Turn on camera and allow the camera. Every face in view is blurred.</li>
+      <li>Turn on Keep the largest face to keep your own face sharp when you are nearest the camera.</li>
+      <li>Choose blur, pixelate or a solid fill, the shape and the strength.</li>
+      <li>Press Record to save a clip, or Open in a window to show the blurred picture in its own window.</li>
+      <li>Press Turn off camera when you are done. The browser releases the camera.</li>
+    </ol>
+
+    <h2>Use it in a video call</h2>
+    <p>
+      A web page cannot add a camera to your computer. Press Open in a window, then share that window in your video call
+      app. Picture in picture shows the same picture in a small window that stays on top.
+    </p>
+
+    <h2>What runs on your device</h2>
+    <p>
+      The faces are found by a small face detection model (230 kB, MIT license) in a model runtime of 15 MB. Both
+      download once from this site and are kept in your browser. The model runs in a background thread as often as your
+      device allows, and the tool shows how many times per second. A laptop checks 30 to 70 times per second, a phone
+      fewer. Recording uses the recorder of your browser, which saves MP4 or WebM.
+    </p>
+
+    <h2>How to check that nothing is uploaded</h2>
+    <p>
+      Open the developer tools of your browser (F12) and select the Network tab before you turn on the camera. You see the
+      model files load from this site the first time and no request after that.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Faces far from the camera, seen from the side or in poor light can be missed for a moment. Do a short test before you rely on it.</li>
+      <li>When a face moves fast, the blur can lag behind it by a frame.</li>
+      <li>Open in a window and Picture in picture need a browser that supports them. Firefox has no picture in picture button for pages.</li>
+      <li>The site cannot use your camera unless you allow it. You can take the permission back in the browser settings.</li>
+    </ul>
+
+    <h2>Related tools</h2>
+    <p>
+      <a href="/blur-faces-in-video">Video Face Blur</a> for recorded videos,
+      <a href="/blur-face-in-photo">Blur Face in Photo</a> for photos, and
+      <a href="/webcam-test">Webcam Test</a> to check your camera first.
+    </p>
+  </Fragment>
+</ToolLayout>

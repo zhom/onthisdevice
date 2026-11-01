@@ -1,0 +1,115 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PercentageOffCalculator from '@/components/tools/everyday/PercentageOffCalculator.tsx'
+---
+
+<ToolLayout slug="percentage-off-calculator">
+  <PercentageOffCalculator client:load />
+  <Fragment slot="explainer">
+    <h2>How to calculate a percentage off a price</h2>
+    <ol>
+      <li>Enter the percentage on the sale sign.</li>
+      <li>Enter the original price.</li>
+      <li>
+        Read the answer: the amount you save and the price you pay, both to the cent. Add a sales tax
+        rate if you want the figure that will appear on the receipt.
+      </li>
+    </ol>
+    <p>
+      Two tables build themselves underneath: your price at every common discount, and your
+      percentage applied to the usual price points. Both are useful when you are comparing a rail of
+      tickets rather than a single item.
+    </p>
+
+    <h2>The formula</h2>
+    <p>
+      <strong>saving = price × percent ÷ 100</strong><br />
+      <strong>you pay = price − saving</strong>
+    </p>
+    <p>Or in one step, which is quicker and less error-prone:</p>
+    <p><strong>you pay = price × (100 − percent) ÷ 100</strong></p>
+    <p>
+      What is 20% off $80? Twenty percent of 80 is 16, so you pay $64. In one step: 80 × 0.80 = 64.
+    </p>
+
+    <h2>Doing it in your head</h2>
+    <ul>
+      <li>10%: move the decimal one place left. 10% of $47 is $4.70.</li>
+      <li>5%: half of 10%.</li>
+      <li>15%: 10% plus half of 10%.</li>
+      <li>20%: double 10%, or divide by five.</li>
+      <li>25%: divide by four.</li>
+      <li>33%: divide by three.</li>
+      <li>75%: you pay a quarter of the price.</li>
+      <li>
+        Above 50%, calculate what you pay, not what you save. 70% off means you pay 30%, which is
+        3 × 10%.
+      </li>
+    </ul>
+    <p>
+      Percentages are also commutative, which is occasionally handy: 8% of 50 is the same as 50% of 8,
+      which is 4.
+    </p>
+
+    <h2>Common percentages off common prices</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Original</th>
+            <th scope="col">10% off</th>
+            <th scope="col">20% off</th>
+            <th scope="col">25% off</th>
+            <th scope="col">30% off</th>
+            <th scope="col">50% off</th>
+            <th scope="col">70% off</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>$10</td><td>$9.00</td><td>$8.00</td><td>$7.50</td><td>$7.00</td><td>$5.00</td><td>$3.00</td></tr>
+          <tr><td>$20</td><td>$18.00</td><td>$16.00</td><td>$15.00</td><td>$14.00</td><td>$10.00</td><td>$6.00</td></tr>
+          <tr><td>$25</td><td>$22.50</td><td>$20.00</td><td>$18.75</td><td>$17.50</td><td>$12.50</td><td>$7.50</td></tr>
+          <tr><td>$50</td><td>$45.00</td><td>$40.00</td><td>$37.50</td><td>$35.00</td><td>$25.00</td><td>$15.00</td></tr>
+          <tr><td>$75</td><td>$67.50</td><td>$60.00</td><td>$56.25</td><td>$52.50</td><td>$37.50</td><td>$22.50</td></tr>
+          <tr><td>$100</td><td>$90.00</td><td>$80.00</td><td>$75.00</td><td>$70.00</td><td>$50.00</td><td>$30.00</td></tr>
+          <tr><td>$150</td><td>$135.00</td><td>$120.00</td><td>$112.50</td><td>$105.00</td><td>$75.00</td><td>$45.00</td></tr>
+          <tr><td>$200</td><td>$180.00</td><td>$160.00</td><td>$150.00</td><td>$140.00</td><td>$100.00</td><td>$60.00</td></tr>
+          <tr><td>$500</td><td>$450.00</td><td>$400.00</td><td>$375.00</td><td>$350.00</td><td>$250.00</td><td>$150.00</td></tr>
+          <tr><td>$1,000</td><td>$900.00</td><td>$800.00</td><td>$750.00</td><td>$700.00</td><td>$500.00</td><td>$300.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The same figures work in any currency: dollar, pound or euro.
+    </p>
+
+    <h2>Percent off, percent of, and percentage points</h2>
+    <ul>
+      <li>
+        20% of 80 is 16: the part.
+      </li>
+      <li>
+        20% off 80 is 64: the whole minus the part. Two very similar phrases give very different
+        answers.
+      </li>
+      <li>
+        <strong>A 20 percentage point fall</strong> from 50% to 30% is a 40% decrease in relative
+        terms. Points and percent are not interchangeable.
+      </li>
+    </ul>
+
+    <h2>What the sale sign is not telling you</h2>
+    <p>
+      A percentage is only as meaningful as the price it is measured against. Check two things: was
+      the "was" price ever the real selling price, and do stacked offers combine as the sign implies?
+      They do not add: 30% off and then a further 20% off is 44% off, not 50%. The
+      <a href="/discount-calculator">discount calculator</a> calculates stacked coupons step by step.
+    </p>
+
+    <h2>Privacy</h2>
+    <p>
+      Nothing you type is uploaded. This page runs entirely in your browser, with no analytics on the
+      prices you enter.
+    </p>
+  </Fragment>
+</ToolLayout>

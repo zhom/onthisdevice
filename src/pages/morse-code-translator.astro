@@ -1,0 +1,94 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DevEncodeMorse from '@/components/tools/text/DevEncodeMorse.tsx'
+---
+
+<ToolLayout slug="morse-code-translator">
+  <DevEncodeMorse client:load mode="morse" />
+  <Fragment slot="explainer">
+    <h2>How Morse timing works</h2>
+    <p>
+      Morse code is a rhythm built from one unit of time. All other durations are multiples of it:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Element</th><th>Duration</th><th>State</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dit (dot)</td><td>1 unit</td><td>Tone on</td></tr>
+          <tr><td>Dah (dash)</td><td>3 units</td><td>Tone on</td></tr>
+          <tr><td>Gap inside a letter</td><td>1 unit</td><td>Silence</td></tr>
+          <tr><td>Gap between letters</td><td>3 units</td><td>Silence</td></tr>
+          <tr><td>Gap between words</td><td>7 units</td><td>Silence</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Speed is defined against the reference word <code>PARIS</code>, which is exactly 50 units
+      long. At 20 words per minute, one unit is 60&nbsp;÷&nbsp;(50&nbsp;×&nbsp;20) = 60&nbsp;ms. The
+      audio on this page is generated to those exact durations.
+    </p>
+
+    <h2>Farnsworth spacing, and why it matters for learning</h2>
+    <p>
+      Learners usually fail because they count individual dits. That works up to about 10&nbsp;WPM and
+      then stops working, because at speed you must recognise the whole rhythm of a letter as one
+      shape.
+    </p>
+    <p>
+      Farnsworth timing stops that habit. Characters are sent fast (18 to 20&nbsp;WPM), and the gaps
+      between them are longer, so the overall pace is slow enough to follow. With the two sliders, set
+      the character speed above the overall speed. You hear each letter at full speed with time to
+      think between letters, and you never have to learn the letters again at a higher rate.
+    </p>
+
+    <h2>Letters, digits and punctuation</h2>
+    <p>
+      The full reference grid is in the tool above. Some patterns make it easier to learn.
+      <code>E</code> is a single dit and <code>T</code> a single dah, because they are the most common
+      letters in English: Morse was an early example of frequency coding. All digits are five elements
+      long and follow a clean pattern, from 1 as <code>.----</code> to 0 as <code>-----</code>.
+    </p>
+
+    <h2>Prosigns</h2>
+    <p>
+      A prosign is several letters sent as one unbroken character, with no letter gap. So SOS is a
+      distress signal and not three letters:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Prosign</th><th>Code</th><th>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SOS</td><td><code>...---...</code></td><td>Distress. Chosen because it is unmistakable, not as an abbreviation</td></tr>
+          <tr><td>AR</td><td><code>.-.-.</code></td><td>End of message</td></tr>
+          <tr><td>SK</td><td><code>...-.-</code></td><td>End of contact</td></tr>
+          <tr><td>BT</td><td><code>-...-</code></td><td>Break, new section</td></tr>
+          <tr><td>HH</td><td><code>........</code></td><td>Error. Disregard the last word</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      The story that SOS stands for &ldquo;save our souls&rdquo; is a backronym. SOS was adopted in 1906
+      because the pattern is symmetrical, distinctive and hard to confuse with other signals under
+      noise.
+    </p>
+
+    <h2>The audio is built here, not fetched</h2>
+    <p>
+      Playback builds an audio buffer sample by sample with the Web Audio API. A short 5&nbsp;ms ramp at
+      the start and end of each tone prevents the click of a sine wave that starts abruptly. The WAV
+      download writes the same samples into a 16-bit PCM file with a hand-built header. No audio is
+      downloaded, so the Morse code translator works offline.
+    </p>
+
+    <h2>Visual flash mode</h2>
+    <p>
+      Turn on the flash toggle to see the message as light: the same timing, as a panel that lights on
+      each tone. Ships signal Morse by lamp this way, and it also makes the tool usable with the sound
+      off or with hearing loss.
+    </p>
+  </Fragment>
+</ToolLayout>

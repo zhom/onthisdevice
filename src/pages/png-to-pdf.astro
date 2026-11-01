@@ -1,0 +1,97 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PngToPdf from '@/components/tools/pdf-convert/PngToPdf.tsx'
+---
+
+<ToolLayout slug="png-to-pdf">
+  <PngToPdf client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to convert PNG images to a PDF</h2>
+    <ol>
+      <li>Add your PNG files: drop them on the box above or click to browse. Your device processes them.</li>
+      <li>Arrange the pages by dragging the cards, or with the arrow buttons on each card for keyboard users.</li>
+      <li>Pick <strong>Auto</strong> to give every page the exact proportions of its image, or a fixed size such as A4 for a uniform document.</li>
+      <li>Adjust orientation, margin and fit if you chose a fixed page size.</li>
+      <li>Press <strong>Create PDF</strong> and download the result.</li>
+    </ol>
+
+    <h2>What happens to transparency</h2>
+    <p>
+      PNG supports an alpha channel; PDF pages do not have a background layer at
+      all. When a transparent PNG is placed on a page, the transparent pixels
+      show what is behind them. Behind them is nothing, which all PDF viewers and
+      printers show as white paper.
+    </p>
+    <p>
+      In practice that means a logo with a transparent background will look correct
+      on a normal white page and will <em>not</em> stay transparent if you later
+      place the PDF over a coloured background. If you need a specific backdrop,
+      flatten the PNG onto that colour before converting. The image data itself is
+      kept in both cases: the alpha channel is embedded, but there is nothing behind
+      it.
+    </p>
+
+    <h2>Screenshots: a practical recipe</h2>
+    <p>
+      Screenshots are the most common PNG input, and they are usually all different
+      sizes. Two setups work well:
+    </p>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Goal</th>
+            <th>Page size</th>
+            <th>Fit</th>
+            <th>Margin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Compact, no borders, one screenshot per page</td>
+            <td>Auto</td>
+            <td>None</td>
+            <td>0 mm</td>
+          </tr>
+          <tr>
+            <td>Printable report with consistent pages</td>
+            <td>A4 or Letter</td>
+            <td>Fit</td>
+            <td>12–15 mm</td>
+          </tr>
+          <tr>
+            <td>Wide UI captures that should not shrink</td>
+            <td>A4 with Landscape</td>
+            <td>Fit</td>
+            <td>8 mm</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Is the PNG re-compressed?</h2>
+    <p>
+      No. PNG is one of the two image formats a PDF can carry natively, so the
+      original bytes are embedded unchanged. The pages are pixel-identical to your
+      files, and the finished PDF is approximately the sum of the input sizes plus
+      a couple of kilobytes of document structure. Nothing is resampled, softened
+      or watermarked.
+    </p>
+    <p>
+      That also means a PDF built from PNGs can be large. A dozen full-resolution
+      desktop screenshots easily reach 20 MB. If size matters more than pixel
+      fidelity, convert the screenshots to JPG first and use
+      <a href="/jpg-to-pdf">JPG to PDF</a>, or run the finished document through a
+      <a href="/compress-pdf">PDF compressor</a>.
+    </p>
+
+    <h2>Everything stays local</h2>
+    <p>
+      Decoding and PDF assembly both happen in this browser tab using pdf-lib. No
+      image is uploaded, so screenshots containing internal dashboards, customer
+      data or credentials stay on your machine. The tool also works with the
+      network disconnected.
+    </p>
+  </Fragment>
+</ToolLayout>
