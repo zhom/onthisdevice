@@ -3,16 +3,22 @@
  * all-tools.astro) and in the node tests; never imported by client code.
  */
 import { createHash } from 'node:crypto'
+import { existsSync, readFileSync } from 'node:fs'
+import path from 'node:path'
 import type { Category, Tool } from '@/lib/tools/types'
 import { CATEGORIES, TOOLS } from '@/lib/tools'
 import { FEATURED } from '@/lib/featured'
 import type { SearchIndex, ToolRow } from './data'
+import type { Embedder } from './semantic/embed'
+import { createEmbedder } from './semantic/embed'
+import { packVectors, parseModel, quantizeRows } from './semantic/format'
+import { SEARCH_MODEL } from './semantic/paths'
 import { STOPWORDS, normalize, stem, words } from './text'
 
 /** Description words used by more than this share of tools say nothing about one tool. */
 const COMMON_SHARE = 0.08
 /** Description words kept per tool. */
-const EXTRA_WORDS = 6
+const EXTRA_WORDS = 8
 
 export function buildIndex(tools: readonly Tool[], categories: readonly Category[]): SearchIndex {
   const catIndex = new Map(categories.map((c, i) => [c.id, i]))
@@ -78,4 +84,41 @@ export function siteIndex(): { json: string; version: string } {
     site = { json, version: createHash('sha256').update(json).digest('hex').slice(0, 10) }
   }
   return site
+}
+
+/** What the model reads for one tool: its names, keywords, description and FAQ questions. */
+export function meaningOf(t: Tool): string {
+  return [t.title, t.h1 ?? '', t.keywords.join('. '), t.description, (t.faqs ?? []).map((f) => f.q).join(' ')].join('. ')
+}
+
+/** One unit vector per tool, in `tools` order, int8, packed for /search-vectors.bin. */
+export function buildVectors(tools: readonly Tool[], embedder: Embedder): Uint8Array<ArrayBuffer> {
+  const dims = embedder.dims
+  const all = new Float32Array(tools.length * dims)
+  tools.forEach((t, i) => {
+    const v = embedder.embed(meaningOf(t))
+    if (v) all.set(v, i * dims)
+  })
+  return packVectors(quantizeRows(all, tools.length, dims))
+}
+
+/** The vendored search model, read from public/ (scripts/vendor-models.mjs puts it there). */
+export function loadEmbedder(root = process.cwd()): Embedder {
+  const file = path.join(root, 'public', SEARCH_MODEL)
+  if (!existsSync(file)) {
+    throw new Error(`[search] ${SEARCH_MODEL} is missing. Run: node scripts/vendor-models.mjs`)
+  }
+  const bytes = readFileSync(file)
+  return createEmbedder(parseModel(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength)))
+}
+
+let vectors: { bytes: Uint8Array<ArrayBuffer>; version: string } | null = null
+
+/** The tool vectors as served at /search-vectors.bin, and a short hash. Built once per build. */
+export function siteVectors(): { bytes: Uint8Array<ArrayBuffer>; version: string } {
+  if (!vectors) {
+    const bytes = buildVectors(TOOLS, loadEmbedder())
+    vectors = { bytes, version: createHash('sha256').update(bytes).digest('hex').slice(0, 10) }
+  }
+  return vectors
 }

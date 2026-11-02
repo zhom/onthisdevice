@@ -42,8 +42,10 @@ export default function HeroSearch() {
   const menuRef = useRef<HTMLDivElement | null>(null)
   const idBase = useId()
 
-  const view = useSearch(query, { enabled: armed, limit: 6, recent: 3, popular: 5 })
+  const reorder = useRef(() => {})
+  const view = useSearch(query, { enabled: armed, engaged: focused || query !== '', limit: 6, recent: 3, popular: 5, beforeReorder: () => reorder.current() })
   const snapshot = useFlip(listRef, view.groups)
+  reorder.current = snapshot
   const completion = view.result?.completion
   const empty = query.trim() !== '' && view.status === 'ready' && view.flat.length === 0
   const showMenu = open && (view.groups.length > 0 || empty)

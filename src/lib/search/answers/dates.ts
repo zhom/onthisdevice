@@ -165,6 +165,11 @@ const HOW_LONG = /^(?:how long|time|countdown) (?:until|till|til|to) (.+)$/
 const SINCE = /^(?:how many )?(days?|weeks?)(?: has it been| have passed)? since (.+)$/
 const BETWEEN = /^(?:how many )?(days?|weeks?)(?: are)? (?:between|from) (.+?) (?:and|to|until|till) (.+)$/
 const WHEN = /^(?:when is|whens|date of|what date is|what day is) (.+)$/
+/** "what day of the week was 4 july 1976", "day of week 2026-12-25", "what day was 1 jan 2000" */
+const WEEKDAY_OF = [
+  /^(?:day of (?:the )?week|weekday) (?:of |for |on )?(.+)$/,
+  /^(?:what |which )?(?:day of (?:the )?week|weekday|day)(?: of (?:the )?week)? (?:was|is|will be|for|of|on|falls on) (.+)$/,
+]
 const N = '(\\d{1,6}|an?|one)'
 const UNIT = '(day|week|month|year)s?'
 const OFFSET = [
@@ -274,6 +279,20 @@ export function dateAnswer(input: string, now: Date): Answer | null {
       label: `Days since ${describe(target, today)}`,
       copy: String(diff),
       slug: 'date-difference-calculator',
+      more: [longDate(target.date)],
+    }
+  }
+
+  const asked = WEEKDAY_OF.map((re) => re.exec(s)?.[1]).filter((x): x is string => Boolean(x))
+  const target = asked.length ? asked.map((d) => parseDate(d, today, 'this')).find(Boolean) : undefined
+  if (asked.length) {
+    if (!target) return null
+    return {
+      kind: 'date',
+      value: WEEKDAYS[weekday(target.date)],
+      label: describe(target, today),
+      copy: WEEKDAYS[weekday(target.date)],
+      slug: 'date-calculator',
       more: [longDate(target.date)],
     }
   }

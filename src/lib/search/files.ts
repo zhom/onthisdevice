@@ -197,10 +197,25 @@ export interface FileMatch {
  * Tools that take this kind of file, best first: tools made for this format, then popular
  * ones, then the visitor's own recent tools.
  */
+/** Words of a file name that say what it is ("passport scan", "invoice"), for search by meaning. */
+export function nameWords(name: string): string {
+  return name
+    .replace(/\.[a-z0-9]+$/i, '')
+    .split(/[^a-z]+/i)
+    .filter((w) => w.length >= 3 && !/^(img|dsc|dscn|pxl|vid|mvimg|copy|final|file|untitled)$/i.test(w))
+    .join(' ')
+}
+
 export function toolsForFile(
   catalog: Catalog,
   kind: FileKind,
-  options: { count?: number; boost?: ReadonlyMap<string, number>; limit?: number } = {},
+  options: {
+    count?: number
+    boost?: ReadonlyMap<string, number>
+    limit?: number
+    /** Similarity of each tool with the file's name words, when search by meaning is loaded. */
+    meaning?: Float32Array | null
+  } = {},
 ): FileMatch[] {
   if (!kind.ext) return []
   const names = new Set(ACCEPTED_AS[kind.ext] ?? [kind.ext])
@@ -222,6 +237,9 @@ export function toolsForFile(
     if (tool.rank > 0) score += 3 + 3 * (1 - Math.min(tool.rank, 100) / 100)
     score += options.boost?.get(tool.slug) ?? 0
     if (count > 1 && MANY.test(tool.slug)) score += 6
+    // "passport scan.jpg" leans to the ID tools, "screenshot.png" to the screenshot tools.
+    const sim = options.meaning?.[tool.index] ?? 0
+    score += 6 * Math.min(1, Math.max(0, (sim - 0.35) / 0.3))
     out.push({ tool, score })
   }
   out.sort((a, b) => b.score - a.score || a.tool.title.localeCompare(b.tool.title))

@@ -5,7 +5,7 @@
  * file anywhere" and paste. Nothing loads until a file is dragged or pasted.
  */
 import { TOOL_BY_SLUG } from '@/lib/tools'
-import { siteIndex } from '@/lib/search/build'
+import { siteIndex, siteVectors } from '@/lib/search/build'
 import { RUNTIME_ID } from '@/lib/search/runtime'
 
 const slug = Astro.url.pathname.replace(/^\/+|\/+$/g, '')
@@ -16,6 +16,7 @@ const tool = TOOL_BY_SLUG.get(slug)
   id={RUNTIME_ID}
   hidden
   data-index={`/search-index.json?v=${siteIndex().version}`}
+  data-vectors={`/search-vectors.bin?v=${siteVectors().version}`}
   data-tool={tool?.slug}
   data-title={tool?.title}
   data-accepts={tool?.accepts?.join(' ')}

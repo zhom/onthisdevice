@@ -38,6 +38,9 @@ export const STOPWORDS = new Set([
   'this', 'that', 'best', 'tool', 'tools', 'app', 'website', 'site', 'without', 'no', 'upload',
   'please', 'some', 'want', 'need', 'using', 'via', 'way', 'easy', 'quick', 'quickly', 'instantly',
   'browser', 'private', 'secure',
+  // Articles and prepositions of other languages, for queries like "calculadora de hipoteca".
+  'de', 'la', 'le', 'les', 'une', 'el', 'los', 'las', 'des', 'du', 'und', 'der', 'das', 'il', 'per',
+  'para', 'pour', 'mit', 'con', 'avec', 'zu', 'mon', 'mi', 'mein', 'ma', 'em', 'um', 'uma', 'een', 'het',
 ])
 
 /**

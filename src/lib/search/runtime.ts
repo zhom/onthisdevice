@@ -8,6 +8,8 @@ export const RUNTIME_ID = 'otd-search'
 export interface PageInfo {
   /** URL of the search index. */
   index: string
+  /** URL of the tool vectors for search by meaning. */
+  vectors: string
   /** Slug of the tool on this page, or "" on other pages. */
   tool: string
   /** Title of that tool. */
@@ -20,6 +22,7 @@ export function pageInfo(): PageInfo {
   const data = document.getElementById(RUNTIME_ID)?.dataset ?? {}
   return {
     index: data.index ?? '/search-index.json',
+    vectors: data.vectors ?? '/search-vectors.bin',
     tool: data.tool ?? '',
     title: data.title ?? '',
     accepts: (data.accepts ?? '').split(' ').filter(Boolean),

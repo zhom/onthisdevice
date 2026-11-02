@@ -22,11 +22,11 @@ export const SYNONYM_GROUPS: readonly string[] = [
   'markdown md',
   'jpg jpeg jfif jpe',
   'tiff tif',
-  'heic heif',
+  'heic heif iphone',
   'yaml yml',
   'html htm webpage',
   'mp4 mpeg4',
-  'mov quicktime',
+  'mov quicktime iphone',
   'mkv matroska',
   'password passcode passwd pwd',
   'protect lock encrypt encryption',
@@ -49,7 +49,7 @@ export const SYNONYM_GROUPS: readonly string[] = [
   'editor edit modify',
   'organize organise reorder rearrange arrange',
   'numbering paginate pagination',
-  'watermark stamp',
+  'watermark stamp logo',
   'screenshot screengrab',
   'recorder record recording capture',
   'qr qrcode',
@@ -58,6 +58,11 @@ export const SYNONYM_GROUPS: readonly string[] = [
   'timestamp epoch unix posix',
   'timezone tz',
   'mortgage mortage homeloan',
+  'house home property',
+  'monthly month',
+  'url link links',
+  'cron crontab schedule scheduled',
+  'case uppercase lowercase capitals capital caps',
   'salary wage wages paycheck income',
   'tip gratuity',
   'percentage percent pct',
@@ -112,6 +117,53 @@ export const SYNONYM_GROUPS: readonly string[] = [
   'speed speedup slowmo',
 ]
 
+/**
+ * Common words of Spanish, French, German, Italian, Portuguese and Dutch tool searches, by the
+ * English word they mean (accents stripped, as `normalize` does). A query word here expands to
+ * the English word and its group, so "unir pdf" finds Merge PDF.
+ */
+export const FOREIGN: Record<string, string> = {
+  merge: 'unir unire fusionar fusionner zusammenfugen zusammenfuhren verbinden combinar juntar unisci samenvoegen',
+  compress: 'comprimir compresser comprimer komprimieren comprimere comprimi reducir reduire comprimeren',
+  resize: 'redimensionar redimensionner ridimensionare verkleinern vergrossern',
+  image: 'imagen imagenes imagem imagens bild bilder immagine immagini foto fotos afbeelding',
+  convert: 'convertir converter convertire konvertieren umwandeln converteren transformar',
+  split: 'dividir separar diviser separer teilen trennen aufteilen dividere separare splitsen',
+  rotate: 'girar rotar pivoter tourner drehen ruotare',
+  crop: 'recortar rogner recadrer zuschneiden ritagliare bijsnijden',
+  delete: 'eliminar borrar supprimer effacer loschen entfernen eliminare cancellare excluir apagar verwijderen',
+  password: 'contrasena senha passwort kennwort wachtwoord',
+  generator: 'generador generateur gerador generatore',
+  calculator: 'calculadora calculatrice calculateur rechner calcolatrice',
+  mortgage: 'hipoteca hypotheque hypothek mutuo hypotheek',
+  words: 'palabras mots worter woerter parole palavras woorden',
+  counter: 'contador compteur zahler contatore teller',
+  text: 'texto texte testo',
+  pages: 'pagina paginas seite seiten pagine',
+  sign: 'firmar signer unterschreiben firmare assinar ondertekenen',
+  signature: 'firma unterschrift assinatura handtekening',
+  protect: 'proteger schutzen proteggere beveiligen',
+  unlock: 'desbloquear deverrouiller entsperren sbloccare ontgrendelen',
+  blur: 'difuminar desenfocar flouter verwischen sfocare desfocar vervagen',
+  face: 'cara rostro visage gesicht viso rosto gezicht',
+  faces: 'caras rostros visages gesichter visi rostos gezichten',
+  watermark: 'filigrane wasserzeichen filigrana watermerk',
+  redact: 'tachar censurar caviarder schwarzen censurare anonimizar anonymiser anonymisieren anonimizzare',
+  add: 'anadir agregar ajouter hinzufugen aggiungere adicionar toevoegen',
+  extract: 'extraer extraire extrahieren estrarre extrair',
+  trim: 'cortar couper schneiden tagliare knippen',
+  color: 'couleur farbe colore cor kleur',
+  age: 'edad alter idade leeftijd',
+  bmi: 'imc',
+  tip: 'propina pourboire trinkgeld mancia gorjeta fooi',
+  loan: 'prestamo kredit darlehen prestito emprestimo lening',
+  interest: 'interes interet zinsen interesse juros rente',
+  percentage: 'porcentaje pourcentage prozent percentuale porcentagem procent',
+  numbering: 'numerar numeroter nummerieren numerare nummeren',
+  audio: 'sonido musica musique musik',
+  video: 'pelicula film',
+}
+
 /** Phrases rewritten to one word before the query is split. */
 export const PHRASES: readonly [RegExp, string][] = [
   [/\bblack ?out\b/g, 'blackout'],
@@ -130,6 +182,8 @@ export const PHRASES: readonly [RegExp, string][] = [
   [/\bsave as\b/g, 'convert'],
   [/\bbody mass index\b/g, 'bmi'],
   [/\bdue date\b/g, 'pregnancy'],
+  [/\bmot de passe\b/g, 'password'],
+  [/\bmarca de agua\b/g, 'watermark'],
   [/\bsquare (?:feet|foot|footage)\b|\bsq ?ft\b/g, 'square footage'],
 ]
 

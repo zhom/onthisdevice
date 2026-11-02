@@ -4,7 +4,8 @@
  * ?c= in the URL, and animates rows to their new places.
  */
 import type { Searcher } from '@/lib/search/engine'
-import { loadSearcher } from '@/lib/search/load'
+import type { Similarity } from '@/lib/search/load'
+import { loadMeaning, loadSearcher, meaningEagerly } from '@/lib/search/load'
 
 const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -39,7 +40,23 @@ export function initToolFilter(): void {
   input.value = state.q
 
   let searcher: Searcher | null = null
+  let meaning: Similarity | null = null
   let loading: Promise<void> | null = null
+  let meaningLoading = false
+  /** Search by meaning: when the field is used, or when words alone find little on a slow link. */
+  const loadModel = () => {
+    if (meaning || meaningLoading) return
+    meaningLoading = true
+    loadMeaning().then(
+      (fn) => {
+        meaning = fn
+        if (state.q.trim()) apply(true)
+      },
+      () => {
+        meaningLoading = false
+      },
+    )
+  }
   const load = () =>
     (loading ??= loadSearcher().then(
       (s) => {
@@ -101,8 +118,9 @@ export function initToolFilter(): void {
 
     let rank: Map<string, number> | null = null
     if (q && searcher) {
-      const result = searcher.search(q, { limit: Infinity, highlight: false, floor: 0.05 })
+      const result = searcher.search(q, { limit: Infinity, highlight: false, floor: 0.05, similarity: meaning ?? undefined })
       rank = new Map(result.tools.map((h, i) => [h.tool.slug, i]))
+      if (!meaning && (result.tools.length < 3 || result.tools[0].score < 20)) loadModel()
     }
     let shown = 0
     for (const s of sections) {
@@ -149,7 +167,14 @@ export function initToolFilter(): void {
     e.preventDefault()
     input.blur()
   })
-  input.addEventListener('focus', () => void load(), { once: true })
+  input.addEventListener(
+    'focus',
+    () => {
+      void load()
+      if (meaningEagerly()) loadModel()
+    },
+    { once: true },
+  )
   input.addEventListener('pointerenter', () => void load(), { once: true })
 
   for (const a of catLinks) {
@@ -170,6 +195,9 @@ export function initToolFilter(): void {
     })
   }
 
-  if (state.q) void load()
+  if (state.q) {
+    void load()
+    if (meaningEagerly()) loadModel()
+  }
   else if (state.c) apply(false)
 }

@@ -4,8 +4,8 @@
  */
 import type { ToolDoc } from '@/lib/search/data'
 import type { FileKind } from '@/lib/search/files'
-import { detectFile, kindOf, toolTakes, toolsForFile } from '@/lib/search/files'
-import { loadSearcher } from '@/lib/search/load'
+import { detectFile, kindOf, nameWords, toolTakes, toolsForFile } from '@/lib/search/files'
+import { loadSearcher, meaningReady } from '@/lib/search/load'
 import { pageInfo } from '@/lib/search/runtime'
 import { usageBoost } from '@/lib/search/usage'
 import type { Point } from './useReveal'
@@ -82,7 +82,9 @@ export async function drop(files: File[], x: number, y: number): Promise<void> {
       const input = pageInput()
       if (input && deliver(input, same)) return set({ phase: 'done', at: { x: innerWidth / 2, y: innerHeight / 2 } })
     }
-    let tools = toolsForFile(searcher, kind, { count: same.length, boost: usageBoost(), limit: 7 }).map((m) => m.tool)
+    const words = nameWords(same[0]?.name ?? '')
+    const meaning = words ? meaningReady()?.(words) : null
+    let tools = toolsForFile(searcher, kind, { count: same.length, boost: usageBoost(), limit: 7, meaning }).map((m) => m.tool)
     // This page's tool takes the file but shows no file input now: offer it first (it reloads).
     if (here && toolTakes(here, kind)) tools = [here, ...tools.filter((t) => t !== here)].slice(0, 7)
     set({ phase: 'pick', at, files: same, kind, tools, here })

@@ -51,8 +51,10 @@ export default function CommandPalette() {
   const origin = useRef({ x: 0, y: 0 })
   const idBase = useId()
 
-  const view = useSearch(query, { enabled: phase !== 'closed', limit: 8, recent: 5, popular: 8 })
+  const reorder = useRef(() => {})
+  const view = useSearch(query, { enabled: phase !== 'closed', engaged: phase === 'open', limit: 8, recent: 5, popular: 8, beforeReorder: () => reorder.current() })
   const snapshot = useFlip(listRef, view.groups)
+  reorder.current = snapshot
   const completion = view.result?.completion
   const empty = query.trim() !== '' && view.status === 'ready' && view.flat.length === 0
 

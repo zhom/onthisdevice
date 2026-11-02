@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CategoryDoc, ToolDoc } from '@/lib/search/data'
 import type { Range, SearchResult, Searcher } from '@/lib/search/engine'
-import type { Answer } from '@/lib/search/load'
-import { loadAnswers, loadSearcher } from '@/lib/search/load'
+import type { Answer, Similarity } from '@/lib/search/load'
+import { loadAnswers, loadMeaning, loadSearcher, meaningEagerly, meaningReady } from '@/lib/search/load'
 import { readRecents, usageBoost } from '@/lib/search/usage'
 
 export type Option =
@@ -35,7 +35,14 @@ interface Config {
   /** Rows for an empty query. */
   recent: number
   popular: number
+  /** The field is in use (focused or typed in): search by meaning may start loading. */
+  engaged: boolean
+  /** Called just before search by meaning reorders the rows (for FLIP). */
+  beforeReorder?: () => void
 }
+
+/** Words alone found little: worth loading search by meaning even on a slow link. */
+const weak = (r: SearchResult) => r.tools.length < 3 || r.tools[0].score < 20
 
 const toolOption = (tool: ToolDoc, prefix: string, ranges: readonly Range[] = []): Option => ({
   kind: 'tool',
@@ -54,6 +61,10 @@ export function useSearch(query: string, config: Config): SearchView {
   const [status, setStatus] = useState<SearchView['status']>('idle')
   const [attempt, setAttempt] = useState(0)
   const [history, setHistory] = useState<{ recents: string[]; boost: Map<string, number> } | null>(null)
+  const [meaning, setMeaning] = useState<Similarity | null>(meaningReady)
+  const [wantMeaning, setWantMeaning] = useState(false)
+  const beforeReorder = useRef(config.beforeReorder)
+  beforeReorder.current = config.beforeReorder
 
   useEffect(() => {
     if (!config.enabled) return
@@ -89,11 +100,35 @@ export function useSearch(query: string, config: Config): SearchView {
     }
   }, [config.enabled, answer, attempt])
 
+  // Search by meaning: as soon as the field is used, or (on Save-Data or 2G) when words alone
+  // find little. The rows then glide to their new order.
+  useEffect(() => {
+    if (!config.engaged || !searcher || meaning || !(wantMeaning || meaningEagerly())) return
+    let live = true
+    loadMeaning().then(
+      (fn) => {
+        if (!live) return
+        beforeReorder.current?.()
+        setMeaning(() => fn)
+      },
+      () => {},
+    )
+    return () => {
+      live = false
+    }
+  }, [config.engaged, searcher, meaning, wantMeaning])
+
   const trimmed = query.trim()
   const result = useMemo(
-    () => (searcher && trimmed ? searcher.search(query, { limit: config.limit, boost: history?.boost }) : null),
-    [searcher, query, trimmed, config.limit, history],
+    () =>
+      searcher && trimmed
+        ? searcher.search(query, { limit: config.limit, boost: history?.boost, similarity: meaning ?? undefined })
+        : null,
+    [searcher, query, trimmed, config.limit, history, meaning],
   )
+  useEffect(() => {
+    if (result && !meaning && weak(result)) setWantMeaning(true)
+  }, [result, meaning])
   const instant = useMemo(() => (answer && trimmed ? answer(trimmed) : null), [answer, trimmed])
 
   const groups = useMemo<Group[]>(() => {

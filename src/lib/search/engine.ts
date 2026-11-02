@@ -9,10 +9,12 @@
  */
 import type { Catalog, CategoryDoc, SearchIndex, ToolDoc } from './data'
 import { decodeIndex } from './data'
-import { FORMAT_BY_ALIAS, FORMAT_KIND, PHRASES, SYNONYM_GROUPS } from './synonyms'
+import { FOREIGN, FORMAT_BY_ALIAS, FORMAT_KIND, PHRASES, SYNONYM_GROUPS } from './synonyms'
 import { STOPWORDS, editDistance, normalize, stem, wordSpans, words } from './text'
 import type { PairIntent, SizeIntent, SizeTool } from './intent'
 import { parsePair, parseSize, sizeFit, sizeToolOf, slugPair } from './intent'
+import type { FusionParams, Scored } from './semantic/fuse'
+import { FUSION, fuse } from './semantic/fuse'
 
 export type Range = [start: number, end: number]
 
@@ -38,6 +40,8 @@ export interface SearchResult {
   completion?: string
   /** How many tools matched, before `limit`. */
   total: number
+  /** True when similarity by meaning changed the ranking. */
+  semantic?: boolean
 }
 
 export interface SearchOptions {
@@ -49,6 +53,14 @@ export interface SearchOptions {
   highlight?: boolean
   /** Drop hits below this share of the best score. Default 0.1; lower keeps weaker matches. */
   floor?: number
+  /**
+   * Search by meaning: the cosine of a text with every tool, in index order (see
+   * src/lib/search/semantic). The engine passes the query with typos fixed and foreign words in
+   * English. Absent or null: lexical ranking only.
+   */
+  similarity?: (text: string) => Float32Array | null
+  /** Fusion constants, for the eval script only. */
+  fusion?: FusionParams
 }
 
 export interface Searcher extends Catalog {
@@ -157,6 +169,17 @@ export function createSearcher(index: SearchIndex): Searcher {
       let set = synonyms.get(w)
       if (!set) synonyms.set(w, (set = new Set()))
       for (const o of list) if (o !== w) set.add(o)
+    }
+  }
+  // A foreign word means its English word and that word's group.
+  const english = new Map<string, string>()
+  for (const [word, list] of Object.entries(FOREIGN)) {
+    const family = [word, ...(synonyms.get(word) ?? [])]
+    for (const w of list.split(' ')) {
+      english.set(w, word)
+      let set = synonyms.get(w)
+      if (!set) synonyms.set(w, (set = new Set()))
+      for (const o of family) if (o !== w) set.add(o)
     }
   }
   const vocab = [...new Set([...postings.keys(), ...synonyms.keys(), ...FORMAT_BY_ALIAS.keys()])].sort()
@@ -369,7 +392,8 @@ export function createSearcher(index: SearchIndex): Searcher {
     for (const doc of touched) {
       const coverage = n ? matched[doc] / n : 0
       const intentScore = intent.get(doc) ?? 0
-      if (n >= 2 && coverage < 0.5 && intentScore === 0) continue
+      // With search by meaning on, weaker word matches stay in the pool: meaning may lift them.
+      if (n >= 2 && coverage < (options.similarity ? (options.fusion ?? FUSION).cover : 0.5) && intentScore === 0) continue
       const t = tools[doc]
       const d = text[doc]
       let score = total[doc] * (coverage === 1 ? 1 : 0.4 * coverage * coverage)
@@ -390,11 +414,6 @@ export function createSearcher(index: SearchIndex): Searcher {
       score -= 0.04 * t.title.length
       scored.push({ doc, score })
     }
-    if (scored.length === 0) {
-      result.didYouMean = correctionOf(all, tokens, expansions)
-      return result
-    }
-
     // Rerank the leaders: all words in the title, and words in the query's order.
     scored.sort((a, b) => b.score - a.score)
     const lead = scored.slice(0, 60)
@@ -419,9 +438,23 @@ export function createSearcher(index: SearchIndex): Searcher {
       }
       lead.sort((a, b) => b.score - a.score || tools[a.doc].title.localeCompare(tools[b.doc].title))
     }
-    const ranked = lead.length < scored.length ? [...lead, ...scored.slice(60)] : lead
+    let ranked: Scored[] = lead.length < scored.length ? [...lead, ...scored.slice(60)] : lead
+    const fixes = typoFixes(tokens, expansions)
+    let least = 1
+    const sims = options.similarity?.(meaningText(tokens, fixes) || q)
+    const fused =
+      sims && sims.length === N ? fuse(ranked, sims, { intent: Boolean(pair || size), words: n }, options.fusion) : null
+    if (fused) {
+      ranked = fused
+      least = 0
+      result.semantic = true
+    }
+    if (ranked.length === 0) {
+      result.didYouMean = correctionOf(all, fixes)
+      return result
+    }
     const top = ranked[0].score
-    const floor = Math.max(1, top * (options.floor ?? RELATIVE_FLOOR))
+    const floor = Math.max(least, top * (options.floor ?? RELATIVE_FLOOR))
     for (const s of ranked) {
       if (s.score < floor) break
       result.total++
@@ -435,7 +468,7 @@ export function createSearcher(index: SearchIndex): Searcher {
     }
 
     result.categories = categoriesFor(expansions, highlight)
-    const fixed = correctionOf(all, tokens, expansions)
+    const fixed = correctionOf(all, fixes)
     // "mrege pd" -> "merge pdf": finish the corrected words the way the completion would.
     const titled = fixed && typing ? result.tools.slice(0, 3).find((h) => text[h.tool.index].title.startsWith(fixed)) : undefined
     result.didYouMean = titled ? text[titled.tool.index].title : fixed
@@ -485,15 +518,25 @@ export function createSearcher(index: SearchIndex): Searcher {
     }))
   }
 
-  function correctionOf(all: string[], tokens: string[], expansions: Expansion[]): string | undefined {
+  /** Query words that only matched as typos, with the word they most likely meant. */
+  function typoFixes(tokens: string[], expansions: Expansion[]): Map<string, string> {
     const fixes = new Map<string, string>()
     tokens.forEach((t, i) => {
       const exp = expansions[i]
       const onlyTypos = [...exp.terms.values()].every((c) => c.kind === 'fuzzy')
       if (exp.correction && onlyTypos && exp.correction !== t) fixes.set(t, exp.correction)
     })
+    return fixes
+  }
+
+  function correctionOf(all: string[], fixes: Map<string, string>): string | undefined {
     if (fixes.size === 0) return undefined
     return all.map((w) => fixes.get(w) ?? w).join(' ')
+  }
+
+  /** What the model reads: the query words with typos fixed and foreign words in English. */
+  function meaningText(tokens: string[], fixes: Map<string, string>): string {
+    return tokens.map((t) => english.get(fixes.get(t) ?? t) ?? fixes.get(t) ?? t).join(' ')
   }
 
   /** The top hit's title when it starts with the query; else one of its keyword phrases. */
