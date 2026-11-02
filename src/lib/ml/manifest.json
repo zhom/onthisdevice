@@ -12,6 +12,10 @@
     "bytes": 441,
     "wire": 441
   },
+  "/models/minishlab/potion-base-32M/search-176d-40k.bin": {
+    "bytes": 7505500,
+    "wire": 7505500
+  },
   "/models/Mozilla/smart-pii-redactor-v1-onnx/config.json": {
     "bytes": 1778,
     "wire": 1778

@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SignificantFigures from '@/components/tools/calc2/SignificantFigures.tsx'
+---
+
+<ToolLayout slug="significant-figures-calculator">
+  <SignificantFigures client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the significant figures calculator works</h2>
+    <p>
+      The significant figures calculator reads the number as you typed it, so 1200, 1200. and 1.200 × 10³
+      count differently. It marks each digit as significant or not and gives the reason.
+    </p>
+    <ul>
+      <li>Non-zero digits are significant: 4.56 has 3.</li>
+      <li>Zeros between significant digits are significant: 10.05 has 4.</li>
+      <li>Leading zeros only place the decimal point: 0.0045 has 2.</li>
+      <li>Trailing zeros after a decimal point are significant: 4.50 has 3.</li>
+      <li>Trailing zeros in a whole number with no point are ambiguous: 1200 has 2, 3 or 4. The calculator counts 2.</li>
+    </ul>
+
+    <h2>Rules for calculations</h2>
+    <pre><code>add, subtract      round to the coarsest last decimal place
+                   12.11 + 18.0 = 30.11 → 30.1
+multiply, divide   round to the fewest significant figures
+                   4.56 × 1.4 = 6.384 → 6.4</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      0.004050 has 4 significant figures: 4, 0, 5 and the final 0. The three zeros before the 4 only place
+      the point. Rounded to 2 figures it is 0.0041, or 4.1 × 10⁻³.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Rounding is half away from zero (2.5 → 3). Exact numbers, such as a count of 12 or a defined 100 cm
+      in a metre, have unlimited significant figures and do not limit a result. Round once, at the end of
+      a multi-step calculation.
+    </p>
+  </Fragment>
+</ToolLayout>

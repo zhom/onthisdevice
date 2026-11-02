@@ -11,7 +11,8 @@
     "check": "astro sync && tsrs --noEmit --runExternalCode",
     "deploy": "npm run build && wrangler deploy",
     "smoke": "node scripts/smoke/run.mjs",
-    "test": "node scripts/search-test.mjs && node scripts/redact-test.mjs"
+    "test": "node scripts/search-test.mjs && node scripts/redact-test.mjs && node scripts/calc-test-money-body.mjs && node scripts/data/test.mjs && node scripts/calc-test-math-science-home.mjs",
+    "test:semantic": "node scripts/search-semantic-test.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^7.1.2",

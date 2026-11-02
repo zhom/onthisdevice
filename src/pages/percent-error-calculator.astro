@@ -1,0 +1,38 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PercentError from '@/components/tools/calc2/PercentError.tsx'
+---
+
+<ToolLayout slug="percent-error-calculator">
+  <PercentError client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the percent error calculator works</h2>
+    <p>
+      The percent error calculator compares a measured value with the true or accepted value. It divides
+      the size of the difference by the size of the true value.
+    </p>
+    <pre><code>percent error = |measured − true| ÷ |true| × 100
+signed error  = (measured − true) ÷ |true| × 100</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A pendulum experiment gives g = 9.6 m/s². The accepted value is 9.81 m/s². The difference is
+      −0.21, so the percent error is 0.21 ÷ 9.81 × 100 = 2.14%. The signed error is −2.14%: the
+      measurement is low.
+    </p>
+
+    <h2>Percent error and percentage change</h2>
+    <p>
+      Both divide a difference by a reference. Percent error uses the true value as the reference and
+      usually reports the size only. Percentage change uses the old value and keeps the sign.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Percent error is undefined when the true value is zero, and it is misleading near zero: a 0.1 °C
+      error on a true value of 0.5 °C is 20%. Temperatures in °C or °F give different percent errors for
+      the same reading, so use kelvin for temperature.
+    </p>
+  </Fragment>
+</ToolLayout>

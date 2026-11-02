@@ -1,0 +1,61 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GraphingCalculator from '@/components/tools/calc2/GraphingCalculator.tsx'
+---
+
+<ToolLayout slug="graphing-calculator" width="wide">
+  <GraphingCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the graphing calculator</h2>
+    <p>
+      Type a function of x in each row, for example <code>x^2 - 2</code> or <code>2 sin x</code>. The
+      graphing calculator draws each curve with its own line style, so the curves stay apart in black and
+      white. Change a function and its curve morphs into the new one. Drag to move the view, and pinch or
+      scroll to zoom about a point.
+    </p>
+    <p>
+      Under the functions, the page lists where each curve crosses the y-axis and its real roots in the
+      visible range. These update when you move or zoom the graph.
+    </p>
+
+    <h2>How the graph is drawn</h2>
+    <p>
+      The expression is read by a parser on this page and turned into a function; nothing is sent
+      anywhere. The function is then evaluated once for each pixel column:
+    </p>
+    <pre><code>x = left + column ÷ pixels per unit
+y = f(x)
+row = (top − y) × pixels per unit</code></pre>
+    <p>
+      Both axes use the same scale, so a circle looks round and a slope of 1 is drawn at 45°. Where
+      f(x) is undefined, as for sqrt x when x is negative, the curve has a gap. Where it jumps across the
+      whole view, as tan x does at π/2, the line breaks there.
+    </p>
+
+    <h2>Worked example: where do two curves meet?</h2>
+    <p>
+      Plot <code>x^2 - 2</code> and <code>2 sin x</code>. The first has roots at x = ±√2 = ±1.414 and
+      crosses the y-axis at −2. To find where the curves meet, add a third row with their difference,
+      <code>x^2 - 2 - 2 sin x</code>, and read its roots: x = −0.775 and x = 1.962. At x = 1.962 both
+      curves have y = 1.849.
+    </p>
+
+    <h2>Order of operations</h2>
+    <ul>
+      <li>Brackets first, then powers, then multiplication and division, then addition and subtraction.</li>
+      <li>Powers group from the right: 2^3^2 = 2^9 = 512.</li>
+      <li>A minus sign applies after the power: −2^2 = −4, and (−2)^2 = 4.</li>
+      <li>A product without a sign is still a product: 2x, 3(x + 1), x sin x. 1/2x is (1/2) × x.</li>
+      <li>A function without brackets takes the product after it: sin 2x is sin(2x).</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Functions of x only: no implicit equations such as x² + y² = 1, no parametric or polar curves.</li>
+      <li>Angles are in radians.</li>
+      <li>Roots where the curve only touches the axis are found only when a sample lands on them. Zoom in to check.</li>
+      <li>The curve is sampled once per pixel, so a function that oscillates faster than that, such as sin(1000x) zoomed out, shows a pattern that is not its true shape.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

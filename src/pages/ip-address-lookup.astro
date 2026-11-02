@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import IpAddressLookup from '@/components/tools/reference/IpAddressLookup.tsx'
+---
+
+<ToolLayout slug="ip-address-lookup">
+  <IpAddressLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>What the IP address lookup shows</h2>
+    <p>
+      The IP address lookup finds the network that announces an address on the internet: its
+      autonomous system number (ASN), the AS name and organisation, the country where the network is
+      registered, and the routed range that contains the address. It works for IPv4 and IPv6.
+    </p>
+    <p>
+      The country is the registration country of the network, not the place of a device. A cloud,
+      mobile or VPN network can use one range in many countries. Private and special addresses, such
+      as 192.168.x.x, 10.x.x.x and fe80::, are never routed on the internet, so they have no network.
+    </p>
+    <h2>How the lookup runs in your browser</h2>
+    <p>
+      The table of routed ranges is split into small files on this site, each one with a few thousand
+      ranges in order. The page finds the right file with a binary search over the first address of
+      each file, loads only that file, and searches it the same way. The address you type does not
+      leave your browser.
+    </p>
+    <h2>The address in binary</h2>
+    <p>
+      An IPv4 address is 32 bits and an IPv6 address is 128 bits. The black bits are the network part
+      of the routed block that contains the address; the grey bits are the host part. The CIDR suffix,
+      for example <code>/24</code>, is the number of network bits.
+    </p>
+  </Fragment>
+</ToolLayout>

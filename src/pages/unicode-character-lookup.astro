@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnicodeCharacterLookup from '@/components/tools/reference/UnicodeCharacterLookup.tsx'
+---
+
+<ToolLayout slug="unicode-character-lookup">
+  <UnicodeCharacterLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the Unicode character lookup</h2>
+    <p>
+      Paste text to see every character in it, one tile each. Grey tiles are characters that do not show
+      on their own: spaces, zero-width characters, direction marks, controls and combining accents. Select
+      a tile to see the character's code point, official name, general category, block and its bytes in
+      UTF-8 and UTF-16, with the escapes for HTML, JavaScript and CSS.
+    </p>
+    <p>
+      You can also type code points instead of text: <code>U+00E9</code>, <code>0xE9</code>,
+      <code>&amp;#233;</code> or <code>\u&#123;1F600&#125;</code>, several separated by spaces. Switch to
+      search by name to find a character such as "right arrow" or "greek small letter alpha".
+    </p>
+    <h2>Find invisible characters</h2>
+    <p>
+      Copied text can carry characters you cannot see: a zero-width space (U+200B), a non-breaking space
+      (U+00A0), a byte order mark (U+FEFF) or a right-to-left override (U+202E). They break searches,
+      code and passwords. The lookup shows each one as its own tile.
+    </p>
+    <h2>Data</h2>
+    <p>
+      Names, categories and blocks come from the Unicode Character Database. The page loads the names
+      in parts of 4,096 code points, so a lookup loads only the part it needs.
+    </p>
+  </Fragment>
+</ToolLayout>

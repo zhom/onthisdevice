@@ -1,0 +1,38 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RefinanceCalculator from '@/components/tools/calc/RefinanceCalculator.tsx'
+---
+
+<ToolLayout slug="refinance-calculator">
+  <RefinanceCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the refinance calculator works</h2>
+    <p>
+      The refinance calculator works out two payments with the level-payment formula
+      <code>M = P × i ÷ (1 − (1 + i)^−n)</code>: one for the loan you have (balance, rate and months left) and one
+      for the new loan (balance plus any closing costs you add to it, the new rate and term). The monthly saving is
+      the difference. The break-even month is <code>closing costs ÷ monthly saving</code>, rounded up.
+    </p>
+    <p>
+      The lifetime difference adds up every payment left on the current loan and compares it with every payment on
+      the new loan plus the closing costs paid in cash. The chart shows both running totals year by year.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 300,000 balance at 7.25% with 27 years left has a payment of 2,112.58. A new 30-year loan at 6% has a payment
+      of 1,798.65, so you save 313.93 a month. With 6,000 of closing costs paid in cash, the saving pays them back in
+      20 months. Over the life of both loans, refinancing costs 30,962.50 less, even with three more years of payments.
+    </p>
+    <p>
+      A 15-year loan at 5.5% on the same balance raises the payment to 2,451.25, but the total paid falls by about
+      237,000.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Both loans have fixed rates and the result covers principal and interest only. Taxes, insurance and PMI are
+      left out. If you plan to sell or refinance again before the break-even month, the refinance costs more than it
+      saves.
+    </p>
+  </Fragment>
+</ToolLayout>

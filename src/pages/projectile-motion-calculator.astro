@@ -1,0 +1,50 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ProjectileMotion from '@/components/tools/calc2/ProjectileMotion.tsx'
+---
+
+<ToolLayout slug="projectile-motion-calculator">
+  <ProjectileMotion client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the projectile motion calculator works</h2>
+    <p>
+      The projectile motion calculator splits the launch velocity into a horizontal part and a vertical
+      part. The horizontal part stays the same for the whole flight. Gravity takes speed off the vertical
+      part at g metres per second, every second, until the body lands.
+    </p>
+    <pre><code>vx = v cos θ
+vy = v sin θ
+x(t) = vx t
+y(t) = h + vy t − ½ g t²
+time of flight  t = (vy + √(vy² + 2 g h)) ÷ g
+range           R = vx t
+maximum height  H = h + vy² ÷ 2g</code></pre>
+    <p>
+      From ground level (h = 0) the range becomes R = v² sin 2θ ÷ g, which is why 45° gives the longest
+      throw on flat ground. From a height, the best angle is below 45°.
+    </p>
+
+    <h2>Worked example</h2>
+    <p>
+      A ball leaves the ground at 20 m/s and 45° on Earth (g = 9.807 m/s²). Both velocity parts are
+      20 × 0.7071 = 14.14 m/s. The time of flight is 2 × 14.14 ÷ 9.807 = 2.884 s, the range is
+      14.14 × 2.884 = 40.79 m and the maximum height is 14.14² ÷ (2 × 9.807) = 10.20 m.
+    </p>
+
+    <h2>The animation</h2>
+    <p>
+      The path is drawn to scale, with one scale for both axes. The body moves at true speed when the
+      flight takes between about 1 and 8 seconds. A shorter or longer flight plays slowed down or sped
+      up, and the label under the picture gives the factor. The ink arrow is the velocity; the grey
+      arrows are its horizontal and vertical parts, which shows the horizontal part staying constant.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>There is no air resistance. A real ball, arrow or shell flies shorter and lands steeper.</li>
+      <li>Gravity is constant and the ground is flat, which holds for heights and ranges of a few kilometres.</li>
+      <li>The launch height is measured above the landing point. For a landing point above the launch, use a different method.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

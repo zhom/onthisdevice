@@ -1,0 +1,31 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DownPaymentCalculator from '@/components/tools/calc/DownPaymentCalculator.tsx'
+---
+
+<ToolLayout slug="down-payment-calculator">
+  <DownPaymentCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the down payment calculator works</h2>
+    <p>
+      The down payment calculator multiplies the home price by your down payment percentage, adds the closing costs
+      as a percentage of the price, and gives the cash you need. The loan is the price minus the down payment.
+    </p>
+    <p>
+      To find the time to save, your savings grow month by month: each month earns interest at
+      <code>i = (1 + yearly rate)^(1/12) − 1</code> and your monthly deposit is added. The result is the first month
+      in which the balance reaches the cash you need.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      For a 400,000 home with 20% down, the down payment is 80,000 and the loan is 320,000. Closing costs of 3% add
+      12,000, so you need 92,000. With 30,000 saved, 1,500 a month and 4% a year on savings, you reach it in 37 months.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The price stays the same while you save, and the savings rate is fixed and before tax. With less than 20% down,
+      most conventional US loans add private mortgage insurance, which raises the monthly payment.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -9,33 +9,11 @@
  *   node scripts/search-test.mjs files      file detection cases only
  *   node scripts/search-test.mjs -v         print every case
  */
-import { registerHooks } from 'node:module'
 import { existsSync } from 'node:fs'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { pathToFileURL } from 'node:url'
 import path from 'node:path'
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SRC = path.join(ROOT, 'src')
-
-// Resolve `@/x` to src/x and extensionless relative imports inside src, as Vite does.
-registerHooks({
-  resolve(spec, ctx, next) {
-    let target = null
-    if (spec.startsWith('@/')) target = path.join(SRC, spec.slice(2))
-    else if (/^\.\.?\//.test(spec) && ctx.parentURL?.startsWith(pathToFileURL(SRC).href)) {
-      target = path.resolve(path.dirname(fileURLToPath(ctx.parentURL)), spec)
-    }
-    if (target) {
-      if (/\.(ts|tsx|mjs|js)$/.test(target) && existsSync(target)) {
-        return { url: pathToFileURL(target).href, shortCircuit: true }
-      }
-      for (const ext of ['.ts', '.tsx', '/index.ts']) {
-        if (existsSync(target + ext)) return { url: pathToFileURL(target + ext).href, shortCircuit: true }
-      }
-    }
-    return next(spec, ctx)
-  },
-})
+import { ROOT } from './search-test/loader.mjs'
+import { checkEngineCase, checkFileCase } from './search-test/checks.mjs'
 
 const args = process.argv.slice(2)
 const verbose = args.includes('-v')
@@ -113,31 +91,14 @@ async function runEngine() {
   console.log(`engine: ${cases.length} cases`)
 
   for (const c of cases) {
-    const skip = [c.top, c.in].flat().filter(Boolean).filter((s) => !slugs.has(s))
-    if (skip.length && !c.top?.length) {
+    const checked = checkEngineCase(c, (q) => searcher.search(q, { limit: 8 }), slugs)
+    if (!checked) {
       // A case that names an unregistered tool waits for that tool.
-      if (verbose) console.log(`  skip ${JSON.stringify(c.q)}: ${skip.join(', ')} not registered`)
+      if (verbose) console.log(`  skip ${JSON.stringify(c.q)}: not registered yet`)
       continue
     }
-    const r = searcher.search(c.q, { limit: 8 })
-    const got = r.tools.map((h) => h.tool.slug)
-    const problems = []
-    if (c.top) {
-      const tops = [c.top].flat().filter((s) => slugs.has(s))
-      if (tops.length && !tops.includes(got[0])) problems.push(`top ${got[0]} not in [${tops.join(', ')}]`)
-    }
-    if (c.in) {
-      const within = c.within ?? 5
-      for (const s of c.in) if (slugs.has(s) && !got.slice(0, within).includes(s)) problems.push(`${s} not in top ${within}`)
-    }
-    if (c.notIn) for (const s of c.notIn) if (got.slice(0, 5).includes(s)) problems.push(`${s} in top 5`)
-    if (c.empty && got.length) problems.push(`expected no tools, got ${got.length}`)
-    if (c.dym !== undefined && r.didYouMean !== c.dym) problems.push(`didYouMean ${JSON.stringify(r.didYouMean)} != ${JSON.stringify(c.dym)}`)
-    if (c.complete !== undefined && !match(r.completion, c.complete)) problems.push(`completion ${JSON.stringify(r.completion)} != ${c.complete}`)
-    if (c.cat !== undefined && ![c.cat].flat().includes(r.categories[0]?.category.slug)) problems.push(`category ${r.categories[0]?.category.slug} != ${c.cat}`)
-    const shown = got.slice(0, 4).join(', ')
-    if (problems.length) fail(`${JSON.stringify(c.q)}: ${problems.join('; ')}  [${shown}]`)
-    else pass(`${JSON.stringify(c.q)} -> ${shown}`)
+    if (checked.problems.length) fail(`${JSON.stringify(c.q)}: ${checked.problems.join('; ')}  [${checked.shown}]`)
+    else pass(`${JSON.stringify(c.q)} -> ${checked.shown}`)
   }
 
   // Speed: every prefix of every query, as if typed one key at a time, on a cold searcher.
@@ -165,23 +126,17 @@ async function runEngine() {
 
 async function runFiles() {
   const { cases } = await import(pathToFileURL(path.join(ROOT, 'scripts/search-test/files.mjs')).href)
-  const { detectFile, toolsForFile } = await import('@/lib/search/files.ts')
+  const files = await import('@/lib/search/files.ts')
   const { TOOLS } = await import('@/lib/tools/index.ts')
   const { CATEGORIES } = await import('@/lib/tools/types.ts')
   const { buildIndex } = await import('@/lib/search/build.ts')
   const { decodeIndex } = await import('@/lib/search/data.ts')
-  const catalog = decodeIndex(buildIndex(TOOLS, CATEGORIES))
+  const lib = { ...files, catalog: decodeIndex(buildIndex(TOOLS, CATEGORIES)) }
   console.log(`files: ${cases.length} cases`)
   for (const c of cases) {
-    const parts = [c.bytes ?? new TextEncoder().encode(c.text)]
-    if (c.tail) parts.push(new Uint8Array(200), new TextEncoder().encode(c.tail))
-    const kind = await detectFile(new File(parts, c.name))
-    const top = toolsForFile(catalog, kind)[0]?.tool.slug
-    const problems = []
-    if (kind.ext !== c.ext) problems.push(`ext ${kind.ext} != ${c.ext}`)
-    if (c.top && ![c.top].flat().includes(top)) problems.push(`top ${top} not in [${[c.top].flat().join(', ')}]`)
+    const { problems, shown } = await checkFileCase(c, lib)
     if (problems.length) fail(`${c.name}: ${problems.join('; ')}`)
-    else pass(`${c.name} -> ${kind.ext} (${kind.label}) -> ${top ?? 'none'}`)
+    else pass(`${c.name} -> ${shown}`)
   }
 }
 

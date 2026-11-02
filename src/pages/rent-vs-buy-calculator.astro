@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RentVsBuyCalculator from '@/components/tools/calc/RentVsBuyCalculator.tsx'
+---
+
+<ToolLayout slug="rent-vs-buy-calculator">
+  <RentVsBuyCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the rent vs buy calculator works</h2>
+    <p>
+      The rent vs buy calculator follows two households month by month. Both start with the same cash: the
+      buyer spends it on the down payment and closing costs, and the renter invests it. Each month the
+      buyer pays the mortgage, property tax, home insurance, maintenance and any HOA fee, and the renter
+      pays rent and renter's insurance. The one who pays less invests the difference.
+    </p>
+    <p>
+      The mortgage payment is <code>M = L × i ÷ (1 − (1 + i)^−n)</code>, where <code>L</code> is the loan,
+      <code>i</code> is the yearly rate divided by 12 and <code>n</code> is the number of months.
+      Investments grow at <code>j = (1 + R)^(1/12) − 1</code> a month, where <code>R</code> is the
+      investment return. The home value grows at the home price growth rate. At the end of each year the
+      buyer's wealth is <code>home value × (1 − selling costs) − loan balance + investments</code>, and the
+      renter's wealth is the renter's investments. The break-even year is the first year in which the
+      buyer's wealth is the larger one.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 400,000 home with 20% down at 6.5% for 30 years has a payment of 2,022.62 a month. With 3% closing
+      costs, both households start with 92,000. In month 1 owning costs 2,872.62 and renting 2,215.00, so
+      the renter invests 657.62. With 3% home price growth, 3% yearly rent increases and a 6% investment
+      return, after 10 years the buyer has 234,029 and the renter 241,598: renting is ahead by 7,569.
+      Buying gets ahead in year 12.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Taxes are left out: the mortgage interest deduction, tax on the gain from the home and tax on
+      investment returns. Growth rates and the investment return stay the same every year. Property tax and
+      maintenance follow the home value; insurance and the HOA fee stay fixed. The result assumes you sell
+      at the end of the year you choose.
+    </p>
+  </Fragment>
+</ToolLayout>

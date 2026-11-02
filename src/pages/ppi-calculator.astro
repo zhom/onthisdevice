@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Ppi from '@/components/tools/calc2/Ppi.tsx'
+---
+
+<ToolLayout slug="ppi-calculator">
+  <Ppi client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the PPI calculator works</h2>
+    <p>
+      Pixels per inch is the number of pixels along one inch of the screen. The PPI calculator divides the
+      diagonal in pixels by the diagonal in inches, then finds the pixel pitch, the physical size and the
+      distance at which single pixels blend together.
+    </p>
+    <pre><code>diagonal in pixels = √(width² + height²)
+PPI   = diagonal in pixels ÷ diagonal in inches
+pitch = 25.4 mm ÷ PPI
+blend distance = 1 ÷ (PPI × tan 1′)        (inches)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 27 inch monitor with 2560 × 1440 pixels has √(2560² + 1440²) = 2937.2 pixels along its diagonal, so
+      2937.2 ÷ 27 = 108.8 PPI. Each pixel is 0.2335 mm wide and the screen is 23.5 × 13.2 in. Past about
+      79 cm, normal eyesight cannot pick out single pixels.
+    </p>
+
+    <h2>Common screens</h2>
+    <table>
+      <thead><tr><th>Screen</th><th>Resolution</th><th>PPI</th></tr></thead>
+      <tbody>
+        <tr><td>24 in monitor</td><td>1920 × 1080</td><td>91.8</td></tr>
+        <tr><td>27 in monitor</td><td>2560 × 1440</td><td>108.8</td></tr>
+        <tr><td>27 in monitor</td><td>3840 × 2160</td><td>163.2</td></tr>
+        <tr><td>55 in TV</td><td>3840 × 2160</td><td>80.1</td></tr>
+        <tr><td>6.1 in phone</td><td>1170 × 2532</td><td>457.2</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Limits</h2>
+    <p>
+      The diagonal on the box is rounded, often to the nearest half inch, so the PPI can be off by 1 to 2%.
+      The calculation assumes square pixels, which almost every modern screen has.
+    </p>
+  </Fragment>
+</ToolLayout>

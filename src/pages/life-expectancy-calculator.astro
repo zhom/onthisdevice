@@ -1,0 +1,33 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import LifeExpectancyCalculator from '@/components/tools/reference/LifeExpectancyCalculator.tsx'
+---
+
+<ToolLayout slug="life-expectancy-calculator">
+  <LifeExpectancyCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the life expectancy calculator works</h2>
+    <p>
+      The life expectancy calculator reads the US period life table of the Social Security
+      Administration. For each age and sex the table gives the probability of dying within a year
+      (q), the number of survivors at each age out of 100,000 born (l), and the life expectancy (e).
+      Your result is the life expectancy at your age; the chance to reach a later age is
+      <code>l(later age) / l(your age)</code>.
+    </p>
+    <h2>Why life expectancy rises with age</h2>
+    <p>
+      Life expectancy at birth includes the deaths of infants, young adults and middle-aged people.
+      Once you have lived past those ages, they no longer count against you, so your expected age at
+      death goes up each year you live. The median age is the age by which half of the people your age
+      have died.
+    </p>
+    <h2>Limits of a period life table</h2>
+    <p>
+      A period table uses the death rates of one year. If death rates keep falling, people live longer
+      than the table says, so a cohort table for your birth year usually gives a few more years. The
+      table is an average for the US population; health, smoking, income and many other factors change
+      the risk for one person.
+    </p>
+  </Fragment>
+</ToolLayout>

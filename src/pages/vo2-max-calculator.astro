@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Vo2MaxCalculator from '@/components/tools/calc/Vo2MaxCalculator.tsx'
+---
+
+<ToolLayout slug="vo2-max-calculator">
+  <Vo2MaxCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the VO2 max calculator works</h2>
+    <p>
+      VO2 max is the most oxygen your body can use, in millilitres per kilogram of body weight per minute
+      (ml/kg/min). The VO2 max calculator estimates it from one of four field tests and compares it with norms
+      for your age and sex.
+    </p>
+    <ul>
+      <li>Cooper 12-minute run: <code>VO2 max = (distance in m − 504.9) ÷ 44.73</code></li>
+      <li>1.5-mile run: <code>VO2 max = 3.5 + 483 ÷ time in minutes</code></li>
+      <li>
+        Rockport 1-mile walk:
+        <code>VO2 max = 132.853 − 0.0769 × weight lb − 0.3877 × age + 6.315 × sex − 3.2649 × time − 0.1565 × heart rate</code>,
+        with sex 1 for men and 0 for women, the time in minutes and the heart rate at the finish
+      </li>
+      <li>Heart rate ratio: <code>VO2 max = 15.3 × maximum heart rate ÷ resting heart rate</code></li>
+    </ul>
+    <p>One MET is 3.5 ml/kg/min, so <code>METs = VO2 max ÷ 3.5</code>.</p>
+    <h2>Worked example</h2>
+    <p>
+      A man of 35 runs 2,400 m in 12 minutes: (2,400 − 504.9) ÷ 44.73 = 42.4 ml/kg/min. For men aged 30 to 39
+      the good band is 41.0 to 45.0, so his result is good.
+      A 1.5-mile run in 12:00 gives 3.5 + 483 ÷ 12 = 43.8. A maximum heart rate of 185 and a resting heart rate
+      of 60 give 15.3 × 185 ÷ 60 = 47.2.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Field tests estimate VO2 max. A lab test that measures the air you breathe during a maximal treadmill or
+      bike test is more exact. The heart rate ratio works best with a measured maximum heart rate, because
+      220 − age can be off by 10 or more beats a minute. Norm tables from different sources differ by a few
+      points.
+    </p>
+  </Fragment>
+</ToolLayout>

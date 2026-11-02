@@ -1,0 +1,40 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WeightLossCalculator from '@/components/tools/calc/WeightLossCalculator.tsx'
+---
+
+<ToolLayout slug="weight-loss-calculator">
+  <WeightLossCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the weight loss calculator works</h2>
+    <p>
+      The weight loss calculator finds the energy you burn each day, sets a daily intake for the pace you
+      choose, and then follows your weight day by day until it reaches the goal.
+    </p>
+    <p>
+      Resting energy comes from the Mifflin-St Jeor formula: <code>BMR = 10 × W + 6.25 × H − 5 × A + s</code>,
+      where <code>W</code> is weight in kg, <code>H</code> height in cm, <code>A</code> age in years and
+      <code>s</code> is +5 for men and −161 for women. The energy you burn in a day is
+      <code>TDEE = BMR × activity factor</code> (1.2 to 1.9). The daily intake is
+      <code>TDEE − pace × 7700 ÷ 7</code>, with the pace in kg a week and 7,700 kcal for each kilogram.
+    </p>
+    <p>
+      The intake stays the same. Each day the weight falls by <code>(TDEE at that weight − intake) ÷ 7700</code>.
+      A lighter body burns less, so the loss slows and the weight line curves.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A man of 35, 175 cm and 90 kg, with light activity (1.375), has a BMR of 1,824 kcal and a TDEE of 2,508
+      kcal. To lose 0.5 kg a week at the start, he eats 2,508 − 550 = 1,958 kcal a day. He loses at a rate of 0.50 kg a
+      week at the start and 0.38 kg a week near the goal. He reaches 80 kg after 161 days (23 weeks), 3 weeks later than a
+      straight line at 0.5 kg a week.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The first weeks are often faster than the line because you also lose water. The body can adapt to a
+      deficit and burn less than the formula says. Ask a doctor before an intake under 1,500 kcal a day for men or
+      1,200 kcal for women, or a loss of more than 1% of body weight a week.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -218,4 +218,10 @@ export const cases = [
   { q: '5 kg', none: true },
   { q: 'constructor', none: true },
   { q: '', none: true },
+  // Day of the week
+  { q: 'what day of the week was 4 july 1976', kind: 'date', value: 'Sunday', slug: 'date-calculator' },
+  { q: 'day of week 2026-12-25', kind: 'date', value: 'Friday' },
+  { q: 'what day was 1 jan 2000', kind: 'date', value: 'Saturday' },
+  { q: 'weekday of christmas', kind: 'date', value: 'Friday' },
+  { q: 'day of the week', none: true },
 ]

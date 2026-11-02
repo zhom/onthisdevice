@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CaloriesBurnedCalculator from '@/components/tools/calc/CaloriesBurnedCalculator.tsx'
+---
+
+<ToolLayout slug="calories-burned-calculator">
+  <CaloriesBurnedCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the calories burned calculator works</h2>
+    <p>
+      The calories burned calculator uses MET values. A MET (metabolic equivalent) is the energy cost of an
+      activity as a multiple of the cost of sitting at rest. Brisk walking at 4.3 MET uses 4.3 times as much
+      energy as rest. The values come from the 2011 Compendium of Physical Activities, a research list of
+      over 800 activities.
+    </p>
+    <p>
+      The formula is <code>kcal = MET × 3.5 × kg ÷ 200 × minutes</code>. One MET is 3.5 ml of oxygen per kg
+      of body weight per minute, and each litre of oxygen releases about 5 kcal, which gives the 200. The
+      energy above rest is the same formula with <code>MET − 1</code>.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A person who weighs 70 kg walks briskly at 3.5 mph (4.3 MET) for 30 minutes:
+      4.3 × 3.5 × 70 ÷ 200 × 30 = 158 kcal, or 316 kcal an hour. Of the 158 kcal, 121 kcal are above what
+      the person would burn at rest. Running at 6 mph (9.8 MET) for the same 30 minutes burns 360 kcal, and
+      Hatha yoga (2.5 MET) burns 92 kcal.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      MET values are adult averages. Fitness, skill, terrain, wind and rest breaks change the real cost. The
+      formula sets rest at 3.5 ml of oxygen per kg per minute; many people, most of all older or heavier
+      people, use less at rest, so for them the result is too high. The total includes the energy you would
+      burn at rest in the same time.
+    </p>
+  </Fragment>
+</ToolLayout>

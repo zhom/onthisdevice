@@ -1,0 +1,28 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DebtToIncomeRatioCalculator from '@/components/tools/calc/DebtToIncomeRatioCalculator.tsx'
+---
+
+<ToolLayout slug="debt-to-income-ratio-calculator">
+  <DebtToIncomeRatioCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the debt-to-income ratio calculator works</h2>
+    <p>
+      Your debt-to-income ratio (DTI) is <code>monthly debt payments ÷ gross monthly income × 100</code>. The
+      calculator also shows the housing ratio, which counts only the rent or mortgage payment, and how much more
+      monthly debt fits under 36% and 43%.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      With a gross income of 6,500 a month, a 1,800 housing payment, a 450 car loan, 300 of student loans and 120 of
+      card minimums, debt payments are 2,670. The DTI is 2,670 ÷ 6,500 = 41.1% and the housing ratio is 27.7%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Lenders set their own limits: 36% or less is the usual target, 43% is a common limit for a qualified US
+      mortgage, and some government-backed loans go to about 50%. They also look at your credit, savings and down
+      payment. Use income before tax, and count only required payments.
+    </p>
+  </Fragment>
+</ToolLayout>

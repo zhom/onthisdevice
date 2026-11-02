@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DomainExtensionLookup from '@/components/tools/reference/DomainExtensionLookup.tsx'
+---
+
+<ToolLayout slug="domain-extension-lookup">
+  <DomainExtensionLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>What the domain extension lookup shows</h2>
+    <p>
+      Type a hostname, a URL or an email address. The domain extension lookup splits the hostname into
+      the subdomain, the registrable domain and the public suffix, and shows the top-level domain (TLD)
+      with its type and the organisation that manages it in the root zone.
+    </p>
+    <h2>Public suffixes and registrable domains</h2>
+    <p>
+      A public suffix is a part of a name under which anyone can register: <code>com</code>,
+      <code>co.uk</code> or <code>github.io</code>. The registrable domain is the public suffix plus one
+      label. Browsers use the same Public Suffix List to decide which pages are the same site for
+      cookies and storage, and email systems use it to find the organisational domain for DMARC.
+    </p>
+    <p>
+      The list has an ICANN part (suffixes run by registries) and a private part (suffixes that
+      companies open to their customers). Switch off private suffixes to see the result with the ICANN
+      part only.
+    </p>
+    <h2>All top-level domains</h2>
+    <p>
+      The list below has every TLD in the IANA root zone. Each square in the field is one TLD, ordered
+      by type; the squares that match your search fill in. Internationalised TLDs show in their own
+      script, with the ASCII form that DNS uses.
+    </p>
+  </Fragment>
+</ToolLayout>

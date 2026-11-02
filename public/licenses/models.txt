@@ -15,5 +15,6 @@ Whisper tiny, timestamped ONNX export           MIT, OpenAI (weights); ONNX expo
 DEIMv2 nano licence plate detector              MIT, Kien Nguyen (base DEIMv2: Apache-2.0)
 faker.js 10 (in the page code)                  MIT
 YOLOS-tiny signature detector (ONNX export)     Apache-2.0, mdefrance (base YOLOS-tiny: Apache-2.0, HUST Vision Lab)
+potion-base-32M (cut to 176 dims, int8)         MIT, Minish Lab (search by meaning)
 
 Full licence texts are in each project's repository.

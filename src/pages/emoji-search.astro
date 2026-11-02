@@ -1,0 +1,30 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import EmojiSearch from '@/components/tools/reference/EmojiSearch.tsx'
+---
+
+<ToolLayout slug="emoji-search">
+  <EmojiSearch client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the emoji search</h2>
+    <p>
+      Type a word to search emoji names and keywords, or pick a group to browse. Select an emoji to see
+      its official name, code points, the Emoji version that added it, its UTF-8 bytes and the HTML
+      entity. Tap the large emoji, or use the copy button, to put it on the clipboard.
+    </p>
+    <h2>Names and keywords</h2>
+    <p>
+      Each emoji has one short name from the Unicode Consortium, such as "grinning face". The keywords
+      come from the English annotations of the Unicode CLDR project, which phone keyboards also use for
+      emoji suggestions, so a search for "happy" finds smiling faces too.
+    </p>
+    <h2>Emoji made of several code points</h2>
+    <p>
+      Many emoji are sequences: a flag is two regional indicator letters, a family is several people
+      joined by zero-width joiners (U+200D), and some symbols need the variation selector U+FE0F to show
+      in colour. The code points line lists every part. The list shows each emoji in its default skin
+      tone.
+    </p>
+  </Fragment>
+</ToolLayout>

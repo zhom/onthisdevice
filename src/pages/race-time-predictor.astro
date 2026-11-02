@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RaceTimePredictor from '@/components/tools/calc/RaceTimePredictor.tsx'
+---
+
+<ToolLayout slug="race-time-predictor">
+  <RaceTimePredictor client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the race time predictor works</h2>
+    <p>
+      The race time predictor uses the Riegel formula (1981): <code>T₂ = T₁ × (D₂ ÷ D₁)^k</code>. <code>T₁</code>
+      is the time of a race you ran, <code>D₁</code> its distance, <code>D₂</code> the distance of the race to
+      predict and <code>T₂</code> the predicted time. The exponent <code>k</code> is 1.06 by default. Because
+      <code>k</code> is above 1, the predicted pace gets slower as the distance gets longer.
+    </p>
+    <p>
+      The pace is <code>T₂ ÷ D₂</code>. The splits divide the predicted time evenly over the distance.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 5K in 25:00 is 1,500 seconds. For a half marathon (21.0975 km), (21.0975 ÷ 5)^1.06 = 4.6002, so the
+      prediction is 1,500 × 4.6002 = 6,900 seconds, or 1:55:00. That is 5:27 per km or 8:46 per mile. The same
+      5K predicts 52:07 for 10K, 7:31 for a mile and 3:59:47 for a marathon.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Riegel fitted the formula on race times from about 3.5 minutes to about 4 hours. The prediction assumes
+      that you train for the longer race; many runners without long training runs are slower in a marathon than
+      a 5K time predicts. Use a higher exponent for a more cautious prediction. Heat, hills, wind and the course
+      also change the time.
+    </p>
+  </Fragment>
+</ToolLayout>

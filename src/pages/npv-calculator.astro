@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import NpvCalculator from '@/components/tools/calc/NpvCalculator.tsx'
+---
+
+<ToolLayout slug="npv-calculator">
+  <NpvCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the NPV calculator works</h2>
+    <p>
+      The NPV calculator discounts each yearly cash flow to its value today and adds them up. A positive net
+      present value means the project earns more than the discount rate, so it adds value at that rate. A
+      negative NPV means it earns less.
+    </p>
+    <p>
+      The formula is <code>NPV = Σ CFₜ ÷ (1 + r)^t</code>. <code>CFₜ</code> is the cash flow in year
+      <code>t</code>, with year 0 today, and <code>r</code> is the discount rate. The profitability index is
+      the present value of years 1 to <code>n</code> divided by the investment in year 0. The payback period
+      is the time until the running total of the cash flows turns positive. The discounted payback period
+      uses the present values.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A project costs 50,000 today and returns 12,000, 15,000, 16,000, 14,000 and 13,000 over 5 years. At an
+      8% discount rate, the returns are worth 55,810.51 today, so the NPV is 5,810.51 and the profitability
+      index is 1.116. The IRR is 12.27%. The cash pays back after 3.50 years; with discounting, after 4.34
+      years. At 15% the NPV is −3,234.96.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Every cash flow after year 0 comes at the end of its year, and one discount rate applies to all years.
+      Payback ignores the cash flows after the payback year. When the cash flows change sign more than once,
+      the project can have more than one IRR.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -30,6 +30,7 @@ import {
   toPositive,
 } from './money'
 import { AmortizationSection } from './schedule'
+import mortgageRates from '@/data/mortgage-rates.json'
 
 type Mode = 'amount' | 'percent'
 
@@ -46,7 +47,7 @@ export default function MortgageCalculator() {
   const [downMode, setDownMode] = useState<Mode>('percent')
   const [downAmount, setDownAmount] = useState('90000')
   const [downPercent, setDownPercent] = useState('20')
-  const [rate, setRate] = useState('6.5')
+  const [rate, setRate] = useState(String(mortgageRates.fixed30))
   const [termYears, setTermYears] = useState('30')
   const [firstPayment, setFirstPayment] = useState('')
 

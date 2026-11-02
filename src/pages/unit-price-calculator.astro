@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import UnitPrice from '@/components/tools/calc2/UnitPrice.tsx'
+---
+
+<ToolLayout slug="unit-price-calculator">
+  <UnitPrice client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the unit price calculator works</h2>
+    <p>
+      The unit price calculator converts every pack to the same unit (grams, millilitres or items) and
+      divides the price by the amount. The pack with the lowest price per unit is the best value.
+    </p>
+    <pre><code>unit price = price ÷ (amount in a pack × number of packs)
+extra cost = unit price ÷ cheapest unit price − 1</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      Coffee at $3.99 for 500 g is $7.98 per kg. A 1 kg bag at $6.49 is $6.49 per kg, and a 12 oz (340.2 g)
+      bag at $2.50 is $7.35 per kg. The 1 kg bag is the best value; the 500 g pack costs 23.0% more for the
+      same amount of coffee.
+    </p>
+
+    <h2>Units</h2>
+    <p>
+      1 oz = 28.35 g, 1 lb = 453.6 g, 1 US fl oz = 29.57 mL and 1 US gallon = 3.785 L. Weight and volume
+      cannot be compared with each other without the density of the product.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Shelf labels sometimes round unit prices or use a different unit for each pack. The calculator uses
+      the exact figures you enter. A lower unit price only saves money if you use the whole pack.
+    </p>
+  </Fragment>
+</ToolLayout>

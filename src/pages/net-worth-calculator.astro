@@ -1,0 +1,28 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import NetWorthCalculator from '@/components/tools/calc/NetWorthCalculator.tsx'
+---
+
+<ToolLayout slug="net-worth-calculator">
+  <NetWorthCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the net worth calculator works</h2>
+    <p>
+      Net worth is <code>total assets − total debts</code>. The debt-to-asset ratio is <code>debts ÷ assets</code>.
+      Liquid net worth counts only cash and investments, minus credit card balances, as a measure of money you could
+      reach quickly.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      With 15,000 in cash, 40,000 in investments, 85,000 in retirement accounts, a 350,000 home, 20,000 of vehicles and
+      5,000 of other assets, you own 515,000. A 260,000 mortgage, 12,000 car loan, 18,000 of student loans and 3,000 on
+      cards come to 293,000 of debt. Net worth is 222,000 and the debt-to-asset ratio is 56.9%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Use what each asset would sell for today and the payoff amount of each debt. Retirement balances are before the
+      tax due on withdrawal. Check your net worth once or twice a year; the change matters more than one figure.
+    </p>
+  </Fragment>
+</ToolLayout>

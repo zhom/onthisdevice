@@ -1,0 +1,40 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MeanMedianMode from '@/components/tools/calc2/MeanMedianMode.tsx'
+---
+
+<ToolLayout slug="mean-median-mode-calculator">
+  <MeanMedianMode client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the mean, median and mode calculator works</h2>
+    <p>
+      Paste or type a list of numbers. The mean, median and mode calculator sorts them, then finds the
+      three averages, the range, the count and the sum.
+    </p>
+    <pre><code>mean    sum of the values ÷ how many there are
+median  the middle value when sorted; for an even count, the mean of the two middle values
+mode    the value that occurs most often (there can be several, or none)
+range   largest − smallest</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      For 4, 8, 15, 16, 23, 42, 8, 15, 8: the sum is 139 and there are 9 values, so the mean is
+      139 ÷ 9 = 15.44. Sorted, the list is 4, 8, 8, 8, 15, 15, 16, 23, 42; the 5th value, 15, is the
+      median. 8 occurs three times, so it is the mode. The range is 42 − 4 = 38.
+    </p>
+
+    <h2>Which average to use</h2>
+    <p>
+      The mean uses every value, so one large value pulls it up: 42 lifts the mean above the median here.
+      The median ignores how far the extreme values are, so it suits incomes and house prices. The mode
+      suits categories and counts, such as the most common shoe size.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Values with up to 9 decimals are added exactly, so 0.1 + 0.2 gives 0.3. The dot plot stacks equal
+      values; very close values that are not equal sit side by side.
+    </p>
+  </Fragment>
+</ToolLayout>

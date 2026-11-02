@@ -1,0 +1,36 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import IrrCalculator from '@/components/tools/calc/IrrCalculator.tsx'
+---
+
+<ToolLayout slug="irr-calculator">
+  <IrrCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the IRR calculator works</h2>
+    <p>
+      The IRR calculator finds the internal rate of return: the discount rate at which the net present
+      value of the cash flows is zero. It checks the NPV at many rates from −99% to 1,000% a year, and
+      narrows each sign change down by bisection. If the NPV crosses zero more than once, it lists every
+      rate.
+    </p>
+    <p>
+      The IRR solves <code>0 = Σ CFₜ ÷ (1 + IRR)^t</code>, where <code>CFₜ</code> is the cash flow in
+      year <code>t</code>. The modified IRR is
+      <code>MIRR = (FV of inflows ÷ PV of outflows)^(1 ÷ n) − 1</code>. The inflows grow to year
+      <code>n</code> at the reinvestment rate, and the outflows are discounted to today at the finance rate.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      An investment of 70,000 returns 12,000, 15,000, 18,000, 21,000 and 26,000 over 5 years. The IRR is
+      8.66%. At a 10% finance rate the NPV is −2,683.31, so the investment does not pay at that cost of
+      money. With a 12% reinvestment rate the inflows grow to 112,055.35 by year 5, and the MIRR is 9.87%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Every cash flow after year 0 comes at the end of its year. IRR assumes the money that comes back earns
+      the IRR again; MIRR uses your reinvestment rate instead. IRR does not show the size of a project, so
+      compare projects of different size by NPV.
+    </p>
+  </Fragment>
+</ToolLayout>

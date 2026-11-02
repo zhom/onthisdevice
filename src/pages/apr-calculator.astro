@@ -1,0 +1,31 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AprCalculator from '@/components/tools/calc/AprCalculator.tsx'
+---
+
+<ToolLayout slug="apr-calculator">
+  <AprCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the APR calculator works</h2>
+    <p>
+      The payment comes from the loan amount, the interest rate and the term:
+      <code>M = P × i ÷ (1 − (1 + i)^−n)</code>. Fees reduce the money you receive (or increase the loan when they are
+      added to it). The APR calculator finds the monthly rate <code>j</code> at which the payments are worth exactly
+      the money you receive, <code>received = M × (1 − (1 + j)^−n) ÷ j</code>, and reports <code>APR = 12 × j</code>.
+      It solves for <code>j</code> by bisection.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 25,000 loan at 7.5% for 5 years has a payment of 500.95 and 5,056.96 of interest. If 1,000 of fees come out of
+      the loan, you receive 24,000 and the APR is 9.236%. If the fees are added to the loan instead, the payment is
+      520.99 and the APR is 9.167%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The result is for a fixed-rate loan with level monthly payments, kept to the end. Which fees count toward a
+      legal APR depends on the country and the loan type. If you repay early, the fees are spread over fewer years and
+      the real yearly cost is higher.
+    </p>
+  </Fragment>
+</ToolLayout>

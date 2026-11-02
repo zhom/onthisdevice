@@ -1,0 +1,71 @@
+name: Data refresh
+
+# Fetches public data sets on a schedule, validates them and commits the result to main.
+# A push to main makes Cloudflare build and deploy the site. A fetcher that fails a check
+# writes nothing, so only complete, validated data sets are committed; the run then fails.
+
+on:
+  schedule:
+    - cron: '30 16 * * *' # daily: ECB reference rates (published about 16:00 CET), crypto
+    - cron: '0 18 * * 4' # weekly, Thursday: Freddie Mac PMMS (published Thursday noon ET)
+    - cron: '0 6 2 * *' # monthly, on the 2nd
+    - cron: '0 6 15 6 *' # yearly, 15 June: SSA life table and baby names are out by then
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: Tier to refresh
+        required: true
+        type: choice
+        options: [daily, weekly, monthly, yearly]
+      only:
+        description: Optional comma-separated fetcher names within the tier
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: data-${{ inputs.tier || (github.event.schedule == '30 16 * * *' && 'daily') || (github.event.schedule == '0 18 * * 4' && 'weekly') || (github.event.schedule == '0 6 2 * *' && 'monthly') || 'yearly' }}
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      TIER: ${{ inputs.tier || (github.event.schedule == '30 16 * * *' && 'daily') || (github.event.schedule == '0 18 * * 4' && 'weekly') || (github.event.schedule == '0 6 2 * *' && 'monthly') || 'yearly' }}
+      ONLY: ${{ inputs.only }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: npm
+      - run: npm ci
+      - name: Refresh ${{ env.TIER }} data
+        id: refresh
+        continue-on-error: true
+        run: node scripts/data/refresh.mjs --tier "$TIER" ${ONLY:+--only "$ONLY"}
+      - name: Commit and push
+        run: |
+          git add -A src/data public/data
+          if git diff --cached --quiet; then
+            echo "No data changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: refresh $TIER data"
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((attempt * 10))
+          done
+          exit 1
+      - name: Fail when a fetcher failed
+        if: steps.refresh.outcome == 'failure'
+        run: |
+          echo "::error::One or more ${TIER} fetchers failed. Their previous data is unchanged; see the refresh step."
+          exit 1

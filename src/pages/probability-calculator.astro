@@ -1,0 +1,53 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ProbabilityCalculator from '@/components/tools/calc2/ProbabilityCalculator.tsx'
+---
+
+<ToolLayout slug="probability-calculator">
+  <ProbabilityCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the probability calculator works</h2>
+    <p>
+      Enter the chance of event A and of event B, as percentages or decimals. The probability calculator
+      treats them as independent, so one does not change the chance of the other, and works out the chance of
+      every combination:
+    </p>
+    <pre><code>P(A and B)  = P(A) × P(B)
+P(A or B)   = P(A) + P(B) − P(A) × P(B)
+P(not A)    = 1 − P(A)
+P(exactly one) = P(A) + P(B) − 2 P(A) P(B)
+P(neither)  = (1 − P(A)) × (1 − P(B))
+P(A at least once in n trials) = 1 − (1 − P(A))ⁿ</code></pre>
+    <p>
+      The square shows the same sums as areas. A takes a strip on the left as wide as P(A), and B a band at
+      the top as tall as P(B). Where they overlap is P(A and B), because the area of a rectangle is width
+      times height.
+    </p>
+
+    <h2>Worked example</h2>
+    <p>
+      Rain is forecast at 50% and your train is late 40% of the time, and the two have nothing to do with
+      each other. The chance of both is 0.5 × 0.4 = 0.2, or 20%. The chance of at least one is 0.5 + 0.4 −
+      0.2 = 0.7, or 70%. The chance of neither is 0.5 × 0.6 = 0.3, or 30%.
+    </p>
+    <p>
+      At least once: a six on a die has P = 1/6. In four rolls, the chance of no six is (5/6)⁴ = 0.482, so
+      the chance of at least one six is 1 − 0.482 = 0.518, or 51.8%. The simulation under the square throws
+      such runs again and again, and the share of runs with at least one success settles near the formula.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>
+        The events must be independent. For dependent events, such as two cards drawn from one deck, P(A and
+        B) = P(A) × P(B given A), which needs the conditional probability.
+      </li>
+      <li>
+        Events that cannot happen together (mutually exclusive) are not independent: for them P(A and B) = 0
+        and P(A or B) = P(A) + P(B).
+      </li>
+      <li>The simulation uses the browser's random number generator and shows the idea; the numbers come from the formulas.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,32 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DepreciationCalculator from '@/components/tools/calc/DepreciationCalculator.tsx'
+---
+
+<ToolLayout slug="depreciation-calculator">
+  <DepreciationCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the depreciation calculator works</h2>
+    <ul>
+      <li>Straight line: <code>(cost − salvage) ÷ life</code> each year.</li>
+      <li>Declining balance: <code>book value × factor ÷ life</code>, with a factor of 2 (double declining) or 1.5. It
+        switches to straight line when that gives more, and stops at the salvage value.</li>
+      <li>Sum of the years' digits: <code>(cost − salvage) × years left ÷ (life × (life + 1) ÷ 2)</code>.</li>
+      <li>MACRS: <code>cost × table percentage</code> for each year, from IRS Publication 946 table A-1 (General
+        Depreciation System, half-year convention). Salvage is ignored.</li>
+    </ul>
+    <h2>Worked example</h2>
+    <p>
+      An asset costs 50,000, has a salvage value of 5,000 and a life of 5 years. Straight line gives 9,000 a year.
+      Double declining balance gives 20,000, 12,000, 7,200, 4,320 and 1,480. Sum of the years' digits gives 15,000,
+      12,000, 9,000, 6,000 and 3,000. As 5-year MACRS property it gives 10,000, 16,000, 9,600, 5,760, 5,760 and 2,880
+      over six tax years.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Years are full years except under MACRS. Mid-quarter and mid-month conventions, bonus depreciation and Section
+      179 expensing are not included. Ask a tax adviser which method and class apply to your asset.
+    </p>
+  </Fragment>
+</ToolLayout>

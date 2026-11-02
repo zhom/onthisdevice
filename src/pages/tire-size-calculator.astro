@@ -1,0 +1,36 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TireSize from '@/components/tools/calc2/TireSize.tsx'
+---
+
+<ToolLayout slug="tire-size-calculator">
+  <TireSize client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the tire size calculator works</h2>
+    <p>
+      A metric tire size gives the width in millimetres, the sidewall height as a percentage of the width,
+      and the rim diameter in inches. The tire size calculator turns that into the overall diameter, then
+      compares two sizes.
+    </p>
+    <pre><code>sidewall       = width × aspect ratio ÷ 100            (mm)
+diameter       = rim × 25.4 + 2 × sidewall              (mm)
+circumference  = π × diameter
+turns per mile = 1,609,344 mm ÷ circumference
+true speed     = speedometer × new diameter ÷ old diameter</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      225/45R17: the sidewall is 225 × 0.45 = 101.25 mm and the diameter 17 × 25.4 + 2 × 101.25 = 634.3 mm
+      (24.97 in). 245/40R18: 98 mm sidewall and 653.2 mm (25.72 in). The new tire is 2.98% larger, so at an
+      indicated 60 mph the car does 61.8 mph, and the odometer under-reads by the same 2.98%.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The results use the nominal size. Real tires of one size differ by a few millimetres between brands, and wear takes off up to 8 mm of tread depth.</li>
+      <li>Keep the load index and speed rating at least as high as the original, and check that the new size clears the suspension and arches.</li>
+      <li>Flotation sizes such as 33x12.50R15 already give the diameter in inches: 33 in.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

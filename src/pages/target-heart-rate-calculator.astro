@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import TargetHeartRateCalculator from '@/components/tools/calc/TargetHeartRateCalculator.tsx'
+---
+
+<ToolLayout slug="target-heart-rate-calculator">
+  <TargetHeartRateCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the target heart rate calculator works</h2>
+    <p>
+      The target heart rate calculator uses the Karvonen method. It takes the range between your resting
+      and your maximum heart rate, the heart rate reserve, and adds a share of it to your resting rate:
+      <code>THR = (HRmax − HRrest) × intensity + HRrest</code>. Intensity is a fraction, so 70% is 0.70.
+    </p>
+    <p>
+      If you do not know your maximum heart rate, the calculator estimates it from your age with one of
+      three formulas: Fox <code>HRmax = 220 − age</code>, Tanaka <code>HRmax = 208 − 0.7 × age</code> or
+      Gellish <code>HRmax = 207 − 0.7 × age</code>. The 10-second count is <code>THR ÷ 6</code>, for a
+      pulse check during exercise.
+    </p>
+    <p>
+      The five zones are bands of heart rate reserve: zone 1 is 50 to 60%, zone 2 60 to 70%, zone 3 70 to
+      80%, zone 4 80 to 90% and zone 5 90 to 100%.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 35-year-old with a resting heart rate of 62 bpm. Fox gives a maximum of 220 − 35 = 185 bpm, so the
+      heart rate reserve is 185 − 62 = 123 bpm. At 70% intensity the target is 123 × 0.70 + 62 = 148.1 bpm,
+      about 25 beats in 10 seconds. With Tanaka the maximum is 183.5 bpm and the target 147 bpm. Zone 2 for
+      this person runs from 136 to 148 bpm.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Age formulas give the maximum heart rate of an average person; your true maximum can be 10 to 20 bpm
+      higher or lower. Beta blockers and some other medicines lower the heart rate, so the zones do not
+      show effort well for people who take them. Heat, dehydration, caffeine and poor sleep raise the heart
+      rate at the same effort. If you have a heart condition or have not exercised for a long time, ask a
+      doctor before hard exercise.
+    </p>
+  </Fragment>
+</ToolLayout>

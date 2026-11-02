@@ -1,0 +1,40 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Density from '@/components/tools/calc2/Density.tsx'
+---
+
+<ToolLayout slug="density-calculator">
+  <Density client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the density calculator works</h2>
+    <p>
+      Density is mass per unit of volume. Enter two of mass, volume and density, and the density calculator
+      finds the third, converts the units and shows whether the object floats in fresh water.
+    </p>
+    <pre><code>ρ = m ÷ V
+m = ρ × V
+V = m ÷ ρ
+fraction under water = ρ ÷ 1,000 kg/m³   (when ρ is below 1,000)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A block of 750 g has a volume of 1 litre (0.001 m³). Its density is 0.75 kg ÷ 0.001 m³ = 750 kg/m³,
+      or 0.75 g/cm³, close to oak. In water it floats with 75% of its volume under the surface, because it
+      sinks until it displaces its own mass of water: 750 g, or 750 mL.
+    </p>
+
+    <h2>Units</h2>
+    <p>
+      1 g/cm³ = 1 g/mL = 1 kg/L = 1,000 kg/m³ = 62.43 lb/ft³. Specific gravity is the density divided by
+      the density of water, so it has no unit.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The materials list gives typical values near room temperature; real wood, concrete and alloys vary by
+      several per cent. Density changes with temperature, and for gases also with pressure. A hollow object
+      floats or sinks by its average density, including the air inside.
+    </p>
+  </Fragment>
+</ToolLayout>

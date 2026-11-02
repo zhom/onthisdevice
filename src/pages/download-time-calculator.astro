@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DownloadTime from '@/components/tools/calc2/DownloadTime.tsx'
+---
+
+<ToolLayout slug="download-time-calculator">
+  <DownloadTime client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the download time calculator works</h2>
+    <p>
+      The download time calculator turns the file size into bits, takes the overhead off the connection
+      speed and divides one by the other. The same calculation gives upload times.
+    </p>
+    <pre><code>bits  = size in bytes × 8
+speed = line speed × (1 − overhead)
+time  = bits ÷ speed</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 50 GB game on a 100 Mbit/s line: 50 × 10⁹ × 8 = 4 × 10¹¹ bits. With 10% overhead the usable speed is
+      90 Mbit/s, so the download takes 4 × 10¹¹ ÷ 9 × 10⁷ = 4,444 s, or 1 h 14 min. Without overhead it
+      would take 1 h 07 min.
+    </p>
+
+    <h2>Bits and bytes</h2>
+    <p>
+      Connection speeds are in bits per second (Mbit/s, often written Mbps); file sizes are in bytes. One
+      byte is 8 bits, so 100 Mbit/s is 12.5 MB/s at most. Storage makers use decimal units (1 GB = 10⁹ bytes),
+      while many operating systems count in binary units (1 GiB = 2³⁰ bytes).
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The result assumes the speed holds for the whole transfer. The server, Wi-Fi signal and other traffic
+      on the line often limit it, and many connections upload much slower than they download.
+    </p>
+  </Fragment>
+</ToolLayout>

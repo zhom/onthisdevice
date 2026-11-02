@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AutoLeaseCalculator from '@/components/tools/calc/AutoLeaseCalculator.tsx'
+---
+
+<ToolLayout slug="auto-lease-calculator">
+  <AutoLeaseCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the auto lease calculator works</h2>
+    <p>
+      A lease payment has two parts. The depreciation fee pays for the value the car loses:
+      <code>(cap cost − residual) ÷ months</code>. The finance fee is the lease's interest:
+      <code>(cap cost + residual) × money factor</code>. Sales tax is added to their sum in most US states.
+    </p>
+    <p>
+      The adjusted cap cost is the agreed price plus fees in the lease, minus the down payment, trade-in and rebates.
+      The residual is the MSRP times the residual percentage. The money factor is about the APR divided by 2,400.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A car with an MSRP of 35,000 is agreed at 33,000. With 895 of fees, 2,000 down, a 58% residual, a money factor
+      of 0.0025 (6% APR), 36 months and 7% tax: the cap cost is 31,895 and the residual is 20,300. The depreciation fee
+      is 322.08, the finance fee is 130.49 and the tax is 31.68, so the payment is 484.25 a month. The 36 payments come
+      to 17,433, or 19,433 with the down payment.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Excess mileage, wear charges and the end-of-lease disposition fee are not included. Some states tax the full
+      price or the down payment. Ask the dealer for the money factor, residual and every fee in writing, and check the
+      payment against this result.
+    </p>
+  </Fragment>
+</ToolLayout>

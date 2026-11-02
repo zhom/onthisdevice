@@ -1,0 +1,45 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import KineticEnergy from '@/components/tools/calc2/KineticEnergy.tsx'
+---
+
+<ToolLayout slug="kinetic-energy-calculator">
+  <KineticEnergy client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the kinetic energy calculator works</h2>
+    <p>
+      Kinetic energy is the energy a body has because it moves. It grows in proportion to the mass and
+      to the square of the speed. The kinetic energy calculator converts your units to kilograms and
+      metres per second, applies the formula, and can also solve it for the mass or the speed.
+    </p>
+    <pre><code>KE = ½ m v²
+m  = 2 KE ÷ v²
+v  = √(2 KE ÷ m)
+1 kWh = 3,600,000 J      1 kcal = 4,184 J</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 1,000 kg car at 20 m/s (72 km/h) has KE = 0.5 × 1,000 × 20² = 200,000 J = 200 kJ. At 40 m/s the
+      same car has 800 kJ: twice the speed, four times the energy. The brakes must turn all of it into
+      heat to stop the car, which is why stopping distance grows much faster than speed.
+    </p>
+    <p>
+      A 145 g baseball at 40 m/s has 0.5 × 0.145 × 40² = 116 J.
+    </p>
+
+    <h2>The drawing</h2>
+    <p>
+      The curve plots energy against speed for the mass you entered. The ink dot is your value; the grey
+      dot is twice the speed, at four times the energy. The block at the top moves at a speed in
+      proportion to yours, scaled down to fit the screen.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The formula is for motion in a straight line. A spinning wheel also has rotational energy, ½ I ω².</li>
+      <li>It ignores relativity, which matters only near the speed of light.</li>
+      <li>The drop height comparison ignores air resistance.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

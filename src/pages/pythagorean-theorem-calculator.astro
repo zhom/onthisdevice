@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PythagoreanTheorem from '@/components/tools/calc2/PythagoreanTheorem.tsx'
+---
+
+<ToolLayout slug="pythagorean-theorem-calculator">
+  <PythagoreanTheorem client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the Pythagorean theorem calculator works</h2>
+    <p>
+      In a right triangle, the square on the hypotenuse (the side opposite the right angle) has the same
+      area as the squares on the other two sides together. The Pythagorean theorem calculator uses this
+      to find the missing side from the other two.
+    </p>
+    <pre><code>a² + b² = c²
+c = √(a² + b²)        hypotenuse from the legs
+a = √(c² − b²)        a leg from the hypotenuse and the other leg</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      The legs are 3 and 4. Then c² = 3² + 4² = 9 + 16 = 25, so c = √25 = 5. The animation shows the
+      9 and 16 unit squares filling the 25 unit square on the hypotenuse.
+    </p>
+    <p>
+      To find a leg: a ladder 13 ft long stands 5 ft from a wall. The height it reaches is
+      √(13² − 5²) = √(169 − 25) = √144 = 12 ft.
+    </p>
+
+    <h2>Pythagorean triples</h2>
+    <p>
+      Whole-number sides that fit the theorem are Pythagorean triples: 3-4-5, 5-12-13, 8-15-17, 7-24-25
+      and their multiples, such as 6-8-10. Builders use 3-4-5 to set out a square corner.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The theorem holds only for a right triangle. For other triangles, use the law of cosines.</li>
+      <li>The hypotenuse is always the longest side. A leg longer than or equal to the hypotenuse gives no triangle.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

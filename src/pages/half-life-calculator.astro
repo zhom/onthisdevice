@@ -1,0 +1,55 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import HalfLife from '@/components/tools/calc2/HalfLife.tsx'
+---
+
+<ToolLayout slug="half-life-calculator">
+  <HalfLife client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the half-life calculator works</h2>
+    <p>
+      In each half-life, half of what is left decays. The half-life calculator uses the decay law to find
+      any one of four values from the other three: the amount left, the starting amount, the time passed
+      or the half-life.
+    </p>
+    <pre><code>N  = N₀ × (½)^(t ÷ T½)
+N₀ = N ÷ (½)^(t ÷ T½)
+t  = T½ × log₂(N₀ ÷ N)
+T½ = t ÷ log₂(N₀ ÷ N)
+λ  = ln 2 ÷ T½            decay constant
+τ  = 1 ÷ λ = T½ ÷ ln 2    mean life</code></pre>
+
+    <h2>Worked example: carbon dating</h2>
+    <p>
+      Carbon-14 has a half-life of 5,730 years. After 11,460 years, which is two half-lives, a sample keeps
+      100 × 0.5² = 25% of its carbon-14. A bone with 30% left is 5,730 × log₂(100 ÷ 30) = 5,730 × 1.737 =
+      9,953 years old.
+    </p>
+    <table>
+      <thead><tr><th>Isotope</th><th>Half-life</th><th>Use</th></tr></thead>
+      <tbody class="tabular-nums">
+        <tr><td>Carbon-14</td><td>5,730 years</td><td>Dating organic material</td></tr>
+        <tr><td>Iodine-131</td><td>8.02 days</td><td>Thyroid treatment</td></tr>
+        <tr><td>Radon-222</td><td>3.82 days</td><td>Indoor radon gas</td></tr>
+        <tr><td>Uranium-238</td><td>4.468 billion years</td><td>Dating rocks</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The simulation</h2>
+    <p>
+      Each square is one atom. Each atom gets a random decay moment drawn with the probability the
+      half-life gives, so after one half-life about half of the 400 squares are gone, but rarely exactly
+      half. The ink curve is the formula; the grey dot under it is the count of the squares, which
+      scatters around the curve. Long decays play sped up, and the label gives the scale, for example
+      1 s shows 2,000 years.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The law holds for a large number of atoms. For a handful, the count jumps randomly around the curve.</li>
+      <li>Carbon dating also needs a calibration curve, because the carbon-14 level in the air has changed over time.</li>
+      <li>For a decay chain (an isotope that decays into another radioactive isotope), each step needs its own calculation.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

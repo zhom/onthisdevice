@@ -1,0 +1,28 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import OvertimeCalculator from '@/components/tools/calc/OvertimeCalculator.tsx'
+---
+
+<ToolLayout slug="overtime-calculator">
+  <OvertimeCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the overtime calculator works</h2>
+    <p>
+      Regular pay is <code>rate × regular hours</code>. Overtime pay is <code>rate × multiplier × overtime hours</code>,
+      with a multiplier of 1.5 for time and a half or 2 for double time. Double-time hours are added at twice the rate.
+      The average hourly rate is the total pay divided by all hours worked.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      At 25 an hour, 40 regular hours pay 1,000. Eight overtime hours at time and a half pay 25 × 1.5 × 8 = 300. The
+      week pays 1,300 for 48 hours, an average of 27.08 an hour. Fifty-two weeks like this pay 67,600 before tax.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Under the US Fair Labor Standards Act, non-exempt employees get at least 1.5 times the regular rate for hours over
+      40 in a workweek. Some states add daily overtime. Bonuses and shift premiums can raise the regular rate; this
+      calculator uses the rate you enter.
+    </p>
+  </Fragment>
+</ToolLayout>

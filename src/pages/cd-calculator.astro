@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CdCalculator from '@/components/tools/calc/CdCalculator.tsx'
+---
+
+<ToolLayout slug="cd-calculator">
+  <CdCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the CD calculator works</h2>
+    <p>
+      The CD calculator grows the deposit with compound interest for the term of the certificate of
+      deposit. The balance at maturity is <code>A = P × (1 + r ÷ m)^(m × t)</code>, where <code>P</code> is
+      the deposit, <code>r</code> is the yearly rate as a decimal, <code>m</code> is the number of times
+      interest compounds in a year (365, 12, 4 or 1) and <code>t</code> is the term in years. The interest
+      is <code>A − P</code>.
+    </p>
+    <p>
+      The annual percentage yield is <code>APY = (1 + r ÷ m)^m − 1</code>. It is the interest one year
+      earns, interest on interest included, so you can compare CDs that compound at different
+      frequencies. The interest after tax is the interest times one minus your tax rate.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A deposit of 10,000 at 4.5% compounded daily for 12 months grows to 10,460.25, so it earns 460.25 of
+      interest. The APY is 4.60%. With monthly compounding the same CD earns 459.40, with quarterly
+      compounding 457.65 and with yearly compounding 450.00.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The rate is fixed for the term and the interest stays in the CD. Taking money out before maturity
+      usually costs a penalty, which the calculator does not include. Banks may count 360 or 365 days a
+      year, so their figure can differ by some cents. Tax is a flat rate on the interest; in many countries
+      the interest is taxed each year as it is credited.
+    </p>
+  </Fragment>
+</ToolLayout>

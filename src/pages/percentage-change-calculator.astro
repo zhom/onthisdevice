@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PercentageChange from '@/components/tools/calc2/PercentageChange.tsx'
+---
+
+<ToolLayout slug="percentage-change-calculator">
+  <PercentageChange client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the percentage change calculator works</h2>
+    <p>
+      The percentage change calculator divides the change by the old value. A positive result is an
+      increase and a negative result is a decrease. It also gives the percentage difference, which treats
+      the two values the same.
+    </p>
+    <pre><code>percentage change     = (new − old) ÷ |old| × 100
+percentage difference = |a − b| ÷ ((a + b) ÷ 2) × 100
+multiplier            = new ÷ old</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A price goes from 80 to 100. The change is 20, and 20 ÷ 80 × 100 = 25%, an increase. Going back from
+      100 to 80 is a 20% decrease, because the reference is now 100. The percentage difference between
+      80 and 100 is 20 ÷ 90 × 100 = 22.2% in both directions.
+    </p>
+
+    <h2>Changes do not add</h2>
+    <p>
+      A 50% rise followed by a 50% fall leaves 0.75 of the start: 1.5 × 0.5 = 0.75, a 25% loss. Multiply
+      the multipliers to combine changes.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      A change from zero has no percentage. For values that are already percentages, such as an interest
+      rate going from 4% to 5%, say "1 percentage point" for the difference and "25%" for the relative change.
+    </p>
+  </Fragment>
+</ToolLayout>

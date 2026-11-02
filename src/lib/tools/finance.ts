@@ -340,7 +340,7 @@ export const tools: Tool[] = [
       },
       {
         q: 'How current is the data?',
-        a: 'Annual averages are included through the most recent complete year. The latest year is marked provisional in the results because the BLS can revise it.',
+        a: 'Annual averages are included through the most recent complete year. The table is refreshed each month from the BLS.',
       },
     ],
     related: ['compound-interest-calculator', 'retirement-calculator', 'salary-calculator', 'savings-goal-calculator'],

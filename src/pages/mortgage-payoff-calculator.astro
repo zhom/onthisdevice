@@ -1,0 +1,36 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MortgagePayoffCalculator from '@/components/tools/calc/MortgagePayoffCalculator.tsx'
+---
+
+<ToolLayout slug="mortgage-payoff-calculator">
+  <MortgagePayoffCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the mortgage payoff calculator works</h2>
+    <p>
+      The mortgage payoff calculator builds the loan schedule month by month twice: once with the normal
+      payment and once with your extra payments. Each month the interest is the balance times the monthly
+      rate, rounded to the cent. The payment pays that interest first; the rest and any extra payment
+      reduce the balance.
+    </p>
+    <p>
+      The monthly payment is <code>M = P × i ÷ (1 − (1 + i)^−n)</code>, where <code>P</code> is the
+      balance, <code>i</code> is the annual rate divided by 12 and <code>n</code> is the number of months
+      left. With a fixed extra payment <code>E</code> each month, the number of months to pay off is
+      <code>n = −ln(1 − P × i ÷ (M + E)) ÷ ln(1 + i)</code>.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A balance of 250,000 at 6.5% with 25 years left has a payment of 1,688.02 a month. Pay 200 more each
+      month and the loan ends after 19 years 6 months instead of 25 years. Total interest falls from
+      256,405 to 191,477, so the extra payments save 64,928.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The rate is fixed for the rest of the loan. Property tax, insurance and escrow are not included.
+      Some loans charge a prepayment penalty, and some lenders hold extra money until the next due date
+      instead of applying it to the principal at once. Check both with your lender.
+    </p>
+  </Fragment>
+</ToolLayout>

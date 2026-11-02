@@ -1,0 +1,41 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import LongDivision from '@/components/tools/calc2/LongDivision.tsx'
+---
+
+<ToolLayout slug="long-division-calculator">
+  <LongDivision client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the long division calculator works</h2>
+    <p>
+      The long division calculator writes the division out as on paper. For each digit of the dividend it
+      repeats four steps: divide, multiply, subtract, bring down the next digit.
+    </p>
+    <pre><code>dividend = divisor × quotient + remainder
+0 ≤ remainder &lt; divisor</code></pre>
+
+    <h2>Worked example: 1234 ÷ 7</h2>
+    <pre><code>12 ÷ 7 = 1   1 × 7 = 7    12 − 7 = 5   bring down 3: 53
+53 ÷ 7 = 7   7 × 7 = 49   53 − 49 = 4  bring down 4: 44
+44 ÷ 7 = 6   6 × 7 = 42   44 − 42 = 2
+1234 ÷ 7 = 176 remainder 2      check: 7 × 176 + 2 = 1234</code></pre>
+    <p>
+      As a decimal, 1234 ÷ 7 = 176.285714285714…, written 176.(285714): the six digits in brackets repeat
+      for ever. Set the decimal places to carry the written division past the point.
+    </p>
+
+    <h2>Repeating decimals</h2>
+    <p>
+      A fraction ends when the divisor, reduced, has no prime factors other than 2 and 5. Otherwise the
+      remainders must repeat, because there are fewer possible remainders than the divisor, and the digits
+      repeat with them.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The dividend and divisor are whole numbers: up to 30 digits for the dividend and below one trillion
+      for the divisor. The decimal shows up to 120 digits of the repeating part.
+    </p>
+  </Fragment>
+</ToolLayout>

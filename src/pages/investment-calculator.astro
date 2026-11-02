@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import InvestmentCalculator from '@/components/tools/calc/InvestmentCalculator.tsx'
+---
+
+<ToolLayout slug="investment-calculator">
+  <InvestmentCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the investment calculator works</h2>
+    <p>
+      The investment calculator grows a starting amount and a fixed monthly deposit at a yearly return
+      compounded monthly. The balance is <code>FV = P × (1 + i)^n + PMT × ((1 + i)^n − 1) ÷ i</code>, where
+      <code>P</code> is the starting amount, <code>PMT</code> is the monthly deposit, <code>i</code> is the
+      yearly return divided by 12 and <code>n</code> is the number of months. With deposits at the start of
+      each month, the deposit part is multiplied by <code>(1 + i)</code>, because each deposit earns one
+      more month.
+    </p>
+    <p>
+      Growth is the balance minus the money you put in. The value in today's money is
+      <code>FV ÷ (1 + inflation)^years</code>.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      10,000 to start and 500 at the end of each month for 20 years at 7% grows to 300,851. You put in
+      130,000, so 170,851 is growth. At 2.5% inflation that balance is worth 183,600 in today's money. With
+      deposits at the start of each month the balance is 302,370.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The return is the same every month. Real markets go up and down, and the order of good and bad years
+      changes the result. Fees and taxes are not included, so enter a return after fees.
+    </p>
+  </Fragment>
+</ToolLayout>

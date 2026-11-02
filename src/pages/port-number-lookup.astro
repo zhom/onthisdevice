@@ -1,0 +1,31 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PortNumberLookup from '@/components/tools/reference/PortNumberLookup.tsx'
+---
+
+<ToolLayout slug="port-number-lookup">
+  <PortNumberLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the port number lookup</h2>
+    <p>
+      Type a port number to see every service registered for it, or type a service name such as
+      <code>ssh</code> or <code>postgresql</code> to find its port. A search for words, for example
+      <code>remote desktop</code>, also looks in the descriptions. Each entry shows the transport
+      protocols (TCP, UDP, SCTP, DCCP) and the RFC that defines it, when there is one.
+    </p>
+    <h2>The three port ranges</h2>
+    <p>
+      Port numbers go from 0 to 65535. Ports 0 to 1023 are system ports: on most systems only an
+      administrator can open them, and they carry core services such as HTTP (80), HTTPS (443) and
+      SSH (22). Ports 1024 to 49151 are registered ports that IANA assigns on request. Ports 49152 to
+      65535 are dynamic ports that the operating system gives to the client side of a connection.
+    </p>
+    <h2>Where the data comes from</h2>
+    <p>
+      The IANA Service Name and Transport Protocol Port Number Registry is the official list. The site
+      downloads it each month. A registration says which service asked for a port; it does not stop
+      another program from using it.
+    </p>
+  </Fragment>
+</ToolLayout>

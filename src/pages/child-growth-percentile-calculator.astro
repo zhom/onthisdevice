@@ -1,0 +1,38 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ChildGrowthPercentile from '@/components/tools/reference/ChildGrowthPercentile.tsx'
+---
+
+<ToolLayout slug="child-growth-percentile-calculator">
+  <ChildGrowthPercentile client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the child growth percentile calculator works</h2>
+    <p>
+      The child growth percentile calculator compares a measurement with the 2000 CDC growth charts for
+      the same sex and age. Each chart gives three numbers per half month of age: L (skewness), M (the
+      median) and S (the spread). The z-score of a measurement x is
+      <code>z = ((x / M)^L − 1) / (L × S)</code>, and the percentile is the share of the standard normal
+      distribution below z.
+    </p>
+    <p>
+      Under 24 months the calculator uses the infant charts (weight, length lying down and head
+      circumference); from 2 to 20 years it uses weight, stature (standing height) and BMI for age.
+      The percentile curves on the chart are drawn from the same L, M and S values.
+    </p>
+    <h2>Reading percentiles</h2>
+    <p>
+      A child on the 40th percentile for height is taller than 40 of 100 children of the same age and
+      sex in the reference population. Healthy children are found on every line; doctors watch whether a
+      child stays near the same curve over time. For BMI, the CDC uses the 85th percentile for overweight
+      and the 95th for obesity. Very high BMI values above the 97th percentile are less precise with the
+      2000 charts.
+    </p>
+    <h2>CDC and WHO charts</h2>
+    <p>
+      In the US, the CDC recommends the WHO growth standards for children under 2 and the CDC charts
+      from 2 years. This tool uses the CDC charts at all ages, because they are in the public domain;
+      results under 2 years can differ a little from the WHO charts that a doctor uses.
+    </p>
+  </Fragment>
+</ToolLayout>

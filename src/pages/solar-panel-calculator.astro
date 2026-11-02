@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SolarPanels from '@/components/tools/calc2/SolarPanels.tsx'
+---
+
+<ToolLayout slug="solar-panel-calculator">
+  <SolarPanels client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the solar panel calculator works</h2>
+    <p>
+      The solar panel calculator sizes a grid-tied system to cover your electricity use over a year. It
+      divides your daily use by the peak sun hours and by the system efficiency to get the size in kW,
+      then by the panel rating to get the number of panels.
+    </p>
+    <pre><code>system size (kW) = daily use (kWh) ÷ (peak sun hours × derate)
+panels           = ⌈system size × 1,000 ÷ panel watts⌉
+yearly output    = installed kW × peak sun hours × derate × 365</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A home that uses 30 kWh a day in a place with 5 peak sun hours, at 80% efficiency, needs
+      30 ÷ (5 × 0.8) = 7.5 kW. With 400 W panels that is ⌈7,500 ÷ 400⌉ = 19 panels, about 37 m² of roof.
+    </p>
+
+    <h2>Peak sun hours</h2>
+    <p>
+      Peak sun hours are the day's sunlight on a tilted panel, given as hours at 1,000 W/m². Most of the
+      United States gets 3.5 to 6, northern Europe 2.5 to 3.5 as a yearly average, and deserts more than 6.
+      Use a yearly average for your location; winter values are much lower.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The result covers your use on average over the year, not every day. Shade, roof direction and tilt
+      change the output. Batteries and off-grid systems need extra capacity for cloudy days.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,51 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PrimeFactorization from '@/components/tools/calc2/PrimeFactorization.tsx'
+---
+
+<ToolLayout slug="prime-factorization-calculator">
+  <PrimeFactorization client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the prime factorization calculator works</h2>
+    <p>
+      The prime factorization calculator divides your number by the smallest prime that goes into it,
+      then divides the quotient again, until only a prime is left. The primes it divided by are the
+      prime factors. Repeated factors are collected into powers:
+    </p>
+    <pre><code>n = p₁^e₁ × p₂^e₂ × … × pₖ^eₖ
+number of divisors = (e₁ + 1)(e₂ + 1) … (eₖ + 1)</code></pre>
+    <p>
+      Every whole number above 1 has exactly one prime factorization, apart from the order of the
+      factors. This is the fundamental theorem of arithmetic, and it is why a factor tree always ends
+      with the same primes, whichever split you start with.
+    </p>
+
+    <h2>Worked example: the prime factors of 360</h2>
+    <pre><code>360 ÷ 2 = 180
+180 ÷ 2 = 90
+ 90 ÷ 2 = 45
+ 45 ÷ 3 = 15
+ 15 ÷ 3 = 5     (5 is prime)
+360 = 2 × 2 × 2 × 3 × 3 × 5 = 2³ × 3² × 5</code></pre>
+    <p>
+      360 has (3 + 1)(2 + 1)(1 + 1) = 24 divisors. Each divisor picks 0 to 3 twos, 0 to 2 threes and 0 or
+      1 five.
+    </p>
+
+    <h2>Large numbers</h2>
+    <p>
+      Up to 10¹⁸ the calculator first divides by every prime up to 1,000. It then tests what is left with
+      the Miller-Rabin test, which is exact in this range, and splits a large composite with Pollard’s rho
+      method. 999,999,943,999,999,559 = 999,999,937 × 1,000,000,007 takes well under a second. Trial
+      division alone would need about 50 million divisions for it.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Whole numbers from 2 to 10¹⁸ only. 0 and 1 have no prime factorization.</li>
+      <li>The factor tree shows up to 13 leaves one prime at a time. With more, it takes out whole prime powers in each split.</li>
+      <li>The list of divisors appears when there are 64 or fewer; the count is always shown.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

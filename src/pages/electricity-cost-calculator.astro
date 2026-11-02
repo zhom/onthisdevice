@@ -1,0 +1,58 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ElectricityCost from '@/components/tools/calc2/ElectricityCost.tsx'
+---
+
+<ToolLayout slug="electricity-cost-calculator">
+  <ElectricityCost client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the electricity cost calculator works</h2>
+    <p>
+      The electricity cost calculator turns each appliance's power and hours of use into kilowatt-hours,
+      the unit on your bill, and multiplies them by your price per kWh. It adds the appliances together
+      for a day, the billing period you choose and a year of 365 days.
+    </p>
+    <pre><code>kWh per day = watts × hours per day × quantity ÷ 1,000
+cost per day = kWh per day × price per kWh
+cost for the period = cost per day × days
+cost per year = cost per day × 365</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 1,500 W space heater used 3 hours a day uses 1,500 × 3 ÷ 1,000 = 4.5 kWh a day. Over 30 days that is
+      135 kWh, which costs 135 × $0.15 = $20.25 at 15 cents per kWh, and $246.38 over a year.
+    </p>
+
+    <h2>The meter</h2>
+    <p>
+      Many US electromechanical meters turn their disc once for every 7.2 watt-hours; the figure is printed
+      on the face as Kh 7.2. The disc speed is the load in watts divided by 7.2 × 3,600, so 1,000 W turns it
+      138.9 times an hour, and 1,540 W once every 16.8 seconds. The drawing turns at that true rate for all
+      the appliances you entered, running at the same time.
+    </p>
+
+    <h2>Typical power</h2>
+    <table>
+      <thead>
+        <tr><th>Appliance</th><th>Watts</th></tr>
+      </thead>
+      <tbody class="tabular-nums">
+        <tr><td>LED bulb</td><td>8 to 12</td></tr>
+        <tr><td>Laptop</td><td>30 to 70</td></tr>
+        <tr><td>Television</td><td>60 to 150</td></tr>
+        <tr><td>Refrigerator, average while it cycles</td><td>100 to 200</td></tr>
+        <tr><td>Microwave</td><td>800 to 1,200</td></tr>
+        <tr><td>Space heater</td><td>1,500</td></tr>
+        <tr><td>Clothes dryer</td><td>2,000 to 5,000</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Appliances that cycle, such as fridges, heaters with a thermostat and air conditioners, draw full power only part of the time. Use the hours they actually run, or measure them with a plug-in meter.</li>
+      <li>Bills often add a fixed daily charge, taxes and time-of-use or tiered rates. Use the average price from your bill for a closer figure.</li>
+      <li>Devices on standby still draw a few watts. Enter them with 24 hours a day.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

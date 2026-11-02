@@ -1,0 +1,47 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import IdealGasLaw from '@/components/tools/calc2/IdealGasLaw.tsx'
+---
+
+<ToolLayout slug="ideal-gas-law-calculator">
+  <IdealGasLaw client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the ideal gas law calculator works</h2>
+    <p>
+      The ideal gas law links the pressure, volume, amount and temperature of a gas. Choose the value
+      to find, enter the other three in any of the units, and the ideal gas law calculator converts them
+      to SI units, solves the equation and converts the answer back.
+    </p>
+    <pre><code>P V = n R T          R = 8.314462618 J/(mol·K)
+P = nRT ÷ V     V = nRT ÷ P     n = PV ÷ RT     T = PV ÷ nR
+1 atm = 101,325 Pa   1 bar = 100,000 Pa   1 psi = 6,894.76 Pa   1 mmHg = 133.322 Pa
+T(K) = T(°C) + 273.15</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      One mole of gas at 0 °C (273.15 K) and 1 atm (101,325 Pa) takes up
+      V = 1 × 8.314462618 × 273.15 ÷ 101,325 = 0.022414 m³, which is 22.414 L. At 25 °C the same gas takes
+      24.465 L.
+    </p>
+    <p>
+      A 10 L tank holds air at 200 kPa and 27 °C (300.15 K). It contains
+      n = 200,000 × 0.010 ÷ (8.314 × 300.15) = 0.80 mol of gas.
+    </p>
+
+    <h2>The simulation</h2>
+    <p>
+      The dots stand for molecules. More moles give more dots; a higher temperature makes them move
+      faster, in proportion to the square root of the absolute temperature, as the average molecular
+      speed does. The piston moves out as the volume grows. The pressure is the push of all the hits on
+      the walls: fewer hits in a larger box, harder hits in a hotter gas.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Real gases depart from the law at high pressure and near their boiling point. Use the van der Waals equation there.</li>
+      <li>Use the absolute pressure, not the gauge pressure a tyre gauge shows. Add the air pressure (about 101 kPa) to a gauge reading.</li>
+      <li>The temperature must be above absolute zero, 0 K or −273.15 °C.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import EndOfLifeChecker from '@/components/tools/reference/EndOfLifeChecker.tsx'
+---
+
+<ToolLayout slug="end-of-life-checker">
+  <EndOfLifeChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the end-of-life checker</h2>
+    <p>
+      Pick a language, framework, database, operating system or application, and type the version
+      you run. The end-of-life checker tells you whether that version still gets fixes and until when.
+      The timeline shows the recent release cycles: black while a version has full support, grey while
+      it gets security fixes only, and the line marks today.
+    </p>
+    <h2>Support phases</h2>
+    <p>
+      Most projects support each release in two phases. During active support a release gets bug fixes
+      and small improvements. During security support it gets fixes for vulnerabilities only. After the
+      end-of-life date there are no fixes at all, and a newly found vulnerability stays open. Some
+      projects have one phase only, and some publish no dates.
+    </p>
+    <h2>Long-term support releases</h2>
+    <p>
+      An LTS release has a longer support window than the releases around it. Node.js even-numbered
+      releases, Ubuntu .04 releases of even years and Java LTS versions are examples. For servers, pick an
+      LTS release and plan the upgrade before its end date.
+    </p>
+    <h2>Where the dates come from</h2>
+    <p>
+      The data is from endoflife.date, a community project that records the published support policy of
+      each product. The site downloads it every week. Commercial extended support, for example paid
+      security updates for an old Windows or RHEL release, is not included.
+    </p>
+  </Fragment>
+</ToolLayout>

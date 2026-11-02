@@ -717,7 +717,7 @@ export const tools: Tool[] = [
       'floor area calculator',
       'multi room square footage',
     ],
-    category: 'everyday',
+    category: 'home',
     icon: 'Ruler',
     faqs: [
       {
@@ -764,7 +764,7 @@ export const tools: Tool[] = [
       'litres of paint per room',
       'paint estimator',
     ],
-    category: 'everyday',
+    category: 'home',
     icon: 'PaintRoller',
     faqs: [
       {
@@ -811,7 +811,7 @@ export const tools: Tool[] = [
       'tiles per square metre',
       'grout joint calculator',
     ],
-    category: 'everyday',
+    category: 'home',
     icon: 'Grid3x3',
     faqs: [
       {
@@ -854,7 +854,7 @@ export const tools: Tool[] = [
       'hardwood flooring estimator',
       'flooring cost calculator',
     ],
-    category: 'everyday',
+    category: 'home',
     icon: 'Layers',
     faqs: [
       {
@@ -897,7 +897,7 @@ export const tools: Tool[] = [
       'post hole concrete',
       'concrete volume calculator',
     ],
-    category: 'everyday',
+    category: 'home',
     icon: 'HardHat',
     faqs: [
       {

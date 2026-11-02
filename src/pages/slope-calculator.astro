@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SlopeCalculator from '@/components/tools/calc2/SlopeCalculator.tsx'
+---
+
+<ToolLayout slug="slope-calculator">
+  <SlopeCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the slope calculator works</h2>
+    <p>
+      The slope calculator divides the rise (the change in y) by the run (the change in x) between your
+      two points. From the slope and one point it writes the equation of the line in three forms.
+    </p>
+    <pre><code>slope            m = (y₂ − y₁) ÷ (x₂ − x₁)
+y-intercept      b = y₁ − m x₁
+slope-intercept  y = m x + b
+point-slope      y − y₁ = m (x − x₁)
+standard         A x + B y = C, with A = y₂ − y₁, B = x₁ − x₂, C = A x₁ + B y₁
+angle            θ = arctan(m)</code></pre>
+
+    <h2>Worked example: the slope between (1, 2) and (3, 8)</h2>
+    <pre><code>m = (8 − 2) ÷ (3 − 1) = 6 ÷ 2 = 3
+b = 2 − 3 × 1 = −1
+y = 3x − 1        y − 2 = 3(x − 1)        3x − y = 1
+θ = arctan 3 = 71.57°</code></pre>
+    <p>
+      When the coordinates have few decimals, the slope is also shown as a reduced fraction, and the
+      standard form uses whole numbers with no common factor.
+    </p>
+
+    <h2>Reading a slope</h2>
+    <ul>
+      <li>Positive: the line rises from left to right. Negative: it falls.</li>
+      <li>0: a horizontal line. Undefined: a vertical line, because the run is zero.</li>
+      <li>Two lines are parallel when their slopes are equal, and perpendicular when the slopes multiply to −1.</li>
+      <li>A grade in percent is the slope × 100: a slope of 0.08 is an 8% road grade.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <p>
+      The calculator works with straight lines through two distinct points. For a curve, the slope changes
+      from point to point; the slope between two points on it is the average rate of change between them.
+    </p>
+  </Fragment>
+</ToolLayout>

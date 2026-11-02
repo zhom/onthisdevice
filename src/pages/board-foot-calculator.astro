@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BoardFoot from '@/components/tools/calc2/BoardFoot.tsx'
+---
+
+<ToolLayout slug="board-foot-calculator">
+  <BoardFoot client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the board foot calculator works</h2>
+    <p>
+      A board foot is a volume of wood: 144 cubic inches, a board 12 inches wide, 12 inches long and 1 inch
+      thick. The board foot calculator multiplies thickness and width in inches by length in feet and
+      divides by 12.
+    </p>
+    <pre><code>board feet = thickness (in) × width (in) × length (ft) ÷ 12 × quantity
+cubic feet = board feet ÷ 12
+cubic metres = board feet × 0.002360</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      Ten 2 × 6 boards 8 ft long: 2 × 6 × 8 ÷ 12 = 8 board feet each, 80 in total. Four 1 × 12 boards 6 ft
+      long are 6 board feet each, 24 in total. The order is 104 board feet; at $4.50 a board foot it costs
+      $468.
+    </p>
+
+    <h2>Nominal and actual sizes</h2>
+    <p>
+      Softwood is sold by its nominal (rough) size. A planed 2 × 6 is 1½ × 5½ in, but the board feet use
+      2 × 6. Rough hardwood is sold by quarters of an inch: 4/4 is 1 in thick, 8/4 is 2 in.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Hardwood dealers often round each board's width and length before they add, so their total can
+      differ a little. Add 15 to 20% for defects and offcuts when you plan a project.
+    </p>
+  </Fragment>
+</ToolLayout>

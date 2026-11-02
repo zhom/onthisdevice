@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MoonPhase from '@/components/tools/calc2/MoonPhase.tsx'
+---
+
+<ToolLayout slug="moon-phase-calculator">
+  <MoonPhase client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the moon phase calculator works</h2>
+    <p>
+      The moon phase calculator finds the new moon before your date and the next new moon, first quarter,
+      full moon and last quarter. It computes each phase time from the moon's mean motion with the
+      periodic corrections in Meeus, Astronomical Algorithms, chapter 49, which agree with published
+      times to about a minute. The lit part of the disc comes from the phase angle i between the sun and
+      the earth as seen from the moon.
+    </p>
+    <pre><code>age          = date − last new moon            (0 to 29.53 days)
+phase angle  i ≈ 180° − D − 6.289° sin M′ + 2.100° sin M − 1.274° sin(2D − M′) − …
+lit fraction k = (1 + cos i) ÷ 2
+D: mean elongation of the moon, M: sun's mean anomaly, M′: moon's mean anomaly</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      On 8 April 2024 the new moon was at 18:21 UTC, during the total solar eclipse over North America.
+      The calculator gives 18:21 UTC. Fourteen days later the moon is waxing gibbous, about 99% lit, and
+      it is full on 23 April at 23:49 UTC.
+    </p>
+
+    <h2>Phase names</h2>
+    <ul>
+      <li>New moon, first quarter, full moon and last quarter are moments; the calculator uses the name for the day around them.</li>
+      <li>Between them the moon is a crescent (less than half lit) or gibbous (more than half lit), waxing before the full moon and waning after it.</li>
+      <li>First quarter is half lit: the moon has gone a quarter of its orbit since the new moon.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <p>
+      The lit percentage uses the main terms of the moon's motion and is within about 1 percentage point.
+      Phase times are for the whole earth; the date of a phase depends on your time zone. Times are shown
+      in your device's time zone.
+    </p>
+  </Fragment>
+</ToolLayout>

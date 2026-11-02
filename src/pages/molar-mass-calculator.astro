@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MolarMass from '@/components/tools/calc2/MolarMass.tsx'
+---
+
+<ToolLayout slug="molar-mass-calculator">
+  <MolarMass client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the molar mass calculator works</h2>
+    <p>
+      The molar mass calculator reads the formula, counts the atoms of each element (multiplying through
+      brackets and hydrate parts) and adds up count × atomic weight. The result is in grams per mole, which
+      is also the mass of one molecule in daltons.
+    </p>
+    <pre><code>molar mass = Σ (atoms of the element × its standard atomic weight)
+mass percent of an element = its mass ÷ molar mass × 100</code></pre>
+
+    <h2>Worked example: glucose, C6H12O6</h2>
+    <pre><code>C   6 × 12.011 =  72.066
+H  12 ×  1.008 =  12.096
+O   6 × 15.999 =  95.994
+total          = 180.156 g/mol</code></pre>
+    <p>
+      Carbon is 72.066 ÷ 180.156 = 40.0% of the mass. For a hydrate, CuSO4·5H2O, the five waters add
+      5 × 18.015 = 90.075 g/mol to the 159.602 g/mol of CuSO4, which gives 249.677 g/mol.
+    </p>
+
+    <h2>Atomic weights</h2>
+    <p>
+      The data is the IUPAC (CIAAW) table of abridged standard atomic weights for all 118 elements. Elements
+      with no stable isotopes, such as technetium and the elements after uranium, use the mass number of
+      their longest-lived isotope, and the result says so.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Write element symbols with the correct case: Co is cobalt, CO is carbon monoxide. Charges and states
+      such as (aq) are not part of the formula. Isotope-labelled compounds have a different molar mass.
+    </p>
+  </Fragment>
+</ToolLayout>

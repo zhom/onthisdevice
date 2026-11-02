@@ -1,0 +1,28 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CommissionCalculator from '@/components/tools/calc/CommissionCalculator.tsx'
+---
+
+<ToolLayout slug="commission-calculator">
+  <CommissionCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the commission calculator works</h2>
+    <p>
+      With one rate, commission is <code>sales × rate</code>. With tiers, each tier pays its own rate on the sales
+      inside it, and the commission is the sum: <code>C = Σ (sales in tier × tier rate)</code>. The effective rate is
+      <code>C ÷ sales</code>. The chart shows commission for every sales level, so you can see where each tier starts.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      Tiers of 5% up to 50,000, 7% from 50,000 to 100,000 and 10% above. Sales of 120,000 earn 2,500 on the first
+      50,000, 3,500 on the next 50,000 and 2,000 on the last 20,000: 8,000 in all, an effective rate of 6.67%. With a
+      base pay of 3,000, total pay is 11,000.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The tiers are marginal. Plans that pay the higher rate on all sales after a threshold, draws against commission,
+      clawbacks and caps are not modelled. Pay is before tax.
+    </p>
+  </Fragment>
+</ToolLayout>

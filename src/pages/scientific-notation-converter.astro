@@ -1,0 +1,40 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ScientificNotation from '@/components/tools/calc2/ScientificNotation.tsx'
+---
+
+<ToolLayout slug="scientific-notation-converter">
+  <ScientificNotation client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the scientific notation converter works</h2>
+    <p>
+      The scientific notation converter moves the decimal point until one non-zero digit is left in front
+      of it. The number of places moved is the power of ten: moves to the left give a positive power,
+      moves to the right a negative one.
+    </p>
+    <pre><code>scientific    a × 10ⁿ, 1 ≤ |a| &lt; 10
+E notation    aEn (6.022E23 means 6.022 × 10²³)
+engineering   a × 10ⁿ, n a multiple of 3, 1 ≤ |a| &lt; 1000</code></pre>
+
+    <h2>Worked examples</h2>
+    <p>
+      0.00004056: the point moves 5 places to the right, so it is 4.056 × 10⁻⁵, or 4.056E-5, or
+      40.56 × 10⁻⁶ in engineering notation (40.56 micro). 299,792,458 moves 8 places to the left:
+      2.99792458 × 10⁸.
+    </p>
+
+    <h2>Exact digits</h2>
+    <p>
+      The converter works on the digits as text, so long numbers keep every digit and 0.1 stays 0.1. The
+      trailing zeros you type after a decimal point are kept, because they are significant: 3.00e8 stays
+      3.00 × 10⁸. Enter a number of significant figures to round the result.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The animation draws numbers of up to 40 digits. Longer numbers convert, but are shown in notation
+      only. Exponents up to ±100,000 are accepted.
+    </p>
+  </Fragment>
+</ToolLayout>

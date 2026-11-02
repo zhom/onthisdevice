@@ -1,0 +1,50 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import OhmsLaw from '@/components/tools/calc2/OhmsLaw.tsx'
+---
+
+<ToolLayout slug="ohms-law-calculator">
+  <OhmsLaw client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the Ohm's law calculator works</h2>
+    <p>
+      Ohm's law links the voltage across a resistor, the current through it and its resistance. With
+      the power law it ties four values together, so any two of them give the other two. Pick the two
+      you know, enter them with their units, and the Ohm's law calculator works out the rest.
+    </p>
+    <pre><code>V = I × R        I = V ÷ R        R = V ÷ I
+P = V × I        P = I² × R       P = V² ÷ R
+V = √(P × R)     I = √(P ÷ R)</code></pre>
+    <p>
+      V is in volts, I in amperes, R in ohms and P in watts. The fields take prefixes: 1 kΩ is 1,000 Ω,
+      1 mA is 0.001 A.
+    </p>
+
+    <h2>Worked example</h2>
+    <p>
+      A 12 V battery is connected across a 6 Ω resistor. The current is I = 12 ÷ 6 = 2 A, and the power
+      the resistor turns into heat is P = 12² ÷ 6 = 24 W. A resistor rated at 1/4 W would burn out; pick
+      one rated at 50 W or more for a margin.
+    </p>
+    <p>
+      For an LED on a 5 V supply with a 2 V forward voltage at 20 mA, the resistor drops 3 V, so
+      R = 3 ÷ 0.02 = 150 Ω and P = 3 × 0.02 = 0.06 W.
+    </p>
+
+    <h2>The animation</h2>
+    <p>
+      The dots show charge moving the way conventional current flows: out of the + terminal, through the
+      resistor and back to the − terminal. They move faster when the current is larger. The speed is
+      not to scale: real electrons drift at fractions of a millimetre per second, while the signal
+      travels close to the speed of light.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Ohm's law holds for resistors at a constant temperature. A lamp filament or a heater changes its resistance as it warms up.</li>
+      <li>Diodes, LEDs and transistors are not ohmic: their current does not grow in proportion to the voltage.</li>
+      <li>For alternating current with capacitors or inductors, use impedance in place of resistance.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

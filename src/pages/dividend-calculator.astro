@@ -1,0 +1,38 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DividendCalculator from '@/components/tools/calc/DividendCalculator.tsx'
+---
+
+<ToolLayout slug="dividend-calculator">
+  <DividendCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the dividend calculator works</h2>
+    <p>
+      The dividend calculator follows your shares year by year. The share price starts at 1, so the first
+      money buys one share per unit. Each year your addition buys shares at that year's price,
+      <code>(1 + p)^(n − 1)</code>, where <code>p</code> is the price growth. At the end of the year each
+      share pays <code>d(n) = y × (1 + g)^(n − 1)</code>, where <code>y</code> is the dividend yield and
+      <code>g</code> is the dividend growth.
+    </p>
+    <p>
+      The income after tax is <code>D(n) = shares × d(n) × (1 − tax)</code>. With reinvesting on, each
+      dividend after tax buys more shares at the price at the end of the year. The value of the holding is
+      the shares times the price.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      10,000 to start and 1,200 added each year, at a 4% yield, 5% dividend growth, 4% price growth and 15%
+      tax. In year 1 the income is (10,000 + 1,200) × 4% × 0.85 = 380.80. With dividends reinvested, the
+      income in year 20 is 3,860.97, or 321.75 a month. You receive 33,491.74 of dividends over the 20
+      years, and the holding is worth 102,327 against 34,000 put in. Without reinvesting, the income in year
+      20 is 2,316.37.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The yield, dividend growth and price growth stay the same every year; real companies can cut their
+      dividend. Dividends are paid once a year, at the end of the year. Tax on selling, fees and inflation
+      are not included.
+    </p>
+  </Fragment>
+</ToolLayout>

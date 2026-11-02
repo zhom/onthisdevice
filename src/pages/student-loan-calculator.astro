@@ -1,0 +1,29 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import StudentLoanCalculator from '@/components/tools/calc/StudentLoanCalculator.tsx'
+---
+
+<ToolLayout slug="student-loan-calculator">
+  <StudentLoanCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the student loan calculator works</h2>
+    <p>
+      The student loan calculator uses the standard repayment formula <code>M = P × i ÷ (1 − (1 + i)^−n)</code>,
+      where <code>P</code> is the balance, <code>i</code> is the yearly rate divided by 12 and <code>n</code> is the
+      number of months. Each month the interest is the balance times <code>i</code>, and the rest of the payment and
+      any extra payment reduce the balance.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 35,000 balance at 6.5% over 10 years has a payment of 397.42 a month. You repay 47,690.02 in total, of which
+      12,690.02 is interest. Paying 100 more each month ends the loan after 89 payments and saves 3,503.91 of interest.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The calculator shows a standard fixed-rate plan. Income-driven, graduated and extended plans, forgiveness
+      programs and the tax deduction for student loan interest are not included. If interest built up while you were
+      in school, enter the balance after it was added.
+    </p>
+  </Fragment>
+</ToolLayout>

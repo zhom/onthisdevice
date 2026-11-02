@@ -1,0 +1,145 @@
+Data sources and licences: onthisdevice.com reference data
+==========================================================
+
+The reference tools on this site use public data sets. A scheduled job downloads each set,
+checks it, and stores it with the site as static files under /data/. Your browser reads those
+files from this site; a lookup never leaves your device. Each tool page shows its source and
+the date of the data.
+
+Fetchers: scripts/data/ in the public repository (github.com/zhom/onthisdevice).
+
+
+Euro foreign exchange reference rates (currency converter)
+  Source:   European Central Bank
+            https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/
+  Licence:  ECB statistics may be reused free of charge provided the source is acknowledged.
+            https://www.ecb.europa.eu/services/disclaimer/html/index.en.html
+  Updated:  daily
+
+Cryptocurrency prices (crypto converter)
+  Source:   Free Currency Exchange Rates API by Fawaz Ahmed, daily snapshots
+            https://github.com/fawazahmed0/exchange-api
+  Licence:  CC0 1.0 Universal (public domain dedication)
+            https://creativecommons.org/publicdomain/zero/1.0/
+  Updated:  daily
+
+US mortgage rates (current mortgage rates)
+  Source:   Freddie Mac, Primary Mortgage Market Survey (PMMS)
+            https://www.freddiemac.com/pmms
+  Licence:  "Information from this document may be used with proper attribution." The rates are
+            shown unaltered. Source: Freddie Mac.
+            https://www.freddiemac.com/pmms/pmms_archives
+  Updated:  weekly
+
+US Consumer Price Index (inflation calculator)
+  Source:   US Bureau of Labor Statistics, CPI-U, US city average, all items (CUUR0000SA0)
+            https://www.bls.gov/cpi/
+  Licence:  Public domain (work of the US government)
+            https://www.bls.gov/opub/copyright-information.htm
+  Updated:  monthly
+
+US stock market, monthly since 1871 (stock market return calculator)
+  Source:   Robert J. Shiller, U.S. stock market data (S&P Composite price, dividends, CPI),
+            as published in the Frictionless Data package "s-and-p-500"
+            https://github.com/datasets/s-and-p-500
+            https://shillerdata.com/
+  Licence:  Open Data Commons Public Domain Dedication and License (PDDL) 1.0
+            https://opendatacommons.org/licenses/pddl/1-0/
+  Updated:  monthly
+
+IP address to ASN (IP address lookup)
+  Source:   iptoasn.com
+            https://iptoasn.com/
+  Licence:  Open Data Commons Public Domain Dedication and License (PDDL) 1.0
+            https://opendatacommons.org/licenses/pddl/1-0/
+  Updated:  monthly
+
+Cloud and CDN IP ranges (cloud IP lookup)
+  Source:   The range files each provider publishes for firewall rules:
+            Amazon Web Services   https://ip-ranges.amazonaws.com/ip-ranges.json
+            Google Cloud          https://www.gstatic.com/ipranges/cloud.json
+            Google                https://www.gstatic.com/ipranges/goog.json
+            Microsoft Azure       https://www.microsoft.com/en-us/download/details.aspx?id=56519
+            Oracle Cloud          https://docs.oracle.com/en-us/iaas/tools/public_ip_ranges.json
+            Cloudflare            https://www.cloudflare.com/ips/
+            Fastly                https://api.fastly.com/public-ip-list
+            DigitalOcean          https://digitalocean.com/geo/google.csv
+            Akamai Cloud (Linode) https://geoip.linode.com/
+            Vultr                 https://geofeed.constant.com/
+  Licence:  Factual lists that the providers publish for public use. No licence terms
+            restrict their redistribution.
+  Updated:  weekly
+
+MAC address vendors (MAC address lookup)
+  Source:   IEEE Registration Authority public listings: MA-L, MA-M, MA-S and IAB
+            https://standards.ieee.org/products-programs/regauth/
+  Licence:  "IEEE does not assert any copyright in the OUI Public Listing or attempt to
+            restrict distribution of the listing in any way."
+  Updated:  monthly
+
+Port numbers (port number lookup)
+  Source:   IANA Service Name and Transport Protocol Port Number Registry
+            https://www.iana.org/assignments/service-names-port-numbers/
+  Licence:  CC0 1.0. IANA and the IETF dedicate the protocol registries to the public domain.
+            https://www.iana.org/help/licensing-terms
+  Updated:  monthly
+
+Top-level domains and public suffixes (domain extension lookup)
+  Source:   IANA Root Zone Database      https://www.iana.org/domains/root/db
+            IANA list of TLDs             https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+            Public Suffix List            https://publicsuffix.org/
+  Licence:  Root zone data: public factual data published by IANA.
+            Public Suffix List: Mozilla Public License 2.0, https://mozilla.org/MPL/2.0/
+            The list is converted to JSON (rules unchanged, internationalised labels in
+            punycode); the converted file is under the same licence, and its source form is
+            the file at publicsuffix.org.
+  Updated:  monthly
+
+Browser versions (browser version checker)
+  Source:   Chrome version history API  https://versionhistory.googleapis.com/
+            Mozilla product details     https://product-details.mozilla.org/1.0/firefox_versions.json
+            Microsoft Edge update feed  https://edgeupdates.microsoft.com/api/products
+            MDN browser-compat-data     https://github.com/mdn/browser-compat-data
+  Licence:  browser-compat-data: CC0 1.0. Version numbers from the vendor feeds are facts.
+  Updated:  weekly
+
+Software end-of-life dates (end-of-life checker)
+  Source:   endoflife.date
+            https://endoflife.date/
+  Licence:  MIT License
+            Copyright (c) endoflife.date contributors
+            https://github.com/endoflife-date/endoflife.date/blob/master/LICENSE
+  Updated:  weekly
+
+Airports and world outline (airport code lookup, flight distance calculator)
+  Source:   OurAirports                 https://ourairports.com/data/
+            Natural Earth, 1:110m land  https://www.naturalearthdata.com/
+  Licence:  Both are in the public domain.
+  Updated:  monthly
+
+Unicode characters and emoji (unicode character lookup, emoji search)
+  Source:   Unicode Character Database, emoji-test.txt, CLDR English annotations
+            https://www.unicode.org/ucd/   https://cldr.unicode.org/
+  Licence:  Unicode License v3. Copyright (c) Unicode, Inc. Permission is granted to use,
+            copy and distribute the data files with this notice.
+            https://www.unicode.org/license.txt
+  Updated:  monthly check
+
+US period life table (life expectancy calculator)
+  Source:   US Social Security Administration, Office of the Chief Actuary
+            https://www.ssa.gov/oact/STATS/table4c6.html
+  Licence:  Public domain (work of the US government)
+  Updated:  yearly
+
+US baby names (baby name popularity)
+  Source:   US Social Security Administration, names from Social Security card applications,
+            national data
+            https://www.ssa.gov/oact/babynames/limits.html
+  Licence:  Public domain (work of the US government)
+  Updated:  yearly
+
+Child growth charts (child growth percentile calculator)
+  Source:   US Centers for Disease Control and Prevention, 2000 CDC growth charts, LMS data files
+            https://www.cdc.gov/growthcharts/cdc-data-files.htm
+  Licence:  Public domain (work of the US government)
+  Updated:  yearly check

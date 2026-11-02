@@ -1,0 +1,36 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ProteinIntakeCalculator from '@/components/tools/calc/ProteinIntakeCalculator.tsx'
+---
+
+<ToolLayout slug="protein-intake-calculator">
+  <ProteinIntakeCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the protein intake calculator works</h2>
+    <p>
+      The protein intake calculator multiplies your body weight in kg by a number of grams per kg for your
+      goal: <code>protein = weight × g/kg</code>. Most goals have a range, so the result is a low and a high
+      figure, and the headline is the middle. Per meal is <code>protein ÷ meals</code>.
+    </p>
+    <p>
+      The ranges per kg of body weight a day: sedentary adults 0.8 g (the RDA), adults over 65 1.0 to 1.2 g,
+      regular exercise 1.2 to 1.6 g, building muscle 1.6 to 2.2 g, and losing fat while keeping muscle 1.8 to
+      2.4 g. The RDA is set by the US National Academies. The range for older adults follows the PROT-AGE
+      study group. Sports nutrition position stands give 1.2 to 2.0 g per kg for athletes.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A person who weighs 75 kg and exercises regularly needs 1.2 × 75 = 90 g to 1.6 × 75 = 120 g of
+      protein a day. The middle is 105 g, or 35 g in each of 3 meals. At the RDA the same person needs
+      0.8 × 75 = 60 g, and to build muscle 120 to 165 g.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The ranges are for healthy adults. Pregnancy, breastfeeding and kidney or liver disease change the
+      need, so ask a doctor or dietitian. The grams are per kg of total weight; with a high body fat
+      percentage this overstates the need, so use your goal weight. The result is grams of protein, not
+      grams of food.
+    </p>
+  </Fragment>
+</ToolLayout>

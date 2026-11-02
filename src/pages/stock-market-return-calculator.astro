@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import StockReturnCalculator from '@/components/tools/reference/StockReturnCalculator.tsx'
+---
+
+<ToolLayout slug="stock-market-return-calculator">
+  <StockReturnCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the stock market return calculator works</h2>
+    <p>
+      The stock market return calculator follows an investment in the US stock market (the S&amp;P
+      Composite index, which became the S&amp;P 500 in 1957) month by month. Each month the value
+      grows by the price change plus one twelfth of the annual dividend, so dividends are reinvested:
+      <code>value(t) = value(t−1) × (P(t) + D(t) / 12) / P(t−1)</code>.
+    </p>
+    <p>
+      The average return per year is the compound annual growth rate of a single sum:
+      <code>(end / start)^(12 / months) − 1</code>. The return after inflation divides the end value by
+      the change in the US consumer price index over the same months.
+    </p>
+    <h2>Data since 1871</h2>
+    <p>
+      The data is the monthly series compiled by economist Robert J. Shiller: the index as the average
+      of daily closes in each month, dividends per share, and the consumer price index. A monthly
+      average makes short drops and peaks look smaller than in daily closing prices.
+    </p>
+    <h2>What the result leaves out</h2>
+    <p>
+      An index fund charges a small fee each year, and dividends and gains can be taxed. Monthly
+      additions are invested at the start of each month. Past returns are history, not a forecast.
+    </p>
+  </Fragment>
+</ToolLayout>

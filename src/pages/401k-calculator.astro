@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Retirement401kCalculator from '@/components/tools/calc/Retirement401kCalculator.tsx'
+---
+
+<ToolLayout slug="401k-calculator">
+  <Retirement401kCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the 401(k) calculator works</h2>
+    <p>
+      The 401(k) calculator adds your contributions and the employer match each month and grows the
+      balance at a monthly rate. Your yearly contribution is <code>C = min(salary × c, limit)</code>, where
+      <code>c</code> is the share of salary you put in. The employer match is
+      <code>E = salary × min(c, cap) × match</code>: the employer pays the match rate on the part of your
+      contribution up to the cap.
+    </p>
+    <p>
+      The monthly rate is <code>i = (1 + R)^(1/12) − 1</code>, where <code>R</code> is the yearly return,
+      so twelve months give exactly <code>R</code>. Each month the balance becomes
+      <code>B × (1 + i) + (C + E) ÷ 12</code>. Your salary rises by the salary growth rate each year, and
+      both contributions rise with it.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      At age 30 with 25,000 saved, a 70,000 salary, a 6% contribution and a match of 50% up to 6% of
+      salary, you put in 4,200 in the first year and the employer adds 2,100. With 2% salary growth and a
+      6% return, the balance at 65 is 1,112,097. Of that, 209,977 is your money, 104,988 is the employer's
+      and 772,132 is growth. The monthly rate is 0.4868%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The return is the same every year, and fees, inflation and the tax on withdrawals are left out. The
+      contribution limit stays the same each year; the IRS raises it with inflation, and people aged 50 or
+      older can add catch-up contributions. Employer money can need some years of service before it is
+      yours.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -14,6 +14,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import zlib from 'node:zlib'
+import { packModel, quantizeRows, readSafetensor } from '../src/lib/search/semantic/format.ts'
+import { SEARCH_MODEL, SEARCH_MODEL_DIMS, SEARCH_MODEL_REPO, SEARCH_MODEL_TOKENS } from '../src/lib/search/semantic/paths.ts'
 
 const ROOT = path.resolve('public')
 const LIMIT = 24 * 1024 * 1024
@@ -100,6 +102,9 @@ const FILES = [
     optional: !f.startsWith('onnx/') && !['config.json', 'tokenizer.json', 'tokenizer_config.json', 'preprocessor_config.json', 'generation_config.json'].includes(f),
   })),
 
+  // Search by meaning: static embeddings (MIT), cut and packed as int8 here (see packSearchModel).
+  { to: SEARCH_MODEL, make: packSearchModel },
+
   // transformers.js for the speech model (Apache-2.0). The npm build imports onnxruntime-web/webgpu,
   // and that bundle makes Vite copy a 26.8 MB wasm into /_astro/ (over the host limit). This copy
   // takes the runtime from globalThis[Symbol.for('onthisdevice.ort')] instead;
@@ -154,6 +159,29 @@ function patchTransformers(src) {
   return out
 }
 
+/**
+ * The search model: the first SEARCH_MODEL_TOKENS rows (the vocabulary is ordered by frequency
+ * after the base word pieces) and the first SEARCH_MODEL_DIMS dimensions (they are PCA
+ * components, largest first) of the float32 embeddings, int8 with one scale per row.
+ */
+async function packSearchModel() {
+  const get = async (file) => {
+    const res = await fetch(hf(SEARCH_MODEL_REPO, file), { redirect: 'follow', headers: { 'User-Agent': 'onthisdevice-vendor/1' } })
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${SEARCH_MODEL_REPO}/${file}`)
+    return new Uint8Array(await res.arrayBuffer())
+  }
+  const tokenizer = JSON.parse(new TextDecoder().decode(await get('tokenizer.json')))
+  const { data, shape } = readSafetensor(await get('model.safetensors'), 'embeddings')
+  const [rows, width] = shape
+  const count = Math.min(SEARCH_MODEL_TOKENS, rows)
+  const dims = SEARCH_MODEL_DIMS
+  const vocab = []
+  for (const [piece, id] of Object.entries(tokenizer.model.vocab)) if (id < count) vocab[id] = piece
+  const cut = new Float32Array(count * dims)
+  for (let r = 0; r < count; r++) cut.set(data.subarray(r * width, r * width + dims), r * dims)
+  return Buffer.from(packModel({ ...quantizeRows(cut, count, dims), vocab }))
+}
+
 async function fetchTo(url, dest) {
   const res = await fetch(url, { redirect: 'follow', headers: { 'User-Agent': 'onthisdevice-vendor/1' } })
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
@@ -193,7 +221,8 @@ for (const f of FILES) {
   const stored = manifest[f.to] && (fs.existsSync(abs) || fs.existsSync(`${abs}.gz`) || fs.existsSync(`${abs}.part0`))
   if (stored && !force) continue
   try {
-    if (f.local && f.patch) fs.writeFileSync(abs, f.patch(fs.readFileSync(f.local, 'utf8')))
+    if (f.make) fs.writeFileSync(abs, await f.make())
+    else if (f.local && f.patch) fs.writeFileSync(abs, f.patch(fs.readFileSync(f.local, 'utf8')))
     else if (f.local) fs.copyFileSync(f.local, abs)
     else {
       try {

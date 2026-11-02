@@ -1,0 +1,33 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MacAddressLookup from '@/components/tools/reference/MacAddressLookup.tsx'
+---
+
+<ToolLayout slug="mac-address-lookup">
+  <MacAddressLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the MAC address lookup finds the vendor</h2>
+    <p>
+      A MAC address has 48 bits. The IEEE Registration Authority sells blocks of addresses to
+      manufacturers: a large block (MA-L, formerly OUI) fixes the first 24 bits, a medium block (MA-M)
+      the first 28 bits, and a small block (MA-S) the first 36 bits. The MAC address lookup tries the
+      36-bit, then the 28-bit, then the 24-bit prefix, and shows the organisation of the first match.
+    </p>
+    <p>
+      The vendor is the company that registered the block, usually the maker of the network chip or the
+      device. The country comes from the address in the registry.
+    </p>
+    <h2>Random and multicast addresses</h2>
+    <p>
+      The second-lowest bit of the first byte marks a locally administered address. Phones, laptops and
+      virtual machines use such random addresses, so they belong to no vendor. In hex, the second digit
+      of these addresses is 2, 6, A or E. The lowest bit of the first byte marks a multicast address.
+    </p>
+    <h2>Look up many addresses</h2>
+    <p>
+      Paste a list from a router, a DHCP lease table or a network scan, one address per line, and copy
+      the result as CSV. The page loads only the registry files for the first bytes it needs.
+    </p>
+  </Fragment>
+</ToolLayout>

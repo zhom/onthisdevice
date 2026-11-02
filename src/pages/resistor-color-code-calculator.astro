@@ -1,0 +1,62 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ResistorColorCode from '@/components/tools/calc2/ResistorColorCode.tsx'
+---
+
+<ToolLayout slug="resistor-color-code-calculator">
+  <ResistorColorCode client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to read a resistor color code</h2>
+    <p>
+      Hold the resistor so that the bands are closer to the left end. Read the digit bands from the left,
+      then multiply by the multiplier band. The last band gives the tolerance, and on a 6 band resistor
+      the band after it gives the temperature coefficient. The resistor color code calculator does this
+      for 4, 5 and 6 band resistors, and works backwards from a value to its bands.
+    </p>
+    <pre><code>4 bands:  digit digit multiplier tolerance
+5 bands:  digit digit digit multiplier tolerance
+6 bands:  digit digit digit multiplier tolerance tempco
+R = digits × 10^multiplier</code></pre>
+
+    <h2>The colour table (IEC 60062)</h2>
+    <div class="overflow-x-auto">
+      <table>
+        <thead>
+          <tr><th>Colour</th><th>Digit</th><th>Multiplier</th><th>Tolerance</th><th>Tempco</th></tr>
+        </thead>
+        <tbody class="tabular-nums">
+          <tr><td>Black</td><td>0</td><td>× 1</td><td></td><td>250 ppm/K</td></tr>
+          <tr><td>Brown</td><td>1</td><td>× 10</td><td>±1%</td><td>100 ppm/K</td></tr>
+          <tr><td>Red</td><td>2</td><td>× 100</td><td>±2%</td><td>50 ppm/K</td></tr>
+          <tr><td>Orange</td><td>3</td><td>× 1k</td><td>±0.05%</td><td>15 ppm/K</td></tr>
+          <tr><td>Yellow</td><td>4</td><td>× 10k</td><td>±0.02%</td><td>25 ppm/K</td></tr>
+          <tr><td>Green</td><td>5</td><td>× 100k</td><td>±0.5%</td><td>20 ppm/K</td></tr>
+          <tr><td>Blue</td><td>6</td><td>× 1M</td><td>±0.25%</td><td>10 ppm/K</td></tr>
+          <tr><td>Violet</td><td>7</td><td>× 10M</td><td>±0.1%</td><td>5 ppm/K</td></tr>
+          <tr><td>Grey</td><td>8</td><td>× 100M</td><td>±0.01%</td><td>1 ppm/K</td></tr>
+          <tr><td>White</td><td>9</td><td>× 1G</td><td></td><td></td></tr>
+          <tr><td>Gold</td><td></td><td>× 0.1</td><td>±5%</td><td></td></tr>
+          <tr><td>Silver</td><td></td><td>× 0.01</td><td>±10%</td><td></td></tr>
+          <tr><td>None</td><td></td><td></td><td>±20%</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Worked example</h2>
+    <p>
+      Yellow, violet, red, gold: the digits are 4 and 7, red multiplies by 100, so the value is
+      47 × 100 = 4,700 Ω = 4.7 kΩ. Gold is ±5%, so a good part measures between 4.465 kΩ and 4.935 kΩ.
+    </p>
+    <p>
+      Brown, black, black, brown, brown on a 5 band resistor: 100 × 10 = 1 kΩ at ±1%.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Band colours fade with heat and age. Red and orange, and brown and red, are easy to confuse; measure with a meter when in doubt.</li>
+      <li>On 4 bands a value has two significant digits. 4.75 kΩ needs a 5 band resistor.</li>
+      <li>Surface-mount resistors use printed number codes, not colour bands.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

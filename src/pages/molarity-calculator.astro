@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Molarity from '@/components/tools/calc2/Molarity.tsx'
+---
+
+<ToolLayout slug="molarity-calculator">
+  <Molarity client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the molarity calculator works</h2>
+    <p>
+      Molarity is the number of moles of solute in one litre of solution. The molarity calculator converts
+      a mass to moles with the molar mass, which it can work out from a formula, then divides by the
+      volume. It also finds the mass needed for a solution and the volumes for a dilution.
+    </p>
+    <pre><code>n = m ÷ Mw          moles from mass
+M = n ÷ V           molarity, mol/L
+m = M × V × Mw      mass needed
+M₁V₁ = M₂V₂         dilution</code></pre>
+
+    <h2>Worked examples</h2>
+    <p>
+      5.844 g of NaCl (58.44 g/mol) is 0.1 mol. Made up to 100 mL, the solution is 0.1 ÷ 0.1 = 1.0 mol/L.
+    </p>
+    <p>
+      To make 250 mL of 0.5 M from a 2 M stock: V₁ = 0.5 × 250 ÷ 2 = 62.5 mL of stock, then water to the
+      250 mL mark. The dilution factor is 4.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      V is the volume of the finished solution, not of the water you add: dissolve the solute in less
+      water, then fill up to the mark. Molarity changes a little with temperature, because the volume does.
+      For work at different temperatures, use molality (mol per kg of solvent).
+    </p>
+  </Fragment>
+</ToolLayout>

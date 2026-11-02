@@ -1,0 +1,32 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BabyNamePopularity from '@/components/tools/reference/BabyNamePopularity.tsx'
+---
+
+<ToolLayout slug="baby-name-popularity">
+  <BabyNamePopularity client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the baby name popularity tool</h2>
+    <p>
+      Type up to three names, separated by commas, and choose girls or boys. The chart shows the rank of
+      each name in each year since 1880; switch to babies to see how many children got the name. The
+      table gives the latest rank, the best rank and the year it happened, and the number of babies
+      since 1880.
+    </p>
+    <h2>Where the data comes from</h2>
+    <p>
+      The US Social Security Administration counts the first names on applications for Social Security
+      cards. It publishes every name given to at least five babies of one sex in a year, and adds the
+      past year each May. Rank 1 is the most common name of that year; equal counts are ranked by the
+      order SSA lists them in.
+    </p>
+    <h2>Reading the trend</h2>
+    <p>
+      Rank shows popularity against other names; the number of babies also follows the number of births,
+      which changed a lot over the century. Spellings count as separate names, so a name that is spread
+      over several spellings looks less popular than it sounds. The tool includes every name that was in
+      the top 1,000 of its sex in at least one year.
+    </p>
+  </Fragment>
+</ToolLayout>

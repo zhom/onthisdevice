@@ -1,0 +1,33 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MortgageRates from '@/components/tools/reference/MortgageRates.tsx'
+---
+
+<ToolLayout slug="current-mortgage-rates">
+  <MortgageRates client:load />
+
+  <Fragment slot="explainer">
+    <h2>Where current mortgage rates come from</h2>
+    <p>
+      The current mortgage rates on this page are the weekly national averages of the Freddie Mac
+      Primary Mortgage Market Survey. Freddie Mac collects the rates that lenders offered for
+      conventional, conforming, fully amortising home purchase loans to borrowers who put 20% down
+      and have excellent credit. The survey started in April 1971 for 30-year loans and in August
+      1991 for 15-year loans.
+    </p>
+    <h2>30-year and 15-year fixed rates</h2>
+    <p>
+      A 30-year loan has a lower monthly payment and more interest in total. A 15-year loan usually
+      has a lower rate, a higher payment and much less total interest. The payment example under the
+      chart uses the standard formula
+      <code>payment = P × r / (1 − (1 + r)^−n)</code>, with the monthly rate <code>r</code> and the
+      number of payments <code>n</code>.
+    </p>
+    <h2>Why your offer can be different</h2>
+    <p>
+      Lenders price each loan from your credit score, down payment, debt-to-income ratio, loan size and
+      the points you pay. Jumbo, FHA, VA and adjustable-rate loans have their own rates. Compare the
+      annual percentage rate (APR) of offers on the same day, because rates change daily.
+    </p>
+  </Fragment>
+</ToolLayout>

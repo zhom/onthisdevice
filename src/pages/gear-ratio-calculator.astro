@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import GearRatio from '@/components/tools/calc2/GearRatio.tsx'
+---
+
+<ToolLayout slug="gear-ratio-calculator">
+  <GearRatio client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the gear ratio calculator works</h2>
+    <p>
+      Meshing gears move the same number of teeth past the contact point. A gear with more teeth therefore
+      turns more slowly. The gear ratio calculator divides the teeth of the driven gear by the teeth of
+      the driver gear and applies the ratio to speed and torque.
+    </p>
+    <pre><code>ratio          = driven teeth ÷ driver teeth
+output speed   = input speed ÷ ratio
+output torque  = input torque × ratio
+power          = torque × 2π × rpm ÷ 60     (the same in and out)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 20 tooth driver at 1,200 rpm meshes with a 60 tooth gear. The ratio is 60 ÷ 20 = 3, written 3 : 1.
+      The output turns at 1,200 ÷ 3 = 400 rpm in the opposite direction, and 10 N·m of input torque
+      becomes 30 N·m.
+    </p>
+
+    <h2>Idler gears and gear trains</h2>
+    <p>
+      An idler between the two gears turns the output in the same direction as the input. Its tooth count
+      has no effect on the ratio. In a compound train, with two gears fixed on one shaft, multiply the
+      ratios of the stages: 3 : 1 followed by 4 : 1 gives 12 : 1.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The torque assumes no friction. A pair of spur gears typically loses 1 to 3% of the power; a worm
+      gear can lose 30% or more. The drawing is to scale: each gear's pitch circle is proportional to its
+      teeth, as it is for gears of one module.
+    </p>
+  </Fragment>
+</ToolLayout>

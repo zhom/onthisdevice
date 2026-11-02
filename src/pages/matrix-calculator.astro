@@ -1,0 +1,56 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MatrixCalculator from '@/components/tools/calc2/MatrixCalculator.tsx'
+---
+
+<ToolLayout slug="matrix-calculator">
+  <MatrixCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the matrix calculator</h2>
+    <p>
+      Pick an operation, set the size of each matrix (up to 4 × 4) and type the numbers into the cells. The
+      matrix calculator works out the answer as you type and writes out every step. For a 2 × 2 matrix it
+      also animates what the matrix does to the plane; for the other operations it marks the cells that make
+      each cell of the result.
+    </p>
+
+    <h2>The formulas</h2>
+    <pre><code>A + B:   cᵢⱼ = aᵢⱼ + bᵢⱼ            (same size)
+A × B:   cᵢⱼ = Σₖ aᵢₖ bₖⱼ           (columns of A = rows of B)
+kA:      cᵢⱼ = k aᵢⱼ
+Aᵀ:      cᵢⱼ = aⱼᵢ
+det, 2×2:  ad − bc
+inverse, 2×2:  (1 ÷ (ad − bc)) × [d −b; −c a]</code></pre>
+    <p>
+      For 3 × 3 the matrix calculator expands the determinant along the first row. For 4 × 4 it reduces the
+      matrix to upper triangular form and multiplies the diagonal. Inverses of 3 × 3 and 4 × 4 matrices come
+      from Gauss-Jordan elimination on [A | I]. The rank is the number of pivots in the reduced row echelon
+      form.
+    </p>
+
+    <h2>Worked example: a 2 × 2 determinant and inverse</h2>
+    <p>
+      For A = [3 1; 1 2], det A = 3 × 2 − 1 × 1 = 5. The inverse is (1 ÷ 5) × [2 −1; −1 3] = [0.4 −0.2;
+      −0.2 0.6]. Check: A × A⁻¹ = [3 × 0.4 + 1 × (−0.2), …] = [1 0; 0 1].
+    </p>
+    <p>
+      The animation shows the same number as an area. A sends the point (1, 0) to (3, 1) and (0, 1) to
+      (1, 2). The unit square becomes the parallelogram with those two sides, and its area is 5.
+    </p>
+
+    <h2>Worked example: a product</h2>
+    <p>
+      [1 2; 3 4] × [5 6; 7 8]: the top left cell is row 1 times column 1, 1 × 5 + 2 × 7 = 19. The others are
+      22, 43 and 50. Swap the matrices and the result is [23 34; 31 46], which shows that A × B and B × A
+      differ.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Matrices up to 4 × 4, with real numbers. Fractions are entered as decimals.</li>
+      <li>Results are floating point. Values within 10⁻¹² of a whole number are shown as that whole number.</li>
+      <li>A matrix that is nearly singular can give an inverse with very large values that are not reliable.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

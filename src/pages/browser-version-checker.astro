@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BrowserVersionChecker from '@/components/tools/reference/BrowserVersionChecker.tsx'
+---
+
+<ToolLayout slug="browser-version-checker">
+  <BrowserVersionChecker client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the browser version checker works</h2>
+    <p>
+      The browser version checker reads the user agent string that your browser gives every page, and
+      the User-Agent Client Hints where the browser supports them. It finds the browser, its version and
+      the operating system, and compares the version with the latest stable release. Both values come
+      from your browser; the page does not send them anywhere.
+    </p>
+    <p>
+      The latest versions come from the release feeds of Chrome, Firefox and Edge and from the browser
+      data of MDN, which also covers Safari, Opera and Samsung Internet. The site refreshes them each
+      week, so a release from the last few days can be missing.
+    </p>
+    <h2>Why an up-to-date browser matters</h2>
+    <p>
+      Each browser release fixes security holes that are often public by the time the update ships.
+      Chrome, Edge and Firefox release a new major version about every four weeks, and roll it out to
+      users over a week or two. Safari updates come with macOS, iOS and iPadOS updates.
+    </p>
+    <h2>Browsers on iPhone and iPad</h2>
+    <p>
+      On iOS and iPadOS, browsers use the WebKit engine of the system. Chrome or Firefox on an iPhone is
+      as current as the Safari version of that iOS release, so the checker compares the Safari version.
+    </p>
+  </Fragment>
+</ToolLayout>

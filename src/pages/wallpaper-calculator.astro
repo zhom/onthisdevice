@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Wallpaper from '@/components/tools/calc2/Wallpaper.tsx'
+---
+
+<ToolLayout slug="wallpaper-calculator">
+  <Wallpaper client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the wallpaper calculator works</h2>
+    <p>
+      Wallpaper is hung in vertical strips, so the wallpaper calculator counts strips, not square feet. It
+      finds how many strips go around the room, how long each strip must be for the pattern to line up,
+      and how many of those strips one roll gives.
+    </p>
+    <pre><code>strips        = ⌈(perimeter − doors) ÷ roll width⌉
+strip length  = wall height + trim, rounded up to whole pattern repeats
+strips a roll = ⌊roll length ÷ strip length⌋
+rolls         = ⌈strips ÷ strips a roll⌉</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 12 × 10 ft room has 44 ft of wall, less 3 ft for one door: 41 ft, or 492 in. With 27 in wide
+      rolls that is ⌈492 ÷ 27⌉ = 19 strips. The walls are 8 ft (96 in) high; with 4 in of trim each strip
+      needs 100 in, and a 21 in repeat rounds that up to 105 in. A 33 ft (396 in) roll gives 3 strips, so
+      the room needs ⌈19 ÷ 3⌉ = 7 rolls.
+    </p>
+
+    <h2>Pattern repeat</h2>
+    <p>
+      Every strip starts at the same point of the pattern, so a large repeat wastes paper on every strip.
+      For the 100 in strips above, no repeat gives 100 in strips, a 21 in repeat 105 in and a 27 in repeat
+      108 in. The calculator shows the paper left at the end of each roll.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Windows are not deducted, because the wall above and below them still takes strips. Buy one extra
+      roll from the same batch: rolls from different batches can differ in colour.
+    </p>
+  </Fragment>
+</ToolLayout>

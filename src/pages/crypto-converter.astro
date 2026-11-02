@@ -1,0 +1,34 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CryptoConverter from '@/components/tools/reference/CryptoConverter.tsx'
+---
+
+<ToolLayout slug="crypto-converter">
+  <CryptoConverter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the crypto converter works</h2>
+    <p>
+      The crypto converter has one price per day for each coin, in US dollars. To convert a coin to
+      another coin, it divides the two dollar prices. To convert to euros, pounds or another currency,
+      it uses the daily euro reference rates of the European Central Bank:
+      <code>price in GBP = price in USD × (GBP per EUR) / (USD per EUR)</code>.
+    </p>
+    <p>
+      A daily price is a snapshot. Crypto markets trade all the time, and exchanges quote slightly
+      different prices, so a trade gives a different amount. Use the result to check an amount or a
+      past price, not to time a trade.
+    </p>
+    <h2>Crypto price history</h2>
+    <p>
+      The chart shows the daily dollar price of the coin in the conversion since March 2024. A day
+      without a snapshot, or with a price far from the days around it, is left out. Move the pointer
+      over the chart, or focus it and use the arrow keys, to read the price of a day.
+    </p>
+    <h2>Stablecoins</h2>
+    <p>
+      Tether (USDT) and USD Coin (USDC) aim to stay at one US dollar. Their daily price shows how close
+      they stayed.
+    </p>
+  </Fragment>
+</ToolLayout>

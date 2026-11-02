@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import LeanBodyMassCalculator from '@/components/tools/calc/LeanBodyMassCalculator.tsx'
+---
+
+<ToolLayout slug="lean-body-mass-calculator">
+  <LeanBodyMassCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the lean body mass calculator works</h2>
+    <p>
+      Lean body mass is your weight minus your fat: muscle, bone, organs, skin and water. The lean body mass
+      calculator estimates it from height and weight with three formulas, and with a fourth when you enter a
+      body fat percentage. In each formula <code>W</code> is weight in kg and <code>H</code> is height in cm.
+    </p>
+    <p>
+      Boer (1984): men <code>LBM = 0.407 × W + 0.267 × H − 19.2</code>, women
+      <code>LBM = 0.252 × W + 0.473 × H − 48.3</code>. James (1976): men
+      <code>LBM = 1.1 × W − 128 × (W ÷ H)²</code>, women <code>LBM = 1.07 × W − 148 × (W ÷ H)²</code>.
+      Hume (1966): men <code>LBM = 0.3281 × W + 0.33929 × H − 29.5336</code>, women
+      <code>LBM = 0.29569 × W + 0.41813 × H − 43.2933</code>. With a body fat percentage <code>BF</code>:
+      <code>LBM = W × (1 − BF ÷ 100)</code>.
+    </p>
+    <p>
+      Fat mass is <code>W − LBM</code>. The Katch-McArdle equation turns lean mass into resting energy:
+      <code>REE = 370 + 21.6 × LBM</code> kcal a day.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A man 178 cm tall who weighs 80 kg. Boer gives 0.407 × 80 + 0.267 × 178 − 19.2 = 60.89 kg of lean
+      mass, so his fat mass is 19.11 kg, or 23.9% of his weight. James gives 62.15 kg and Hume 57.11 kg.
+      Katch-McArdle with the Boer figure gives 370 + 21.6 × 60.89 = 1,685 kcal a day at rest. If a scan
+      measures his body fat at 18%, his lean mass is 80 × 0.82 = 65.6 kg.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The three formulas come from adult reference groups and give the average lean mass for a height and
+      weight. A muscular person gets too low a value, and a person with much body fat too high a value. The
+      James formula gives less lean mass as weight goes up above a BMI of about 43 for men and 36 for women,
+      so do not use it there. The formulas are not for children. A good body fat measurement gives a better
+      figure than any of them.
+    </p>
+  </Fragment>
+</ToolLayout>

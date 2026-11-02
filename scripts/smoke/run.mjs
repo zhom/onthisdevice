@@ -206,7 +206,8 @@ const BENIGN = [/Download the React DevTools/i, /favicon/i, /ERR_ABORTED/i, /\[v
 const ERR = /error|fail|went wrong|could ?n.t|cannot|can.t|invalid|not a valid|unsupported|not supported|corrupt|unable|too large|wrong password|incorrect|refused|ran out|check the input|not recogni[sz]ed|no .{1,40} found|skipped/i
 
 function isMediaTool(t) {
-  return t.category === 'Video & Audio' || /(video|audio|mp3|mp4|gif)/.test(t.slug)
+  // Media and OCR tools: long jobs (encode, transcribe, read scanned pages).
+  return t.category === 'Video & Audio' || /(video|audio|mp3|mp4|gif|recording|scanned|id-card|signature)/.test(t.slug)
 }
 
 async function settleHydration(page) {

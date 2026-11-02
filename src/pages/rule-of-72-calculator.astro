@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RuleOf72Calculator from '@/components/tools/calc/RuleOf72Calculator.tsx'
+---
+
+<ToolLayout slug="rule-of-72-calculator">
+  <RuleOf72Calculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the rule of 72 calculator works</h2>
+    <p>
+      The rule of 72 estimates how many years money takes to double: divide 72 by the yearly rate in
+      percent. The rule of 72 calculator also gives the exact answer and two other rules, so you can see
+      the error.
+    </p>
+    <p>
+      The exact time for yearly compounding is <code>t = ln 2 ÷ ln(1 + r)</code>, where <code>r</code> is
+      the rate as a decimal. The rule of 70 is <code>70 ÷ r</code>. With continuous compounding the exact
+      time is <code>100 × ln 2 ÷ r = 69.31 ÷ r</code>, which is the rule of 69.3.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      At 8% a year, the rule of 72 gives 72 ÷ 8 = 9 years. The exact time is 9.006 years, so the rule is
+      0.006 years short. The rule of 70 gives 8.75 years and the rule of 69.3 gives 8.66 years. At 2%, the
+      rule of 72 gives 36 years against an exact 35.00, and the rule of 70 gives 35. At 20%, the rule of 72
+      gives 3.6 years against an exact 3.80.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The rate is the same every year and the growth stays invested. Tax, fees and new deposits are not
+      included. The same rules work for anything that grows by a fixed share each year, such as prices
+      under steady inflation.
+    </p>
+  </Fragment>
+</ToolLayout>

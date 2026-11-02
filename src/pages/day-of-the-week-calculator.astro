@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DayOfWeek from '@/components/tools/calc2/DayOfWeek.tsx'
+---
+
+<ToolLayout slug="day-of-the-week-calculator">
+  <DayOfWeek client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the day of the week calculator works</h2>
+    <p>
+      The day of the week calculator counts the days from a date with a known weekday. It also shows the
+      doomsday rule, a method you can do in your head: in any year, a set of easy dates all fall on the same
+      weekday, the year's doomsday.
+    </p>
+    <pre><code>century anchor  1800s Friday, 1900s Wednesday, 2000s Tuesday, 2100s Sunday
+y = last two digits of the year
+doomsday = anchor + ⌊y ÷ 12⌋ + (y mod 12) + ⌊(y mod 12) ÷ 4⌋   (mod 7)
+doomsday dates: 4/4, 6/6, 8/8, 10/10, 12/12, 9/5, 5/9, 11/7, 7/11, 14 March, the last day of February, 3 January (4 in a leap year)</code></pre>
+
+    <h2>Worked example: 20 July 1969</h2>
+    <p>
+      The 1900s anchor is Wednesday. y = 69: ⌊69 ÷ 12⌋ = 5, 69 mod 12 = 9, ⌊9 ÷ 4⌋ = 2. Wednesday + 5 + 9 + 2 =
+      Wednesday + 16 days = Friday, so the doomsday of 1969 is Friday. 11 July is a doomsday, and 20 July is
+      9 days later: Friday + 9 = Sunday. The first moon landing was on a Sunday.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The calculator uses the Gregorian calendar for every date, also before it was introduced in 1582
+      (and in 1752 in Britain and its colonies). Historical documents from before the switch use the Julian
+      calendar, which was 10 to 13 days behind.
+    </p>
+  </Fragment>
+</ToolLayout>

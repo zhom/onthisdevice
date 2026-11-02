@@ -1,0 +1,40 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PregnancyWeekCalculator from '@/components/tools/calc/PregnancyWeekCalculator.tsx'
+---
+
+<ToolLayout slug="pregnancy-week-calculator">
+  <PregnancyWeekCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the pregnancy week calculator works</h2>
+    <p>
+      The pregnancy week calculator counts the days from the start of the pregnancy to today and divides them
+      by 7. Pregnancy weeks are counted from the first day of the last period, about two weeks before
+      conception. A full pregnancy is 280 days, or 40 weeks.
+    </p>
+    <p>
+      The start is <code>start = LMP + (cycle − 28) days</code>, where <code>LMP</code> is the first day of the
+      last period and <code>cycle</code> is your usual cycle length in days. A longer cycle means later
+      ovulation, so the start moves later. Then <code>days = today − start</code>, the weeks pregnant are
+      <code>days ÷ 7</code> with the remainder as days, and the due date is <code>start + 280 days</code>. If
+      you enter a due date, the start is <code>due date − 280 days</code>.
+    </p>
+    <p>
+      The first trimester is weeks 0 to 13, the second is weeks 14 to 27 and the third is week 28 to birth.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      The last period started on 1 June 2026 and the cycle is 28 days. On 2 November 2026 that is 154 days, or
+      22 weeks 0 days: the second trimester. The due date is 8 March 2027, 126 days later. With a 32-day cycle
+      the start moves to 5 June, the count is 21 weeks 3 days and the due date is 12 March 2027.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The cycle correction assumes ovulation 14 days before the next period, so irregular cycles give less exact
+      dates. A first-trimester ultrasound dates a pregnancy more exactly than the period date. If your clinic
+      gave you a due date, enter that date. The milestone weeks on the timeline are typical; your clinic sets
+      your own schedule.
+    </p>
+  </Fragment>
+</ToolLayout>

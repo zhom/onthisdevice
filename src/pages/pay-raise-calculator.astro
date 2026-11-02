@@ -1,0 +1,27 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import PayRaiseCalculator from '@/components/tools/calc/PayRaiseCalculator.tsx'
+---
+
+<ToolLayout slug="pay-raise-calculator">
+  <PayRaiseCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the pay raise calculator works</h2>
+    <p>
+      A percentage raise gives <code>new = old × (1 + raise %)</code>; a fixed raise is added to the old pay. Hourly pay
+      becomes yearly pay at <code>rate × hours a week × 52</code>. The real raise takes out inflation:
+      <code>(1 + raise) ÷ (1 + inflation) − 1</code>.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A 4% raise on 60,000 gives 62,400: 2,400 more a year, 200 a month and 92.31 per paycheck every two weeks. At
+      40 hours a week that is 30.00 an hour. With 3% inflation, the real raise is 0.97%.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      All figures are before tax. The chart repeats the same raise every year, which real pay rarely does; it shows how
+      the gap to inflation grows over time.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,35 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CloudIpLookup from '@/components/tools/reference/CloudIpLookup.tsx'
+---
+
+<ToolLayout slug="cloud-ip-lookup">
+  <CloudIpLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the cloud IP lookup works</h2>
+    <p>
+      Large cloud and CDN providers publish the IP ranges they use, so that their customers can write
+      firewall rules. The cloud IP lookup combines those lists and finds the entries that contain an
+      address or the start of a CIDR range. Each entry has the provider, the service (for example EC2,
+      CloudFront or Azure Front Door) and the region when the provider gives one.
+    </p>
+    <p>
+      The lists overlap: a provider can publish a block for a whole region and smaller blocks for
+      services inside it. The site merges the lists into ranges that do not overlap, each with every
+      entry that covers it, and the page searches them with a binary search after it loads one small
+      file.
+    </p>
+    <h2>When an address is not found</h2>
+    <p>
+      Not every host publishes its ranges, and a customer can bring its own addresses to a cloud. Use the
+      <a href="/ip-address-lookup">IP address lookup</a> to find the network (ASN) that announces any
+      address.
+    </p>
+    <h2>Update schedule</h2>
+    <p>
+      The lists change often as providers add capacity. The site downloads all of them each week and
+      keeps the previous version when a list fails a check.
+    </p>
+  </Fragment>
+</ToolLayout>

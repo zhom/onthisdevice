@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ZScore from '@/components/tools/calc2/ZScore.tsx'
+---
+
+<ToolLayout slug="z-score-calculator">
+  <ZScore client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the z-score calculator works</h2>
+    <p>
+      A z-score says how many standard deviations a value is from the mean. The z-score calculator
+      divides the distance from the mean by the standard deviation, then reads the area under the
+      standard normal curve to the left and right of z.
+    </p>
+    <pre><code>z = (x − μ) ÷ σ
+P(Z &lt; z)      = Φ(z)              left tail, the percentile ÷ 100
+P(Z &gt; z)      = 1 − Φ(z)          right tail
+two-tailed p  = 2 × Φ(−|z|)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A test has a mean of 70 and a standard deviation of 10. A score of 85 has z = (85 − 70) ÷ 10 = 1.5.
+      Φ(1.5) = 0.93319, so the score is at the 93rd percentile: 6.68% of scores are higher.
+    </p>
+
+    <h2>Common z-scores</h2>
+    <table>
+      <thead><tr><th>z</th><th>Left area</th><th>Two-tailed p</th></tr></thead>
+      <tbody>
+        <tr><td>1.000</td><td>0.8413</td><td>0.3173</td></tr>
+        <tr><td>1.645</td><td>0.9500</td><td>0.1000</td></tr>
+        <tr><td>1.960</td><td>0.9750</td><td>0.0500</td></tr>
+        <tr><td>2.576</td><td>0.9950</td><td>0.0100</td></tr>
+        <tr><td>3.000</td><td>0.9987</td><td>0.0027</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Limits</h2>
+    <p>
+      The percentile and the p-values assume that the values follow a normal distribution. For skewed
+      data the z-score is still the distance in standard deviations, but the areas are wrong. With a
+      sample standard deviation from a small sample, use a t distribution for tests.
+    </p>
+  </Fragment>
+</ToolLayout>

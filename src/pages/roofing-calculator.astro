@@ -1,0 +1,60 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Roofing from '@/components/tools/calc2/Roofing.tsx'
+---
+
+<ToolLayout slug="roofing-calculator">
+  <Roofing client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the roofing calculator works</h2>
+    <p>
+      The roofing calculator takes the plan area of the roof (the footprint plus the overhang on every
+      side) and multiplies it by the pitch factor. The pitch factor is the length of the slope for each
+      unit of horizontal run. Every plane of a roof with one pitch has the same factor, so the same rule
+      gives the area of a gable, hip or shed roof.
+    </p>
+    <pre><code>pitch factor = √(1 + (rise ÷ 12)²)
+plan area    = (length + 2 × overhang) × (width + 2 × overhang)
+roof area    = plan area × pitch factor
+squares      = roof area × (1 + waste ÷ 100) ÷ 100 ft²
+bundles      = squares × 3, rounded up</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A house of 40 × 30 feet with a 6 in 12 gable roof and no overhang has a plan area of 1,200 ft². The
+      pitch factor is √(1 + 0.5²) = 1.1180, so the roof area is 1,341.6 ft², or 13.42 squares. With 10 %
+      waste that is 14.76 squares, which is 45 bundles of shingles.
+    </p>
+
+    <h2>Pitch factors</h2>
+    <table>
+      <thead>
+        <tr><th>Pitch</th><th>Angle</th><th>Factor</th></tr>
+      </thead>
+      <tbody class="tabular-nums">
+        <tr><td>3 in 12</td><td>14.0°</td><td>1.031</td></tr>
+        <tr><td>4 in 12</td><td>18.4°</td><td>1.054</td></tr>
+        <tr><td>6 in 12</td><td>26.6°</td><td>1.118</td></tr>
+        <tr><td>8 in 12</td><td>33.7°</td><td>1.202</td></tr>
+        <tr><td>10 in 12</td><td>39.8°</td><td>1.302</td></tr>
+        <tr><td>12 in 12</td><td>45.0°</td><td>1.414</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The drawing</h2>
+    <p>
+      The house is drawn to scale in an isometric view, on walls of 8 feet (2.44 m), with shingle courses
+      at a 5 inch exposure. When you change the pitch, the roof moves to the new pitch, and the triangle at
+      the top left shows the rise over a run of 12.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>All planes have one pitch. For a roof with two pitches, calculate each part on its own and add them.</li>
+      <li>Dormers, valleys and skylights are not modelled. Add waste for them, or measure them separately.</li>
+      <li>Bundles assume three per square. Some heavy architectural shingles come four or five to a square; check the wrapper.</li>
+      <li>Starter strips, ridge caps, drip edge and flashing are extra. The ridge and hip lengths help you order them.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

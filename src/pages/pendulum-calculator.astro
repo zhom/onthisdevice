@@ -1,0 +1,59 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Pendulum from '@/components/tools/calc2/Pendulum.tsx'
+---
+
+<ToolLayout slug="pendulum-calculator">
+  <Pendulum client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the pendulum calculator works</h2>
+    <p>
+      For small swings, the period of a simple pendulum depends only on its length and on gravity. The
+      pendulum calculator uses that formula, then corrects it for the release angle you enter, so a wide
+      swing gets its true, longer period.
+    </p>
+    <pre><code>T₀ = 2π √(L ÷ g)                       small-angle period
+T  = T₀ ÷ AGM(1, cos(θ₀ ÷ 2))           exact period for release angle θ₀
+   ≈ T₀ × (1 + θ₀²/16 + 11θ₀⁴/3072 + …)  θ₀ in radians
+f  = 1 ÷ T
+L  = g × (T ÷ 2π)²                      length for a period (small angles)</code></pre>
+    <p>
+      AGM is the arithmetic-geometric mean: start with 1 and cos(θ₀ ÷ 2), and replace the pair with their
+      average and their geometric mean until they agree. It gives the same value as the elliptic integral
+      in physics textbooks.
+    </p>
+
+    <h2>Worked example</h2>
+    <p>
+      A 1 m pendulum on Earth (g = 9.80665 m/s²) has T₀ = 2π × √(1 ÷ 9.80665) = 2.0064 s. Released at
+      30°, the correction factor is 1.0174, so the period is 2.0413 s. A pendulum that beats seconds (a
+      2 s period) needs L = 9.80665 × (2 ÷ 2π)² = 0.9936 m.
+    </p>
+
+    <table>
+      <thead><tr><th>Release angle</th><th>Period factor</th></tr></thead>
+      <tbody class="tabular-nums">
+        <tr><td>5°</td><td>1.0005</td></tr>
+        <tr><td>10°</td><td>1.0019</td></tr>
+        <tr><td>30°</td><td>1.0174</td></tr>
+        <tr><td>60°</td><td>1.0732</td></tr>
+        <tr><td>90°</td><td>1.1803</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The animation</h2>
+    <p>
+      The swing is the solution of the full pendulum equation θ'' = −(g ÷ L) sin θ, worked out step by
+      step in your browser. For periods from about half a second to six seconds it plays in real time,
+      so you can time it against a watch. The clock under the drawing counts seconds and full swings.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>This is an ideal simple pendulum: a point mass on a light, rigid rod, with no friction or air drag. A real pendulum slowly loses amplitude.</li>
+      <li>For a large bob or a heavy rod, use the physical pendulum formula with the moment of inertia.</li>
+      <li>The length is measured to the centre of mass of the bob, not to its bottom.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

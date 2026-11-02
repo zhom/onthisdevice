@@ -1,0 +1,38 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CircleCalculator from '@/components/tools/calc2/CircleCalculator.tsx'
+---
+
+<ToolLayout slug="circle-calculator">
+  <CircleCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the circle calculator works</h2>
+    <p>
+      A circle has one size number: give the radius, the diameter, the circumference or the area, and the
+      circle calculator finds the other three.
+    </p>
+    <pre><code>d = 2r
+C = 2πr = πd
+A = πr²
+r = C ÷ 2π = √(A ÷ π)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A circle with a radius of 5 cm has a diameter of 10 cm, a circumference of 2 × π × 5 = 31.4159 cm
+      and an area of π × 5² = 78.5398 cm². The animation unrolls the circumference into a straight line:
+      it is π times the diameter, a little more than three diameters.
+    </p>
+
+    <h2>From the area back to the radius</h2>
+    <p>
+      A round table top of 1.5 m² has a radius of √(1.5 ÷ π) = 0.691 m, so a diameter of 1.382 m.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The results use π to double precision (15 to 16 significant digits). A measured radius has its own
+      error, and the area doubles that error in per cent, because the radius is squared.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import RothIraCalculator from '@/components/tools/calc/RothIraCalculator.tsx'
+---
+
+<ToolLayout slug="roth-ira-calculator">
+  <RothIraCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the Roth IRA calculator works</h2>
+    <p>
+      The Roth IRA calculator adds your contribution at the start of each year and grows the balance at
+      the yearly return, with no tax. The balance at retirement is
+      <code>FV = B × (1 + r)^n + C × ((1 + r)^n − 1) ÷ r × (1 + r)</code>, where <code>B</code> is the
+      balance today, <code>C</code> is the yearly contribution, <code>r</code> is the return and
+      <code>n</code> is the number of years to retirement.
+    </p>
+    <p>
+      For comparison, the same money goes into an account that pays tax on its return each year. That
+      account grows at <code>r × (1 − tax)</code>. The difference between the two balances is what the
+      tax-free growth is worth.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      From age 30 to 65, 7,500 a year at a 6% return grows to 885,906 in a Roth IRA. You put in 262,500, so
+      623,406 is tax-free growth. An account that pays 20% tax on its return grows at 4.8% and reaches
+      681,191, which is 204,716 less.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Tax rules are simplified. Earnings come out tax-free after age 59½ when the account is at least 5
+      years old; earlier, they can cost income tax and a 10% penalty. Above an income limit the amount you
+      can contribute goes down to zero. The taxed account pays the same tax on all of its return each year;
+      real tax depends on dividends, capital gains and when you sell.
+    </p>
+  </Fragment>
+</ToolLayout>

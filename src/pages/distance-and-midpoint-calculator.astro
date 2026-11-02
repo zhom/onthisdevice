@@ -1,0 +1,41 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import DistanceMidpoint from '@/components/tools/calc2/DistanceMidpoint.tsx'
+---
+
+<ToolLayout slug="distance-and-midpoint-calculator">
+  <DistanceMidpoint client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the distance and midpoint calculator works</h2>
+    <p>
+      The distance and midpoint calculator subtracts the coordinates of the two points. The differences
+      are the legs of a right triangle (in 3D, the edges of a box), so the distance follows from the
+      Pythagorean theorem. The midpoint is the average of each coordinate.
+    </p>
+    <pre><code>2D  d = √((x₂ − x₁)² + (y₂ − y₁)²)
+3D  d = √((x₂ − x₁)² + (y₂ − y₁)² + (z₂ − z₁)²)
+M = ((x₁ + x₂) ÷ 2, (y₁ + y₂) ÷ 2, (z₁ + z₂) ÷ 2)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>From (1, 2) to (7, 10):</p>
+    <pre><code>Δx = 7 − 1 = 6,  Δy = 10 − 2 = 8
+d = √(6² + 8²) = √100 = 10
+M = ((1 + 7) ÷ 2, (2 + 10) ÷ 2) = (4, 6)</code></pre>
+    <p>In 3D, from (1, 2, 3) to (4, 6, 15): d = √(3² + 4² + 12²) = √169 = 13.</p>
+
+    <h2>Uses</h2>
+    <ul>
+      <li>The length of a diagonal, a cable or a brace between two measured points.</li>
+      <li>The centre of a segment, for example to place a hole halfway between two others.</li>
+      <li>The straight-line distance between two points on a plan or a pixel grid.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <p>
+      This is the straight-line (Euclidean) distance on a flat plane or in flat space. Distances on the
+      Earth’s surface between far apart latitude and longitude points need the great-circle formula, and a
+      route along streets is longer than the straight line.
+    </p>
+  </Fragment>
+</ToolLayout>

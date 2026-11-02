@@ -1,0 +1,36 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CurrencyConverter from '@/components/tools/reference/CurrencyConverter.tsx'
+---
+
+<ToolLayout slug="currency-converter">
+  <CurrencyConverter client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the currency converter works</h2>
+    <p>
+      The currency converter uses the euro foreign exchange reference rates of the European Central
+      Bank. Each rate says how many units of a currency one euro buys. To convert between two other
+      currencies, for example dollars to pounds, the converter divides one euro rate by the other:
+      <code>GBP per USD = (GBP per EUR) / (USD per EUR)</code>.
+    </p>
+    <p>
+      The ECB sets the rates once each working day at about 16:00 CET from a regular check of the
+      market. This site downloads them every day, checks them, and adds them to the page, so the
+      converter works offline and your amounts stay in the browser.
+    </p>
+    <h2>Exchange rate history since 1999</h2>
+    <p>
+      The chart shows the rate of the chosen pair on each ECB working day since 4 January 1999, the
+      first day of the euro. Move the pointer over the chart, or focus it and use the arrow keys, to
+      read the rate of a day. The figures under the chart give the change, the high and the low of
+      the period.
+    </p>
+    <h2>Reference rates and the rate you pay</h2>
+    <p>
+      Reference rates are mid-market rates for information. Banks, card networks and exchange
+      offices add a margin or a fee. To see the cost of a card payment, compare the amount on your
+      statement with the result here.
+    </p>
+  </Fragment>
+</ToolLayout>

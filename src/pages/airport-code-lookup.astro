@@ -1,0 +1,31 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import AirportCodeLookup from '@/components/tools/reference/AirportCodeLookup.tsx'
+---
+
+<ToolLayout slug="airport-code-lookup">
+  <AirportCodeLookup client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to use the airport code lookup</h2>
+    <p>
+      Type a three-letter IATA code (LHR), a four-letter ICAO code (EGLL), a city or part of an airport
+      name. The airport code lookup shows exact code matches first, then airports in a city with that
+      name, then other names that contain your text, with large airports before small ones. Select a
+      result to see its codes, country, type and position on the map.
+    </p>
+    <h2>IATA and ICAO codes</h2>
+    <p>
+      The International Air Transport Association gives three-letter codes to airports with passenger
+      or cargo service; they appear on tickets, timetables and bag tags. The International Civil
+      Aviation Organization gives four-letter codes for flight plans and air traffic control. The
+      first letter of an ICAO code is the region: K for the contiguous United States, E for northern
+      Europe, R for East Asia.
+    </p>
+    <h2>Data</h2>
+    <p>
+      The list comes from OurAirports, an open data set of airports in the public domain, and has
+      every airport, seaplane base and heliport with an IATA code. The site refreshes it each month.
+    </p>
+  </Fragment>
+</ToolLayout>

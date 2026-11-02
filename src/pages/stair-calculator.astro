@@ -1,0 +1,44 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Stairs from '@/components/tools/calc2/Stairs.tsx'
+---
+
+<ToolLayout slug="stair-calculator">
+  <Stairs client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the stair calculator works</h2>
+    <p>
+      The stair calculator divides the total rise (floor to floor) into equal risers no taller than the
+      largest riser you allow. There is one tread fewer than risers, because the upper floor is the last
+      step.
+    </p>
+    <pre><code>risers   n = ⌈total rise ÷ largest riser⌉
+riser    r = total rise ÷ n
+treads   n − 1
+run      (n − 1) × tread depth
+stringer √(total rise² + run²)
+angle    arctan(r ÷ tread depth)
+stride   2r + tread depth   (24 to 25 in is comfortable)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A floor-to-floor height of 108 in with risers of at most 7¾ in needs ⌈108 ÷ 7.75⌉ = ⌈13.94⌉ = 14
+      risers of 108 ÷ 14 = 7.714 in. With 10 in treads there are 13 treads and a total run of 130 in. The
+      stringer is √(108² + 130²) = 169.0 in and the angle is arctan(7.714 ÷ 10) = 37.6°.
+    </p>
+
+    <h2>Code limits</h2>
+    <ul>
+      <li>The International Residential Code allows risers up to 7¾ in and treads of at least 10 in, with 6 ft 8 in of headroom.</li>
+      <li>Risers in one flight may differ by no more than ⅜ in, so all risers are equal here.</li>
+      <li>Local codes differ. Commercial stairs have stricter limits (7 in risers, 11 in treads).</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <p>
+      Measure the total rise from finished floor to finished floor. The stringer length is the line from
+      floor to upper floor; the board you buy must be longer to allow for the cuts at each end.
+    </p>
+  </Fragment>
+</ToolLayout>

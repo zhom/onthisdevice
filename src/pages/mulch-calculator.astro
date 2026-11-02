@@ -1,0 +1,52 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Landscape from '@/components/tools/calc2/Landscape.tsx'
+---
+
+<ToolLayout slug="mulch-calculator">
+  <Landscape client:load variant="mulch" />
+
+  <Fragment slot="explainer">
+    <h2>How the mulch calculator works</h2>
+    <p>
+      The mulch calculator multiplies the area of the bed by the depth of mulch to get the volume, then
+      divides the volume by the size of one bag and rounds up to whole bags.
+    </p>
+    <pre><code>area         = length × width          (or π × (diameter ÷ 2)² for a circle)
+volume (ft³) = area (ft²) × depth (in) ÷ 12
+volume (yd³) = volume (ft³) ÷ 27
+bags         = volume ÷ bag size, rounded up</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A bed of 100 square feet with 3 inches of mulch takes 100 × 3 ÷ 12 = 25 cubic feet, which is
+      0.93 cubic yards. That is 12.5 bags of 2 cubic feet, so buy 13, or 9 bags of 3 cubic feet.
+    </p>
+
+    <h2>Coverage of one bag</h2>
+    <table>
+      <thead>
+        <tr><th>Depth</th><th>2 ft³ bag</th><th>3 ft³ bag</th><th>1 yd³ bulk</th></tr>
+      </thead>
+      <tbody class="tabular-nums">
+        <tr><td>1 in</td><td>24 ft²</td><td>36 ft²</td><td>324 ft²</td></tr>
+        <tr><td>2 in</td><td>12 ft²</td><td>18 ft²</td><td>162 ft²</td></tr>
+        <tr><td>3 in</td><td>8 ft²</td><td>12 ft²</td><td>108 ft²</td></tr>
+        <tr><td>4 in</td><td>6 ft²</td><td>9 ft²</td><td>81 ft²</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The animation</h2>
+    <p>
+      The bed is drawn to scale from above. The mulch spreads across it one bag at a time, and the counter
+      under the drawing shows which bag is being spread.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Bagged mulch is often compressed and fluffs up when spread; loose bulk mulch settles by a few per cent over the first weeks.</li>
+      <li>Plants, stepping stones and edging take up area. Subtract large ones from the bed size.</li>
+      <li>For a slope, use the area along the slope, which is larger than the area on the plan.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

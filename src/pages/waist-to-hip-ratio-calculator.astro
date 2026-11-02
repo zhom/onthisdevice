@@ -1,0 +1,43 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import WaistToHipRatioCalculator from '@/components/tools/calc/WaistToHipRatioCalculator.tsx'
+---
+
+<ToolLayout slug="waist-to-hip-ratio-calculator">
+  <WaistToHipRatioCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the waist-to-hip ratio calculator works</h2>
+    <p>
+      The waist-to-hip ratio calculator divides your waist by your hip: <code>WHR = waist ÷ hip</code>. Both
+      measurements must be in the same unit, and the ratio has no unit. A high ratio means more fat around
+      the abdomen, which is linked to heart disease and type 2 diabetes.
+    </p>
+    <p>
+      The World Health Organization measures the waist midway between the lowest rib and the top of the hip
+      bone, and the hip around the widest part of the buttocks. Its 2008 expert report sets a substantially
+      increased risk of metabolic complications at a ratio of 0.90 or more for men and 0.85 or more for
+      women.
+    </p>
+    <p>
+      The gauge uses a common three-band scale. Men: 0.95 or less is low risk, 0.96 to 1.00 moderate and
+      above 1.00 high. Women: 0.80 or less is low risk, 0.81 to 0.85 moderate and above 0.85 high. If you
+      enter your height, the calculator also gives the waist-to-height ratio,
+      <code>WHtR = waist ÷ height</code>. A value under 0.5 is the usual low-risk cut-off.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A man with an 86 cm waist and 100 cm hips has a waist-to-hip ratio of 86 ÷ 100 = 0.86. That is in the
+      low-risk band and below the WHO cut-off of 0.90. At 178 cm tall, his waist-to-height ratio is
+      86 ÷ 178 = 0.48, under 0.5. A woman with the same hips and an 80 cm waist has a ratio of 0.80, also
+      low risk and below her cut-off of 0.85.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The waist-to-hip ratio is a screening measure and does not diagnose a disease. Most of the cut-offs come
+      from studies of white European adults; for some Asian groups the risk starts at a lower ratio. The
+      ratio is not valid in pregnancy or for children. A small change in tape position changes the result,
+      so measure the same way each time.
+    </p>
+  </Fragment>
+</ToolLayout>

@@ -1,0 +1,47 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Rounding from '@/components/tools/calc2/Rounding.tsx'
+---
+
+<ToolLayout slug="rounding-calculator">
+  <Rounding client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the rounding calculator works</h2>
+    <p>
+      The rounding calculator finds the two neighbours of your number at the precision you choose, then
+      picks one by the rounding rule. It works on the digits as typed, so 1.005 to two decimal places gives
+      1.01. Calculators that use binary floating point store 1.005 as 1.00499999… and give 1.00.
+    </p>
+    <table>
+      <thead><tr><th>Rule</th><th>2.5</th><th>3.5</th><th>−2.5</th><th>2.4</th></tr></thead>
+      <tbody>
+        <tr><td>Half up (away from zero)</td><td>3</td><td>4</td><td>−3</td><td>2</td></tr>
+        <tr><td>Half to even</td><td>2</td><td>4</td><td>−2</td><td>2</td></tr>
+        <tr><td>Up (ceiling)</td><td>3</td><td>4</td><td>−2</td><td>3</td></tr>
+        <tr><td>Down (floor)</td><td>2</td><td>3</td><td>−3</td><td>2</td></tr>
+        <tr><td>Toward zero</td><td>2</td><td>3</td><td>−2</td><td>2</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Worked example</h2>
+    <p>
+      To round 0.125 to two decimal places, the neighbours are 0.12 and 0.13 and the value is exactly
+      halfway. Half up gives 0.13; half to even gives 0.12, because 2 is even. To round 1,234.5 to the
+      nearest 100 (−2 places), the neighbours are 1,200 and 1,300 and the value is below halfway: 1,200.
+    </p>
+
+    <h2>Why half to even</h2>
+    <p>
+      Half up always moves the halfway cases up, so a long column of rounded values adds up too high. Half
+      to even moves half of them up and half down, so the error cancels. Banks and the IEEE 754 standard
+      use it.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      Round once, at the end. Rounding an already rounded value can give a different answer: 1.445 to two
+      places is 1.45, then to one place 1.5, but 1.445 to one place directly is 1.4.
+    </p>
+  </Fragment>
+</ToolLayout>

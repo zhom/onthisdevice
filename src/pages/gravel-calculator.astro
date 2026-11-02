@@ -1,0 +1,57 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Landscape from '@/components/tools/calc2/Landscape.tsx'
+---
+
+<ToolLayout slug="gravel-calculator">
+  <Landscape client:load variant="gravel" />
+
+  <Fragment slot="explainer">
+    <h2>How the gravel calculator works</h2>
+    <p>
+      The gravel calculator multiplies the area of the bed by its depth to get the volume, then
+      multiplies the volume by the density of the material to get the weight. Suppliers sell gravel by
+      the cubic yard, the cubic metre or the ton, so it gives all three.
+    </p>
+    <pre><code>area          = length × width          (or π × (diameter ÷ 2)² for a circle)
+volume (ft³)  = area (ft²) × depth (in) ÷ 12
+volume (yd³)  = volume (ft³) ÷ 27
+weight (kg)   = volume (m³) × density (kg/m³)
+US tons       = weight (kg) ÷ 907.185</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A path of 10 × 10 feet with 3 inches of gravel is 100 ft² × 0.25 ft = 25 ft³, which is
+      25 ÷ 27 = 0.926 cubic yards (0.708 m³). At 1,680 kg/m³ that is 1,189 kg, or 1.31 US tons. With 10 %
+      extra for settling, order 1.02 cubic yards.
+    </p>
+
+    <h2>Typical densities</h2>
+    <table>
+      <thead>
+        <tr><th>Material</th><th>kg/m³</th><th>US tons per yd³</th></tr>
+      </thead>
+      <tbody class="tabular-nums">
+        <tr><td>Gravel, pea or crushed</td><td>1,680</td><td>1.42</td></tr>
+        <tr><td>River rock</td><td>1,600</td><td>1.35</td></tr>
+        <tr><td>Road base, compacted</td><td>2,080</td><td>1.75</td></tr>
+        <tr><td>Sand, dry</td><td>1,600</td><td>1.35</td></tr>
+        <tr><td>Topsoil</td><td>1,280</td><td>1.08</td></tr>
+      </tbody>
+    </table>
+
+    <h2>The animation</h2>
+    <p>
+      The drawing is a cut through the edge of the bed, to scale. Stones fall into it at the speed gravity
+      gives them and fill it to the depth you entered. Stones are drawn at their typical size; sand and
+      fine material are drawn larger so the grains stay visible.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Densities are typical values for loose, dry material. Wet stone and compacted base weigh more.</li>
+      <li>The ground is taken as flat. Measure low spots and dig-outs separately.</li>
+      <li>A compacted base shrinks by 10 to 20 % as it is rolled. Add that to the extra allowance.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

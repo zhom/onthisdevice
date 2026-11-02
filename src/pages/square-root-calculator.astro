@@ -1,0 +1,46 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SquareRoot from '@/components/tools/calc2/SquareRoot.tsx'
+---
+
+<ToolLayout slug="square-root-calculator">
+  <SquareRoot client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the square root calculator works</h2>
+    <p>
+      The square root calculator finds the number that, multiplied by itself n times, gives x. Set n to 2
+      for a square root, 3 for a cube root, or any whole number up to 100 for an nth root.
+    </p>
+    <pre><code>ⁿ√x = x^(1/n)
+(ⁿ√x)ⁿ = x</code></pre>
+
+    <h2>Simplest radical form</h2>
+    <p>
+      For a whole number, the calculator also gives the exact root in simplest radical form. It factors
+      x into primes and takes every group of n equal primes out of the root:
+    </p>
+    <pre><code>72 = 2³ × 3² = 6² × 2
+√72 = √(6² × 2) = 6√2
+
+54 = 2 × 3³
+∛54 = 3∛2</code></pre>
+    <p>When nothing is left under the root, x is a perfect power and the root is a whole number: √49 = 7.</p>
+
+    <h2>Newton’s method, step by step</h2>
+    <p>The decimal value comes from Newton’s method. Each step replaces the guess y with a better one:</p>
+    <pre><code>y ← ((n − 1) y + x ÷ y^(n − 1)) ÷ n</code></pre>
+    <p>
+      For √72, starting from y = 72: 36.5, 19.236, 11.490, 8.878, 8.494, 8.48528, 8.485281374. Far from
+      the root each step about halves the guess; near the root each step about doubles the number of
+      correct digits. The number line under the picture shows the guesses on a logarithmic scale.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>An even root of a negative number is not a real number. Odd roots of negative numbers are negative: ∛−8 = −2.</li>
+      <li>The simplest radical form is shown for whole numbers up to 10¹⁵.</li>
+      <li>Results have about 15 significant digits, the precision of the browser’s numbers.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

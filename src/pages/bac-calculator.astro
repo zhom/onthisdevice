@@ -1,0 +1,41 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BacCalculator from '@/components/tools/calc/BacCalculator.tsx'
+---
+
+<ToolLayout slug="bac-calculator">
+  <BacCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the BAC calculator works</h2>
+    <p>
+      The BAC calculator uses the Widmark formula. It spreads the alcohol you drank through the water in
+      your body, then takes away what the liver removes each hour:
+      <code>BAC = A ÷ (W × 1000 × r) × 100 − β × t</code>. <code>A</code> is grams of alcohol, <code>W</code>
+      is body weight in kg, <code>r</code> is the body water factor (0.68 for men, 0.55 for women),
+      <code>β</code> is the fall per hour (0.015%) and <code>t</code> is hours since the first drink. BAC is
+      in grams of alcohol per 100 ml of blood, the unit of US law.
+    </p>
+    <p>
+      The grams in a drink are <code>ml × ABV × 0.789</code>, where 0.789 g/ml is the density of alcohol.
+      A US standard drink has 14 g: about 12 fl oz of 5% beer, 5 fl oz of 12% wine or 1.5 fl oz of 40%
+      spirits. The time until BAC reaches 0 is the peak divided by 0.015.
+    </p>
+    <h2>Worked example</h2>
+    <p>
+      A man who weighs 75 kg drinks two 355 ml beers at 5% (14.0 g each) and a 150 ml glass of wine at 12%
+      (14.2 g), 42.2 g in total. His peak in the model is 42.2 ÷ (75 × 1000 × 0.68) × 100 = 0.083%. Two
+      hours after the first drink it is 0.083 − 0.015 × 2 = 0.053%, and it reaches 0 after 5.5 hours. A
+      woman who weighs 65 kg and has the same drinks peaks at 0.118%, is at 0.088% after two hours and
+      reaches 0 after 7.9 hours.
+    </p>
+    <h2>Limits</h2>
+    <p>
+      The result is an estimate for learning only. Do not use it to decide whether you can drive or are
+      safe. The Widmark formula counts all alcohol as absorbed at the first drink; in real life BAC rises
+      for 30 to 90 minutes, longer after food. The body water factor and the hourly fall are averages and
+      vary a lot from person to person. Food, medication, liver health and drinking speed all change your
+      real BAC. Impairment starts below every legal limit, and the only safe level for driving is zero.
+    </p>
+  </Fragment>
+</ToolLayout>

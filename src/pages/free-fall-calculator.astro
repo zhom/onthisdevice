@@ -1,0 +1,42 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import FreeFall from '@/components/tools/calc2/FreeFall.tsx'
+---
+
+<ToolLayout slug="free-fall-calculator">
+  <FreeFall client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the free fall calculator works</h2>
+    <p>
+      A body dropped from rest speeds up by g metres per second in every second. The free fall calculator
+      uses the constant-acceleration equations to link the drop height, the fall time and the impact
+      speed. Give it a height or a time, and pick the world for the gravity.
+    </p>
+    <pre><code>t = √(2h ÷ g)     fall time from a height
+h = ½ g t²        height from a fall time
+v = g t = √(2gh)  impact speed</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A stone falls 100 m on Earth (g = 9.80665 m/s²). The fall takes t = √(2 × 100 ÷ 9.80665) = 4.516 s,
+      and it lands at v = 9.80665 × 4.516 = 44.29 m/s, which is 159 km/h. On the Moon the same drop
+      takes 11.1 s and ends at 18 m/s.
+    </p>
+
+    <h2>Why the dots spread out</h2>
+    <p>
+      The grey dots are positions at equal time steps. In each step the body covers more ground than in
+      the step before: the distances in the first, second, third and fourth steps are in the ratio
+      1 : 3 : 5 : 7. The animation runs in real time for falls of up to about 8 seconds; longer falls are
+      sped up by the factor shown under the drawing.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>There is no air resistance. A falling person reaches a terminal speed of about 53 m/s; a feather falls far slower than the result.</li>
+      <li>The body starts from rest. For a throw, use the projectile motion calculator.</li>
+      <li>Gravity is constant, which holds for heights that are small compared with the radius of the planet.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

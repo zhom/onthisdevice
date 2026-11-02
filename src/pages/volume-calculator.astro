@@ -1,0 +1,43 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Solids from '@/components/tools/calc2/Solids.tsx'
+---
+
+<ToolLayout slug="volume-calculator">
+  <Solids client:load measure="volume" />
+
+  <Fragment slot="explainer">
+    <h2>How the volume calculator works</h2>
+    <p>
+      Pick a shape, enter its dimensions in one unit, and the volume calculator gives the volume in that
+      unit cubed, with litres, US gallons and cubic metres next to it.
+    </p>
+    <pre><code>cube                V = a³
+box                 V = l × w × h
+cylinder            V = π r² h
+cone                V = ⅓ π r² h
+sphere              V = 4⁄3 π r³
+hemisphere          V = 2⁄3 π r³
+square pyramid      V = ⅓ a² h
+triangular prism    V = T × length, T from Heron's formula
+capsule             V = π r² a + 4⁄3 π r³</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A cone with a radius of 3 cm and a height of 4 cm holds π × 3² × 4 ÷ 3 = 37.699 cm³, which is
+      0.0377 litres. A cylinder with the same base and height holds three times as much, 113.097 cm³.
+    </p>
+
+    <h2>Units</h2>
+    <p>
+      1 litre is 1,000 cm³; 1 m³ is 1,000 litres; 1 US gallon is 231 in³ (3.785 litres); 1 ft³ is
+      7.48 US gallons.
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      The shapes are ideal: the walls have no thickness and the cone and pyramid are right (the tip is
+      over the centre of the base). For a container, measure the inside dimensions.
+    </p>
+  </Fragment>
+</ToolLayout>

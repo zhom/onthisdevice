@@ -1,0 +1,60 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Drywall from '@/components/tools/calc2/Drywall.tsx'
+---
+
+<ToolLayout slug="drywall-calculator">
+  <Drywall client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the drywall calculator works</h2>
+    <p>
+      The drywall calculator adds up the area of the four walls (and the ceiling if you include it),
+      takes off the doors and windows, adds a waste allowance and divides by the area of one sheet. It
+      rounds up, because sheets are sold whole.
+    </p>
+    <pre><code>walls    = 2 × (length + width) × height
+ceiling  = length × width
+openings = doors × 21 ft² + windows × 15 ft²
+board    = walls + ceiling − openings
+sheets   = board × (1 + waste ÷ 100) ÷ sheet area, rounded up</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A 12 × 12 foot room with 8 foot walls has 2 × (12 + 12) × 8 = 384 ft² of wall, which is exactly
+      12 sheets of 4 × 8 (32 ft²) before openings and waste. With the ceiling (144 ft²), one door and one
+      window, the board area is 384 + 144 − 21 − 15 = 492 ft². With 10 % waste that is 541.2 ft², or
+      17 sheets.
+    </p>
+
+    <h2>Screws, joint compound and tape</h2>
+    <table>
+      <thead>
+        <tr><th>Material</th><th>Per 1,000 ft² of board</th></tr>
+      </thead>
+      <tbody class="tabular-nums">
+        <tr><td>Drywall screws</td><td>about 1,000 (1 per ft²)</td></tr>
+        <tr><td>Ready-mixed joint compound</td><td>about 9.4 US gal (138 lb)</td></tr>
+        <tr><td>Paper joint tape</td><td>about 370 ft</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Screws go about 12 inches apart on ceilings and 16 inches apart on walls. Compound and tape are for
+      a three-coat finish.
+    </p>
+
+    <h2>The drawing</h2>
+    <p>
+      The four walls are unfolded side by side and drawn to scale, with studs at 16 inch centres. Sheets go
+      up one at a time, hung horizontally from the top with the joints staggered, and the doors and
+      windows are cut out.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Doors and windows use standard sizes. For a large opening such as a patio door, measure it and add its area to the waste instead.</li>
+      <li>The room is taken as a rectangle. For an L-shaped room, add each wall to the length and width that give the same perimeter.</li>
+      <li>Ceilings over 8 feet, stairwells and gable walls take extra cuts; use a higher waste allowance.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

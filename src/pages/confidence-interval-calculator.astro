@@ -1,0 +1,45 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import ConfidenceInterval from '@/components/tools/calc2/ConfidenceInterval.tsx'
+---
+
+<ToolLayout slug="confidence-interval-calculator">
+  <ConfidenceInterval client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the confidence interval calculator works</h2>
+    <p>
+      The confidence interval calculator puts a margin of error on each side of a sample mean or a sample
+      proportion. The margin is a critical value times the standard error.
+    </p>
+    <pre><code>mean, σ known       x̄ ± z × σ ÷ √n
+mean, s from data   x̄ ± t(n − 1) × s ÷ √n
+proportion, Wald    p̂ ± z × √(p̂(1 − p̂) ÷ n)
+proportion, Wilson  (p̂ + z²/2n ± z √(p̂(1 − p̂)/n + z²/4n²)) ÷ (1 + z²/n)</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      36 measurements have a mean of 50 and a standard deviation of 8. The standard error is 8 ÷ √36 =
+      1.333. For 95% with 35 degrees of freedom, t = 2.0301, so the margin is 2.0301 × 1.333 = 2.707 and
+      the interval is 47.29 to 52.71.
+    </p>
+    <p>
+      For a proportion, 420 yes answers out of 1,000 give p̂ = 0.42. The Wilson 95% interval is 38.98% to
+      45.08%.
+    </p>
+
+    <h2>What 95% means</h2>
+    <p>
+      The method catches the true value in 95% of samples. The simulation shows this: each row is the
+      interval from a new random sample, and about 1 row in 20 misses the dashed line. A single interval
+      either contains the true value or it does not.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The sample must be random. A biased sample gives a narrow interval around the wrong value.</li>
+      <li>The t interval assumes roughly normal data; with 30 or more values it is robust to moderate skew.</li>
+      <li>The Wald interval is poor when p̂ is near 0% or 100% or the sample is small. Wilson is better there.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

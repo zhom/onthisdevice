@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import BodySurfaceAreaCalculator from '@/components/tools/calc/BodySurfaceAreaCalculator.tsx'
+---
+
+<ToolLayout slug="body-surface-area-calculator">
+  <BodySurfaceAreaCalculator client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the body surface area calculator works</h2>
+    <p>
+      The body surface area calculator estimates the area of your skin in square metres (m²) from height and
+      weight. It gives the result of six published formulas, so you can see how much they differ. In each
+      formula <code>H</code> is height in centimetres and <code>W</code> is weight in kilograms.
+    </p>
+    <ul>
+      <li>Mosteller (1987): <code>BSA = √(H × W ÷ 3600)</code></li>
+      <li>Du Bois and Du Bois (1916): <code>BSA = 0.007184 × W^0.425 × H^0.725</code></li>
+      <li>Haycock (1978): <code>BSA = 0.024265 × W^0.5378 × H^0.3964</code></li>
+      <li>Gehan and George (1970): <code>BSA = 0.0235 × W^0.51456 × H^0.42246</code></li>
+      <li>Boyd (1935): <code>BSA = 0.0003207 × H^0.3 × G^(0.7285 − 0.0188 × log10 G)</code>, with <code>G</code> the weight in grams</li>
+      <li>Fujimoto (1968): <code>BSA = 0.008883 × W^0.444 × H^0.663</code></li>
+    </ul>
+    <h2>Worked example</h2>
+    <p>
+      For 170 cm and 70 kg, Mosteller gives √(170 × 70 ÷ 3600) = √3.3056 = 1.82 m². Du Bois gives 1.81 m²,
+      Haycock 1.83 m², Gehan and George 1.83 m², Boyd 1.83 m² and Fujimoto 1.76 m². The six results span 1.76
+      to 1.83 m².
+    </p>
+    <h2>Limits</h2>
+    <p>
+      Each formula was fitted on a small group of people. The formulas agree well for adults of usual build and
+      differ more for children and for very heavy or very light bodies. Fujimoto was fitted on Japanese adults.
+      Drug doses are often scaled to body surface area; for a dose, use the value from your care team.
+    </p>
+  </Fragment>
+</ToolLayout>

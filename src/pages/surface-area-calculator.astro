@@ -1,0 +1,37 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import Solids from '@/components/tools/calc2/Solids.tsx'
+---
+
+<ToolLayout slug="surface-area-calculator">
+  <Solids client:load measure="surface" />
+
+  <Fragment slot="explainer">
+    <h2>How the surface area calculator works</h2>
+    <p>
+      The surface area calculator adds up the area of every face of the shape. It lists each part (bases,
+      sides, the curved surface) and shows the shape unfolding into its net.
+    </p>
+    <pre><code>cube                A = 6a²
+box                 A = 2(lw + lh + wh)
+cylinder            A = 2πr² + 2πrh
+cone                A = πr² + πrs,  s = √(r² + h²)
+sphere              A = 4πr²
+hemisphere          A = 3πr²   (curved 2πr² + flat πr²)
+square pyramid      A = a² + 2as,   s = √((a ÷ 2)² + h²)
+triangular prism    A = 2T + (a + b + c) × length</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      A cylinder with a radius of 3 cm and a height of 5 cm has two circular ends of π × 3² = 28.274 cm²
+      each and a curved side that unrolls into a rectangle of 2π × 3 × 5 = 94.248 cm². The total is
+      150.796 cm².
+    </p>
+
+    <h2>Limits</h2>
+    <p>
+      A sphere has no flat net; its area equals four circles of the same radius, and the animation shows
+      those. The results are for ideal shapes; for paint or wrapping, add 10 to 15% for overlaps and waste.
+    </p>
+  </Fragment>
+</ToolLayout>

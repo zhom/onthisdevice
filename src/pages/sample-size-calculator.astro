@@ -1,0 +1,39 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SampleSize from '@/components/tools/calc2/SampleSize.tsx'
+---
+
+<ToolLayout slug="sample-size-calculator">
+  <SampleSize client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the sample size calculator works</h2>
+    <p>
+      The sample size calculator finds how many responses give a chosen margin of error at a chosen
+      confidence level, for a survey that measures a proportion.
+    </p>
+    <pre><code>n₀ = z² × p(1 − p) ÷ E²
+n  = n₀ ÷ (1 + (n₀ − 1) ÷ N)     with a population of N
+round n up to a whole response</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      For 95% confidence (z = 1.95996), a margin of ±5% (E = 0.05) and p = 0.5:
+      n₀ = 1.95996² × 0.25 ÷ 0.0025 = 384.15, so 385 responses. From a population of 1,000 people,
+      n = 384.15 ÷ (1 + 383.15 ÷ 1,000) = 277.7, so 278.
+    </p>
+
+    <h2>Why the sample grows so fast</h2>
+    <p>
+      The margin of error falls with the square root of n. To halve the margin from ±5% to ±2.5% you need
+      four times the responses: 1,537 instead of 385. The curve in the calculator shows this.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The formula assumes a simple random sample. Clustered or weighted samples need a design effect.</li>
+      <li>The result is the number of completed responses. Divide by the expected response rate to find how many people to ask.</li>
+      <li>For means, use n = (z σ ÷ E)² with an estimate of the standard deviation σ.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>

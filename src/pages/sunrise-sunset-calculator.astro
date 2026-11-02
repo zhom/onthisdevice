@@ -1,0 +1,43 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import SunriseSunset from '@/components/tools/calc2/SunriseSunset.tsx'
+---
+
+<ToolLayout slug="sunrise-sunset-calculator">
+  <SunriseSunset client:load />
+
+  <Fragment slot="explainer">
+    <h2>How the sunrise and sunset calculator works</h2>
+    <p>
+      The sunrise and sunset calculator uses the equations of the NOAA solar calculator. For the date it
+      finds the sun's declination and the equation of time, then the hour angle at which the sun's centre
+      is 0.833° below the horizon. Each time is refined with the sun's position at that time.
+    </p>
+    <pre><code>solar noon  = 12:00 − 4 min × longitude − equation of time   (UTC)
+cos H       = cos 90.833° ÷ (cos φ cos δ) − tan φ tan δ
+sunrise     = solar noon − 4 min × H
+sunset      = solar noon + 4 min × H
+φ: latitude, δ: the sun's declination, H: hour angle in degrees</code></pre>
+
+    <h2>Worked example</h2>
+    <p>
+      In London on 21 June 2026 the sun rises at 04:43 and sets at 21:21 British Summer Time, 16 h 38 min of
+      daylight. On 21 December it rises at 08:03 and sets at 15:53, 7 h 50 min. These are the values in the
+      NOAA solar calculator's tables, and the calculator's test checks a set of such places and dates.
+    </p>
+
+    <h2>Midnight sun and polar night</h2>
+    <p>
+      North of the Arctic Circle the sun can stay up all day in summer and below the horizon all day in
+      winter. Then cos H is above 1 or below −1, and the calculator says Midnight sun or Polar night. In
+      Tromsø, at 69.6° N, the sun does not set from about 19 May to 25 July.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>The times are for a flat horizon at sea level. Mountains, buildings and your height change them.</li>
+      <li>Refraction near the horizon varies with temperature and pressure, so real times can differ by a minute or two.</li>
+      <li>For a typed latitude and longitude, enter the UTC offset that applies on that date, including daylight saving.</li>
+    </ul>
+  </Fragment>
+</ToolLayout>
