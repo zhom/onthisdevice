@@ -3,9 +3,10 @@
  * Asks Google and Brave to crawl every page in the live sitemap (Rapid Indexer).
  * Never shipped. Needs RAPID_INDEXER_API_KEY:
  *
- *   acct rapid-indexer node scripts/indexing/submit.mjs [--dry-run] [--limit N]
+ *   acct rapid-indexer node scripts/indexing/submit.mjs [--dry-run] [--limit N] [--only FILE]
  *   acct rapid-indexer node scripts/indexing/submit.mjs --status
  *
+ * --only FILE sends just the sitemap URLs whose path is listed in FILE (one path or slug per line).
  * Only pages that answer 200 without noindex are sent. Each URL gets up to 5
  * Brave keywords from its <h1> and <title>. Cost: 1 credit per URL (Brave is
  * free with Google). Task ids go to scripts/.tmp/indexing-log.jsonl.
@@ -110,7 +111,18 @@ async function status() {
 }
 
 async function submit() {
-  const all = await sitemapUrls()
+  let all = await sitemapUrls()
+  const onlyFile = val('only')
+  if (onlyFile) {
+    const wanted = new Set(
+      fs
+        .readFileSync(onlyFile, 'utf8')
+        .split('\n')
+        .map((l) => l.trim().replace(/^\/?/, '/'))
+        .filter((l) => l !== '/'),
+    )
+    all = all.filter((u) => wanted.has(new URL(u).pathname))
+  }
   const limit = Number(val('limit') ?? all.length)
   const { pages, skipped } = await inspect(all.slice(0, limit))
   console.log(`sitemap ${all.length} URLs, sending ${pages.length}, skipped ${skipped.length}`)
