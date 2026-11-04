@@ -301,6 +301,20 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+  /* A full-width band in the opposite theme. Tokens swap, so components inside just work. */
+  .ink-band {
+    --background: var(--ink);
+    --foreground: var(--paper);
+    --primary: var(--paper);
+    --primary-foreground: var(--ink);
+    --muted-foreground: #a3a3a3;
+    --ring: var(--paper);
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  .dark .ink-band {
+    --muted-foreground: #6b6b6b;
+  }
   /* A list row that links somewhere: icon, title, one line. */
   .row-link {
     position: relative;

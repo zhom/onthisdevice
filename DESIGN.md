@@ -63,9 +63,12 @@ One family, Archivo, at normal width. Classes `t-display`, `t-title`, `t-h2`, `t
   Hover gives the row the fill.
 - Category glyphs: a 9 x 9 grid of square pixels per category (`src/lib/glyphs.ts`). A scan moves
   left to right and the pixels change between the category's frames: input to output.
-- Home hero: a page drawn in the same pixels. A scan passes down the page and redacts and
-  restores words; the pointer is a lens that shows the processed page; scrolling folds the page
-  into a single pixel.
+- Home hero: once per session, a sentence about upload sites takes black redaction bars word by
+  word until only the heading is left, and the kept words move into place. Beside it, a page drawn
+  in the same pixels: a scan redacts and restores words, the pointer is a lens that shows the
+  processed page, and scrolling folds the page into a single pixel.
+- Home body: rows of situations in the visitor's words, each with an answer and tool links. One
+  inverted band (`.ink-band`) holds the live proof, which runs on the visitor's device.
 
 ## Motion
 

@@ -1,18 +1,20 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import Container from '@/components/site/Container.astro'
-import ToolCard from '@/components/site/ToolCard.astro'
 import Glyph from '@/components/site/Glyph.astro'
 import HeroField from '@/components/site/HeroField.astro'
+import HeroSentence from '@/components/site/HeroSentence.astro'
+import HeroTitle from '@/components/site/HeroTitle.astro'
 import Icon from '@/components/site/Icon.tsx'
+import SavingsProof from '@/components/site/SavingsProof.tsx'
 import HeroSearch from '@/components/site/search/HeroSearch.tsx'
 import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
-import { FEATURED, QUICK } from '@/lib/featured'
+import { QUICK, SITUATIONS } from '@/lib/featured'
 import { hasPage } from '@/components/site/pages'
 
 const pick = (slugs: string[]) => slugs.map((s) => getTool(s)).filter((t): t is Tool => t !== undefined && hasPage(t))
 const quick = pick(QUICK)
-const featured = pick(FEATURED)
+const situations = SITUATIONS.map((s) => ({ ...s, tools: pick(s.tools) }))
 
 let glyphIndex = 0
 const catalogue = GROUPS.map((g) => ({
@@ -27,31 +29,6 @@ const catalogue = GROUPS.map((g) => ({
 
 const title = `onthisdevice: ${TOOL_COUNT} free tools that never upload your files`
 const description = `Free PDF, image, video, redaction, data and calculator tools that run in your browser. Your files stay on your device and are never uploaded.`
-
-const checks: { what: string; how: string; code?: string }[] = [
-  {
-    what: 'Nothing is uploaded',
-    how: 'Open your browser’s network panel, then use any tool. No request carries your file. The site is static files and has no server to send it to.',
-  },
-  {
-    what: 'Nothing can be sent',
-    how: 'Every page arrives with a connection rule that lets it talk to this site only. Your browser refuses any other address.',
-    code: "connect-src 'self' blob: data:",
-  },
-  {
-    what: 'Your device does the work',
-    how: 'The work runs in your tab as WebAssembly, with the same codecs desktop software uses. A 300 MB file is fine if your device has the memory.',
-  },
-]
-
-const comparison: { label: string; them: string; us: string }[] = [
-  { label: 'Where your file goes', them: 'To a company’s server', us: 'Nowhere. It stays in this tab' },
-  { label: 'How long it takes', them: 'Upload, queue, process, download', us: 'Starts when you drop the file' },
-  { label: 'Size limit', them: 'Set by their free tier', us: 'Your device’s memory' },
-  { label: 'Daily limit', them: 'A few files, then a paywall', us: 'None' },
-  { label: 'Account', them: 'Often needed to download', us: 'None' },
-  { label: 'Watermarks', them: 'Common on free output', us: 'Never' },
-]
 
 const faqs: { q: string; a: string }[] = [
   {
@@ -68,11 +45,11 @@ const faqs: { q: string; a: string }[] = [
   },
   {
     q: 'What are the limits?',
-    a: 'There is no size cap and no daily quota. The limits are your device: how much memory the browser tab can use and how fast your processor is.',
+    a: 'There is no daily quota. Each tool shows its file limit: about 200 MB for images, 300 to 800 MB for most PDF tools and 1 to 4 GB for video. Your device sets the speed.',
   },
   {
     q: 'Do you use cookies, analytics or ads?',
-    a: 'No. The site has no cookies, analytics, trackers or ads. Your browser stores only your theme and your recent searches, in its own local storage.',
+    a: 'No. The site has no cookies, analytics, trackers or ads. Your browser keeps your theme, the tools you opened, some tool settings and cached code on your device. None of it is sent anywhere.',
   },
 ]
 
@@ -99,19 +76,20 @@ const jsonLd = [
 
 <BaseLayout title={title} description={description} canonicalPath="/" jsonLd={jsonLd}>
   <section aria-labelledby="hero-title">
-    <Container class="grid grid-cols-1 items-center gap-y-10 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-x-16 lg:pt-20 lg:pb-16">
-      <div class="min-w-0">
-        <h1 id="hero-title" class="t-display enter max-w-[12ch] text-foreground">Your files stay on this device.</h1>
+    <Container class="grid grid-cols-1 items-start gap-y-10 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-x-16 lg:pt-20 lg:pb-16">
+      <HeroSentence />
+      <div class="col-start-1 row-start-1 min-w-0">
+        <HeroTitle />
         <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${TOOL_COUNT} free tools that run in your browser. Nothing is uploaded.`}>
-          {TOOL_COUNT} free tools for PDFs, images, video, redaction and everyday sums. They run in this browser tab.
-          Nothing is uploaded.
+          {TOOL_COUNT} free tools for PDFs, images, video and numbers. They run in this tab, so there is no upload, no queue, no account and no watermark.
         </p>
 
         <div class="enter relative z-10 mt-9 max-w-[34rem]" style="--i:2">
           <HeroSearch client:load />
         </div>
+        <p class="enter mt-3 hidden max-w-[34rem] text-[0.9375rem] text-muted-foreground pointer-fine:block" style="--i:3">Or drop a file anywhere on this page.</p>
 
-        <ul class="enter mt-5 flex max-w-[34rem] flex-wrap gap-x-5 gap-y-2" aria-label="Most used tools" style="--i:3">
+        <ul class="enter mt-5 flex max-w-[34rem] flex-wrap gap-x-5 gap-y-2" aria-label="Most used tools" style="--i:4">
           {
             quick.map((tool) => (
               <li>
@@ -124,50 +102,71 @@ const jsonLd = [
         </ul>
       </div>
 
-      <HeroField class="enter h-[17rem] sm:h-[22rem] lg:h-[32rem]" />
+      <HeroField class="enter h-[17rem] sm:h-[22rem] lg:col-start-2 lg:row-start-1 lg:h-[32rem]" />
     </Container>
   </section>
 
-  <Container class="pt-20 sm:pt-28">
-    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
+  {
+    situations.map((s) => (
+      <Container class="pt-20 sm:pt-32">
+        <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <h2 class="t-title max-w-[17ch] text-foreground">{s.problem}</h2>
+          <div class="lg:pt-2">
+            <p class="t-lead max-w-[34rem]">{s.answer}</p>
+            <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+              {s.tools.map((tool) => (
+                <li>
+                  <a href={`/${tool.slug}`} class="link text-[0.9375rem] font-[560]">
+                    {tool.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </Container>
+    ))
+  }
+
+  <section class="ink-band mt-24 py-20 sm:mt-36 sm:py-32">
+    <Container class="grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
       <div>
-        <h2 class="t-h2 text-foreground">Check it yourself</h2>
-        <p class="mt-3 max-w-sm text-[1rem] leading-relaxed text-pretty text-muted-foreground">
-          The privacy is in how the site is built. Three ways to see it.
+        <h2 class="t-title max-w-[14ch] text-foreground">Will your savings last to 95?</h2>
+        <p class="t-lead mt-6 max-w-[34rem]">
+          This page simulates a million retirements on US stock returns from 1871 to 2023, on the processor of your device, each time you move the slider.
         </p>
+        <p class="mt-4 max-w-[34rem] text-[0.9375rem] text-muted-foreground">Example: age 35, 100,000 saved, 1,000 more each month until 65, 80% in stocks and 1.5% a year on the rest. All amounts are in today's money.</p>
+        <p class="mt-6"><a href="/monte-carlo-retirement-calculator" class="link text-[0.9375rem] font-[560]">Use your own numbers</a></p>
       </div>
-      <dl class="grid grid-cols-1 gap-x-10 gap-y-8 sm:grid-cols-3">
-        {
-          checks.map((c) => (
-            <div>
-              <dt class="t-h3 text-foreground">{c.what}</dt>
-              <dd class="mt-2 text-[0.9375rem] leading-relaxed text-pretty text-muted-foreground">
-                {c.how}
-                {c.code && (
-                  <code class="mt-3 block w-fit max-w-full rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.8125rem] break-words text-foreground">
-                    {c.code}
-                  </code>
-                )}
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </div>
+      <SavingsProof client:visible />
+    </Container>
+  </section>
+
+  <Container class="pt-20 sm:pt-32">
+    <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+      <h2 class="t-title max-w-[17ch] text-foreground">A train with no signal.</h2>
+      <p class="t-lead max-w-[34rem] lg:pt-2">A tool keeps working after it has loaded once. Turn off your network and try one.</p>
+    </section>
   </Container>
 
-  <Container class="pt-20 sm:pt-28">
+  <Container class="pt-20 sm:pt-32">
+    <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+      <h2 class="t-title max-w-[17ch] text-foreground">You have no reason to trust a website.</h2>
+      <div class="lg:pt-2">
+        <p class="t-lead max-w-[34rem]">
+          So check this one. Open the network panel of your browser and use any tool: no request carries your file. Every page also sends this rule, and your browser blocks connections to any other server.
+        </p>
+        <code class="mt-4 block w-fit max-w-full rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.875rem] break-words text-foreground">connect-src 'self' blob: data:</code>
+        <p class="mt-4"><a href="/privacy" class="link text-[0.9375rem] font-[560]">What the site stores</a></p>
+      </div>
+    </section>
+  </Container>
+
+  <Container class="pt-24 sm:pt-40">
     <div class="flex flex-wrap items-baseline justify-between gap-4">
-      <h2 class="t-h2 text-foreground">Most used</h2>
+      <h2 class="t-h2 text-foreground">Everything else</h2>
       <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {TOOL_COUNT} tools</a>
     </div>
-    <div class="mt-6 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
-      {featured.map((tool) => <ToolCard tool={tool} />)}
-    </div>
-  </Container>
-
-  <Container class="pt-20 sm:pt-28">
-    <h2 class="t-h2 text-foreground">Categories</h2>
     <div class="mt-8 space-y-12">
       {
         catalogue.map(({ group, categories }) => (
@@ -195,33 +194,7 @@ const jsonLd = [
     </div>
   </Container>
 
-  <Container class="pt-20 sm:pt-28">
-    <h2 class="t-h2 text-foreground">What changes without an upload</h2>
-    <div class="mt-6 overflow-x-auto">
-      <table class="w-full min-w-[34rem] border-collapse text-left text-[0.9375rem]">
-        <thead>
-          <tr>
-            <th scope="col" class="w-[30%] py-2 pr-6 font-[600] text-muted-foreground"><span class="sr-only">Question</span></th>
-            <th scope="col" class="w-[35%] py-2 pr-6 font-[600] text-muted-foreground">Upload services</th>
-            <th scope="col" class="w-[35%] py-2 font-[650] text-foreground">onthisdevice</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            comparison.map((row) => (
-              <tr class="align-top">
-                <th scope="row" class="py-3 pr-6 font-[600] text-foreground">{row.label}</th>
-                <td class="py-3 pr-6 text-muted-foreground">{row.them}</td>
-                <td class="py-3 font-[560] text-foreground">{row.us}</td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
-  </Container>
-
-  <Container class="pt-20 sm:pt-28">
+  <Container class="pt-24 sm:pt-32">
     <div class="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-16">
       <div>
         <h2 class="t-h2 text-foreground">Questions</h2>
@@ -244,6 +217,13 @@ const jsonLd = [
           ))
         }
       </div>
+    </div>
+  </Container>
+
+  <Container class="pt-24 pb-8 sm:pt-40 sm:pb-16">
+    <h2 class="t-display max-w-[14ch] text-foreground">What do you need to do?</h2>
+    <div class="relative z-10 mt-8 max-w-[34rem]">
+      <HeroSearch client:visible />
     </div>
   </Container>
 </BaseLayout>
