@@ -13,6 +13,7 @@ import { ProgressPanel } from '@/components/shared/ProgressPanel'
 import { FileDropzone } from '@/components/shared/FileDropzone'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { CodePane, Field } from './DevUi'
+import { hashFile as hashInEngine } from '@/lib/engine/hash'
 import { Md5, bytesToHex, hashesMatch, utf8Encode } from './devlib'
 import { formatBytes, formatNumber, nextFrame } from '@/lib/utils'
 
@@ -27,7 +28,6 @@ const ALGORITHM_NOTES: Record<Algorithm, string> = {
   'SHA-512': '512-bit · SHA-2 family, faster than SHA-256 on 64-bit CPUs',
 }
 
-const CHUNK_SIZE = 4 * 1024 * 1024
 
 type HashMap = Partial<Record<Algorithm, string>>
 
@@ -168,42 +168,18 @@ export default function HashGenerator() {
       setStage(`Reading ${picked.name}…`)
 
       try {
-        const needsBuffer = algorithms.some((a) => a !== 'MD5')
-        const buffer = needsBuffer ? new Uint8Array(picked.size) : null
-        const md5 = algorithms.includes('MD5') ? new Md5() : null
-
-        let offset = 0
-        while (offset < picked.size) {
-          if (runId.current !== id) return
-          const slice = picked.slice(offset, Math.min(offset + CHUNK_SIZE, picked.size))
-          const bytes = new Uint8Array(await slice.arrayBuffer())
-          md5?.update(bytes)
-          buffer?.set(bytes, offset)
-          offset += bytes.length
-          setProgress(picked.size > 0 ? (offset / picked.size) * 100 : 100)
-          await nextFrame()
-        }
-
-        if (runId.current !== id) return
-        const result: HashMap = {}
-        if (md5) result.MD5 = md5.hex()
-
-        for (const algorithm of algorithms) {
-          if (algorithm === 'MD5') continue
-          if (runId.current !== id) return
-          setStage(`Computing ${algorithm}…`)
-          setProgress(null)
-          await nextFrame()
-          result[algorithm] = await digestBytes(algorithm, buffer ?? new Uint8Array(0))
-        }
-
+        const result = await hashInEngine(picked, algorithms, {
+          onProgress: (done, total) => {
+            if (runId.current === id) setProgress(total > 0 ? (done / total) * 100 : 100)
+          },
+        })
         if (runId.current !== id) return
         setFileHashes(result)
       } catch (caught) {
         if (runId.current !== id) return
         setError(
           caught instanceof Error
-            ? `Could not hash that file: ${caught.message}. Very large files can use up the tab's memory. Try MD5 alone, which streams without buffering.`
+            ? `Could not hash that file: ${caught.message}.`
             : 'Could not hash that file.',
         )
       } finally {
@@ -356,7 +332,7 @@ export default function HashGenerator() {
                 value={progress ?? undefined}
                 sublabel={
                   file
-                    ? `${formatBytes(file.size)} · large files take a moment because every byte is read.`
+                    ? `${formatBytes(file.size)} · every byte is read on a background core.`
                     : undefined
                 }
               />

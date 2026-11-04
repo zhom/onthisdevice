@@ -30,3 +30,8 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm test
+      - run: cargo test --manifest-path rust/Cargo.toml --release --locked
+      - name: engine.wasm matches rust/
+        run: |
+          npm run build:engine
+          git diff --exit-code src/lib/engine/engine.wasm

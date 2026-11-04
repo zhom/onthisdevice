@@ -202,7 +202,7 @@ export const tools: Tool[] = [
       },
       {
         q: 'Does the file get uploaded to check the hash?',
-        a: 'No. The SHA family uses the browser WebCrypto API and MD5 uses a JavaScript implementation, both on your device. The file stays on your machine.',
+        a: 'No. WebAssembly workers in this tab hash the file on your device. The file stays on your machine.',
       },
       {
         q: 'Why does the same text give a different hash elsewhere?',

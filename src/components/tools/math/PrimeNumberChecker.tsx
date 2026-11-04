@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { ToolPanel } from '@/components/shared/ToolPanel'
@@ -6,11 +6,21 @@ import { ErrorNote } from '@/components/shared/ErrorNote'
 import { ProgressPanel } from '@/components/shared/ProgressPanel'
 import { CopyButton } from '@/components/shared/CopyButton'
 import { AnswerBanner, Field, StatGrid, StatTile, StepList, type Step } from './ui'
+import { fitsEngine, powers } from '@/lib/engine/factor'
+import { primeFacts, primesInRange } from '@/lib/engine/primes'
+import type { PrimeRange as RangeResult } from '@/lib/engine/primes'
+import { useFactors } from '@/lib/engine/useFactors'
+import { powerForm } from '../calc2/primes'
 import { factorizationString, fmtGrouped, isPrimeBig, primeFactorize, superscript } from './math-core'
 
+/** Up to here the checks run in the page, in a few milliseconds. */
 const MAX_FACTOR = 1e15
-const MAX_SPAN = 5_000_000
+const MAX_SPAN = 1e12
 const LIST_LIMIT = 5000
+/** Exact Miller-Rabin bound of the fixed witness set. */
+const EXACT_BELOW = 33n * 10n ** 23n
+/** How far to look for the nearest primes. */
+const NEIGHBOUR_REACH = 100_000n
 
 function parseInteger(raw: string): bigint | null {
   const cleaned = raw.replace(/[−–—]/g, '-').replace(/[\s,_]/g, '')
@@ -40,6 +50,10 @@ function CheckPrime() {
     try {
       const n = parseInteger(raw)
       if (n === null) return null
+      if (n > BigInt(MAX_FACTOR)) {
+        if (!fitsEngine(n)) throw new Error('Use a number of up to 300 digits.')
+        return { ok: true as const, big: true as const, n }
+      }
       const prime = isPrimeBig(n)
       const small = n <= BigInt(MAX_FACTOR) && n >= -BigInt(MAX_FACTOR)
       const asNumber = small ? Number(n) : null
@@ -101,7 +115,7 @@ function CheckPrime() {
         }
       }
 
-      return { ok: true as const, n, prime, factors, divisorCount, divisors, prev, next, steps, small }
+      return { ok: true as const, big: false as const, n, prime, factors, divisorCount, divisors, prev, next, steps, small }
     } catch (err) {
       return { ok: false as const, message: err instanceof Error ? err.message : 'That is not a number I can test.' }
     }
@@ -126,6 +140,8 @@ function CheckPrime() {
         </p>
       ) : !outcome.ok ? (
         <ErrorNote message={outcome.message} />
+      ) : outcome.big ? (
+        <BigCheck n={outcome.n} />
       ) : (
         <div className="space-y-4" role="status" aria-live="polite">
           <AnswerBanner
@@ -182,19 +198,82 @@ function CheckPrime() {
   )
 }
 
-/* ────────────────────────── range sieve ───────────────────────────────── */
+/* ──────────────────────── numbers above 10¹⁵ ───────────────────────────── */
 
-function simpleSieve(limit: number): number[] {
-  const flags = new Uint8Array(limit + 1)
-  const primes: number[] = []
-  for (let i = 2; i <= limit; i++) {
-    if (!flags[i]) {
-      primes.push(i)
-      for (let j = i * i; j <= limit; j += i) flags[j] = 1
-    }
-  }
-  return primes
+interface BigFacts {
+  n: bigint
+  prime: boolean
+  prev: bigint | null
+  next: bigint | null
 }
+
+/** The primality verdict and neighbours arrive in a worker, so long numbers never block typing. */
+function BigCheck({ n }: { n: bigint }) {
+  const [facts, setFacts] = useState<BigFacts | null>(null)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const job = new AbortController()
+    setError(null)
+    primeFacts(n, NEIGHBOUR_REACH, job.signal).then(
+      (found) => setFacts({ n, ...found }),
+      (cause: unknown) => {
+        if (!job.signal.aborted) setError(cause instanceof Error ? cause.message : 'The check could not finish.')
+      },
+    )
+    return () => job.abort()
+  }, [n])
+
+  const current = facts?.n === n ? facts : null
+  const run = useFactors(current && !current.prime ? n : null)
+  const factors = powers(run.primes)
+  const whole = run.rest === 1n && run.primes.length > 0
+  const shownFactors = factors.length ? powerForm(factors) : ''
+  const factorText = run.rest === 1n ? shownFactors : [shownFactors, `(a ${String(run.rest).length}-digit number)`].filter(Boolean).join(' × ')
+  const divisorCount = whole ? factors.reduce((a, f) => a * BigInt(f.e + 1), 1n) : null
+
+  if (error) return <ErrorNote message={error} />
+  if (!current) {
+    return (
+      <p className="rounded-xl bg-muted p-4 text-sm text-muted-foreground" role="status">
+        Checking…
+      </p>
+    )
+  }
+
+  return (
+    <div className="space-y-4" role="status" aria-live="polite">
+      <AnswerBanner
+        label={`${n}`}
+        value={current.prime ? (n < EXACT_BELOW ? 'Prime' : 'Probable prime') : 'Composite'}
+        sub={
+          current.prime
+            ? n < EXACT_BELOW
+              ? 'It passes a Miller–Rabin test that is exact at this size.'
+              : 'It passes 33 rounds of Miller–Rabin. A composite number this size has no known way to pass them all.'
+            : run.running
+              ? `It failed Miller–Rabin. Looking for its factors in parallel.${run.digits ? ` Now trying factors of about ${run.digits} digits.` : ''}`
+              : 'It failed Miller–Rabin, which proves it is not prime.'
+        }
+      />
+      <StatGrid>
+        <StatTile label="Prime factorisation" value={current.prime ? `${n}` : factorText || '–'} hint={run.error ?? undefined} tone="muted" />
+        <StatTile label="Number of divisors" value={current.prime ? '2' : divisorCount !== null ? String(divisorCount) : '–'} tone="muted" />
+        <StatTile label="Distinct prime factors" value={current.prime ? '1' : whole ? String(factors.length) : '–'} tone="muted" />
+        <StatTile label="Previous prime" value={current.prev !== null ? String(current.prev) : 'none nearby'} tone="muted" />
+        <StatTile label="Next prime" value={current.next !== null ? String(current.next) : 'none nearby'} tone="muted" />
+        <StatTile label="Prime gap around it" value={current.prev !== null && current.next !== null ? String(current.next - current.prev) : '–'} tone="muted" />
+      </StatGrid>
+      {run.running ? (
+        <Button type="button" variant="secondary" size="sm" onClick={run.stop}>
+          Stop the factor search
+        </Button>
+      ) : null}
+    </div>
+  )
+}
+
+/* ────────────────────────── range sieve ───────────────────────────────── */
 
 function PrimeRange() {
   const [loRaw, setLoRaw] = useState('1')
@@ -202,7 +281,10 @@ function PrimeRange() {
   const [running, setRunning] = useState(false)
   const [progress, setProgress] = useState(0)
   const [error, setError] = useState<string | null>(null)
-  const [output, setOutput] = useState<{ primes: number[]; count: number; lo: number; hi: number; twins: number; maxGap: { gap: number; at: number } } | null>(null)
+  const [output, setOutput] = useState<(RangeResult & { lo: number; hi: number; seconds: number }) | null>(null)
+  const job = useRef<AbortController | null>(null)
+
+  useEffect(() => () => job.current?.abort(), [])
 
   const run = async () => {
     setError(null)
@@ -217,7 +299,7 @@ function PrimeRange() {
       return
     }
     if (hi - lo > MAX_SPAN) {
-      setError(`That range covers ${fmtGrouped(hi - lo)} numbers. Keep the span under ${fmtGrouped(MAX_SPAN)} so the page stays responsive.`)
+      setError(`That range covers ${fmtGrouped(hi - lo)} numbers. Keep the span under ${fmtGrouped(MAX_SPAN)}.`)
       return
     }
     if (hi > Number.MAX_SAFE_INTEGER) {
@@ -225,50 +307,19 @@ function PrimeRange() {
       return
     }
 
+    const controller = new AbortController()
+    job.current = controller
     setRunning(true)
     setProgress(0)
     setOutput(null)
-    const { nextFrame } = await import('@/lib/utils')
     try {
-      const base = simpleSieve(Math.floor(Math.sqrt(hi)) + 1)
-      const CHUNK = 250_000
-      const found: number[] = []
-      let count = 0
-      let twins = 0
-      let previous = -1
-      let maxGap = { gap: 0, at: 0 }
-
-      for (let start = lo; start <= hi; start += CHUNK) {
-        const end = Math.min(hi, start + CHUNK - 1)
-        const size = end - start + 1
-        const composite = new Uint8Array(size)
-        for (const p of base) {
-          if (p * p > end) break
-          const first = Math.max(p * p, Math.ceil(start / p) * p)
-          for (let j = first; j <= end; j += p) composite[j - start] = 1
-        }
-        for (let i = 0; i < size; i++) {
-          const value = start + i
-          if (value < 2 || composite[i]) continue
-          count++
-          if (found.length < LIST_LIMIT) found.push(value)
-          if (previous > 0) {
-            const gap = value - previous
-            if (gap === 2) twins++
-            if (gap > maxGap.gap) maxGap = { gap, at: previous }
-          }
-          previous = value
-        }
-        setProgress(Math.round(((end - lo + 1) / (hi - lo + 1)) * 100))
-        await nextFrame()
-      }
-
-      setOutput({ primes: found, count, lo, hi, twins, maxGap })
+      const started = performance.now()
+      const found = await primesInRange(lo, hi, LIST_LIMIT, { signal: controller.signal, onProgress: (f) => setProgress(Math.round(f * 100)) })
+      setOutput({ ...found, lo, hi, seconds: (performance.now() - started) / 1000 })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'The sieve could not finish.')
+      if (!controller.signal.aborted) setError(err instanceof Error ? err.message : 'The sieve could not finish.')
     } finally {
       setRunning(false)
-      setProgress(100)
     }
   }
 
@@ -276,11 +327,17 @@ function PrimeRange() {
     <div className="space-y-4">
       <ToolPanel
         title="Prime numbers in a range"
-        description={`A segmented sieve of Eratosthenes. Spans of up to ${fmtGrouped(MAX_SPAN)} numbers are supported.`}
+        description={`A segmented sieve of Eratosthenes that runs in parallel. Spans of up to ${fmtGrouped(MAX_SPAN)} numbers.`}
         footer={
-          <Button type="button" onClick={run} disabled={running}>
-            {running ? 'Sieving…' : 'Find the primes'}
-          </Button>
+          running ? (
+            <Button type="button" variant="secondary" onClick={() => job.current?.abort()}>
+              Stop
+            </Button>
+          ) : (
+            <Button type="button" onClick={run}>
+              Find the primes
+            </Button>
+          )
         }
       >
         <div className="grid gap-4 sm:grid-cols-2">
@@ -297,7 +354,7 @@ function PrimeRange() {
           <AnswerBanner
             label={`Primes between ${fmtGrouped(output.lo)} and ${fmtGrouped(output.hi)}`}
             value={fmtGrouped(output.count)}
-            sub={`${fmtGrouped(output.twins)} twin-prime pair${output.twins === 1 ? '' : 's'} · largest gap ${output.maxGap.gap} after ${fmtGrouped(output.maxGap.at)}`}
+            sub={`${fmtGrouped(output.twins)} twin-prime pair${output.twins === 1 ? '' : 's'} · largest gap ${output.maxGap} after ${fmtGrouped(output.maxGapAt)} · ${output.seconds.toFixed(2)} s on this device`}
             copy={false}
           />
           <StatGrid>

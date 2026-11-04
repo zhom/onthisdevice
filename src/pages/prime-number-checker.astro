@@ -32,16 +32,16 @@ import PrimeNumberChecker from '@/components/tools/math/PrimeNumberChecker.tsx'
       means up to 99, not up to 9,972.
     </p>
     <p>
-      For large numbers even that is slow, so this tool uses a deterministic Miller–Rabin test. Miller–Rabin
-      asks whether n behaves the way a prime must behave under modular exponentiation for a set of chosen
-      witnesses. With the first twelve primes as witnesses, the test is proven exact for all values below
-      3.3 × 10²⁴, not a probabilistic guess. Numbers with dozens of digits give an answer at once.
+      For large numbers even that is slow, so this tool uses the Miller–Rabin test. It asks whether n behaves
+      the way a prime must behave under modular exponentiation for a set of chosen witnesses. With the first
+      thirteen primes as witnesses, the test is proven exact for all values below 3.3 × 10²⁴. Above that it
+      uses 33 witnesses and reports a probable prime. A 300-digit number gives an answer at once.
     </p>
     <p>
-      Full factorisation is a harder problem than primality testing. This tool factorises by trial division
-      with a 6k ± 1 wheel, which is practical up to about 10¹⁵. Above that it will still tell you whether the
-      number is prime, but not what its factors are. RSA encryption is built on exactly that difference in
-      difficulty.
+      Full factorisation is a harder problem than primality testing. Up to 10¹⁵ this tool uses trial division
+      with a 6k ± 1 wheel. Above that, parallel WebAssembly workers run the elliptic curve
+      method, which finds factors of up to about 35 digits. Two very large prime factors can stay out of reach.
+      RSA encryption is built on exactly that difference in difficulty.
     </p>
 
     <h2>Reading the prime factorisation</h2>

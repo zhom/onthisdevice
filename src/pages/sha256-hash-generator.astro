@@ -63,16 +63,13 @@ import DevEncodeHash from '@/components/tools/security/DevEncodeHash.tsx'
 
     <h2>Large files and memory</h2>
     <p>
-      WebCrypto has no streaming interface for SHA, so the whole file must be in memory while it is hashed.
-      This page reads it in 8&nbsp;MB slices with a progress bar and warns above about a gigabyte. For a
-      multi-gigabyte ISO, use the MD5 or CRC-32 page, which streams the file, or run
-      <code>sha256sum</code> locally.
+      A background worker reads the file in 4&nbsp;MB slices and adds each slice to a running hash, so an
+      8&nbsp;GB ISO uses no more memory than a small text file, and the page stays responsive while it runs.
     </p>
 
     <h2>Why hashing here is safe</h2>
     <p>
-      The SHA-256 hash generator uses the browser's native WebCrypto implementation inside this tab. The
-      page cannot reach a server: its Content-Security-Policy declares no external origin in
+      The SHA-256 hash generator runs inside this tab. The page cannot reach a server: its Content-Security-Policy declares no external origin in
       <code>connect-src</code>. Hashing a confidential archive here is the same as running the command-line
       tool on your own computer.
     </p>

@@ -72,7 +72,7 @@ const jsonLd: object[] = [
     image: new URL(`/og/${tool.slug}.png`, SITE).href,
     ...(tool.updated ? { dateModified: tool.updated } : {}),
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    featureList: ['Runs entirely in the browser', 'No upload', 'No account', 'No size limit beyond device memory'],
+    featureList: ['Runs entirely in the browser', 'No upload', 'No account'],
     publisher: { '@id': `${SITE.origin}/#organization` },
   },
 ]

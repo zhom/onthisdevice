@@ -7,11 +7,12 @@
     "dev": "astro dev",
     "build": "astro build && node scripts/postbuild.mjs",
     "build:ci": "node scripts/vendor-models.mjs && npm run build",
+    "build:engine": "sh scripts/build-engine.sh",
     "preview": "node scripts/serve.mjs --port 46210",
     "check": "astro sync && tsrs --noEmit --runExternalCode",
     "deploy": "npm run build && wrangler deploy",
     "smoke": "node scripts/smoke/run.mjs",
-    "test": "node scripts/search-test.mjs && node scripts/redact-test.mjs && node scripts/calc-test-money-body.mjs && node scripts/data/test.mjs && node scripts/calc-test-math-science-home.mjs",
+    "test": "node scripts/search-test.mjs && node scripts/redact-test.mjs && node scripts/calc-test-money-body.mjs && node scripts/data/test.mjs && node scripts/calc-test-math-science-home.mjs && node scripts/engine-test.mjs",
     "test:semantic": "node scripts/search-semantic-test.mjs"
   },
   "dependencies": {

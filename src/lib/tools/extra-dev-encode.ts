@@ -896,7 +896,7 @@ export const tools: Tool[] = [
       },
       {
         q: 'Why is a big file slower here than on the command line?',
-        a: 'WebCrypto has no streaming interface for SHA, so the whole file must be in memory before the digest. Above about a gigabyte, use the MD5 page, which streams, or a native tool.',
+        a: 'Native tools use the SHA instructions of your processor, and WebAssembly cannot. This page reads the file in slices on a background core, so memory use stays flat for a file of any size.',
       },
       {
         q: 'Is SHA-256 the same as SHA-2?',

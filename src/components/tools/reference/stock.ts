@@ -37,6 +37,14 @@ export function growth(d: Monthly, i0: number, i1: number, amount: number, month
   return { total, price, real, invested, months: i1 - i0 }
 }
 
+/** Each month's total return after inflation, dividends reinvested. */
+export function realReturns(d: Monthly): Float64Array {
+  return Float64Array.from({ length: d.price.length - 1 }, (_, i) => {
+    const t = i + 1
+    return (((d.price[t] + d.dividend[t] / 12) / d.price[t - 1]) * d.cpi[t - 1]) / d.cpi[t] - 1
+  })
+}
+
 /** Compound annual growth rate of a lump sum, in percent. */
 export function cagr(start: number, end: number, months: number): number {
   if (months <= 0 || start <= 0) return 0

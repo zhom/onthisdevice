@@ -337,7 +337,7 @@ export const tools: Tool[] = [
     faqs: [
       {
         q: 'How large a number can it test?',
-        a: 'Primality testing uses a deterministic Miller–Rabin routine on big integers, so numbers with dozens of digits are fast to test. Full factorisation is trial division and is practical to about 10^15.',
+        a: 'Up to 300 digits. The Miller–Rabin test is exact below 3.3 × 10²⁴ and gives a probable prime above that. Factors come from trial division up to 10¹⁵ and from the elliptic curve method above it, in parallel.',
       },
       {
         q: 'Why is 1 not prime?',
@@ -345,7 +345,7 @@ export const tools: Tool[] = [
       },
       {
         q: 'What does the range generator do?',
-        a: 'It runs a sieve of Eratosthenes between your two bounds and lists every prime found, along with the count, the twin-prime pairs and the largest gap in that interval.',
+        a: 'It runs a sieve of Eratosthenes in parallel, across up to a trillion numbers. It gives the count, the twin-prime pairs and the largest gap, and lists the first 5,000 primes.',
       },
       {
         q: 'How is the factorisation shown?',

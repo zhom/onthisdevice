@@ -15,6 +15,8 @@
  *   5. File helpers    — chunked hashing and byte-exact file comparison.
  */
 
+import { hashFile as hashInEngine } from '@/lib/engine/hash'
+import { run } from '@/lib/engine/pool'
 import { nextFrame } from '@/lib/utils'
 
 /* ================================================================== */
@@ -919,8 +921,6 @@ export function hashBytes(algorithm: HashAlgorithm, bytes: Uint8Array): string {
 /* 5. File helpers                                                     */
 /* ================================================================== */
 
-/** 4 MB keeps peak memory small while still amortising the per-slice overhead. */
-export const HASH_CHUNK_SIZE = 4 * 1024 * 1024
 /** Below this, crypto.subtle (native, much faster) is used for the SHA family. */
 const SUBTLE_LIMIT = 24 * 1024 * 1024
 
@@ -948,8 +948,8 @@ const SUBTLE_NAME: Partial<Record<HashAlgorithm, AlgorithmIdentifier>> = {
 }
 
 /**
- * Hashes a Blob with any mix of algorithms, reading it in slices so that a file
- * far larger than available RAM still works and the tab keeps repainting.
+ * Hashes a Blob with any mix of algorithms. Large files stream through the engine, so a
+ * file far larger than available RAM still works and the tab never stalls.
  */
 export async function hashFile(
   file: Blob,
@@ -981,23 +981,12 @@ export async function hashFile(
     return result
   }
 
-  const hashers = algorithms.map((algorithm) => ({ algorithm, hasher: createHasher(algorithm) }))
-  let processed = 0
-  onProgress?.(0, total)
-
-  while (processed < total) {
+  try {
+    return await hashInEngine(file, algorithms, { signal, onProgress })
+  } catch (cause) {
     throwIfAborted(signal)
-    const end = Math.min(processed + HASH_CHUNK_SIZE, total)
-    const chunk = new Uint8Array(await file.slice(processed, end).arrayBuffer())
-    for (const entry of hashers) entry.hasher.update(chunk)
-    processed = end
-    onProgress?.(processed, total)
-    // Yield so the progress bar actually paints between slices.
-    await nextFrame()
+    throw cause
   }
-
-  for (const entry of hashers) result[entry.algorithm] = bytesToHex(entry.hasher.digest())
-  return result
 }
 
 export interface FileComparison {
@@ -1010,79 +999,32 @@ export interface FileComparison {
   firstDifference: number | null
 }
 
-/**
- * Streams two files side by side: SHA-256 for both, plus the offset of the
- * first differing byte, in a single pass over each file.
- */
+/** SHA-256 of both files and a byte comparison, each on its own core. */
 export async function compareFiles(
   a: Blob,
   b: Blob,
   onProgress?: (processedBytes: number, totalBytes: number) => void,
   signal?: AbortSignal,
 ): Promise<FileComparison> {
-  const hashA = new Sha256()
-  const hashB = new Sha256()
-  const shared = Math.min(a.size, b.size)
+  const done = [0, 0]
   const total = a.size + b.size
-  let processed = 0
-  let firstDifference: number | null = null
-  let offset = 0
+  const digest = async (file: Blob, side: number): Promise<string> => {
+    const digests = await hashInEngine(file, ['SHA-256'], {
+      signal,
+      onProgress: (bytes) => {
+        done[side] = bytes
+        onProgress?.(done[0]! + done[1]!, total)
+      },
+    })
+    return digests['SHA-256']
+  }
 
-  onProgress?.(0, total)
-
-  while (offset < shared) {
+  try {
+    const [hashA, hashB, firstDifference] = await Promise.all([digest(a, 0), digest(b, 1), run('firstDifference', { a, b }, { signal })])
+    return { identical: a.size === b.size && firstDifference === null, sizeA: a.size, sizeB: b.size, hashA, hashB, firstDifference }
+  } catch (cause) {
     throwIfAborted(signal)
-    const end = Math.min(offset + HASH_CHUNK_SIZE, shared)
-    const [chunkA, chunkB] = await Promise.all([
-      a.slice(offset, end).arrayBuffer(),
-      b.slice(offset, end).arrayBuffer(),
-    ])
-    const bytesA = new Uint8Array(chunkA)
-    const bytesB = new Uint8Array(chunkB)
-    hashA.update(bytesA)
-    hashB.update(bytesB)
-    if (firstDifference === null) {
-      for (let i = 0; i < bytesA.length; i += 1) {
-        if (bytesA[i] !== bytesB[i]) {
-          firstDifference = offset + i
-          break
-        }
-      }
-    }
-    processed += bytesA.length + bytesB.length
-    offset = end
-    onProgress?.(processed, total)
-    await nextFrame()
-  }
-
-  // Whichever file is longer still needs its tail folded into its own digest.
-  const finishTail = async (blob: Blob, hasher: Sha256): Promise<void> => {
-    let tail = shared
-    while (tail < blob.size) {
-      throwIfAborted(signal)
-      const end = Math.min(tail + HASH_CHUNK_SIZE, blob.size)
-      const bytes = new Uint8Array(await blob.slice(tail, end).arrayBuffer())
-      hasher.update(bytes)
-      processed += bytes.length
-      tail = end
-      onProgress?.(processed, total)
-      await nextFrame()
-    }
-  }
-
-  if (a.size > shared) await finishTail(a, hashA)
-  if (b.size > shared) await finishTail(b, hashB)
-
-  const digestA = bytesToHex(hashA.digest())
-  const digestB = bytesToHex(hashB.digest())
-
-  return {
-    identical: a.size === b.size && firstDifference === null,
-    sizeA: a.size,
-    sizeB: b.size,
-    hashA: digestA,
-    hashB: digestB,
-    firstDifference,
+    throw cause
   }
 }
 

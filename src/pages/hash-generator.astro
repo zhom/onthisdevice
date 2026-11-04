@@ -66,10 +66,10 @@ import HashGenerator from '@/components/tools/dev/HashGenerator.tsx'
 
     <h2>How the hashing is done</h2>
     <p>
-      SHA-1, SHA-256, SHA-384 and SHA-512 use <code>crypto.subtle.digest</code>, the browser's native
-      implementation. It is the same code your TLS stack uses, at native speed. WebCrypto does not offer MD5,
-      because it is broken, so this page has a small JavaScript implementation of RFC 1321. It processes the
-      file block by block as it streams in.
+      For text, SHA-1, SHA-256, SHA-384 and SHA-512 use <code>crypto.subtle.digest</code>, the browser's
+      native implementation. WebCrypto does not offer MD5, because it is broken, so text uses a small
+      JavaScript implementation of RFC 1321. Files go to WebAssembly workers, one for each algorithm,
+      because WebCrypto cannot read a file in slices. Memory use stays flat for a file of any size.
     </p>
   </Fragment>
 </ToolLayout>

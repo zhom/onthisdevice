@@ -6,7 +6,7 @@ export const tools: Tool[] = [
     title: 'Prime Factorization Calculator',
     h1: 'Prime factorization calculator',
     description:
-      'Prime factorization calculator: break a whole number up to 10¹⁸ into primes, with a factor tree, exponent form, the division steps and the divisor count.',
+      'Prime factorization calculator: break a whole number of up to 300 digits into primes, with a factor tree, exponent form and the divisor count.',
     keywords: ['prime factors', 'factor tree', 'prime decomposition', 'factorize a number', 'number of divisors'],
     category: 'math',
     icon: 'Network',
@@ -17,7 +17,7 @@ export const tools: Tool[] = [
       },
       {
         q: 'How does the calculator factor large numbers?',
-        a: 'It divides by the primes up to 1,000, tests what is left with the Miller-Rabin primality test, and splits large composites with Pollard’s rho method. An 18-digit number with two 9-digit prime factors takes well under a second.',
+        a: 'Up to 10¹⁸ it uses Pollard’s rho method in the page. Above that, parallel WebAssembly workers run the elliptic curve method, whose time depends on the size of the factor and not of the number. A 39-digit number with two 20-digit prime factors usually takes under a second. Two very large prime factors can take hours, so you can stop at any time and keep what was found.',
       },
       {
         q: 'How do I count the divisors from the factorization?',

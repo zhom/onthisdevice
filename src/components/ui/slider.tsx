@@ -9,6 +9,8 @@ function Slider({
   value,
   min = 0,
   max = 100,
+  'aria-label': label,
+  'aria-labelledby': labelledBy,
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root>) {
   const _values = React.useMemo(
@@ -51,6 +53,8 @@ function Slider({
         <SliderPrimitive.Thumb
           data-slot="slider-thumb"
           key={index}
+          aria-label={label}
+          aria-labelledby={labelledBy}
           className="block size-5 shrink-0 cursor-grab rounded-full border-2 border-primary bg-background transition-[scale,box-shadow] duration-150 ease-(--ease-out) active:scale-110 active:cursor-grabbing motion-reduce:active:scale-100 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
         />
       ))}

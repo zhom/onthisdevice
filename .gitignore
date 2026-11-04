@@ -58,5 +58,8 @@ public/ocr/
 # Wrangler local state
 .wrangler/
 
+# Rust build output
+rust/target/
+
 # Internal planning notes (not published)
 docs/plans/

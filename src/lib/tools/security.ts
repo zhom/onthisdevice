@@ -311,7 +311,7 @@ export const tools: Tool[] = [
     faqs: [
       {
         q: 'Is there a file size limit?',
-        a: 'No. The tool reads the file from disk in 4 MB slices and adds each slice to the running hash, so memory use stays flat for a 40 KB file or a 40 GB file. The only limit is the read speed of your disk. The panel shows the throughput, and you can cancel at any time.',
+        a: 'No. Background workers read the file in 4 MB slices and add each slice to a running hash, so memory use stays flat for a 40 KB file or a 40 GB file. Each algorithm runs in its own worker. The panel shows the throughput, and you can cancel at any time.',
       },
       {
         q: 'Why does an online checksum tool that uploads the file make no sense?',

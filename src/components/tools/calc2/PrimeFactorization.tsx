@@ -1,4 +1,7 @@
 import { useMemo } from 'react'
+import { Button } from '@/components/ui/button'
+import { fitsEngine, powers } from '@/lib/engine/factor'
+import { useFactors } from '@/lib/engine/useFactors'
 import { CalcLayout, NumField, Result, SimBar, Stage, Stat, Working, useFields } from './_viz/Calc'
 import type { Ink } from './_viz/hooks'
 import { clamp01, phase, useTimeline } from './geo-anim'
@@ -9,6 +12,13 @@ const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹'
 const sup = (e: number) => String(e).replace(/\d/g, (c) => SUP[Number(c)] ?? c)
 const STEP = 0.45
 const MAX_SPLITS = 12
+/** Longest number drawn in full in the tree. */
+const MAX_LABEL = 22
+
+const label = (v: bigint) => {
+  const s = String(v)
+  return s.length <= MAX_LABEL ? s : `${s.slice(0, 8)}…${s.slice(-8)}`
+}
 
 interface Tree {
   /** The composite numbers down the right-hand side of the tree. */
@@ -21,14 +31,14 @@ interface Tree {
 function buildTree(n: bigint, f: PrimePower[]): Tree {
   const flat = flatFactors(f)
   const items: { label: string; value: bigint }[] =
-    flat.length - 1 <= MAX_SPLITS ? flat.map((p) => ({ label: String(p), value: p })) : f.map(({ p, e }) => ({ label: e === 1 ? String(p) : `${p}${sup(e)}`, value: p ** BigInt(e) }))
-  if (flat.length === 1) return { chain: [], leaves: [String(n)], levels: 0 }
+    flat.length - 1 <= MAX_SPLITS ? flat.map((p) => ({ label: label(p), value: p })) : f.map(({ p, e }) => ({ label: e === 1 ? label(p) : `${label(p)}${sup(e)}`, value: p ** BigInt(e) }))
+  if (flat.length === 1) return { chain: [], leaves: [label(n)], levels: 0 }
   // A single prime power with too many repeats to draw: one branch to "pᵉ".
-  if (items.length === 1) return { chain: [String(n)], leaves: [items[0]!.label], levels: 1 }
+  if (items.length === 1) return { chain: [label(n)], leaves: [items[0]!.label], levels: 1 }
   const chain: string[] = []
   let c = n
   for (let i = 0; i < items.length - 1; i++) {
-    chain.push(String(c))
+    chain.push(label(c))
     c /= items[i]!.value
   }
   return { chain, leaves: items.map((i) => i.label), levels: items.length - 1 }
@@ -44,18 +54,25 @@ export default function PrimeFactorization() {
         ? 'Use a whole number with digits only, such as 360.'
         : n < 2n
           ? 'Prime factorization starts at 2.'
-          : n > MAX_FACTOR
-            ? 'Use a number up to 1,000,000,000,000,000,000 (10¹⁸).'
+          : !fitsEngine(n)
+            ? 'Use a number of up to 300 digits.'
             : null
 
+  // Up to 10¹⁸ BigInt answers before the next frame. Above that the engine takes over.
+  const big = !error && n !== null && n > MAX_FACTOR
+  const run = useFactors(big ? n : null)
+  const finished = big && !run.running && run.rest === 1n && run.primes.length > 0
+  const partial = big && !finished
+
   const data = useMemo(() => {
-    if (error || n === null) return null
-    const fac = factorize(n)
-    return { n, fac, flat: flatFactors(fac), tree: buildTree(n, fac), count: divisorCount(fac), divs: divisors(fac, 64), prime: isPrime(n) }
-  }, [error, n])
+    if (error || n === null || partial) return null
+    const fac = big ? powers(run.primes) : factorize(n)
+    const prime = big ? fac.length === 1 && fac[0]!.e === 1 : isPrime(n)
+    return { n, fac, flat: flatFactors(fac), tree: buildTree(n, fac), count: divisorCount(fac), divs: divisors(fac, 64), prime }
+  }, [error, n, big, partial, run.primes])
 
   const end = data ? 0.25 + (data.tree.levels + 1) * STEP + 0.3 : 1
-  const tl = useTimeline((p, ink, t) => data && paintTree(p.ctx, p.w, data.tree, t, ink), { key: f.raw.n, still: end, end })
+  const tl = useTimeline((p, ink, t) => data && paintTree(p.ctx, p.w, data.tree, t, ink), { key: `${f.raw.n}:${data ? 1 : 0}`, still: end, end })
 
   const working = data
     ? [
@@ -71,21 +88,33 @@ export default function PrimeFactorization() {
 
   return (
     <CalcLayout
-      inputs={<NumField label="Whole number" {...f.bind('n')} inputMode="numeric" error={error} hint="From 2 up to 10¹⁸." />}
+      inputs={<NumField label="Whole number" {...f.bind('n')} inputMode="numeric" error={error} hint="From 2 up to 300 digits." />}
       result={
         <Result
-          label={data?.prime ? 'Prime factorization (the number is prime)' : 'Prime factorization'}
-          value={data ? powerForm(data.fac) : '–'}
-          sub={data && data.flat.length > 1 ? `${data.n} = ${data.flat.length <= 24 ? data.flat.join(' × ') : `${data.flat.length} prime factors`}` : undefined}
+          label={data?.prime ? 'Prime factorization (the number is prime)' : partial ? 'Prime factors found so far' : 'Prime factorization'}
+          value={data ? powerForm(data.fac) : partial ? partialForm(run.primes, run.rest) : '–'}
+          sub={
+            partial
+              ? run.error ?? searchNote(run.running, run.digits)
+              : data && data.flat.length > 1
+                ? `${data.n} = ${data.flat.length <= 24 ? data.flat.join(' × ') : `${data.flat.length} prime factors`}`
+                : undefined
+          }
           error={error}
           copy={data ? `${data.n} = ${powerForm(data.fac)}` : undefined}
         >
+          {partial && run.running ? (
+            <Button variant="secondary" size="sm" onClick={run.stop}>
+              Stop
+            </Button>
+          ) : null}
           {data ? (
             <>
               <Stat label="Prime factors" value={data.flat.length} format={(v) => String(Math.round(v))} />
               <Stat label="Distinct primes" value={data.fac.length} format={(v) => String(Math.round(v))} />
               <Stat label="Number of divisors" value={data.count.toString()} />
               <Stat label="Is it prime?" value={data.prime ? 'Yes' : 'No'} />
+              {big && run.elapsed !== null ? <Stat label="Time on this device" value={`${(run.elapsed / 1000).toFixed(run.elapsed < 10_000 ? 2 : 0)} s`} /> : null}
             </>
           ) : null}
         </Result>
@@ -107,6 +136,18 @@ export default function PrimeFactorization() {
       working={working.length ? <Working lines={working} caption="Divide by the smallest prime that goes in, again and again, until the quotient is prime." /> : null}
     />
   )
+}
+
+function partialForm(primes: bigint[], rest: bigint): string {
+  const known = primes.length ? powerForm(powers(primes)) : ''
+  if (rest === 1n) return known
+  const unsplit = `(a ${String(rest).length}-digit number)`
+  return known ? `${known} × ${unsplit}` : unsplit
+}
+
+function searchNote(running: boolean, digits: number): string {
+  if (!running) return 'Stopped. The number in brackets is not split yet.'
+  return digits ? `Looking for a factor of about ${digits} digits in parallel. Each larger size takes several times longer.` : 'Working…'
 }
 
 function divisionLines(n: bigint, flat: bigint[]): string[] {

@@ -1,0 +1,48 @@
+---
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import MonteCarloRetirement from '@/components/tools/finance/MonteCarloRetirement.tsx'
+---
+
+<ToolLayout slug="monte-carlo-retirement-calculator">
+  <MonteCarloRetirement client:load />
+
+  <Fragment slot="explainer">
+    <h2>How to read the result</h2>
+    <p>
+      The large percentage is the share of simulated retirements in which the money lasts to the age you
+      plan for. All amounts are in today's money, so inflation is already removed. The chart shows the
+      spread of outcomes, and the table shows how the chance changes with the retirement age and the
+      monthly spending.
+    </p>
+
+    <h2>How the simulation works</h2>
+    <ol>
+      <li>
+        It takes each month's real return from US stock market data since 1871, with dividends reinvested.
+      </li>
+      <li>
+        It builds a life from random 5-year runs of consecutive months. Runs keep crashes and recoveries
+        together, as they happened.
+      </li>
+      <li>
+        Each month the balance grows by the stock share at that month's return and by the rest at the fixed
+        return you set. Then it takes your saving or your spending.
+      </li>
+      <li>A path fails in the month its balance reaches zero.</li>
+    </ol>
+
+    <h2>Why one average return is not enough</h2>
+    <p>
+      Two retirees with the same average return can end very differently. If the bad years come first, the
+      retiree sells at low prices, and the money that is gone cannot recover. This is sequence-of-returns
+      risk. The plain <a href="/retirement-calculator">retirement calculator</a> uses one steady return, so
+      it cannot show this risk.
+    </p>
+
+    <h2>Why it runs fast</h2>
+    <p>
+      The table needs 81 simulations. Your processor runs them in parallel in compiled WebAssembly, so the
+      result changes as you type and nothing leaves the tab.
+    </p>
+  </Fragment>
+</ToolLayout>

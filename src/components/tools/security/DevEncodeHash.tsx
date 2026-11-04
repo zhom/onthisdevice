@@ -17,6 +17,7 @@ import { ErrorNote } from '@/components/shared/ErrorNote'
 import { ProgressPanel } from '@/components/shared/ProgressPanel'
 import { FileDropzone } from '@/components/shared/FileDropzone'
 import { CopyButton } from '@/components/shared/CopyButton'
+import { hashFile } from '@/lib/engine/hash'
 import { formatBytes, formatNumber, nextFrame } from '@/lib/utils'
 import { EncodeField, EncodePane, ProofPanel } from '../dev/dev-encode-ui'
 import {
@@ -162,31 +163,15 @@ export default function DevEncodeHash({ algorithm = 'SHA-256' }: Props) {
       setFileResult(null)
       setProgress(0)
       try {
-        if (algorithm === 'MD5' || algorithm === 'CRC32') {
-          // Both stream, so an 8 GB file costs no more memory than a 4 MB one.
-          const md5 = new Md5()
-          let crc = 0
-          const CHUNK = 4 * 1024 * 1024
-          let offset = 0
-          while (offset < file.size) {
-            const buffer = await file.slice(offset, Math.min(offset + CHUNK, file.size)).arrayBuffer()
-            const chunk = new Uint8Array(buffer)
-            if (algorithm === 'MD5') md5.update(chunk)
-            else crc = crc32Update(chunk, crc)
-            offset += CHUNK
-            setProgress(Math.min(1, offset / Math.max(1, file.size)))
-            await nextFrame()
-          }
-          setFileResult({
-            name: file.name,
-            size: file.size,
-            digest: algorithm === 'MD5' ? md5.hex() : crc32Hex(crc),
+        if (algorithm !== 'HMAC') {
+          const digests = await hashFile(file, [algorithm], {
+            onProgress: (done, total) => setProgress(total > 0 ? done / total : 1),
           })
+          setFileResult({ name: file.name, size: file.size, digest: digests[algorithm] })
         } else {
-          const target = isHmac ? hmacHash : (algorithm as SubtleAlgorithm)
           if (file.size > 1024 * 1024 * 1024) {
             throw new Error(
-              `${file.name} is ${formatBytes(file.size)}. The SHA family in WebCrypto has no streaming interface, so the whole file has to sit in memory at once. Beyond about 1 GB the tab runs out of memory. Use the MD5 or CRC-32 page for a file this size; both stream.`,
+              `${file.name} is ${formatBytes(file.size)}. HMAC in WebCrypto has no streaming interface, so the whole file has to sit in memory at once. Beyond about 1 GB the tab runs out of memory.`,
             )
           }
           const bytes = new Uint8Array(file.size)
@@ -201,9 +186,7 @@ export default function DevEncodeHash({ algorithm = 'SHA-256' }: Props) {
           }
           setProgress(0.95)
           await nextFrame()
-          const digest = isHmac
-            ? bytesToHex(await hmacBytes(hmacHash, decodeKey(hmacKey, keyFormat), bytes))
-            : await digestHex(target, bytes)
+          const digest = bytesToHex(await hmacBytes(hmacHash, decodeKey(hmacKey, keyFormat), bytes))
           setFileResult({
             name: file.name,
             size: file.size,
@@ -220,7 +203,7 @@ export default function DevEncodeHash({ algorithm = 'SHA-256' }: Props) {
         setProgress(null)
       }
     },
-    [algorithm, isHmac, hmacHash, hmacKey, keyFormat],
+    [algorithm, hmacHash, hmacKey, keyFormat],
   )
 
   /* --------------------------------------------------------- compare */

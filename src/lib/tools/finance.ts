@@ -229,6 +229,48 @@ export const tools: Tool[] = [
     updated: '2026-11-01',
   },
   {
+    slug: 'monte-carlo-retirement-calculator',
+    title: 'Monte Carlo Retirement Calculator',
+    h1: 'Monte Carlo retirement calculator',
+    description:
+      'Will your money last? Run a million simulated retirements on real stock returns since 1871 and see your chance of success at each age and spending level.',
+    keywords: [
+      'retirement simulator',
+      'will my money last',
+      'retirement success rate',
+      'safe withdrawal rate calculator',
+      'sequence of returns risk',
+      'fire calculator',
+      'historical retirement calculator',
+    ],
+    category: 'finance',
+    icon: 'Dices',
+    faqs: [
+      {
+        q: 'What is a Monte Carlo retirement calculator?',
+        a: 'It runs your plan many times with different market returns and counts how often the money lasts. A single average return hides the order of good and bad years. Bad years early in retirement do the most damage.',
+      },
+      {
+        q: 'Where do the returns come from?',
+        a: 'From monthly US stock market data since 1871, with dividends reinvested and inflation removed. Each simulated life joins random 5-year runs of real months, so crashes and recoveries stay together as they happened.',
+      },
+      {
+        q: 'What is a good success rate?',
+        a: 'Many planners aim for 85 to 95%. Above that you may be working longer than you need to. A failure in the simulation means you would need to spend less for a time, and real people do that when markets fall.',
+      },
+      {
+        q: 'What does this calculator leave out?',
+        a: 'Taxes, fund fees, pensions and social security. It also uses only US history, which was one of the best markets of the period. To allow for these, plan with lower spending or subtract pension income from your spending.',
+      },
+      {
+        q: 'Is my financial data sent anywhere?',
+        a: 'No. The simulation runs in this browser tab, in parallel on your processor. Open the network panel to check: no request carries your numbers.',
+      },
+    ],
+    related: ['retirement-calculator', 'stock-market-return-calculator', 'compound-interest-calculator', 'inflation-calculator'],
+    updated: '2026-11-04',
+  },
+  {
     slug: 'retirement-calculator',
     title: 'Retirement Calculator',
     h1: 'Retirement savings calculator',

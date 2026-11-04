@@ -35,15 +35,26 @@ number of divisors = (e₁ + 1)(e₂ + 1) … (eₖ + 1)</code></pre>
 
     <h2>Large numbers</h2>
     <p>
-      Up to 10¹⁸ the calculator first divides by every prime up to 1,000. It then tests what is left with
-      the Miller-Rabin test, which is exact in this range, and splits a large composite with Pollard’s rho
-      method. 999,999,943,999,999,559 = 999,999,937 × 1,000,000,007 takes well under a second. Trial
-      division alone would need about 50 million divisions for it.
+      Up to 10¹⁸ the calculator divides by the primes up to 1,000, tests what is left with the Miller-Rabin
+      test and splits a large composite with Pollard’s rho method. 999,999,943,999,999,559 = 999,999,937 ×
+      1,000,000,007 takes well under a second. Trial division alone would need about 50 million divisions
+      for it.
+    </p>
+    <p>
+      Above 10¹⁸ the work moves to parallel WebAssembly workers. They run the elliptic curve
+      method: many independent attempts, and the first core to find a factor stops the others. Its time
+      depends on the size of the factor, not of the number. 2²⁵⁶ − 1 has 78 digits and takes a moment,
+      because its largest factor is small for its size.
     </p>
 
     <h2>Limits</h2>
     <ul>
-      <li>Whole numbers from 2 to 10¹⁸ only. 0 and 1 have no prime factorization.</li>
+      <li>Whole numbers from 2 up to 300 digits. 0 and 1 have no prime factorization.</li>
+      <li>
+        Two prime factors of more than about 35 digits each can take hours. You can stop at any time and
+        keep the factors found so far.
+      </li>
+      <li>Above about 3.3 × 10²⁴, a “prime” factor passes 33 rounds of Miller-Rabin, which is a test and not a proof.</li>
       <li>The factor tree shows up to 13 leaves one prime at a time. With more, it takes out whole prime powers in each split.</li>
       <li>The list of divisors appears when there are 64 or fewer; the count is always shown.</li>
     </ul>
