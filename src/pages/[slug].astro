@@ -1,0 +1,25 @@
+---
+/**
+ * Pages of the round-3 tools that have no file of their own (src/components/site/pages.ts).
+ * Each registry module has one page component that renders ToolLayout with its island and
+ * explainer for a slug, and throws for a slug it does not know.
+ */
+import type { Owner } from '@/components/site/pages'
+import { ROUTED } from '@/components/site/pages'
+import AiPage from '@/components/tools/ai/Page.astro'
+import ConvertPage from '@/components/tools/convert/Page.astro'
+import CalculatorsPage from '@/components/tools/calculators/Page.astro'
+import TextDevPage from '@/components/tools/text-dev/Page.astro'
+
+export function getStaticPaths() {
+  return ROUTED.map(({ slug, owner }) => ({ params: { slug }, props: { owner } }))
+}
+
+const { slug } = Astro.params
+const { owner } = Astro.props as { owner: Owner }
+---
+
+{owner === 'ai' && <AiPage slug={slug} />}
+{owner === 'convert' && <ConvertPage slug={slug} />}
+{owner === 'calculators' && <CalculatorsPage slug={slug} />}
+{owner === 'text-dev' && <TextDevPage slug={slug} />}

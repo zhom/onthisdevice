@@ -42,6 +42,8 @@ export default defineConfig({
       ],
     },
     server: {
+      // Scratch files, Python caches and vendored models are not site sources.
+      watch: { ignored: ['**/scripts/.tmp/**', '**/public/models/**', '**/rust/target/**'] },
       headers: {
         'Cross-Origin-Opener-Policy': 'same-origin',
         'Cross-Origin-Embedder-Policy': 'require-corp',

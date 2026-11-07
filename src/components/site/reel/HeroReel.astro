@@ -1,0 +1,73 @@
+---
+/**
+ * The home reel: short pixel scenes of tools that other sites charge for (scenes.ts), with a
+ * caption that links to the tool and one bar per scene. It sets the heading phrase marked
+ * data-reel-phrase (HeroHeading.astro). Motion: reel.ts.
+ */
+import Icon from '@/components/site/Icon.tsx'
+import { getTool } from '@/lib/tools'
+import { cn } from '@/lib/utils'
+import { SCENES } from './scenes'
+
+interface Props {
+  class?: string
+}
+const { class: className } = Astro.props
+
+const items = SCENES.map((s) => ({ ...s, title: getTool(s.slug)?.title ?? s.phrase }))
+const first = items[0]
+---
+
+<figure class={cn('m-0 min-w-0', className)} data-reel>
+  <div class="relative aspect-[6/5] w-full text-foreground select-none sm:aspect-[5/4]" data-reel-canvas>
+    <canvas class="absolute inset-0 block size-full" aria-hidden="true"></canvas>
+  </div>
+  <figcaption class="mt-5">
+    <div class="flex items-start justify-between gap-4">
+      <div class="min-w-0" data-reel-caption>
+        <a href={`/${first.slug}`} class="link inline-flex items-center gap-1.5 text-[1.0625rem] font-[650]" data-reel-link>
+          <span data-reel-title>{first.title}</span>
+          <Icon name="ArrowRight" className="size-4 shrink-0" />
+        </a>
+        <p class="mt-1 text-[0.9375rem] text-muted-foreground" data-reel-note>{first.note}</p>
+      </div>
+      <button
+        type="button"
+        class="reel-pause -mt-1.5 -mr-2 grid size-10 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-0 motion-reduce:hidden"
+        aria-label="Pause the animation"
+        aria-pressed="false"
+        data-reel-pause
+      >
+        <Icon name="Pause" className="reel-icon-pause size-4" />
+        <Icon name="Play" className="reel-icon-play size-4" />
+      </button>
+    </div>
+    <div class="mt-3 grid grid-cols-7 gap-1.5" role="group" aria-label="Tools in the animation">
+      {
+        items.map((s, i) => (
+          <button type="button" class="reel-step group h-7 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-1" aria-label={s.title} aria-current={i === 0 ? 'true' : 'false'} data-reel-go={i} data-title={s.title}>
+            <span class="block h-[3px] overflow-hidden rounded-full bg-muted">
+              <span class="block h-full origin-left bg-foreground" style="transform: scaleX(0)" data-reel-bar />
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </figcaption>
+</figure>
+
+<script>
+  import { mountReel } from './reel'
+  const root = document.querySelector<HTMLElement>('[data-reel]')
+  if (root) mountReel(root, document.querySelector<HTMLElement>('[data-reel-phrase]'))
+</script>
+
+<style>
+  .reel-icon-play,
+  [data-paused='true'] .reel-icon-pause {
+    display: none;
+  }
+  [data-paused='true'] .reel-icon-play {
+    display: block;
+  }
+</style>

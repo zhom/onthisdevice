@@ -1,0 +1,28 @@
+---
+/**
+ * The home heading. Its first line is the phrase of the reel scene that plays (HeroReel.astro
+ * changes it); the accessible name lists the scenes once.
+ */
+import { SCENES } from './scenes'
+
+const label = `${SCENES.map((s) => s.phrase.toLowerCase()).join(', ').replace(/^./, (c) => c.toUpperCase())}, free, on this device.`
+---
+
+<h1 id="hero-title" class="hero-heading enter text-foreground" aria-label={label}>
+  <span class="block whitespace-nowrap" data-reel-phrase>{SCENES[0].phrase}</span> <span class="block">free, on this device.</span>
+</h1>
+
+<style>
+  .hero-heading {
+    font-weight: 760;
+    font-size: clamp(1.75rem, calc(9.1vw - 0.25rem), 4rem);
+    line-height: 1.02;
+    text-wrap: nowrap;
+  }
+  @media (min-width: 1024px) {
+    .hero-heading {
+      /* The longest phrase fills the column at most (measured at 1024 to 1920 px). */
+      font-size: clamp(2.5rem, 0.15rem + 3.85vw, 3.6rem);
+    }
+  }
+</style>

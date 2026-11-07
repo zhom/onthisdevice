@@ -22,11 +22,11 @@ npm run smoke
 
 ## Add a tool
 
-1. Add an entry to `src/lib/tools/<category>.ts`. It drives search, navigation, SEO and the sitemap.
+1. Add an entry to a module in `src/lib/tools/`. It drives search, navigation, SEO and the sitemap.
 2. Build the island in `src/components/tools/<category>/`.
-3. Add `src/pages/<slug>.astro`.
+3. Add `src/pages/<slug>.astro`. A tool in `ai.ts`, `convert.ts`, `calculators.ts` or `text-dev.ts` can skip this: `src/pages/[slug].astro` renders it through the `Page.astro` of its folder.
 
-[CONTRACT.md](CONTRACT.md) has the rules and the page template.
+`scripts/registry-test.mjs` (part of `npm test`) fails on a duplicate slug, a tool without a page, an unknown icon or a broken related link. [CONTRACT.md](CONTRACT.md) has the rules and the page template.
 
 ## Deployment
 

@@ -39,6 +39,12 @@ import { tools as devEncodeTools } from './extra-dev-encode'
 import { tools as calcMoneyTools } from './extra-calc-money'
 import { tools as unitsLifeTools } from './extra-units-life'
 
+// Round 3. Most of these pages come from src/pages/[slug].astro (see src/components/site/pages.ts).
+import { tools as aiTools } from './ai'
+import { tools as convertTools } from './convert'
+import { tools as calculatorTools } from './calculators'
+import { tools as textDevTools } from './text-dev'
+
 export type { Category, CategoryId, GroupId, Tool, Faq } from './types'
 export { CATEGORIES, CATEGORY_BY_ID, GROUPS } from './types'
 
@@ -73,6 +79,10 @@ export const TOOLS: Tool[] = [
   ...devEncodeTools,
   ...calcMoneyTools,
   ...unitsLifeTools,
+  ...aiTools,
+  ...convertTools,
+  ...calculatorTools,
+  ...textDevTools,
 ].sort((a, b) => a.title.localeCompare(b.title))
 
 export const TOOL_BY_SLUG: Map<string, Tool> = new Map(TOOLS.map((t) => [t.slug, t]))

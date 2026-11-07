@@ -2,19 +2,19 @@
 import BaseLayout from '@/layouts/BaseLayout.astro'
 import Container from '@/components/site/Container.astro'
 import Glyph from '@/components/site/Glyph.astro'
-import HeroField from '@/components/site/HeroField.astro'
-import HeroSentence from '@/components/site/HeroSentence.astro'
-import HeroTitle from '@/components/site/HeroTitle.astro'
 import Icon from '@/components/site/Icon.tsx'
-import SavingsProof from '@/components/site/SavingsProof.tsx'
+import RequestLog from '@/components/site/RequestLog.astro'
+import HeroHeading from '@/components/site/reel/HeroHeading.astro'
+import HeroReel from '@/components/site/reel/HeroReel.astro'
 import HeroSearch from '@/components/site/search/HeroSearch.tsx'
 import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
-import { QUICK, SITUATIONS } from '@/lib/featured'
+import { PAID, QUICK } from '@/lib/featured'
 import { hasPage } from '@/components/site/pages'
 
 const pick = (slugs: string[]) => slugs.map((s) => getTool(s)).filter((t): t is Tool => t !== undefined && hasPage(t))
 const quick = pick(QUICK)
-const situations = SITUATIONS.map((s) => ({ ...s, tools: pick(s.tools) }))
+const paid = PAID.flatMap((p) => pick([p.slug]).map((tool) => ({ tool, gives: p.gives })))
+const count = TOOL_COUNT.toLocaleString('en-US')
 
 let glyphIndex = 0
 const catalogue = GROUPS.map((g) => ({
@@ -27,8 +27,8 @@ const catalogue = GROUPS.map((g) => ({
   })).filter((c) => c.count > 0),
 })).filter((g) => g.categories.length > 0)
 
-const title = `onthisdevice: ${TOOL_COUNT} free tools that never upload your files`
-const description = `Free PDF, image, video, redaction, data and calculator tools that run in your browser. Your files stay on your device and are never uploaded.`
+const title = `onthisdevice: ${count} free tools that never upload your files`
+const description = `Remove backgrounds, transcribe audio, upscale photos and edit PDFs for free. ${count} tools, AI models included, run in your browser. Nothing is uploaded.`
 
 const faqs: { q: string; a: string }[] = [
   {
@@ -76,12 +76,11 @@ const jsonLd = [
 
 <BaseLayout title={title} description={description} canonicalPath="/" jsonLd={jsonLd}>
   <section aria-labelledby="hero-title">
-    <Container class="grid grid-cols-1 items-start gap-y-10 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-x-16 lg:pt-20 lg:pb-16">
-      <HeroSentence />
-      <div class="col-start-1 row-start-1 min-w-0">
-        <HeroTitle />
-        <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${TOOL_COUNT} free tools that run in your browser. Nothing is uploaded.`}>
-          {TOOL_COUNT} free tools for PDFs, images, video and numbers. They run in this tab, so there is no upload, no queue, no account and no watermark.
+    <Container class="grid grid-cols-1 items-start gap-y-12 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-x-16 lg:pt-16 lg:pb-16">
+      <div class="min-w-0">
+        <HeroHeading />
+        <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${count} free tools that run in your browser. Nothing is uploaded.`}>
+          {count} free tools for files, media and numbers, AI models included. They run in this tab, so nothing is uploaded and there is no account, quota or watermark.
         </p>
 
         <div class="enter relative z-10 mt-9 max-w-[34rem]" style="--i:2">
@@ -102,70 +101,53 @@ const jsonLd = [
         </ul>
       </div>
 
-      <HeroField class="enter h-[17rem] sm:h-[22rem] lg:col-start-2 lg:row-start-1 lg:h-[32rem]" />
+      <HeroReel class="enter lg:pt-3" />
     </Container>
   </section>
 
-  {
-    situations.map((s) => (
-      <Container class="pt-20 sm:pt-32">
-        <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-          <h2 class="t-title max-w-[17ch] text-foreground">{s.problem}</h2>
-          <div class="lg:pt-2">
-            <p class="t-lead max-w-[34rem]">{s.answer}</p>
-            <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2">
-              {s.tools.map((tool) => (
-                <li>
-                  <a href={`/${tool.slug}`} class="link text-[0.9375rem] font-[560]">
-                    {tool.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      </Container>
-    ))
-  }
+  <Container class="pt-20 sm:pt-32">
+    <section aria-labelledby="paid-title">
+      <div class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+        <h2 id="paid-title" class="t-title max-w-[16ch] text-foreground">Tools that other sites charge for.</h2>
+        <p class="t-lead max-w-[34rem] lg:pt-2">Upload sites pay for each file they process, so they sell credits and plans. Here your device does the work, so there is nothing to meter.</p>
+      </div>
+      <div class="mt-10 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          paid.map(({ tool, gives }) => (
+            <a href={`/${tool.slug}`} class="row-link group items-center">
+              <span class="grid size-10 place-items-center text-foreground">
+                <Icon name={tool.icon} className="size-6" strokeWidth={1.5} />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-[1.0625rem] font-[680] text-foreground">{tool.title}</span>
+                <span class="mt-0.5 block truncate text-[0.875rem] text-muted-foreground">{gives}</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+  </Container>
 
-  <section class="ink-band mt-24 py-20 sm:mt-36 sm:py-32">
+  <section class="ink-band mt-24 py-20 sm:mt-36 sm:py-28" aria-labelledby="proof-title">
     <Container class="grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
       <div>
-        <h2 class="t-title max-w-[14ch] text-foreground">Will your savings last to 95?</h2>
+        <h2 id="proof-title" class="t-title max-w-[14ch] text-foreground">Your files stay in this tab.</h2>
         <p class="t-lead mt-6 max-w-[34rem]">
-          This page simulates a million retirements on US stock returns from 1871 to 2023, on the processor of your device, each time you move the slider.
+          Each page sends a rule that makes your browser block connections to other servers. Open the network panel and use a tool: no request carries your file.
         </p>
-        <p class="mt-4 max-w-[34rem] text-[0.9375rem] text-muted-foreground">Example: age 35, 100,000 saved, 1,000 more each month until 65, 80% in stocks and 1.5% a year on the rest. All amounts are in today's money.</p>
-        <p class="mt-6"><a href="/monte-carlo-retirement-calculator" class="link text-[0.9375rem] font-[560]">Use your own numbers</a></p>
+        <code class="mt-5 block font-mono text-[0.9375rem] break-words text-foreground">connect-src 'self' blob: data:</code>
+        <p class="mt-6 max-w-[34rem] text-[0.9375rem] text-muted-foreground">After a tool loads once, it also works with the network off.</p>
+        <p class="mt-6"><a href="/privacy" class="link text-[0.9375rem] font-[560]">What the site stores</a></p>
       </div>
-      <SavingsProof client:visible />
+      <RequestLog />
     </Container>
   </section>
-
-  <Container class="pt-20 sm:pt-32">
-    <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-      <h2 class="t-title max-w-[17ch] text-foreground">A train with no signal.</h2>
-      <p class="t-lead max-w-[34rem] lg:pt-2">A tool keeps working after it has loaded once. Turn off your network and try one.</p>
-    </section>
-  </Container>
-
-  <Container class="pt-20 sm:pt-32">
-    <section class="grid grid-cols-1 gap-x-16 gap-y-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-      <h2 class="t-title max-w-[17ch] text-foreground">You have no reason to trust a website.</h2>
-      <div class="lg:pt-2">
-        <p class="t-lead max-w-[34rem]">
-          So check this one. Open the network panel of your browser and use any tool: no request carries your file. Every page also sends this rule, and your browser blocks connections to any other server.
-        </p>
-        <code class="mt-4 block w-fit max-w-full rounded-md bg-muted px-2.5 py-1.5 font-mono text-[0.875rem] break-words text-foreground">connect-src 'self' blob: data:</code>
-        <p class="mt-4"><a href="/privacy" class="link text-[0.9375rem] font-[560]">What the site stores</a></p>
-      </div>
-    </section>
-  </Container>
 
   <Container class="pt-24 sm:pt-40">
     <div class="flex flex-wrap items-baseline justify-between gap-4">
       <h2 class="t-h2 text-foreground">Everything else</h2>
-      <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {TOOL_COUNT} tools</a>
+      <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {count} tools</a>
     </div>
     <div class="mt-8 space-y-12">
       {

@@ -30,9 +30,10 @@ export type CategoryId =
   | 'science'
   | 'home'
   | 'reference'
+  | 'ai'
 
 /** Top-level nav grouping shown in the header mega-menu. */
-export type GroupId = 'redact' | 'files' | 'media' | 'calculators' | 'text-code' | 'generators'
+export type GroupId = 'redact' | 'ai' | 'files' | 'media' | 'calculators' | 'text-code' | 'generators'
 
 export interface Faq {
   q: string
@@ -84,6 +85,7 @@ export interface Category {
 
 export const GROUPS: { id: GroupId; title: string }[] = [
   { id: 'redact', title: 'Redaction' },
+  { id: 'ai', title: 'AI' },
   { id: 'files', title: 'Files & Documents' },
   { id: 'media', title: 'Images & Media' },
   { id: 'calculators', title: 'Calculators' },
@@ -101,6 +103,17 @@ export const CATEGORIES: Category[] = [
       'Find and hide names, faces, numbers, keys and metadata in text, PDFs, photos, screenshots, video and audio. Detection models run in your browser.',
     icon: 'EyeOff',
     group: 'redact',
+    accent: 'chart-1',
+  },
+  {
+    id: 'ai',
+    title: 'AI Tools',
+    slug: 'ai-tools',
+    tagline: 'Models that run on your device',
+    description:
+      'Remove backgrounds, upscale photos, transcribe audio, read text from images and more with AI models that run in your browser. Nothing is uploaded.',
+    icon: 'Cpu',
+    group: 'ai',
     accent: 'chart-1',
   },
   {

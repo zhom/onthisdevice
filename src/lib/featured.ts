@@ -3,35 +3,26 @@
  * registry modules so curation never touches tool data.
  */
 
-/** A problem in the visitor's words, what this site does about it, and where to start. */
-export interface Situation {
-  problem: string
-  answer: string
-  tools: string[]
+/** A tool that other sites usually charge for, and what it gives here, in a few words. */
+export interface PaidTool {
+  slug: string
+  gives: string
 }
 
-/** The situations before the live demonstration on the home page. */
-export const SITUATIONS: Situation[] = [
-  {
-    problem: 'A passport scan for a visa form.',
-    answer: 'Get it under the size limit and hide what the form does not need. The scan stays in this tab.',
-    tools: ['compress-image-to-100kb', 'redact-id-card', 'jpg-to-pdf'],
-  },
-  {
-    problem: 'A contract with names to remove.',
-    answer: 'Find names, emails and numbers, then burn them out of the file. The text under the bars is gone, so nobody can copy it back.',
-    tools: ['redact-pdf', 'redact-text', 'remove-metadata'],
-  },
-  {
-    problem: 'A 300 MB video that a free plan refuses.',
-    answer: 'The video tools take 1 GB or more, and your device does the work.',
-    tools: ['compress-video', 'mov-to-mp4', 'video-to-gif'],
-  },
-  {
-    problem: 'Photo 21 of the day.',
-    answer: 'Upload sites count your files, then ask you to pay. Here there is no daily limit, no account and no watermark.',
-    tools: ['resize-image', 'compress-image', 'image-converter'],
-  },
+/** The home page list after the hero. */
+export const PAID: PaidTool[] = [
+  { slug: 'remove-background', gives: 'Full resolution PNG, no credits' },
+  { slug: 'image-upscaler', gives: '2x or 4x, no watermark' },
+  { slug: 'audio-to-text', gives: 'No minute limit, SRT and VTT export' },
+  { slug: 'text-to-speech', gives: 'Natural voices, no character quota' },
+  { slug: 'remove-object-from-photo', gives: 'Full resolution, no credits' },
+  { slug: 'image-to-text', gives: 'Any number of images and pages' },
+  { slug: 'ocr-pdf', gives: 'Scans become searchable PDFs' },
+  { slug: 'edit-pdf', gives: 'Change text and pages, no account' },
+  { slug: 'sign-pdf', gives: 'Sign and date, no account' },
+  { slug: 'redact-pdf', gives: 'The text under each bar is removed' },
+  { slug: 'compress-video', gives: '1 GB and more, no queue' },
+  { slug: 'pdf-to-word', gives: 'No daily file limit' },
 ]
 
 /** Quick links under the home search. */

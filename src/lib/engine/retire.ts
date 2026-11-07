@@ -9,10 +9,10 @@ export const BLOCK_YEARS = 5
 const PATHS_PER_TASK = 50_000
 /** A fast first answer, then the sharp one. */
 const PREVIEW_PATHS = 100_000
-export const FULL_PATHS = 1_000_000
+const FULL_PATHS = 1_000_000
 export const PERCENTILES = [0.1, 0.25, 0.5, 0.75, 0.9] as const
 
-/** The starting numbers of the calculator and of the home page. */
+/** The starting numbers of the calculator. */
 export const EXAMPLE = { age: 35, retire: 65, end: 95, savings: 100_000, saving: 1_000, spending: 4_000, stocks: 80, rest: 1.5 }
 
 /** A yearly return in percent, as a monthly rate. */
