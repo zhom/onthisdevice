@@ -4,7 +4,7 @@ import Container from '@/components/site/Container.astro'
 import ToolCard from '@/components/site/ToolCard.astro'
 import Glyph from '@/components/site/Glyph.astro'
 import Icon from '@/components/site/Icon.tsx'
-import { CATEGORIES, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
+import { CATEGORIES, TOOL_COUNT_TEXT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
 import { FEATURED } from '@/lib/featured'
 import { hasPage } from '@/components/site/pages'
 
@@ -23,7 +23,7 @@ const categories = CATEGORIES.map((category) => ({ category, count: toolsByCateg
   <Container class="pt-12 pb-4 sm:pt-20">
     <h1 class="t-title enter max-w-2xl text-foreground">This page does not exist.</h1>
     <p class="t-lead enter mt-5 max-w-xl" style="--i:2">
-      Error 404. The link may be broken or the page renamed. Search the {TOOL_COUNT} tools or start from a category.
+      Error 404. The link may be broken or the page renamed. Search the {TOOL_COUNT_TEXT} tools or start from a category.
     </p>
     <div class="enter mt-8 flex flex-wrap items-center gap-3" style="--i:3">
       <button

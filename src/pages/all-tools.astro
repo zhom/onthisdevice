@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import Container from '@/components/site/Container.astro'
 import ToolCard from '@/components/site/ToolCard.astro'
 import Icon from '@/components/site/Icon.tsx'
-import { CATEGORIES, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+import { CATEGORIES, TOOL_COUNT, TOOL_COUNT_TEXT, categoryHref, toolsByCategory } from '@/lib/tools'
 
 const sections = CATEGORIES.map((category) => ({ category, tools: toolsByCategory(category.id) })).filter(
   (s) => s.tools.length > 0,
@@ -12,7 +12,7 @@ const sections = CATEGORIES.map((category) => ({ category, tools: toolsByCategor
 const SITE = Astro.site ?? new URL('https://onthisdevice.com')
 const pageUrl = new URL('/all-tools', SITE).href
 
-const title = `All ${TOOL_COUNT} tools | onthisdevice`
+const title = `All ${TOOL_COUNT_TEXT} tools | onthisdevice`
 const description = `Every tool on onthisdevice in one list: PDF, image, video, data, text, developer, security and calculator tools. Each one runs in your browser.`
 
 const jsonLd = [
@@ -47,7 +47,7 @@ const catLink =
   <Container class="pt-10 sm:pt-14">
     <h1 class="t-title">All tools</h1>
     <p class="t-lead mt-3 max-w-2xl">
-      {TOOL_COUNT} tools for files, media, text and numbers. Each one runs in your browser.
+      {TOOL_COUNT_TEXT} tools for files, media, text and numbers. Each one runs in your browser.
     </p>
   </Container>
 
@@ -73,7 +73,7 @@ const catLink =
           />
         </div>
         <p data-filter-count role="status" aria-live="polite" class="num shrink-0 px-1 text-[0.875rem] text-muted-foreground">
-          {TOOL_COUNT} tools
+          {TOOL_COUNT_TEXT} tools
         </p>
       </form>
       <nav aria-label="Categories" class="-mx-4 mt-2 overflow-x-auto px-2 [scrollbar-width:none] sm:-mx-2.5 sm:px-0 lg:overflow-visible">

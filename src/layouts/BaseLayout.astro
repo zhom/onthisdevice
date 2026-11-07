@@ -3,7 +3,7 @@ import '@/styles/global.css'
 import Header, { type NavCategory, type NavGroup } from '@/components/site/Header.astro'
 import Footer from '@/components/site/Footer.astro'
 import SearchRuntime from '@/components/site/search/SearchRuntime.astro'
-import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+import { CATEGORIES, GROUPS, TOOL_COUNT_TEXT, categoryHref, toolsByCategory } from '@/lib/tools'
 import { ogImagePath } from '@/lib/seo'
 import { hasPage } from '@/components/site/pages'
 
@@ -85,7 +85,7 @@ const website = {
   name: 'onthisdevice',
   alternateName: 'onthisdevice.com',
   url: `${SITE.origin}/`,
-  description: `${TOOL_COUNT} free tools for PDFs, images, video, data and calculations that run in your browser. Files are never uploaded.`,
+  description: `${TOOL_COUNT_TEXT} free tools for PDFs, images, video, data and calculations that run in your browser. Files are never uploaded.`,
   inLanguage: 'en',
   publisher: { '@id': `${SITE.origin}/#organization` },
   potentialAction: {
@@ -257,7 +257,7 @@ const graphJson = JSON.stringify(graph).replace(/</g, '\\u003c')
       Skip to content
     </a>
 
-    <Header groups={navGroups} toolCount={TOOL_COUNT} />
+    <Header groups={navGroups} toolCount={TOOL_COUNT_TEXT} />
 
     <main id="main" tabindex="-1" class="min-h-[60svh] focus:outline-none">
       <slot />

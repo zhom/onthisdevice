@@ -1,5 +1,5 @@
 ---
-import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, toolsByCategory } from '@/lib/tools'
+import { CATEGORIES, GROUPS, TOOL_COUNT_TEXT, categoryHref, toolsByCategory } from '@/lib/tools'
 import Container from './Container.astro'
 import Wordmark from './Wordmark.astro'
 
@@ -23,7 +23,7 @@ const columns = GROUPS.map((group) => ({
           <Wordmark size="lg" />
         </a>
         <p class="mt-5 max-w-xs text-[0.9375rem] leading-relaxed text-pretty text-muted-foreground">
-          {TOOL_COUNT} tools that run in your browser. The site has no accounts and no analytics.
+          {TOOL_COUNT_TEXT} tools that run in your browser. The site has no accounts and no analytics.
         </p>
         <p class="mt-6 text-[0.8125rem] leading-snug text-muted-foreground">Every page is sent with this rule:</p>
         <code class="mt-1.5 block font-mono text-[0.8125rem] break-words text-foreground">connect-src 'self' blob: data:</code>

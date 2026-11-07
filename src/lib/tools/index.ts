@@ -147,3 +147,6 @@ export function relatedTools(tool: Tool, limit = 6): Tool[] {
 }
 
 export const TOOL_COUNT = TOOLS.length
+
+/** The tool count as people read it: "1,227". */
+export const TOOL_COUNT_TEXT = TOOL_COUNT.toLocaleString('en-US')

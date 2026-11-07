@@ -7,14 +7,13 @@ import RequestLog from '@/components/site/RequestLog.astro'
 import HeroHeading from '@/components/site/reel/HeroHeading.astro'
 import HeroReel from '@/components/site/reel/HeroReel.astro'
 import HeroSearch from '@/components/site/search/HeroSearch.tsx'
-import { CATEGORIES, GROUPS, TOOL_COUNT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
+import { CATEGORIES, GROUPS, TOOL_COUNT_TEXT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
 import { PAID, QUICK } from '@/lib/featured'
 import { hasPage } from '@/components/site/pages'
 
 const pick = (slugs: string[]) => slugs.map((s) => getTool(s)).filter((t): t is Tool => t !== undefined && hasPage(t))
 const quick = pick(QUICK)
 const paid = PAID.flatMap((p) => pick([p.slug]).map((tool) => ({ tool, gives: p.gives })))
-const count = TOOL_COUNT.toLocaleString('en-US')
 
 let glyphIndex = 0
 const catalogue = GROUPS.map((g) => ({
@@ -27,8 +26,8 @@ const catalogue = GROUPS.map((g) => ({
   })).filter((c) => c.count > 0),
 })).filter((g) => g.categories.length > 0)
 
-const title = `onthisdevice: ${count} free tools that never upload your files`
-const description = `Remove backgrounds, transcribe audio, upscale photos and edit PDFs for free. ${count} tools, AI models included, run in your browser. Nothing is uploaded.`
+const title = `onthisdevice: ${TOOL_COUNT_TEXT} free tools that never upload your files`
+const description = `Remove backgrounds, transcribe audio, upscale photos and edit PDFs for free. ${TOOL_COUNT_TEXT} tools, AI models included, run in your browser. Nothing is uploaded.`
 
 const faqs: { q: string; a: string }[] = [
   {
@@ -79,8 +78,8 @@ const jsonLd = [
     <Container class="grid grid-cols-1 items-start gap-y-12 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-x-16 lg:pt-16 lg:pb-16">
       <div class="min-w-0">
         <HeroHeading />
-        <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${count} free tools that run in your browser. Nothing is uploaded.`}>
-          {count} free tools for files, media and numbers, AI models included. They run in this tab, so nothing is uploaded and there is no account, quota or watermark.
+        <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${TOOL_COUNT_TEXT} free tools that run in your browser. Nothing is uploaded.`}>
+          {TOOL_COUNT_TEXT} free tools for files, media and numbers, AI models included. They run in this tab, so nothing is uploaded and there is no account, quota or watermark.
         </p>
 
         <div class="enter relative z-10 mt-9 max-w-[34rem]" style="--i:2">
@@ -147,7 +146,7 @@ const jsonLd = [
   <Container class="pt-24 sm:pt-40">
     <div class="flex flex-wrap items-baseline justify-between gap-4">
       <h2 class="t-h2 text-foreground">Everything else</h2>
-      <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {count} tools</a>
+      <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {TOOL_COUNT_TEXT} tools</a>
     </div>
     <div class="mt-8 space-y-12">
       {
