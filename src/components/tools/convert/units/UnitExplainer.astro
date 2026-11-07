@@ -1,0 +1,86 @@
+---
+/** Explainer for a unit pair page, written from the data of the two units. */
+import { pitfallsFor, type UnitPair } from '@/lib/convert/units/catalog'
+import { D, convert, formatValue, parseNumber, withUnit } from '@/lib/convert/units/engine'
+import { article, estimateRule, exactNote, formulaLine, workedExample } from '@/lib/convert/units/describe'
+
+interface Props {
+  pair: UnitPair
+}
+
+const { pair } = Astro.props
+const { from, to, quantity } = pair
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
+const formula = formulaLine(from, to)
+const example = workedExample(from, to, from.dflt ?? '1')
+const estimate = estimateRule(from, to)
+const pitfalls = pitfallsFor(pair)
+const note = from.offset || to.offset || from.inverse || to.inverse ? null : exactNote(from, to)
+
+const rows = [
+  ...from.examples.map(([v, what]) => ({ what, value: parseNumber(v), unit: from })),
+  ...to.examples.map(([v, what]) => ({ what, value: parseNumber(v), unit: to })),
+]
+  .filter((r) => r.value !== null)
+  .map((r) => {
+    const value = r.value ?? new D(0)
+    const inFrom = r.unit === from ? value : convert(value, to, from)
+    const inTo = r.unit === to ? value : convert(value, from, to)
+    const ok = inFrom.isFinite() && inTo.isFinite()
+    return {
+      what: cap(r.what),
+      a: ok ? withUnit(formatValue(inFrom, 'auto', 6), from) : '–',
+      b: ok ? withUnit(formatValue(inTo, 'auto', 6), to) : '–',
+    }
+  })
+---
+
+<h2>How to convert {from.plural} to {to.plural}</h2>
+<p>
+  The formula is <strong>{formula}</strong>. For example, {example}.
+  {note ? <> {note}</> : null}
+</p>
+{estimate ? <p>{estimate}</p> : null}
+
+<h2>How the units are defined</h2>
+<p>{quantity.intro}</p>
+<p>
+  <strong>{cap(article(from.name))} {from.name}</strong>: {from.def} {from.uses}
+</p>
+<p>
+  <strong>{cap(article(to.name))} {to.name}</strong>: {to.def} {to.uses}
+</p>
+
+<h2>Typical values in {from.plural} and {to.plural}</h2>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <tr><th scope="col">What</th><th scope="col">{cap(from.plural)}</th><th scope="col">{cap(to.plural)}</th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr>
+            <td>{r.what}</td>
+            <td class="num">{r.a}</td>
+            <td class="num">{r.b}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+{
+  pitfalls.length > 0 && (
+    <>
+      <h2>Mistakes to avoid</h2>
+      <ul>
+        {pitfalls.map((p) => (
+          <li>{p}</li>
+        ))}
+      </ul>
+    </>
+  )
+}

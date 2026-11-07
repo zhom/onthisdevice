@@ -1,0 +1,69 @@
+---
+/** Explainer for the watts, amps and volts pages. */
+import { QTY_LABEL, formulaText, knownOf, type ElectricPair } from '@/lib/convert/units/electrical'
+
+interface Props {
+  pair: ElectricPair
+}
+
+const { pair } = Astro.props
+const known = knownOf(pair)
+const to = QTY_LABEL[pair.to]
+const from = QTY_LABEL[pair.from]
+---
+
+<h2>How to convert {pair.title.toLowerCase().replace('kw', 'kW')}</h2>
+<p>
+  Watts measure power, amps measure current and volts measure the electrical pressure that drives the current.
+  One does not convert to another on its own: you need the {QTY_LABEL[known].name} as well. Power is voltage times
+  current, so with two of the three values the third follows.
+  {pair.kilo ? ' A kilowatt is 1,000 watts, so the page multiplies or divides by 1,000 at the end.' : ''}
+</p>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <tr><th scope="col">Circuit</th><th scope="col">Formula for {to.name}</th><th scope="col">Used for</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>DC</td><td class="num">{formulaText(pair.to, 'dc')}</td><td>Batteries, USB, solar panels, cars</td></tr>
+      <tr><td>AC single-phase</td><td class="num">{formulaText(pair.to, 'ac1')}</td><td>Household sockets and lighting</td></tr>
+      <tr><td>AC three-phase</td><td class="num">{formulaText(pair.to, 'ac3')}</td><td>Motors, workshops, fast EV chargers, buildings</td></tr>
+    </tbody>
+  </table>
+</div>
+<p>
+  P is power in watts, I is current in amps, V is voltage in volts and PF is the power factor. For three-phase
+  circuits V is the line-to-line voltage, such as 400 V in Europe or 208 V and 480 V in the US.
+</p>
+
+<h2>The power factor</h2>
+<p>
+  In an AC circuit the current and the voltage can be out of step. The power factor, from 0 to 1, says how much of
+  the current does useful work. A kettle or a heater has a power factor of 1. An electric motor has about 0.8 to
+  0.9, so it draws more current than its wattage suggests. A power supply with power factor correction is above
+  0.95. Use 1 when you do not know it and the load is a heater or a lamp.
+</p>
+
+<h2>Common voltages</h2>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <tr><th scope="col">Voltage</th><th scope="col">Where</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">5 V</td><td>USB ports and phone chargers (USB-C can go to 20 V or 48 V)</td></tr>
+      <tr><td class="num">12 V</td><td>Car electrics, LED strips, small solar systems</td></tr>
+      <tr><td class="num">120 V</td><td>Household sockets in the US and Canada</td></tr>
+      <tr><td class="num">230 V</td><td>Household sockets in Europe, the UK, Australia, India and most of the world</td></tr>
+      <tr><td class="num">400 V</td><td>Three-phase supply in Europe (line to line)</td></tr>
+      <tr><td class="num">480 V</td><td>Three-phase supply for US industry</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Mistakes to avoid</h2>
+<ul>
+  <li>A breaker or fuse rating is a limit, not a target. In the US, a continuous load may use only 80% of the breaker rating.</li>
+  <li>A device label shows its maximum {from.name === 'power' ? 'power' : to.name}. The real draw is often lower.</li>
+  <li>For three-phase circuits, use the line-to-line voltage with the √3 formula, or the line-to-neutral voltage with three times the single-phase formula. Mixing them gives a result 1.73 times too large or too small.</li>
+</ul>

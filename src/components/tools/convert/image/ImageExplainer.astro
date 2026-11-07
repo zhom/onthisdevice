@@ -1,0 +1,75 @@
+---
+/** Explainer for an image pair page, written from the data of the two formats. */
+import { FORMATS, type ImagePairSpec } from '@/lib/convert/image/formats'
+
+interface Props {
+  pair: ImagePairSpec
+}
+
+const { pair } = Astro.props
+const a = FORMATS[pair.from]
+const b = FORMATS[pair.to]
+
+const DECODER: Record<string, string> = {
+  heic: 'a HEIF decoder compiled to WebAssembly decodes the HEVC image data and applies the rotation stored in the file',
+  heif: 'a HEIF decoder compiled to WebAssembly decodes the image data and applies the rotation stored in the file',
+  tiff: 'a TIFF decoder written in JavaScript reads every page, with LZW, Deflate, PackBits and JPEG compression',
+  svg: 'the browser draws the vectors at the width you choose',
+  gif: 'the browser decodes the frames',
+  webp: 'the browser decodes the image, with a WebAssembly decoder as a fallback',
+  avif: 'the browser decodes the image, with a WebAssembly AV1 decoder as a fallback',
+}
+const ENCODER: Record<string, string> = {
+  jpg: 'a WebAssembly JPEG encoder writes a progressive JPG at the quality you set',
+  png: 'a WebAssembly PNG encoder writes a lossless PNG',
+  webp: 'a WebAssembly WebP encoder writes the file, lossy or lossless',
+  avif: 'a WebAssembly AV1 encoder writes the AVIF',
+  gif: 'the colours are reduced to a palette of at most 256 and a GIF encoder writes the frames',
+  bmp: 'the pixels are written as an uncompressed BMP: 24-bit, or 32-bit with transparency',
+  tiff: 'the pixels are written as a TIFF with lossless Deflate compression, one page per image',
+  ico: 'each icon size is scaled from the image, saved as PNG and packed into one ICO file',
+  svg: 'a tracer reduces the image to a few colours and turns each colour area into vector paths',
+  pdf: 'each image is embedded as JPG (or PNG when it has transparency) on its own PDF page',
+}
+const decoder = DECODER[pair.from] ?? 'the browser decodes the image'
+const encoder = pair.from === 'jfif' && pair.to === 'jpg' ? 'the JPEG data is copied unchanged under the .jpg name' : (ENCODER[pair.to] ?? '')
+const rows: [string, string, string][] = [
+  ['Compression', a.compression, b.compression],
+  ['Transparency', a.transparency, b.transparency],
+  ['Animation', a.animation, b.animation],
+  ['Colour', a.colour, b.colour],
+  ['Opens in', a.support, b.support],
+]
+---
+
+<h2>How {a.label} to {b.label} works on this page</h2>
+<p>
+  First {decoder}. Then {encoder}. {pair.note} Everything runs in this browser tab on your device, in a background
+  thread, so the page stays responsive while large files convert.
+</p>
+
+<h2>{a.label} and {b.label} compared</h2>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <tr><th scope="col"></th><th scope="col">{a.label}</th><th scope="col">{b.label}</th></tr>
+    </thead>
+    <tbody>
+      {
+        rows.map(([label, x, y]) => (
+          <tr>
+            <th scope="row">{label}</th>
+            <td>{x}</td>
+            <td>{y}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<h2>What is {a.label}?</h2>
+<p>{a.about} {a.limits}</p>
+
+<h2>When to use {b.label}</h2>
+<p>{b.about} Use it for: {b.bestFor.charAt(0).toLowerCase() + b.bestFor.slice(1)} {b.limits}</p>

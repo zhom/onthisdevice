@@ -1,9 +1,102 @@
 ---
 /** Renders ToolLayout, the island and the explainer for each routed tool of src/lib/tools/convert.ts. */
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import { UNIT_PAIR_BY_SLUG, pairProps } from '@/lib/convert/units/catalog'
+import UnitPair from './units/UnitPair.tsx'
+import UnitExplainer from './units/UnitExplainer.astro'
+import { ELECTRIC_BY_SLUG } from '@/lib/convert/units/electrical'
+import ElectricalPair from './units/ElectricalPair.tsx'
+import ElectricalExplainer from './units/ElectricalExplainer.astro'
+import { FORMATS, IMAGE_PAIR_BY_SLUG, acceptFor } from '@/lib/convert/image/formats'
+import ImagePair from './image/ImagePair.tsx'
+import ImageExplainer from './image/ImageExplainer.astro'
+import { MEDIA, MEDIA_PAIR_BY_SLUG, mediaAccept } from '@/lib/convert/media/formats'
+import MediaPair from './media/MediaPair.tsx'
+import MediaExplainer from './media/MediaExplainer.astro'
+import { UTILITY_BY_SLUG } from '@/lib/convert/media/utilities'
+import AudioEffect from './media/AudioEffect.tsx'
+import BurnSubtitles from './media/BurnSubtitles.tsx'
+import UtilityExplainer from './media/UtilityExplainer.astro'
+
 interface Props {
   slug: string
 }
 
 const { slug } = Astro.props
-throw new Error(`[convert] no page for "${slug}"`)
+const unitPair = UNIT_PAIR_BY_SLUG.get(slug)
+const electric = ELECTRIC_BY_SLUG.get(slug)
+const image = IMAGE_PAIR_BY_SLUG.get(slug)
+const media = MEDIA_PAIR_BY_SLUG.get(slug)
+const utility = UTILITY_BY_SLUG.get(slug)
+if (!unitPair && !electric && !image && !media && !utility) throw new Error(`[convert] no page for "${slug}"`)
 ---
+
+{
+  unitPair && (
+    <ToolLayout slug={slug}>
+      <UnitPair client:load pair={pairProps(unitPair)} />
+      <Fragment slot="explainer">
+        <UnitExplainer pair={unitPair} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  electric && (
+    <ToolLayout slug={slug}>
+      <ElectricalPair client:load pair={{ slug: electric.slug, from: electric.from, to: electric.to, kilo: electric.kilo, dflt: electric.dflt }} />
+      <Fragment slot="explainer">
+        <ElectricalExplainer pair={electric} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  image && (
+    <ToolLayout slug={slug}>
+      <ImagePair
+        client:load
+        from={image.from}
+        to={image.to}
+        fromLabel={FORMATS[image.from].label}
+        toLabel={FORMATS[image.to].label}
+        accept={acceptFor(image.from)}
+      />
+      <Fragment slot="explainer">
+        <ImageExplainer pair={image} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  media && (
+    <ToolLayout slug={slug}>
+      <MediaPair
+        client:load
+        from={media.from}
+        to={media.to}
+        fromLabel={MEDIA[media.from].label}
+        toLabel={MEDIA[media.to].label}
+        accept={mediaAccept(media.from)}
+        fromKind={MEDIA[media.from].kind === 'audio' ? 'audio' : 'video'}
+      />
+      <Fragment slot="explainer">
+        <MediaExplainer pair={media} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  utility && (
+    <ToolLayout slug={slug}>
+      {utility.id === 'subtitles' ? <BurnSubtitles client:load /> : <AudioEffect client:load effect={utility.id} />}
+      <Fragment slot="explainer">
+        <UtilityExplainer sections={utility.explainer} />
+      </Fragment>
+    </ToolLayout>
+  )
+}

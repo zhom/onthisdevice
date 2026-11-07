@@ -48,11 +48,24 @@ The remaining dependencies are permissively licensed (MIT, Apache-2.0, BSD or
 ISC): pdf-lib, pdfjs-dist (Apache-2.0), the @jsquash codecs and their underlying
 libjpeg-turbo / libpng / libwebp / libavif builds, SheetJS, mammoth, marked,
 turndown, papaparse, jszip, fflate, decimal.js, date-fns, qrcode, jsbarcode,
-exifr, React, Astro, Tailwind CSS, Radix UI and lucide-react.
+exifr, utif2, gifenc, imagetracerjs (Unlicense), yaml, js-beautify, smol-toml,
+hash-wasm, React, Astro, Tailwind CSS, Radix UI and lucide-react.
 
 A generated, per-dependency licence manifest belongs at /licenses on the site
 itself. Until that page exists, `npx license-checker --summary` over the
 installed tree is the authoritative list.
+
+
+libheif (HEIC and HEIF decoder)
+-------------------------------
+
+Files served:  the WebAssembly build of libheif, a separate file under /_astro/ that only
+               the HEIC and HEIF tools load
+Source package: libheif-js 1.23.5 (https://github.com/catdad-experiments/libheif-js), a build
+               of libheif (https://github.com/strukturag/libheif)
+Licence:       LGPL-3.0, full text in /licenses/libheif-LGPL-3.0.txt. The site loads it
+               unchanged as its own module, so it can be replaced with another build of the
+               same version.
 
 
 3. Data tables embedded in the site

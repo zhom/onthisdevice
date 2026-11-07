@@ -1,0 +1,73 @@
+---
+/** Explainer for an audio or video pair page, written from the data of the two formats. */
+import { MEDIA, type MediaPairSpec } from '@/lib/convert/media/formats'
+import { isAudioTarget, planFfmpeg, type MediaSettings } from '@/lib/convert/media/plan'
+
+interface Props {
+  pair: MediaPairSpec
+}
+
+const { pair } = Astro.props
+const a = MEDIA[pair.from]
+const b = MEDIA[pair.to]
+const audioOut = isAudioTarget(pair.to)
+const fast = ['mp4', 'mov', 'mkv', 'webm'].includes(pair.to)
+const settings: MediaSettings = {
+  bitrate: 192,
+  bitDepth: 16,
+  flacLevel: 5,
+  sampleRate: 0,
+  channels: 0,
+  quality: 'balanced',
+  maxHeight: 0,
+  forceEncode: true,
+  gifFps: 12,
+  gifWidth: 480,
+  start: 0,
+  length: 0,
+}
+const command = `ffmpeg ${planFfmpeg(pair.to, `input.${a.ext[0]}`, settings, null).args.join(' ')}`
+---
+
+<h2>How {a.label} to {b.label} works here</h2>
+<p>
+  {pair.note}
+  {
+    fast
+      ? ` The page first tries the browser's own media engine, which copies streams that ${b.label} can hold and encodes the rest with the built-in, often hardware-accelerated, encoders. If the browser cannot read a track, the FFmpeg engine does the job instead.`
+      : ' The page runs FFmpeg, compiled to WebAssembly, in this tab. It first reads the codecs in your file and copies any stream the new format can hold as it is.'
+  }
+</p>
+<p>When the file has to be fully re-encoded, the command is equivalent to:</p>
+<pre class="overflow-x-auto"><code>{command}</code></pre>
+
+<h2>{a.label} and {b.label} compared</h2>
+<div class="overflow-x-auto">
+  <table>
+    <thead>
+      <tr><th scope="col"></th><th scope="col">{a.label}</th><th scope="col">{b.label}</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Kind</th><td>{a.kind === 'audio' ? 'Audio' : 'Video'}</td><td>{b.kind === 'audio' ? 'Audio' : b.kind === 'image' ? 'Animated image' : 'Video'}</td></tr>
+      <tr><th scope="row">Codecs</th><td>{a.codecs}</td><td>{b.codecs}</td></tr>
+      <tr><th scope="row">Plays on</th><td>{a.plays}</td><td>{b.plays}</td></tr>
+      <tr><th scope="row">Extensions</th><td>{a.ext.map((e) => `.${e}`).join(', ')}</td><td>{b.ext.map((e) => `.${e}`).join(', ')}</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>About {a.label}</h2>
+<p>{a.about}</p>
+<h2>About {b.label}</h2>
+<p>{b.about}</p>
+{
+  audioOut && (
+    <>
+      <h2>Bitrate and size</h2>
+      <p>
+        Lossy audio size is bitrate times length: 192 kbps is 1.44 MB per minute, 128 kbps is 0.96 MB per minute. CD-quality
+        WAV is 10.1 MB per minute, and FLAC usually 5 to 6 MB per minute.
+      </p>
+    </>
+  )
+}

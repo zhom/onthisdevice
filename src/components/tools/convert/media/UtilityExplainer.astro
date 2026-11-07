@@ -1,0 +1,43 @@
+---
+/** Explainer for a media utility page, from the sections in src/lib/convert/media/utilities.ts. */
+import type { ExplainerSection } from '@/lib/convert/media/utilities'
+
+interface Props {
+  sections: ExplainerSection[]
+}
+
+const { sections } = Astro.props
+---
+
+{
+  sections.map((s) => (
+    <>
+      <h2>{s.h2}</h2>
+      {s.p.map((text) => (
+        <p>{text}</p>
+      ))}
+      {s.table && (
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                {s.table.head.map((h) => (
+                  <th scope="col">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {s.table.rows.map((row) => (
+                <tr>
+                  {row.map((cell) => (
+                    <td>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  ))
+}
