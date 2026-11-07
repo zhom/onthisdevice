@@ -1,6 +1,10 @@
 /**
  * Plays the home reel (./scenes.ts, ./paint.ts) on a canvas, keeps the caption, the scene bars
  * and the heading phrase in step, and pauses offscreen, in a hidden tab and on request.
+ * The canvas host sets --fade-l, --fade-r, --fade-t and --fade-b (a part of its width or
+ * height): along those edges the pixels dissolve into the page. --scene-l (a part of the width)
+ * moves the scene right; the cells left of it continue the picture in the fill tone, so text
+ * on top stays readable. The change of tone is dithered over --scene-blend.
  * Reduced motion: each scene is a still frame, and the bars choose the scene.
  */
 import { SCENES, SCENE_MS } from './scenes'
@@ -10,6 +14,9 @@ import { FILL, GREY, INK, PAINTERS, STILL, hash, type Colors, type Grid, type Pa
 const DISSOLVE = 0.1
 const FRAME_MS = 1000 / 30
 const DOT = 0.8
+const HIDDEN = 0
+const DIM = 1
+const SHOWN = 2
 
 export function mountReel(root: HTMLElement, phrase: HTMLElement | null) {
   const host = root.querySelector<HTMLElement>('[data-reel-canvas]')
@@ -29,9 +36,15 @@ export function mountReel(root: HTMLElement, phrase: HTMLElement | null) {
   let h = 0
   let dpr = 1
   let cell = 6
+  /** All cells of the canvas. */
+  let all = { cols: 1, rows: 1 }
+  /** The scene: the cells from column `sx` to the right edge. */
   let grid: Grid = { cols: 1, rows: 1, aspect: 1 }
+  let sx = 0
   let ox = 0
   let oy = 0
+  /** For each cell: HIDDEN (edge fade), DIM (fill tone) or SHOWN (scene tone). */
+  let mode = new Uint8Array(0)
   let colors: Colors = { ink: '#000', grey: '#6b6b6b', fill: '#f3f3f3', paper: '#fff' }
 
   /** Play time since the reel started, without pauses. */
@@ -62,13 +75,33 @@ export function mountReel(root: HTMLElement, phrase: HTMLElement | null) {
     canvas.width = Math.round(w * dpr)
     canvas.height = Math.round(h * dpr)
     cell = w < 420 ? 5 : 6
+    const css = getComputedStyle(host)
+    const part = (name: string) => Number.parseFloat(css.getPropertyValue(name)) || 0
     const cols = Math.floor(w / cell)
     const rows = Math.floor(h / cell)
-    grid = { cols, rows, aspect: cols / rows }
+    all = { cols, rows }
+    sx = Math.round(cols * part('--scene-l'))
+    grid = { cols: cols - sx, rows, aspect: (cols - sx) / rows }
     ox = Math.floor((w - cols * cell) / 2)
     oy = Math.floor((h - rows * cell) / 2)
     for (const p of Object.values(PAINTERS)) p.prepare?.(grid)
     readColors()
+    const blend = Math.max(1, Math.round(cols * part('--scene-blend')))
+    const edge = (d: number, span: number) => (span > 0 ? smooth(Math.min(1, d / span)) : 1)
+    const [l, r, t, b] = ['--fade-l', '--fade-r', '--fade-t', '--fade-b'].map(part)
+    mode = new Uint8Array(cols * rows)
+    for (let y = 0; y < rows; y++) {
+      const v = (y + 0.5) / rows
+      const fy = Math.min(edge(v, t), edge(1 - v, b))
+      for (let x = 0; x < cols; x++) {
+        const u = (x + 0.5) / cols
+        // Noise, not the picture's own dither pattern: with the same pattern the fade would
+        // keep exactly the cells the picture keeps, and dark parts would not fade.
+        const n = hash(x + 7, y + 211)
+        if (Math.min(fy, edge(u, l), edge(1 - u, r)) <= n) continue
+        mode[y * cols + x] = sx === 0 || (x - sx + 0.5) / blend > n ? SHOWN : DIM
+      }
+    }
   }
 
   const painterOf = (i: number): Painter => PAINTERS[SCENES[i].id]
@@ -82,12 +115,14 @@ export function mountReel(root: HTMLElement, phrase: HTMLElement | null) {
     const paths: Record<Exclude<Tone, 0>, Path2D> = { [INK]: new Path2D(), [FILL]: new Path2D(), [GREY]: new Path2D() }
     const step = cell * dpr
     const dot = Math.max(1, Math.round(step * DOT))
-    for (let y = 0; y < grid.rows; y++) {
+    for (let y = 0; y < all.rows; y++) {
       const py = Math.round((oy + y * cell) * dpr)
-      for (let x = 0; x < grid.cols; x++) {
+      for (let x = 0; x < all.cols; x++) {
+        const m = mode[y * all.cols + x]
+        if (m === HIDDEN) continue
         const fresh = mix >= 1 || hash(x + 101, y + 37) < mix
-        const tone = fresh ? now.cell(x, y, t, grid) : before.cell(x, y, STILL, grid)
-        if (tone) paths[tone].rect(Math.round((ox + x * cell) * dpr), py, dot, dot)
+        const tone = fresh ? now.cell(x - sx, y, t, grid) : before.cell(x - sx, y, STILL, grid)
+        if (tone) paths[m === DIM ? FILL : tone].rect(Math.round((ox + x * cell) * dpr), py, dot, dot)
       }
     }
     ctx.fillStyle = colors.fill
@@ -97,15 +132,17 @@ export function mountReel(root: HTMLElement, phrase: HTMLElement | null) {
     ctx.fillStyle = colors.ink
     ctx.fill(paths[INK])
 
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    const left = ox + sx * cell
+    ctx.setTransform(dpr, 0, 0, dpr, left * dpr, 0)
     ctx.textBaseline = 'alphabetic'
+    const box = { w: w - left, h }
     if (mix < 1 && before.type) {
       ctx.save()
       ctx.globalAlpha = 1 - mix
-      before.type(ctx, STILL, { w, h }, colors)
+      before.type(ctx, STILL, box, colors)
       ctx.restore()
     }
-    now.type?.(ctx, t, { w, h }, colors)
+    now.type?.(ctx, t, box, colors)
   }
 
   const show = (index: number) => {

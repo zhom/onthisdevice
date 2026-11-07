@@ -3,6 +3,7 @@
  * painted one cell at a time, with optional type on top. Pictures are 1-bit: a darkness from
  * 0 to 1 goes through a 4 x 4 ordered dither. A painter is a function of the cell and the scene
  * time t (0 to 1). Each scene is complete by t = 0.82; t = STILL is its still frame.
+ * The reel also asks for cells left of the grid (x < 0) to continue the picture faintly.
  */
 import type { SceneId } from './scenes'
 
@@ -294,7 +295,7 @@ const erase: Painter = {
     const u = uOf(x, g)
     const v = vOf(y, g)
     const painted = ramp(t, 0.1, 0.5)
-    const masked = eraseCover[y * g.cols + x] <= painted
+    const masked = x >= 0 && eraseCover[y * g.cols + x] <= painted
     if (t >= 0.55 && (masked || t >= 0.75)) {
       if (t >= 0.75 || hash(x, y) < ramp(t, 0.55, 0.75)) return dither(beach(u, v, x, y, g.aspect), x, y)
       return GREY
@@ -428,7 +429,7 @@ const sign: Painter = {
     const u = uOf(x, g)
     const v = vOf(y, g)
     if (u < 0.13 || u > 0.87 || v < 0.06) return PAPER
-    if (signCover[y * g.cols + x] <= signed(t)) return INK
+    if (x >= 0 && signCover[y * g.cols + x] <= signed(t)) return INK
     const row = 0.5 / g.rows
     if (Math.abs(v - 0.13) < row * 2 && u > 0.19 && u < 0.5) return INK
     for (let k = 0; k < PAGE_LINES.length; k++) {

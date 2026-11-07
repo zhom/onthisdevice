@@ -3,6 +3,11 @@
  * The home reel: short pixel scenes of tools that other sites charge for (scenes.ts), with a
  * caption that links to the tool and one bar per scene. It sets the heading phrase marked
  * data-reel-phrase (HeroHeading.astro). Motion: reel.ts.
+ *
+ * It is the background of the hero. On large screens it fills the hero from top to bottom
+ * behind the right part of the text: the scene plays right of the text, and left of it the
+ * picture goes on in the fill tone and dissolves into the page. On smaller screens it runs edge
+ * to edge under the controls and dissolves at the top.
  */
 import Icon from '@/components/site/Icon.tsx'
 import { getTool } from '@/lib/tools'
@@ -18,11 +23,11 @@ const items = SCENES.map((s) => ({ ...s, title: getTool(s.slug)?.title ?? s.phra
 const first = items[0]
 ---
 
-<figure class={cn('m-0 min-w-0', className)} data-reel>
-  <div class="relative aspect-[6/5] w-full text-foreground select-none sm:aspect-[5/4]" data-reel-canvas>
+<figure class={cn('hero-reel m-0 min-w-0', className)} data-reel>
+  <div class="reel-canvas relative w-full text-foreground select-none" data-reel-canvas>
     <canvas class="absolute inset-0 block size-full" aria-hidden="true"></canvas>
   </div>
-  <figcaption class="mt-5">
+  <figcaption class="reel-caption">
     <div class="flex items-start justify-between gap-4">
       <div class="min-w-0" data-reel-caption>
         <a href={`/${first.slug}`} class="link inline-flex items-center gap-1.5 text-[1.0625rem] font-[650]" data-reel-link>
@@ -63,6 +68,52 @@ const first = items[0]
 </script>
 
 <style>
+  .reel-canvas {
+    aspect-ratio: 5 / 4;
+    --fade-t: 0.24;
+    --fade-b: 0.04;
+  }
+  .reel-caption {
+    margin-inline: auto;
+    max-width: 80rem;
+    padding: 1.25rem 1rem 0;
+  }
+  @media (min-width: 640px) {
+    .reel-canvas {
+      aspect-ratio: 16 / 10;
+    }
+    .reel-caption {
+      padding-inline: 1.5rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    /* Right part of the hero, top to bottom. The section is the containing block. */
+    .hero-reel {
+      --reel-w: min(70vw, 86rem);
+      position: absolute;
+      inset-block: 0;
+      right: 0;
+      width: var(--reel-w);
+      display: flex;
+      flex-direction: column;
+    }
+    .reel-canvas {
+      aspect-ratio: auto;
+      flex: 1;
+      --scene-l: 0.3;
+      --scene-blend: 0.07;
+      --fade-l: 0.26;
+      --fade-t: 0.16;
+      --fade-b: 0.1;
+    }
+    /* Starts where the pixels are solid; ends on the right edge of the page content. */
+    .reel-caption {
+      margin: 0;
+      max-width: none;
+      padding: 0 max(2rem, calc((100vw - 80rem) / 2 + 2rem)) 2.5rem calc(var(--reel-w) * 0.3);
+    }
+  }
+
   .reel-icon-play,
   [data-paused='true'] .reel-icon-pause {
     display: none;

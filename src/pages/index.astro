@@ -3,10 +3,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro'
 import Container from '@/components/site/Container.astro'
 import Glyph from '@/components/site/Glyph.astro'
 import Icon from '@/components/site/Icon.tsx'
-import RequestLog from '@/components/site/RequestLog.astro'
 import HeroHeading from '@/components/site/reel/HeroHeading.astro'
 import HeroReel from '@/components/site/reel/HeroReel.astro'
 import HeroSearch from '@/components/site/search/HeroSearch.tsx'
+import PickFile from '@/components/site/search/PickFile.astro'
 import { CATEGORIES, GROUPS, TOOL_COUNT_TEXT, categoryHref, getTool, toolsByCategory, type Tool } from '@/lib/tools'
 import { PAID, QUICK } from '@/lib/featured'
 import { hasPage } from '@/components/site/pages'
@@ -32,7 +32,7 @@ const description = `Remove backgrounds, transcribe audio, upscale photos and ed
 const faqs: { q: string; a: string }[] = [
   {
     q: 'Are my files really never uploaded?',
-    a: 'Yes. Each tool is a static page plus JavaScript and WebAssembly. Your file is read with the browser’s File API and processed in memory on your device. Watch the network panel while you work: no request carries your data.',
+    a: 'Yes. Each tool runs in your browser and does the work on your device. The site has no server that could receive your file, so nothing is sent anywhere.',
   },
   {
     q: 'How can this be free?',
@@ -74,20 +74,24 @@ const jsonLd = [
 ---
 
 <BaseLayout title={title} description={description} canonicalPath="/" jsonLd={jsonLd}>
-  <section aria-labelledby="hero-title">
-    <Container class="grid grid-cols-1 items-start gap-y-12 pt-8 pb-10 sm:pt-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-x-16 lg:pt-16 lg:pb-16">
-      <div class="min-w-0">
+  <section class="relative lg:flex lg:min-h-[min(48rem,calc(100svh-4rem))] lg:items-center" aria-labelledby="hero-title">
+    <Container class="relative z-10 pt-8 sm:pt-14 lg:pointer-events-none lg:py-20">
+      <div class="min-w-0 lg:pointer-events-auto lg:w-[48%]">
         <HeroHeading />
         <p class="t-lead enter mt-6 max-w-[34rem]" style="--i:1" data-og-line={`${TOOL_COUNT_TEXT} free tools that run in your browser. Nothing is uploaded.`}>
-          {TOOL_COUNT_TEXT} free tools for files, media and numbers, AI models included. They run in this tab, so nothing is uploaded and there is no account, quota or watermark.
+          {TOOL_COUNT_TEXT} free tools for PDFs, photos, video, audio and calculations. They work in your browser, so your files stay with you. No sign-up, no watermark.
         </p>
 
-        <div class="enter relative z-10 mt-9 max-w-[34rem]" style="--i:2">
-          <HeroSearch client:load />
+        <div class="enter mt-9 flex max-w-[36rem] flex-col gap-3 sm:flex-row" style="--i:2">
+          <div class="relative z-10 min-w-0 flex-1">
+            <HeroSearch client:load />
+          </div>
+          <PickFile />
         </div>
-        <p class="enter mt-3 hidden max-w-[34rem] text-[0.9375rem] text-muted-foreground pointer-fine:block" style="--i:3">Or drop a file anywhere on this page.</p>
+        <p class="enter mt-3 hidden max-w-[36rem] text-[0.9375rem] text-muted-foreground pointer-fine:block" style="--i:3">Or drop a file anywhere on this page.</p>
 
-        <ul class="enter mt-5 flex max-w-[34rem] flex-wrap gap-x-5 gap-y-2" aria-label="Most used tools" style="--i:4">
+        <ul class="enter mt-6 flex max-w-[36rem] flex-wrap items-baseline gap-x-5 gap-y-2" aria-label="Popular tools" style="--i:4">
+          <li aria-hidden="true" class="text-[0.9375rem] text-muted-foreground">Popular:</li>
           {
             quick.map((tool) => (
               <li>
@@ -99,9 +103,9 @@ const jsonLd = [
           }
         </ul>
       </div>
-
-      <HeroReel class="enter lg:pt-3" />
     </Container>
+
+    <HeroReel class="enter mt-4 sm:mt-10 lg:mt-0" />
   </section>
 
   <Container class="pt-20 sm:pt-32">
@@ -127,21 +131,6 @@ const jsonLd = [
       </div>
     </section>
   </Container>
-
-  <section class="ink-band mt-24 py-20 sm:mt-36 sm:py-28" aria-labelledby="proof-title">
-    <Container class="grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-      <div>
-        <h2 id="proof-title" class="t-title max-w-[14ch] text-foreground">Your files stay in this tab.</h2>
-        <p class="t-lead mt-6 max-w-[34rem]">
-          Each page sends a rule that makes your browser block connections to other servers. Open the network panel and use a tool: no request carries your file.
-        </p>
-        <code class="mt-5 block font-mono text-[0.9375rem] break-words text-foreground">connect-src 'self' blob: data:</code>
-        <p class="mt-6 max-w-[34rem] text-[0.9375rem] text-muted-foreground">After a tool loads once, it also works with the network off.</p>
-        <p class="mt-6"><a href="/privacy" class="link text-[0.9375rem] font-[560]">What the site stores</a></p>
-      </div>
-      <RequestLog />
-    </Container>
-  </section>
 
   <Container class="pt-24 sm:pt-40">
     <div class="flex flex-wrap items-baseline justify-between gap-4">

@@ -1,0 +1,49 @@
+---
+/**
+ * "Choose a file" for the home hero. The files go to the drop screen (drop-store.ts), which
+ * lists the tools that take them, the same as a file dropped on the page.
+ */
+import { cn } from '@/lib/utils'
+
+interface Props {
+  class?: string
+}
+const { class: className } = Astro.props
+---
+
+<button
+  type="button"
+  class={cn(
+    'inline-flex h-14 shrink-0 cursor-pointer items-center justify-center rounded-lg bg-primary px-7 text-[1.0625rem] font-[640] text-primary-foreground select-none transition-[scale] duration-150 ease-(--ease-out) outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.97] motion-reduce:active:scale-100',
+    className,
+  )}
+  data-pick-file
+>
+  Choose a file
+</button>
+
+<script>
+  // The input sits outside <main>: a file input in the page marks a tool's own drop zone
+  // (runtime-client.ts), and this one must not.
+  let input: HTMLInputElement | null = null
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-pick-file]')) {
+    button.addEventListener('click', () => {
+      if (!input) {
+        const box = document.createElement('div')
+        box.hidden = true
+        input = Object.assign(document.createElement('input'), { type: 'file', multiple: true })
+        box.append(input)
+        document.body.append(box)
+      }
+      const picker = input
+      picker.onchange = () => {
+        const files = Array.from(picker.files ?? [])
+        picker.value = ''
+        if (files.length === 0) return
+        const r = button.getBoundingClientRect()
+        void import('./drop-mount').then((m) => m.drop(files, r.left + r.width / 2, r.top + r.height / 2))
+      }
+      picker.click()
+    })
+  }
+</script>

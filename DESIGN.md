@@ -63,14 +63,16 @@ One family, Archivo, at normal width. Classes `t-display`, `t-title`, `t-h2`, `t
   Hover gives the row the fill.
 - Category glyphs: a 9 x 9 grid of square pixels per category (`src/lib/glyphs.ts`). A scan moves
   left to right and the pixels change between the category's frames: input to output.
-- Home hero: the heading names a task ("Remove backgrounds", then "free, on this device.").
-  Beside it, a reel of 1-bit pixel scenes (`src/components/site/reel/`) shows one tool that other
-  sites charge for per scene, about 3 s each. A new scene dissolves in pixel by pixel, the heading
-  phrase wipes out and in, and the caption links to the tool. One bar per scene shows progress
-  and jumps to it; a button pauses the reel.
-- Home body: a list of tools that other sites charge for, with what each one gives here. One
-  inverted band (`.ink-band`) holds the proof: the CSP rule and a live list of the requests the
-  page has made, all to this site.
+- Home hero: the heading names a task ("Remove backgrounds", then "free, on this device."), a
+  plain lead, then the search field and a "Choose a file" button. The button opens the drop
+  screen, which lists the tools for the file. Behind the hero, a reel of 1-bit pixel scenes
+  (`src/components/site/reel/`) shows one tool that other sites charge for per scene, about 3 s
+  each. On large screens it fills the right part of the hero from top to bottom; left of the
+  scene the picture goes on in the fill tone under the text and dissolves into the page. On
+  smaller screens it runs edge to edge under the controls. A new scene dissolves in pixel by
+  pixel, the heading phrase wipes out and in, and the caption links to the tool. One bar per
+  scene shows progress and jumps to it; a button pauses the reel.
+- Home body: a list of tools that other sites charge for, with what each one gives here.
 
 ## Motion
 
