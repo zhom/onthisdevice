@@ -1,0 +1,79 @@
+---
+/** The explainer under a calculator: method, formula, worked example, table, limits and sources. */
+import type { CalcDef } from '@/lib/tools/calc-families/types'
+
+interface Props {
+  def: CalcDef
+}
+
+const { def } = Astro.props
+const e = def.explain
+const name = e.name ?? def.title.toLowerCase()
+---
+
+<h2>How the {name} works</h2>
+{e.how.map((p) => <p>{p}</p>)}
+
+<h2>Formula</h2>
+<pre><code>{e.formula}</code></pre>
+
+{
+  e.example && (
+    <>
+      <h2>Worked example</h2>
+      <p>{e.example}</p>
+    </>
+  )
+}
+
+{
+  e.table && (
+    <>
+      <h2>{e.table.title}</h2>
+      <table>
+        <thead>
+          <tr>
+            {e.table.head.map((h) => (
+              <th scope="col">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {e.table.rows.map((r) => (
+            <tr>
+              {r.map((c) => (
+                <td>{c}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )
+}
+
+{
+  e.notes && (
+    <>
+      <h2>Limits</h2>
+      <p>{e.notes}</p>
+    </>
+  )
+}
+
+<h2>Sources</h2>
+<ul>
+  {
+    e.sources.map(([label, url]) => (
+      <li>
+        {url ? (
+          <a href={url} rel="noopener">
+            {label}
+          </a>
+        ) : (
+          label
+        )}
+      </li>
+    ))
+  }
+</ul>

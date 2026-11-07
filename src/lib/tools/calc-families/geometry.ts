@@ -1,0 +1,137 @@
+import type { FamilyData } from './types'
+
+const EUCLID = ['Euclid, Elements, Books I, III and XII.'] as const
+const CRC = ['Zwillinger, D. (ed.). CRC Standard Mathematical Tables and Formulas, chapter 4, Geometry. Chapman & Hall/CRC.'] as const
+
+export const geometry: FamilyData = {
+  family: 'geometry',
+  defs: [
+    {
+      slug: 'area-calculator',
+      title: 'Area Calculator',
+      h1: 'Area calculator for shapes',
+      description: 'Area calculator for rectangles, squares, triangles, circles, ellipses, trapezoids, parallelograms, sectors and rhombuses, with perimeter and a drawing.',
+      keywords: ['area of a shape', 'area of triangle', 'area of trapezoid', 'area of ellipse', 'shape area formulas'],
+      category: 'math',
+      icon: 'Shapes',
+      faqs: [
+        { q: 'Which unit is the area in?', a: 'The square of the unit you pick: centimeters give cm², feet give ft². Enter every length in the same unit.' },
+        { q: 'Why is there no perimeter for a triangle?', a: 'The base and height fix the area but not the side lengths. Use the triangle calculator with the sides for the perimeter.' },
+        { q: 'How is an ellipse perimeter found?', a: 'There is no simple exact formula. The calculator uses Ramanujan’s second approximation, accurate to better than 1 part in a million for most ellipses.' },
+      ],
+      related: ['square-footage-calculator', 'circle-calculator', 'triangle-calculator', 'polygon-area-calculator'],
+      explain: {
+        how: ['Pick a shape and enter its measurements. Each shape has its own area formula; where the inputs fix the outline, the calculator also gives the perimeter.'],
+        formula: 'rectangle: l × w\nsquare: s²\ntriangle: ½ × b × h\ncircle: πr²\nellipse: πab\ntrapezoid: (a + b) ÷ 2 × h\nparallelogram: b × h\nsector: πr² × θ ÷ 360°\nrhombus: d1 × d2 ÷ 2',
+        example: 'A trapezoid with bases 8 and 5 and height 4 has an area of (8 + 5) ÷ 2 × 4 = 26.',
+        sources: [EUCLID, ['Ramanujan, S. (1914). Modular equations and approximations to π. Quarterly Journal of Mathematics 45, 350–372.']],
+      },
+    },
+    {
+      slug: 'arc-length-calculator',
+      title: 'Arc Length Calculator',
+      h1: 'Arc length calculator',
+      description: 'Arc length calculator: the length of a circular arc from the radius and central angle in degrees or radians, plus the chord, sector area and segment area.',
+      keywords: ['arc length formula', 'length of an arc', 'sector area', 'chord length', 'segment area'],
+      category: 'math',
+      icon: 'CircleDashed',
+      faqs: [
+        { q: 'What is the arc length formula?', a: 's = rθ with the angle θ in radians. In degrees, s = 2πr × θ ÷ 360.' },
+        { q: 'What is the difference between a sector and a segment?', a: 'A sector is the slice between two radii, like a pizza slice. A segment is the part between the chord and the arc.' },
+        { q: 'Can the angle be more than 180°?', a: 'Yes, up to a full turn of 360°.' },
+      ],
+      related: ['circle-calculator', 'area-calculator', 'angle-converter', 'circle-equation-calculator'],
+      explain: {
+        how: ['The arc is the same share of the circumference as the angle is of a full turn. In radians that share becomes simply s = rθ.'],
+        formula: 's = rθ (θ in radians)\nchord = 2r sin(θ ÷ 2)\nsector area = r²θ ÷ 2\nsegment area = r²(θ − sin θ) ÷ 2',
+        example: 'A 60° angle on a circle of radius 10: θ = 1.0472 rad, arc 10.472, chord 10, sector 52.36, segment 9.06.',
+        sources: [CRC, EUCLID],
+      },
+    },
+    {
+      slug: 'regular-polygon-calculator',
+      title: 'Regular Polygon Calculator',
+      h1: 'Regular polygon calculator',
+      description: 'Regular polygon calculator: area, perimeter, apothem, circumradius, interior angle and diagonals from the number of sides and the side length.',
+      keywords: ['hexagon calculator', 'pentagon area', 'octagon calculator', 'apothem calculator', 'interior angle of polygon'],
+      category: 'math',
+      icon: 'Hexagon',
+      faqs: [
+        { q: 'What is the apothem?', a: 'The distance from the center to the middle of a side. Area = ½ × perimeter × apothem.' },
+        { q: 'What is the interior angle of a hexagon?', a: '(6 − 2) × 180° ÷ 6 = 120°.' },
+        { q: 'How many diagonals does a polygon have?', a: 'n(n − 3) ÷ 2: a hexagon has 9 and an octagon 20.' },
+      ],
+      related: ['area-calculator', 'polygon-area-calculator', 'triangle-calculator', 'circle-calculator'],
+      explain: {
+        how: ['A regular polygon splits into n equal triangles from its center. Each has the side as its base and the apothem as its height, which gives the area.'],
+        formula: 'area = n s² ÷ (4 tan(π/n))\napothem = s ÷ (2 tan(π/n))\ncircumradius = s ÷ (2 sin(π/n))\ninterior angle = (n − 2) × 180° ÷ n\ndiagonals = n(n − 3) ÷ 2',
+        example: 'A regular hexagon with sides of 5 has an area of 64.95, an apothem of 4.33 and a circumradius of 5.',
+        table: { title: 'Common polygons, side 1', head: ['Sides', 'Name', 'Area', 'Interior angle'], rows: [[3, 'Triangle', '0.4330', '60°'], [4, 'Square', '1', '90°'], [5, 'Pentagon', '1.7205', '108°'], [6, 'Hexagon', '2.5981', '120°'], [8, 'Octagon', '4.8284', '135°']] },
+        sources: [CRC, EUCLID],
+      },
+    },
+    {
+      slug: 'polygon-area-calculator',
+      title: 'Polygon Area Calculator',
+      h1: 'Polygon area calculator from coordinates',
+      description: 'Polygon area calculator: area, perimeter and centroid of any polygon from the x and y coordinates of its corners, by the shoelace formula, drawn to scale.',
+      keywords: ['shoelace formula', 'area from coordinates', 'irregular polygon area', 'land area from points', 'centroid of polygon'],
+      category: 'math',
+      icon: 'Pentagon',
+      faqs: [
+        { q: 'In what order should I enter the corners?', a: 'In order around the shape, clockwise or counterclockwise. The area is the same either way.' },
+        { q: 'Why is it called the shoelace formula?', a: 'Writing the coordinates in two columns and multiplying across in both directions looks like lacing a shoe.' },
+        { q: 'Does it work for crossed shapes?', a: 'No. If the sides cross, parts of the area cancel. Split the shape into simple polygons.' },
+      ],
+      related: ['area-calculator', 'regular-polygon-calculator', 'distance-and-midpoint-calculator', 'square-footage-calculator'],
+      explain: {
+        how: ['For each side, multiply the x of one end by the y of the other and subtract the reverse. Half the sum is the signed area: positive for counterclockwise order.'],
+        formula: 'A = ½ |Σ (xᵢ yᵢ₊₁ − xᵢ₊₁ yᵢ)|\ncentroid x = Σ (xᵢ + xᵢ₊₁)(xᵢ yᵢ₊₁ − xᵢ₊₁ yᵢ) ÷ 6A\ncentroid y = Σ (yᵢ + yᵢ₊₁)(xᵢ yᵢ₊₁ − xᵢ₊₁ yᵢ) ÷ 6A',
+        example: 'The corners (0, 0), (6, 0), (7, 4), (3, 6) and (−1, 3) enclose an area of 34.5.',
+        sources: [CRC, ['Braden, B. (1986). The surveyor’s area formula. The College Mathematics Journal 17(4), 326–337.']],
+      },
+    },
+    {
+      slug: 'parabola-calculator',
+      title: 'Parabola Calculator',
+      h1: 'Parabola calculator: vertex, focus and directrix',
+      description: 'Parabola calculator: the vertex, focus, directrix, axis, intercepts and vertex form of y = ax² + bx + c, with the graph and its key points marked.',
+      keywords: ['vertex of parabola', 'focus and directrix', 'vertex form', 'axis of symmetry', 'quadratic graph'],
+      category: 'math',
+      icon: 'ChartSpline',
+      faqs: [
+        { q: 'How is the vertex found?', a: 'At x = −b ÷ 2a. Put that x into the equation for the y of the vertex.' },
+        { q: 'What are the focus and directrix?', a: 'Every point on a parabola is as far from the focus as from the directrix line. They sit 1 ÷ 4a above and below the vertex.' },
+        { q: 'What if a is negative?', a: 'The parabola opens downward and the vertex is the highest point.' },
+      ],
+      related: ['quadratic-equation-solver', 'graphing-calculator', 'polynomial-root-calculator', 'slope-calculator'],
+      explain: {
+        how: ['Completing the square turns y = ax² + bx + c into vertex form y = a(x − h)² + k. The focal length p = 1 ÷ 4a places the focus and directrix.'],
+        formula: 'h = −b ÷ 2a, k = c − b² ÷ 4a\ny = a(x − h)² + k\nfocus = (h, k + 1/(4a)), directrix: y = k − 1/(4a)\nroots = (−b ± √(b² − 4ac)) ÷ 2a',
+        example: 'y = x² − 4x + 3 has its vertex at (2, −1), focus (2, −0.75), directrix y = −1.25 and roots 1 and 3.',
+        sources: [CRC],
+      },
+    },
+    {
+      slug: 'circle-equation-calculator',
+      title: 'Circle Equation Calculator',
+      h1: 'Equation of a circle calculator',
+      description: 'Circle equation calculator: the standard and general form of a circle from its center and radius, from three points on it, or from the general equation.',
+      keywords: ['equation of a circle', 'circle through three points', 'standard form circle', 'general form circle', 'center radius form'],
+      category: 'math',
+      icon: 'Circle',
+      faqs: [
+        { q: 'What is the standard form?', a: '(x − h)² + (y − k)² = r², where (h, k) is the center and r the radius.' },
+        { q: 'How is the circle through three points found?', a: 'Its center is equally far from all three, so it lies where the perpendicular bisectors of two chords meet.' },
+        { q: 'When does the general form not give a circle?', a: 'When h² + k² − F is zero or negative: that is a single point or no real points.' },
+      ],
+      related: ['circle-calculator', 'distance-and-midpoint-calculator', 'arc-length-calculator', 'parabola-calculator'],
+      explain: {
+        how: ['Every form describes the same thing: the points at distance r from the center. Expanding the standard form gives the general form; completing the square goes back.'],
+        formula: 'standard: (x − h)² + (y − k)² = r²\ngeneral: x² + y² + Dx + Ey + F = 0, D = −2h, E = −2k, F = h² + k² − r²\nfrom the general form: h = −D/2, k = −E/2, r = √(h² + k² − F)',
+        example: 'Center (2, −1) and radius 3 give (x − 2)² + (y + 1)² = 9, or x² + y² − 4x + 2y − 4 = 0.',
+        sources: [CRC, EUCLID],
+      },
+    },
+  ],
+}

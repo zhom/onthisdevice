@@ -1,9 +1,41 @@
 ---
 /** Renders ToolLayout, the island and the explainer for each routed tool of src/lib/tools/calculators.ts. */
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import { CALCULATOR_PAGES } from '@/lib/tools/calculators'
+import Explainer from './engine/Explainer.astro'
+import Loans from './loans/Island'
+import Invest from './invest/Island'
+import Tax from './tax/Island'
+import Body from './body/Island'
+import Clinical from './clinical/Island'
+import Stats from './stats/Island'
+import Algebra from './algebra/Island'
+import Geometry from './geometry/Island'
+import Physics from './physics/Island'
+import Electric from './electric/Island'
+
 interface Props {
   slug: string
 }
 
 const { slug } = Astro.props
-throw new Error(`[calculators] no page for "${slug}"`)
+const page = CALCULATOR_PAGES.get(slug)
+if (!page) throw new Error(`[calculators] no page for "${slug}"`)
+const { family, def } = page
 ---
+
+<ToolLayout slug={slug}>
+  {family === 'loans' && <Loans client:load slug={slug} />}
+  {family === 'invest' && <Invest client:load slug={slug} />}
+  {family === 'tax' && <Tax client:load slug={slug} />}
+  {family === 'body' && <Body client:load slug={slug} />}
+  {family === 'clinical' && <Clinical client:load slug={slug} />}
+  {family === 'stats' && <Stats client:load slug={slug} />}
+  {family === 'algebra' && <Algebra client:load slug={slug} />}
+  {family === 'geometry' && <Geometry client:load slug={slug} />}
+  {family === 'physics' && <Physics client:load slug={slug} />}
+  {family === 'electric' && <Electric client:load slug={slug} />}
+  <Fragment slot="explainer">
+    <Explainer def={def} />
+  </Fragment>
+</ToolLayout>
