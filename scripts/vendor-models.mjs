@@ -5,6 +5,8 @@
  *
  *   node scripts/vendor-models.mjs            # download what is missing, rewrite the manifest
  *   node scripts/vendor-models.mjs --force    # download everything again
+ *   node scripts/vendor-models.mjs --only /models/minishlab   # only paths with this prefix; the
+ *                                             manifest stays as it is (CI builds need just this)
  *
  * The host serves no file over 25 MiB. A larger file is stored gzip-compressed when that
  * brings it under the limit (`<path>.gz`), otherwise as numbered parts (`<path>.partN`).
@@ -20,6 +22,8 @@ import { SEARCH_MODEL, SEARCH_MODEL_DIMS, SEARCH_MODEL_REPO, SEARCH_MODEL_TOKENS
 const ROOT = path.resolve('public')
 const LIMIT = 24 * 1024 * 1024
 const force = process.argv.includes('--force')
+const onlyAt = process.argv.indexOf('--only')
+const only = onlyAt > -1 ? process.argv[onlyAt + 1] : null
 
 const ORT_VERSION = JSON.parse(fs.readFileSync('node_modules/onnxruntime-web/package.json', 'utf8')).version
 const OCR_VERSION = JSON.parse(fs.readFileSync('node_modules/tesseract.js/package.json', 'utf8')).version
@@ -216,6 +220,7 @@ const manifestPath = path.resolve('src/lib/ml/manifest.json')
 const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {}
 
 for (const f of FILES) {
+  if (only && !f.to.startsWith(only)) continue
   const abs = path.join(ROOT, f.to)
   fs.mkdirSync(path.dirname(abs), { recursive: true })
   const stored = manifest[f.to] && (fs.existsSync(abs) || fs.existsSync(`${abs}.gz`) || fs.existsSync(`${abs}.part0`))
@@ -243,6 +248,8 @@ for (const f of FILES) {
   const m = manifest[f.to]
   console.log(`${f.to}  ${(m.bytes / 1048576).toFixed(2)} MiB${m.gzip ? ` (gz ${(m.wire / 1048576).toFixed(2)})` : ''}${m.parts ? ` (${m.parts} parts)` : ''}`)
 }
+
+if (only) process.exit(0)
 
 // Drop entries (and their files) that are no longer in the list, for example an old ORT version.
 const wanted = new Set(FILES.map((f) => f.to))

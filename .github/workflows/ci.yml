@@ -1,8 +1,5 @@
 name: CI
 
-# Type check and unit tests. Cloudflare Workers Builds builds and deploys each
-# push to main itself (see README, "Deployment").
-
 on:
   push:
     branches: [main]
@@ -18,20 +15,44 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  site:
+    name: Types, tests and build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
-          node-version: 26
+          node-version-file: .node-version
           cache: npm
       - run: npm ci
       - run: npm run check
       - run: npm test
-      - run: cargo test --manifest-path rust/Cargo.toml --release --locked
+      # The build embeds the tool list with the search model. The other models are not needed
+      # to build pages, so CI fetches only this one (7 MB, cut from a 128 MB download).
+      - uses: actions/cache@v6
+        with:
+          path: public/models/minishlab
+          key: search-model-${{ hashFiles('src/lib/search/semantic/*.ts') }}
+      - run: node scripts/vendor-models.mjs --only /models/minishlab
+      # A broken page, a missing registry entry or a file over the host's size limit fails here.
+      - run: npm run build
+
+  engine:
+    name: Rust engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        # rust/rust-toolchain.toml pins the compiler; rustup reads it from the working directory.
+        working-directory: rust
+    steps:
+      - uses: actions/checkout@v7
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: rust
+      - run: cargo test --release --locked
       - name: engine.wasm matches rust/
         run: |
-          npm run build:engine
-          git diff --exit-code src/lib/engine/engine.wasm
+          sh ../scripts/build-engine.sh
+          git diff --exit-code ../src/lib/engine/engine.wasm
