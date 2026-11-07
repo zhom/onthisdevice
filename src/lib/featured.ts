@@ -36,6 +36,7 @@ export const FEATURED = [
   'pdf-to-jpg',
   'jpg-to-pdf',
   'compress-image-to-100kb',
+  'remove-background',
   'resize-image',
   'mov-to-mp4',
   'video-to-gif',

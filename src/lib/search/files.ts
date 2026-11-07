@@ -176,9 +176,9 @@ export async function detectFile(file: File): Promise<FileKind> {
 
 /** Categories whose tools are about this family; a small tie-break over, say, encoders. */
 const HOME: Partial<Record<FileFamily, readonly string[]>> = {
-  image: ['image-convert', 'image-edit'],
-  video: ['media'],
-  audio: ['media'],
+  image: ['image-convert', 'image-edit', 'ai'],
+  video: ['media', 'ai'],
+  audio: ['media', 'ai'],
   pdf: ['pdf', 'pdf-convert'],
   document: ['data', 'pdf-convert'],
   data: ['data'],
@@ -228,18 +228,25 @@ export function toolsForFile(
   const names = new Set(ACCEPTED_AS[kind.ext] ?? [kind.ext])
   const count = options.count ?? 1
   const out: FileMatch[] = []
+  const converters = new Set<FileMatch>()
   for (const tool of catalog.tools) {
     const takes = tool.accepts.some((a) => names.has(a))
     const any = tool.accepts.includes('any')
     if (!takes && !any) continue
     let score = takes ? 10 : 2
+    let converter = false
     if (takes) {
       score += 6 / Math.sqrt(tool.accepts.length)
       // A converter from this format ("mov-to-mp4") is the usual need for media files; PDF
       // tools are all PDF-only, so their own popularity decides.
       const [first] = tool.slug.split('-')
       if (kind.family !== 'pdf' && (names.has(first) || tool.slug.startsWith(`${kind.ext}-to-`))) {
-        score += 5 + (TARGET[kind.family]?.[tool.slug.split('-to-')[1] ?? ''] ?? 0)
+        // Where the family names its usual targets, a converter to a rare one ("png-to-ico")
+        // gets less than the general tools for the file.
+        const targets = TARGET[kind.family]
+        const target = targets?.[tool.slug.split('-to-')[1] ?? '']
+        score += targets && target === undefined ? 1.5 : 5 + (target ?? 0)
+        converter = true
       }
     }
     if (HOME[kind.family]?.includes(tool.category.id)) score += 1.5
@@ -249,11 +256,19 @@ export function toolsForFile(
     // "passport scan.jpg" leans to the ID tools, "screenshot.png" to the screenshot tools.
     const sim = options.meaning?.[tool.index] ?? 0
     score += 6 * Math.min(1, Math.max(0, (sim - 0.35) / 0.3))
-    out.push({ tool, score })
+    const match = { tool, score }
+    if (converter) converters.add(match)
+    out.push(match)
   }
   out.sort((a, b) => b.score - a.score || a.tool.title.localeCompare(b.tool.title))
-  return out.slice(0, options.limit ?? 8)
+  // A format has up to a dozen converters; past the best few they hide every other tool.
+  let shown = 0
+  const list = out.filter((m) => !converters.has(m) || ++shown <= MAX_CONVERTERS)
+  return list.slice(0, options.limit ?? 8)
 }
+
+/** Converters from the file's own format in one list of suggestions. */
+const MAX_CONVERTERS = 3
 
 /** Does this tool take a file of this kind? */
 export function toolTakes(tool: Pick<ToolDoc, 'accepts'>, kind: FileKind): boolean {

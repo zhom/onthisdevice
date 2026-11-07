@@ -141,6 +141,7 @@ export const tools: Tool[] = [
     ],
     category: 'media',
     icon: 'Shrink',
+    popular: true,
     accepts: ['mp4', 'webm', 'mkv', 'mov', 'avi', 'm4v', 'mpg', 'mpeg', '3gp', 'ogv'],
     faqs: [
       {
