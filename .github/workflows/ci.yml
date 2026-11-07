@@ -16,9 +16,9 @@ permissions:
 
 jobs:
   site:
-    name: Types, tests and build
+    name: Types, tests, build and pages
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -37,6 +37,14 @@ jobs:
       - run: node scripts/vendor-models.mjs --only /models/minishlab
       # A broken page, a missing registry entry or a file over the host's size limit fails here.
       - run: npm run build
+      # Opens every built page in Chromium: page errors, hydration errors, CSP violations and
+      # failed requests fail the job.
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+      - run: npx playwright install --with-deps --only-shell chromium
+      - run: npm run smoke:pages
 
   engine:
     name: Rust engine
