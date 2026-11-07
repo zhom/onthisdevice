@@ -1,0 +1,54 @@
+---
+/** How the background tools work. */
+import { CUTOUT_MODEL } from '@/lib/ml/cutout/models'
+import { fileInfo } from '@/lib/ml/assets'
+import type { CutoutSlug } from './presets'
+
+interface Props {
+  slug: CutoutSlug
+}
+const { slug } = Astro.props
+const mb = (path: string) => Math.round((fileInfo(path)?.wire ?? 0) / 1e6)
+const steps: Record<CutoutSlug, string> = {
+  'remove-background': 'Choose no background for a transparent PNG, or a colour, a blur or a picture of your own.',
+  'transparent-background-maker': 'Choose Subject to crop close around the cut-out, or Photo to keep the full size.',
+  'white-background-for-product-photos': 'The product is centred in a white square with space around it and a soft shadow under it. Change the size, margin or colour if your shop needs it.',
+  'blur-background': 'Set the strength of the blur with the slider. The subject stays sharp.',
+  'change-background-color': 'Press a colour, open the picker for any other colour, or choose Picture to put a photo of your own behind the subject.',
+  'profile-picture-maker': 'Pick a background colour. The picture is centred on you and cut to a circle with transparent corners.',
+  'sticker-maker': 'Set the width and colour of the outline. The sticker is cropped close around the subject.',
+}
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Drop one or more photos. They stay on your device.</li>
+  <li>The first time, the model downloads once. Then each photo takes a second or two with WebGPU, or up to a minute on the processor.</li>
+  <li>{steps[slug]}</li>
+  <li>Drag the handle on the picture to compare the original and the result.</li>
+  <li>Download PNG, JPG or WebP. With several photos, download them all as one ZIP file.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  A segmentation model looks at the photo at 1024 by 1024 pixels and gives each pixel a value from 0 (background) to 1
+  (subject). That map is scaled back to the size of your photo and used as its transparency. The background, frame,
+  outline and shadow are then drawn in the page, so a change of option shows at once.
+</p>
+<table>
+  <thead>
+    <tr><th>Your browser</th><th>Runs on</th><th>Time per photo</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>With WebGPU</td><td>The graphics card</td><td>under 1 s</td></tr>
+    <tr><td>Without WebGPU</td><td>The processor</td><td>10 to 40 s</td></tr>
+  </tbody>
+</table>
+<p>The model is {CUTOUT_MODEL.name} (Apache 2.0 licence, {mb(CUTOUT_MODEL.path)} MB). It and its runtime are files of this site. They are kept in your browser after the first use, so the tool also works offline.</p>
+
+<h2>Tips for clean edges</h2>
+<ul>
+  <li>Use a photo where the subject stands out from the background in colour or light.</li>
+  <li>Fine hair and see-through objects such as glass are the hardest parts. Check them at full size.</li>
+  <li>A larger photo gives smoother edges, because the mask is scaled to its size.</li>
+</ul>

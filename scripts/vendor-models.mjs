@@ -31,6 +31,24 @@ const TRANSFORMERS_VERSION = JSON.parse(fs.readFileSync('node_modules/@huggingfa
 const OCR_CORE_VERSION = JSON.parse(fs.readFileSync('node_modules/tesseract.js-core/package.json', 'utf8')).version
 
 const hf = (repo, file) => `https://huggingface.co/${repo}/resolve/main/${file}`
+/** Exports made on this Mac before they are published (see `exported` below). */
+const EXPORTS = 'scripts/.tmp/exports'
+
+const WHISPER_REQUIRED = ['config.json', 'tokenizer.json', 'tokenizer_config.json', 'preprocessor_config.json', 'generation_config.json']
+const WHISPER_FILES = [
+  ...WHISPER_REQUIRED,
+  'special_tokens_map.json',
+  'added_tokens.json',
+  'normalizer.json',
+  'vocab.json',
+  'merges.txt',
+  'onnx/encoder_model_quantized.onnx',
+  'onnx/decoder_model_merged_quantized.onnx',
+]
+/** English voices of Kokoro; the list in src/lib/ml/voice/voices.ts must match. */
+const KOKORO_VOICES = ['af_heart', 'af_bella', 'af_nicole', 'af_sarah', 'am_michael', 'am_fenrir', 'am_puck', 'bf_emma', 'bf_isabella', 'bm_george', 'bm_fable']
+/** OCR languages besides English; src/lib/ml/read/languages.ts lists the same codes. */
+const OCR_LANGS = ['spa', 'fra', 'deu', 'ita', 'por', 'nld', 'pol', 'rus', 'ukr', 'tur', 'ara', 'hin', 'chi_sim', 'chi_tra', 'jpn', 'kor', 'vie', 'ind']
 /** Files this repo publishes itself (exports that exist nowhere else). */
 const RELEASE = 'https://github.com/zhom/onthisdevice/releases/download/models-v1'
 
@@ -87,27 +105,56 @@ const FILES = [
   })),
 
   // Speech to text with word times (MIT).
-  ...[
-    'config.json',
-    'generation_config.json',
-    'preprocessor_config.json',
-    'tokenizer.json',
-    'tokenizer_config.json',
-    'special_tokens_map.json',
-    'added_tokens.json',
-    'normalizer.json',
-    'vocab.json',
-    'merges.txt',
-    'onnx/encoder_model_quantized.onnx',
-    'onnx/decoder_model_merged_quantized.onnx',
-  ].map((f) => ({
+  ...WHISPER_FILES.map((f) => ({
     to: `/models/onnx-community/whisper-tiny_timestamped/${f}`,
     url: hf('onnx-community/whisper-tiny_timestamped', f),
-    optional: !f.startsWith('onnx/') && !['config.json', 'tokenizer.json', 'tokenizer_config.json', 'preprocessor_config.json', 'generation_config.json'].includes(f),
+    optional: !f.startsWith('onnx/') && !WHISPER_REQUIRED.includes(f),
   })),
 
   // Search by meaning: static embeddings (MIT), cut and packed as int8 here (see packSearchModel).
   { to: SEARCH_MODEL, make: packSearchModel },
+
+  // ---- AI tools (src/lib/ml/cutout, upscale, inpaint, depth, voice, translate, denoise, transcribe, read) ----
+
+  // Background removal: ISNet general use (DIS, Apache-2.0) with only its main mask output and its
+  // weights stored as fp16, cast to fp32 when the session loads (half the download, fp32 masks). Made here
+  // from the rembg release copy (scripts/models/half-weights-isnet.py).
+  { to: '/models/isnet/isnet-general-use-f16w.onnx', url: `${RELEASE}/isnet-general-use-f16w.onnx`, exported: 'isnet-general-use-f16w.onnx' },
+
+  // Super resolution: Real-ESRGAN compact models (BSD-3-Clause), exported to ONNX with dynamic size here
+  // (scripts/models/export-realesr.py, from the .pth files of the Real-ESRGAN v0.2.5.0 release).
+  ...['realesr-general-x4v3.onnx', 'realesr-animevideov3.onnx'].map((f) => ({ to: `/models/realesrgan/${f}`, url: `${RELEASE}/${f}`, exported: f })),
+
+  // Object removal: MI-GAN with its pre- and post-processing in the graph (MIT).
+  { to: '/models/migan/migan_pipeline_v2.onnx', url: hf('andraniksargsyan/migan', 'migan_pipeline_v2.onnx') },
+
+  // Depth: Depth Anything V2 small, uint8 weights (Apache-2.0).
+  { to: '/models/onnx-community/depth-anything-v2-small/onnx/model_quantized.onnx', url: hf('onnx-community/depth-anything-v2-small', 'onnx/model_quantized.onnx') },
+
+  // Speech to text, the "accurate" choice: Whisper base with word times (MIT).
+  ...WHISPER_FILES.map((f) => ({
+    to: `/models/onnx-community/whisper-base_timestamped/${f}`,
+    url: hf('onnx-community/whisper-base_timestamped', f),
+    optional: !f.startsWith('onnx/') && !WHISPER_REQUIRED.includes(f),
+  })),
+
+  // Text to speech: Kokoro 82M, uint8 weights, and English voices (Apache-2.0). Words to phonemes with the
+  // US and UK lexicons of misaki (Apache-2.0), merged and packed here (see packLexicon).
+  ...['tokenizer.json', 'onnx/model_quantized.onnx', ...KOKORO_VOICES.map((v) => `voices/${v}.bin`)].map((f) => ({
+    to: `/models/onnx-community/Kokoro-82M-v1.0-ONNX/${f}`,
+    url: hf('onnx-community/Kokoro-82M-v1.0-ONNX', f),
+  })),
+  { to: '/models/kokoro/lexicon-us.tsv', make: () => packLexicon('us') },
+  { to: '/models/kokoro/lexicon-gb.tsv', make: () => packLexicon('gb') },
+
+  // Speech noise removal: DTLN, two stateful ONNX models (MIT).
+  ...['model_1.onnx', 'model_2.onnx'].map((f) => ({ to: `/models/dtln/${f}`, url: `https://raw.githubusercontent.com/breizhn/DTLN/master/pretrained_model/${f}` })),
+
+  // More OCR languages: Tesseract LSTM data, best models as integers (Apache-2.0).
+  ...OCR_LANGS.map((l) => ({
+    to: `/ocr/lang/4.0.0_best_int/${l}.traineddata.gz`,
+    url: `https://cdn.jsdelivr.net/npm/@tesseract.js-data/${l}/4.0.0_best_int/${l}.traineddata.gz`,
+  })),
 
   // transformers.js for the speech model (Apache-2.0). The npm build imports onnxruntime-web/webgpu,
   // and that bundle makes Vite copy a 26.8 MB wasm into /_astro/ (over the host limit). This copy
@@ -163,6 +210,25 @@ function patchTransformers(src) {
   return out
 }
 
+/** Kokoro lexicon of one dialect ('us' or 'gb'): `word<TAB>phonemes` lines. */
+async function packLexicon(dialect) {
+  const get = async (file) => {
+    const url = `https://raw.githubusercontent.com/hexgrad/misaki/main/misaki/data/${file}`
+    const res = await fetch(url, { headers: headersFor(url) })
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
+    return res.json()
+  }
+  // Gold entries win over silver ones. A word with phonemes per part of speech keeps its default.
+  const merged = { ...(await get(`${dialect}_silver.json`)), ...(await get(`${dialect}_gold.json`)) }
+  const lines = []
+  for (const [word, value] of Object.entries(merged)) {
+    const phonemes = typeof value === 'string' ? value : value?.DEFAULT
+    if (phonemes && !/[\t\n]/.test(word)) lines.push(`${word}\t${phonemes}`)
+  }
+  lines.sort()
+  return Buffer.from(lines.join('\n') + '\n')
+}
+
 /**
  * The search model: the first SEARCH_MODEL_TOKENS rows (the vocabulary is ordered by frequency
  * after the base word pieces) and the first SEARCH_MODEL_DIMS dimensions (they are PCA
@@ -186,8 +252,15 @@ async function packSearchModel() {
   return Buffer.from(packModel({ ...quantizeRows(cut, count, dims), vocab }))
 }
 
+/** HF_TOKEN (optional) raises the rate limit of huggingface.co; it is sent there only. */
+function headersFor(url) {
+  const headers = { 'User-Agent': 'onthisdevice-vendor/1' }
+  if (process.env.HF_TOKEN && new URL(url).hostname === 'huggingface.co') headers.Authorization = `Bearer ${process.env.HF_TOKEN}`
+  return headers
+}
+
 async function fetchTo(url, dest) {
-  const res = await fetch(url, { redirect: 'follow', headers: { 'User-Agent': 'onthisdevice-vendor/1' } })
+  const res = await fetch(url, { redirect: 'follow', headers: headersFor(url) })
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
   const buf = Buffer.from(await res.arrayBuffer())
   // Git LFS pointers are small text files; refuse them.
@@ -233,8 +306,10 @@ for (const f of FILES) {
       try {
         await fetchTo(f.url, abs)
       } catch (err) {
-        if (!f.fallback) throw err
-        await fetchTo(f.fallback, abs)
+        // An export of this repo that is not published yet: use the copy on this Mac.
+        if (f.exported && fs.existsSync(path.join(EXPORTS, f.exported))) fs.copyFileSync(path.join(EXPORTS, f.exported), abs)
+        else if (f.fallback) await fetchTo(f.fallback, abs)
+        else throw err
       }
     }
   } catch (err) {

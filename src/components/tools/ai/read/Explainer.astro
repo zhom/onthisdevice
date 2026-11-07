@@ -1,0 +1,65 @@
+---
+/** How the image to text tools work. */
+import { OCR_LANGUAGES } from '@/lib/ml/read/languages'
+
+interface Props {
+  /** The PDF tools: a searchable PDF, or only its text. */
+  pdf?: 'searchable' | 'text'
+}
+const { pdf } = Astro.props
+---
+
+<h2>How to use it</h2>
+{
+  pdf ? (
+    <ol>
+      <li>Choose the language of the text. Add a second one for a document with two languages.</li>
+      <li>Drop a scanned PDF. It stays on your device.</li>
+      <li>Each page without its own text is drawn at 200 dpi and read. The progress shows the page.</li>
+      <li>{pdf === 'searchable' ? 'Download the searchable PDF, or the text as TXT.' : 'Copy the text or download it as TXT.'}</li>
+    </ol>
+  ) : (
+    <ol>
+      <li>Choose the language of the text. Add a second one for a page with two languages.</li>
+      <li>Drop, choose or paste one or more images. They stay on your device.</li>
+      <li>The text appears next to the image. Correct it if you need to.</li>
+      <li>Copy the text, or download it as a TXT file.</li>
+    </ol>
+  )
+}
+
+<h2>How it works</h2>
+<p>
+  The tool runs Tesseract, an open source text recognition engine (Apache 2.0 licence), compiled to WebAssembly. Its LSTM
+  neural network reads each line of text as a sequence of characters. First the page layout is found: columns,
+  paragraphs and lines in reading order. Small images are enlarged 2 times, because the engine reads letters of 20 to 40
+  pixels best, and light text on a dark background is inverted.
+</p>
+<table>
+  <thead>
+    <tr><th>Languages</th><th>Data per language</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>{OCR_LANGUAGES.map((l) => l.name).join(', ')}</td><td>1 to 3 MB, downloaded once</td></tr>
+  </tbody>
+</table>
+
+{
+  pdf === 'searchable' && (
+    <>
+      <h2>The text layer</h2>
+      <p>
+        Each recognised word is written over its place on the page in invisible text (PDF text rendering mode 3), with the
+        font size set to the height of the word and squeezed to its width. The page image is not changed, so the PDF looks the
+        same but can be searched, selected and copied. The layer uses a standard font, which holds the Latin alphabet only.
+      </p>
+    </>
+  )
+}
+
+<h2>Tips for better text</h2>
+<ul>
+  <li>Photograph a page straight on, in even light, with the text filling the frame.</li>
+  <li>Choose the right language. Accents and letters of other alphabets need their language.</li>
+  <li>Crop away pictures and borders around the text.</li>
+</ul>

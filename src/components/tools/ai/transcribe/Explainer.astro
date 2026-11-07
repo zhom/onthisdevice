@@ -1,0 +1,59 @@
+---
+/** How the speech tools work. */
+import { SPEECH_MODELS, SPEED, transcribeDownloadBytes } from '@/lib/ml/transcribe/models'
+import type { SpeechModel } from '@/lib/ml/transcribe/models'
+import { PRESETS } from './presets'
+import type { TranscribeSlug } from './presets'
+
+interface Props {
+  slug: TranscribeSlug
+}
+const { slug } = Astro.props
+const preset = PRESETS[slug]
+const models = Object.keys(SPEECH_MODELS) as SpeechModel[]
+const size = (m: SpeechModel) => Math.round(transcribeDownloadBytes(m) / 1e6)
+---
+
+<h2>How to use it</h2>
+<ol>
+  {preset.record ? <li>Press Record and speak, then Stop. Or drop a recording.</li> : <li>Drop an audio or video file. It stays on your device.</li>}
+  <li>{preset.translate ? 'Choose the spoken language, or Detect.' : 'Choose the spoken language. Detect works too, but naming it is more reliable.'} Fast is good for clear speech; Accurate for noise, accents or several speakers.</li>
+  <li>Press {preset.translate ? 'Translate to English' : 'Transcribe'}. The text appears part by part.</li>
+  <li>{preset.output === 'srt' ? 'Download SRT for most players and editors, or VTT for the web.' : 'Copy the text or download TXT. SRT and VTT give subtitles.'}</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool runs Whisper, a speech recognition model from OpenAI (MIT licence), in a background thread of this page. The sound is converted to 16 kHz mono and cut into pieces of up to 28 seconds at the
+  quietest moment, so no word is split. Silent pieces are skipped, because the model invents words in silence.
+  {preset.translate
+    ? ' With the translate task, Whisper writes English text directly from the speech, phrase by phrase.'
+    : ' Each word gets its start and end time from the attention of the model, which lines up the text with the sound.'}
+</p>
+<table>
+  <thead>
+    <tr><th>Model</th><th>Download (once)</th><th>Speed on a laptop</th></tr>
+  </thead>
+  <tbody>
+    {models.map((m) => (
+      <tr>
+        <td>{SPEECH_MODELS[m].label}: {SPEECH_MODELS[m].name}</td>
+        <td>{size(m)} MB</td>
+        <td>About {SPEED[m]} minutes of speech per minute</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<h2>Subtitle rules</h2>
+<p>
+  A subtitle holds at most 42 characters and lasts at most 6 seconds. A new one starts after the end of a sentence or a
+  pause of 0.8 seconds. Each lasts at least half a second, and subtitles never overlap.
+</p>
+
+<h2>Limits</h2>
+<ul>
+  <li>Music, noise and people who speak at the same time cause mistakes. Clean the sound first with the noise remover for a better result.</li>
+  <li>Speakers are not labelled.</li>
+  <li>Read the text before you publish it. Names and numbers are the most common mistakes.</li>
+</ul>

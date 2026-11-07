@@ -1,4 +1,25 @@
 {
+  "/models/dtln/model_1.onnx": {
+    "bytes": 1458237,
+    "wire": 1458237
+  },
+  "/models/dtln/model_2.onnx": {
+    "bytes": 2510010,
+    "wire": 2510010
+  },
+  "/models/isnet/isnet-general-use-f16w.onnx": {
+    "bytes": 90441617,
+    "wire": 90441617,
+    "parts": 4
+  },
+  "/models/kokoro/lexicon-gb.tsv": {
+    "bytes": 4886830,
+    "wire": 4886830
+  },
+  "/models/kokoro/lexicon-us.tsv": {
+    "bytes": 4592212,
+    "wire": 4592212
+  },
   "/models/mdefrance/yolos-tiny-signature-detection/config.json": {
     "bytes": 819,
     "wire": 819
@@ -11,6 +32,11 @@
   "/models/mdefrance/yolos-tiny-signature-detection/preprocessor_config.json": {
     "bytes": 441,
     "wire": 441
+  },
+  "/models/migan/migan_pipeline_v2.onnx": {
+    "bytes": 28079181,
+    "wire": 24517578,
+    "gzip": true
   },
   "/models/minishlab/potion-base-32M/search-176d-40k.bin": {
     "bytes": 7505500,
@@ -35,6 +61,113 @@
   "/models/Mozilla/smart-pii-redactor-v1-onnx/tokenizer.json": {
     "bytes": 983521,
     "wire": 983521
+  },
+  "/models/onnx-community/depth-anything-v2-small/onnx/model_quantized.onnx": {
+    "bytes": 27258801,
+    "wire": 21625366,
+    "gzip": true
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/onnx/model_quantized.onnx": {
+    "bytes": 92361116,
+    "wire": 92361116,
+    "parts": 4
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/tokenizer.json": {
+    "bytes": 3497,
+    "wire": 3497
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/af_bella.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/af_heart.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/af_nicole.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/af_sarah.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/am_fenrir.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/am_michael.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/am_puck.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/bf_emma.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/bf_isabella.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/bm_fable.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/Kokoro-82M-v1.0-ONNX/voices/bm_george.bin": {
+    "bytes": 522240,
+    "wire": 522240
+  },
+  "/models/onnx-community/whisper-base_timestamped/added_tokens.json": {
+    "bytes": 34604,
+    "wire": 34604
+  },
+  "/models/onnx-community/whisper-base_timestamped/config.json": {
+    "bytes": 2243,
+    "wire": 2243
+  },
+  "/models/onnx-community/whisper-base_timestamped/generation_config.json": {
+    "bytes": 3832,
+    "wire": 3832
+  },
+  "/models/onnx-community/whisper-base_timestamped/merges.txt": {
+    "bytes": 493869,
+    "wire": 493869
+  },
+  "/models/onnx-community/whisper-base_timestamped/normalizer.json": {
+    "bytes": 52666,
+    "wire": 52666
+  },
+  "/models/onnx-community/whisper-base_timestamped/onnx/decoder_model_merged_quantized.onnx": {
+    "bytes": 53712708,
+    "wire": 53712708,
+    "parts": 3
+  },
+  "/models/onnx-community/whisper-base_timestamped/onnx/encoder_model_quantized.onnx": {
+    "bytes": 23159167,
+    "wire": 23159167
+  },
+  "/models/onnx-community/whisper-base_timestamped/preprocessor_config.json": {
+    "bytes": 339,
+    "wire": 339
+  },
+  "/models/onnx-community/whisper-base_timestamped/special_tokens_map.json": {
+    "bytes": 2194,
+    "wire": 2194
+  },
+  "/models/onnx-community/whisper-base_timestamped/tokenizer_config.json": {
+    "bytes": 282682,
+    "wire": 282682
+  },
+  "/models/onnx-community/whisper-base_timestamped/tokenizer.json": {
+    "bytes": 2480466,
+    "wire": 2480466
+  },
+  "/models/onnx-community/whisper-base_timestamped/vocab.json": {
+    "bytes": 1036584,
+    "wire": 1036584
   },
   "/models/onnx-community/whisper-tiny_timestamped/added_tokens.json": {
     "bytes": 34604,
@@ -89,6 +222,14 @@
     "bytes": 16280195,
     "wire": 16280195
   },
+  "/models/realesrgan/realesr-animevideov3.onnx": {
+    "bytes": 2492874,
+    "wire": 2492874
+  },
+  "/models/realesrgan/realesr-general-x4v3.onnx": {
+    "bytes": 4866394,
+    "wire": 4866394
+  },
   "/models/transformers/4.3.2/transformers.web.min.mjs": {
     "bytes": 456255,
     "wire": 456255
@@ -137,9 +278,81 @@
     "bytes": 3899472,
     "wire": 3899472
   },
+  "/ocr/lang/4.0.0_best_int/ara.traineddata.gz": {
+    "bytes": 1661906,
+    "wire": 1661906
+  },
+  "/ocr/lang/4.0.0_best_int/chi_sim.traineddata.gz": {
+    "bytes": 1718768,
+    "wire": 1718768
+  },
+  "/ocr/lang/4.0.0_best_int/chi_tra.traineddata.gz": {
+    "bytes": 1656239,
+    "wire": 1656239
+  },
+  "/ocr/lang/4.0.0_best_int/deu.traineddata.gz": {
+    "bytes": 1333102,
+    "wire": 1333102
+  },
   "/ocr/lang/4.0.0_best_int/eng.traineddata.gz": {
     "bytes": 2952873,
     "wire": 2952873
+  },
+  "/ocr/lang/4.0.0_best_int/fra.traineddata.gz": {
+    "bytes": 707406,
+    "wire": 707406
+  },
+  "/ocr/lang/4.0.0_best_int/hin.traineddata.gz": {
+    "bytes": 1389692,
+    "wire": 1389692
+  },
+  "/ocr/lang/4.0.0_best_int/ind.traineddata.gz": {
+    "bytes": 1194182,
+    "wire": 1194182
+  },
+  "/ocr/lang/4.0.0_best_int/ita.traineddata.gz": {
+    "bytes": 1660998,
+    "wire": 1660998
+  },
+  "/ocr/lang/4.0.0_best_int/jpn.traineddata.gz": {
+    "bytes": 2030256,
+    "wire": 2030256
+  },
+  "/ocr/lang/4.0.0_best_int/kor.traineddata.gz": {
+    "bytes": 1572336,
+    "wire": 1572336
+  },
+  "/ocr/lang/4.0.0_best_int/nld.traineddata.gz": {
+    "bytes": 3005696,
+    "wire": 3005696
+  },
+  "/ocr/lang/4.0.0_best_int/pol.traineddata.gz": {
+    "bytes": 2642356,
+    "wire": 2642356
+  },
+  "/ocr/lang/4.0.0_best_int/por.traineddata.gz": {
+    "bytes": 1392239,
+    "wire": 1392239
+  },
+  "/ocr/lang/4.0.0_best_int/rus.traineddata.gz": {
+    "bytes": 2679598,
+    "wire": 2679598
+  },
+  "/ocr/lang/4.0.0_best_int/spa.traineddata.gz": {
+    "bytes": 2100190,
+    "wire": 2100190
+  },
+  "/ocr/lang/4.0.0_best_int/tur.traineddata.gz": {
+    "bytes": 2141291,
+    "wire": 2141291
+  },
+  "/ocr/lang/4.0.0_best_int/ukr.traineddata.gz": {
+    "bytes": 2114206,
+    "wire": 2114206
+  },
+  "/ocr/lang/4.0.0_best_int/vie.traineddata.gz": {
+    "bytes": 1423003,
+    "wire": 1423003
   },
   "/ort/1.31.1/ort-wasm-simd-threaded.asyncify.mjs": {
     "bytes": 53457,

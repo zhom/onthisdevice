@@ -1,0 +1,36 @@
+---
+/** How the object removal tools work. */
+import { fileInfo } from '@/lib/ml/assets'
+import { INPAINT_MODEL } from '@/lib/ml/inpaint/model'
+import type { InpaintSlug } from './presets'
+
+interface Props {
+  slug: InpaintSlug
+}
+const { slug } = Astro.props
+const size = Math.round((fileInfo(INPAINT_MODEL)?.wire ?? 0) / 1e6)
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Drop a photo. It stays on your device.</li>
+  {slug === 'remove-text-from-image' ? <li>The text is found and marked. Clear marks you want to keep, or paint over text that was missed.</li> : <li>Paint over what you want to remove. Cover it fully, with its shadow and a small margin.</li>}
+  <li>Press Remove. The first time, the model downloads once ({size} MB).</li>
+  <li>Repeat for other parts. Undo removal goes back one step. Then download PNG, JPG or WebP.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool uses MI-GAN, an image inpainting network (MIT licence). It takes the area around your marks, scales it to 512
+  by 512 pixels, and predicts the pixels under the marks from what surrounds them: the lines, colours and textures that
+  continue into the hole. The filled part is scaled back and blended in, and every pixel you did not mark stays as it
+  was. One fill takes 2 to 5 seconds on a laptop processor.
+</p>
+{slug === 'remove-text-from-image' && <p>Text is found with the Tesseract text recognition engine, which marks a box around each word it reads.</p>}
+
+<h2>Tips</h2>
+<ul>
+  <li>Mark a little more than the object. Edges of the object that stay unmarked show as a faint outline.</li>
+  <li>Remove large things in parts, the background side first.</li>
+  <li>The fill is a likely background, not the real one. Check faces, text and straight lines near the fill.</li>
+</ul>

@@ -1,0 +1,43 @@
+---
+/** How the text to speech tools work. */
+import { VOICES, voiceDownloadBytes } from '@/lib/ml/voice/voices'
+
+const size = Math.round(voiceDownloadBytes(VOICES[0]) / 1e6)
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Type or paste English text, up to 20,000 characters.</li>
+  <li>Choose a voice and a speed.</li>
+  <li>Press Read aloud. The first time, the voice model downloads once ({size} MB).</li>
+  <li>Listen, then download WAV or MP3.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool runs Kokoro, an 82 million parameter speech model (Apache 2.0 licence), in a background thread
+  of this page. The text is first turned into words: numbers, money, times, percentages and common abbreviations are
+  written out. Each word is then turned into speech sounds with a pronunciation dictionary of about 180,000 English words
+  (US and UK lexicons, Apache 2.0). A word that is not in it is built from known parts, such as
+  "keyboards" from "key", "board" and "-s", or sounded out letter by letter. The model reads the sounds and a voice style
+  and writes the audio at 24 kHz, a few sentences at a time.
+</p>
+<table>
+  <thead>
+    <tr><th>Text</th><th>Read as</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>$4.50</td><td>four dollars and fifty cents</td></tr>
+    <tr><td>10:30</td><td>ten thirty</td></tr>
+    <tr><td>21st</td><td>twenty-first</td></tr>
+    <tr><td>in 1984</td><td>in nineteen eighty-four</td></tr>
+    <tr><td>25%</td><td>twenty-five percent</td></tr>
+  </tbody>
+</table>
+
+<h2>Limits</h2>
+<ul>
+  <li>English only. Text in other languages is read with English sounds.</li>
+  <li>Rare names can sound wrong. Write them as they sound to fix that.</li>
+  <li>On a laptop processor, a minute of speech takes about 20 to 60 seconds to make.</li>
+</ul>

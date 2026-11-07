@@ -1,0 +1,52 @@
+---
+/** How the upscale tools work. */
+import { fileInfo } from '@/lib/ml/assets'
+import { UPSCALE_MODELS } from '@/lib/ml/upscale/models'
+import type { UpscaleSlug } from './presets'
+
+interface Props {
+  slug: UpscaleSlug
+}
+const { slug } = Astro.props
+const kb = (path: string) => (fileInfo(path)?.wire ?? 0) / 1e6
+const photo = UPSCALE_MODELS.photo
+const drawing = UPSCALE_MODELS.drawing
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Drop an image. It stays on your device.</li>
+  <li>
+    {slug === 'enhance-photo' ? 'Keep Same for a cleaner photo of the same size, or choose 2x or 4x.' : 'Choose 2x or 4x.'}
+    Choose {slug === 'anime-upscaler' ? 'Drawing or anime for illustrations, or Photo for photos.' : 'Photo for photos, or Drawing or anime for illustrations.'}
+  </li>
+  <li>Press the button. The first time, the model downloads once.</li>
+  <li>Drag the handle on the picture to compare, then download PNG, JPG or WebP.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool uses Real-ESRGAN, a super resolution network trained on pairs of sharp images and the same images made small,
+  blurred, noisy and compressed. For every pixel of your image it predicts a 4 by 4 block of new pixels. The image is cut
+  into overlapping squares so that a large image fits in memory; only the middle of each result is kept, so no seams show.
+  A 2x or same-size result is the 4x result averaged down, which also removes noise.
+</p>
+<table>
+  <thead>
+    <tr><th>Image type</th><th>Model</th><th>Download</th><th>Good for</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Photo</td><td>{photo.name}</td><td>{kb(photo.path).toFixed(1)} MB</td><td>Photos, screenshots, scans</td></tr>
+    <tr><td>Drawing or anime</td><td>{drawing.name}</td><td>{kb(drawing.path).toFixed(1)} MB</td><td>Anime, cartoons, line art, logos</td></tr>
+  </tbody>
+</table>
+<p>
+  Both models are under the BSD 3-Clause licence. With WebGPU they run on your graphics card; without it they run on the
+  processor, which takes about 4 seconds for each 128 by 128 pixel square of the input.
+</p>
+
+<h2>What it cannot do</h2>
+<ul>
+  <li>It cannot recover detail that is not in the file, such as text that is too small to read or a face in a few pixels. It draws a likely version.</li>
+  <li>Upscaling a large image adds little. The gain is largest for images under about 1000 pixels wide.</li>
+</ul>

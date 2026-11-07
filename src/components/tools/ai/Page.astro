@@ -1,9 +1,147 @@
 ---
 /** Renders ToolLayout, the island and the explainer for each routed tool of src/lib/tools/ai.ts. */
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import CutoutTool from './cutout/CutoutTool.tsx'
+import CutoutExplainer from './cutout/Explainer.astro'
+import { PRESETS as CUTOUT } from './cutout/presets'
+import type { CutoutSlug } from './cutout/presets'
+import UpscaleTool from './upscale/UpscaleTool.tsx'
+import UpscaleExplainer from './upscale/Explainer.astro'
+import { PRESETS as UPSCALE } from './upscale/presets'
+import type { UpscaleSlug } from './upscale/presets'
+import InpaintTool from './inpaint/InpaintTool.tsx'
+import InpaintExplainer from './inpaint/Explainer.astro'
+import { PRESETS as INPAINT } from './inpaint/presets'
+import type { InpaintSlug } from './inpaint/presets'
+import DepthTool from './depth/DepthTool.tsx'
+import ReadTool from './read/ReadTool.tsx'
+import ReadExplainer from './read/Explainer.astro'
+import { PRESETS as READ } from './read/presets'
+import type { ReadSlug } from './read/presets'
+import PdfReadTool from './read/PdfReadTool.tsx'
+import type { PdfReadSlug } from './read/PdfReadTool.tsx'
+import VoiceTool from './voice/VoiceTool.tsx'
+import VoiceExplainer from './voice/Explainer.astro'
+import DenoiseTool from './denoise/DenoiseTool.tsx'
+import DenoiseExplainer from './denoise/Explainer.astro'
+import TranscribeTool from './transcribe/TranscribeTool.tsx'
+import TranscribeExplainer from './transcribe/Explainer.astro'
+import { PRESETS as TRANSCRIBE } from './transcribe/presets'
+import type { TranscribeSlug } from './transcribe/presets'
+import DepthExplainer from './depth/Explainer.astro'
+
 interface Props {
   slug: string
 }
 
 const { slug } = Astro.props
-throw new Error(`[ai] no page for "${slug}"`)
+const isCutout = (s: string): s is CutoutSlug => s in CUTOUT
+const isUpscale = (s: string): s is UpscaleSlug => s in UPSCALE
+const isInpaint = (s: string): s is InpaintSlug => s in INPAINT
+const isDepth = slug === 'depth-map-generator'
+const isTranscribe = (s: string): s is TranscribeSlug => s in TRANSCRIBE
+const isRead = (s: string): s is ReadSlug => s in READ
+const isPdfRead = (s: string): s is PdfReadSlug => s === 'ocr-pdf' || s === 'extract-text-from-scanned-pdf'
+const isVoice = slug === 'text-to-speech' || slug === 'text-to-mp3'
+const isDenoise = slug === 'remove-background-noise'
+if (!isDenoise && !isVoice && !isPdfRead(slug) && !isCutout(slug) && !isUpscale(slug) && !isInpaint(slug) && !isDepth && !isTranscribe(slug) && !isRead(slug)) throw new Error(`[ai] no page for "${slug}"`)
 ---
+
+{
+  isCutout(slug) && (
+    <ToolLayout slug={slug} width="wide">
+      <CutoutTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <CutoutExplainer slug={slug} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isUpscale(slug) && (
+    <ToolLayout slug={slug} width="wide">
+      <UpscaleTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <UpscaleExplainer slug={slug} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isInpaint(slug) && (
+    <ToolLayout slug={slug} width="wide">
+      <InpaintTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <InpaintExplainer slug={slug} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isDepth && (
+    <ToolLayout slug={slug} width="wide">
+      <DepthTool client:load />
+      <Fragment slot="explainer">
+        <DepthExplainer />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isTranscribe(slug) && (
+    <ToolLayout slug={slug}>
+      <TranscribeTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <TranscribeExplainer slug={slug} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isRead(slug) && (
+    <ToolLayout slug={slug} width="wide">
+      <ReadTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <ReadExplainer />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isPdfRead(slug) && (
+    <ToolLayout slug={slug} width="wide">
+      <PdfReadTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <ReadExplainer pdf={slug === 'ocr-pdf' ? 'searchable' : 'text'} />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  (slug === 'text-to-speech' || slug === 'text-to-mp3') && (
+    <ToolLayout slug={slug}>
+      <VoiceTool client:load slug={slug} />
+      <Fragment slot="explainer">
+        <VoiceExplainer />
+      </Fragment>
+    </ToolLayout>
+  )
+}
+
+{
+  isDenoise && (
+    <ToolLayout slug={slug}>
+      <DenoiseTool client:load />
+      <Fragment slot="explainer">
+        <DenoiseExplainer />
+      </Fragment>
+    </ToolLayout>
+  )
+}

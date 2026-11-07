@@ -1,0 +1,34 @@
+---
+/** How the depth map tool works. */
+import { fileInfo } from '@/lib/ml/assets'
+import { DEPTH_MODEL } from '@/lib/ml/depth/model'
+
+const size = Math.round((fileInfo(DEPTH_MODEL)?.wire ?? 0) / 1e6)
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Drop a photo. It stays on your device.</li>
+  <li>The first time, the model downloads once ({size} MB). The depth map appears a few seconds later.</li>
+  <li>Choose High detail for finer edges, or Invert if your software wants near as black.</li>
+  <li>Download the map as a PNG at the size of your photo.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool runs Depth Anything V2 (small), a vision transformer trained on millions of images to predict relative depth
+  from a single photo (Apache 2.0 licence). The photo is scaled so its short side is 518 pixels (or 798 for High), both
+  sides a multiple of 14, the size of the model's image patches. The model gives one value per pixel that grows as the
+  surface gets nearer. The tool stretches those values to the range 0 to 255 and scales the map to the size of your photo.
+</p>
+<table>
+  <thead>
+    <tr><th>Grey value</th><th>Meaning</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>255 (white)</td><td>The nearest point in the photo</td></tr>
+    <tr><td>128</td><td>Halfway in the range of the photo</td></tr>
+    <tr><td>0 (black)</td><td>The farthest point, often the sky</td></tr>
+  </tbody>
+</table>
+<p>The values are relative to the photo. Two maps of different photos cannot be compared, and the scale is not linear in metres.</p>

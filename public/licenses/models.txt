@@ -17,4 +17,14 @@ faker.js 10 (in the page code)                  MIT
 YOLOS-tiny signature detector (ONNX export)     Apache-2.0, mdefrance (base YOLOS-tiny: Apache-2.0, HUST Vision Lab)
 potion-base-32M (cut to 176 dims, int8)         MIT, Minish Lab (search by meaning)
 
+ISNet general use (DIS), fp16 weights          Apache-2.0, Xuebin Qin et al. (background removal)
+Real-ESRGAN general x4v3 and anime video v3     BSD-3-Clause, Xintao Wang et al. (ONNX export by this site)
+MI-GAN with pre- and post-processing (ONNX)     MIT, Picsart AI Research (object removal)
+Depth Anything V2 small (uint8)                 Apache-2.0, Lihe Yang et al.; ONNX export by onnx-community
+Whisper base, timestamped ONNX export           MIT, OpenAI (weights); ONNX export by onnx-community
+Kokoro 82M v1.0 (uint8) and 11 English voices   Apache-2.0, hexgrad; ONNX export by onnx-community
+misaki US and UK English lexicons               Apache-2.0, hexgrad (pronunciations for Kokoro)
+DTLN speech enhancement (two ONNX models)       MIT, Nils L. Westhausen
+Tesseract LSTM data for 18 more languages       Apache-2.0, Google / Tesseract contributors
+
 Full licence texts are in each project's repository.

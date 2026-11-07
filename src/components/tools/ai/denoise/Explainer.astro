@@ -1,0 +1,40 @@
+---
+/** How the noise remover works. */
+import { denoiseDownloadBytes } from '@/lib/ml/denoise/models'
+
+const size = Math.round(denoiseDownloadBytes() / 1e6)
+---
+
+<h2>How to use it</h2>
+<ol>
+  <li>Drop a recording or a video. It stays on your device.</li>
+  <li>The first time, the model and its runtime download once ({size} MB). Then the noise is removed.</li>
+  <li>Play Before and After. Lower the strength if the voice sounds too thin.</li>
+  <li>Download WAV or MP3.</li>
+</ol>
+
+<h2>How it works</h2>
+<p>
+  The tool runs DTLN, a dual-signal transformation LSTM network for speech enhancement (MIT licence). The sound is
+  converted to 16 kHz mono. Every 8 milliseconds the last 32 milliseconds are transformed into frequencies; the first
+  network gives a mask that keeps the voice and lowers the noise in each frequency, and the second network cleans the
+  frame again in a domain it learned itself. The frames are added back with overlap. Both networks keep a memory of the
+  sound before, so steady noise such as a fan is learned and removed.
+</p>
+<table>
+  <thead>
+    <tr><th>Setting</th><th>Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Sample rate</td><td>16 kHz</td></tr>
+    <tr><td>Frame</td><td>512 samples (32 ms), every 128 samples (8 ms)</td></tr>
+    <tr><td>Strength</td><td>Share of the cleaned sound in the mix</td></tr>
+  </tbody>
+</table>
+
+<h2>Limits</h2>
+<ul>
+  <li>Made for speech. Music and singing are removed or damaged.</li>
+  <li>The result is mono at 16 kHz, like a phone call.</li>
+  <li>Loud noise that sounds like a voice, such as other people talking, stays partly.</li>
+</ul>
