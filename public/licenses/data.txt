@@ -143,3 +143,33 @@ Child growth charts (child growth percentile calculator)
             https://www.cdc.gov/growthcharts/cdc-data-files.htm
   Licence:  Public domain (work of the US government)
   Updated:  yearly check
+
+Word lists, pronunciations, dictionary, thesaurus and quotes (word tools)
+  Sources:  Hugging Face datasets, processed once by scripts/data/hf-words.mjs into /data/words/
+            - Maximax67/English-Valid-Words: English words ranked by frequency
+              https://huggingface.co/datasets/Maximax67/English-Valid-Words
+              Licence: The Unlicense (public domain)
+            - acojaco/cmudict-espeak-ipa: the CMU Pronouncing Dictionary
+              https://huggingface.co/datasets/acojaco/cmudict-espeak-ipa
+              Licence: BSD 2-Clause. Copyright (c) 1993-2015 Carnegie Mellon University.
+            - jon-tow/open-english-wordnet-synset-2023: Open English WordNet 2023
+              https://huggingface.co/datasets/jon-tow/open-english-wordnet-synset-2023
+              Licence: CC BY 4.0. Open English WordNet is derived from Princeton WordNet 3.0
+              (WordNet 3.0 Copyright 2006 by Princeton University).
+            - Lots-of-LoRAs/task1508_wordnet_antonyms: WordNet antonym pairs
+              https://huggingface.co/datasets/Lots-of-LoRAs/task1508_wordnet_antonyms
+              Licence: Apache 2.0
+            - m-ric/english_historical_quotes: historical quotes
+              https://huggingface.co/datasets/m-ric/english_historical_quotes
+              Licence: MIT
+            - Abirate/english_quotes: quotes with tags
+              https://huggingface.co/datasets/Abirate/english_quotes
+              Licence: CC BY 4.0
+  Changes:  words outside a to z removed; pronunciations, senses and quotes reformatted and
+            deduplicated; antonyms extended to similar adjectives.
+  Updated:  fixed copy, 2026-11-07
+
+Open source licence texts (license generator)
+  Source:   SPDX License List data, https://github.com/spdx/license-list-data
+  Licence:  Each licence text may be copied verbatim; SPDX data under CC BY 3.0.
+  Updated:  fixed copy, 2026-11-07

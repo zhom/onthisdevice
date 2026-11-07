@@ -1,9 +1,35 @@
 ---
 /** Renders ToolLayout, the island and the explainer for each routed tool of src/lib/tools/text-dev.ts. */
+import ToolLayout from '@/layouts/ToolLayout.astro'
+import { TEXT_DEV_PAGES } from '@/lib/tools/text-dev'
+import DevEncodeFancyText from '@/components/tools/text/DevEncodeFancyText.tsx'
+import Explainer from './Explainer.astro'
+import { FANCY } from './fancy'
+import TextTools from './text/TextTools'
+import CodeTools from './code/CodeTools'
+import EncodeTools from './encode/EncodeTools'
+import SecurityTools from './security/SecurityTools'
+import WordTools from './words/WordTools'
+
 interface Props {
   slug: string
 }
 
 const { slug } = Astro.props
-throw new Error(`[text-dev] no page for "${slug}"`)
+const page = TEXT_DEV_PAGES.get(slug)
+if (!page) throw new Error(`[text-dev] no page for "${slug}"`)
+const { family } = page
+const fancy = FANCY[slug]
 ---
+
+<ToolLayout slug={slug}>
+  {family === 'text' && <TextTools client:load slug={slug} />}
+  {family === 'code' && <CodeTools client:load slug={slug} />}
+  {family === 'encode' && <EncodeTools client:load slug={slug} />}
+  {family === 'security' && <SecurityTools client:load slug={slug} />}
+  {family === 'words' && <WordTools client:load slug={slug} />}
+  {family === 'fancy' && fancy && <DevEncodeFancyText client:load featured={fancy.featured} sample={fancy.sample} />}
+  <Fragment slot="explainer">
+    <Explainer sections={page.explainer} />
+  </Fragment>
+</ToolLayout>

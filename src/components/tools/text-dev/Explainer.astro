@@ -1,0 +1,52 @@
+---
+/** Renders the explainer sections of a text-dev tool. Text between backticks is code. */
+import type { Section } from '@/lib/tools/text-dev-pages/types'
+
+interface Props {
+  sections: readonly Section[]
+}
+
+const { sections } = Astro.props
+const parts = (text: string) => text.split('`').map((t, i) => ({ t, code: i % 2 === 1 }))
+---
+
+{
+  sections.map((s) => (
+    <>
+      <h2>{s.h}</h2>
+      {s.p?.map((p) => (
+        <p>{parts(p).map((x) => (x.code ? <code>{x.t}</code> : x.t))}</p>
+      ))}
+      {s.list && (
+        <ul>
+          {s.list.map((li) => (
+            <li>{parts(li).map((x) => (x.code ? <code>{x.t}</code> : x.t))}</li>
+          ))}
+        </ul>
+      )}
+      {s.table && (
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                {s.table.head.map((h) => (
+                  <th>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {s.table.rows.map((row) => (
+                <tr>
+                  {row.map((cell) => (
+                    <td>{cell}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {s.code && <pre><code>{s.code}</code></pre>}
+    </>
+  ))
+}
