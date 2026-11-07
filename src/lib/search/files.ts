@@ -188,6 +188,13 @@ const HOME: Partial<Record<FileFamily, readonly string[]>> = {
 /** Tools that take several files at once rank higher when several are dropped. */
 const MANY = /merge|combine|join|collage|images-to|alternate|side-by-side/
 
+/** Among converters from a format ("wav-to-..."), the targets most people want, first. */
+const TARGET: Partial<Record<FileFamily, Readonly<Record<string, number>>>> = {
+  image: { png: 2.6, jpg: 2.5, pdf: 1.2, webp: 0.8 },
+  video: { mp4: 2.6, mp3: 2, gif: 1.2 },
+  audio: { mp3: 2.6, wav: 1 },
+}
+
 export interface FileMatch {
   tool: ToolDoc
   score: number
@@ -231,7 +238,9 @@ export function toolsForFile(
       // A converter from this format ("mov-to-mp4") is the usual need for media files; PDF
       // tools are all PDF-only, so their own popularity decides.
       const [first] = tool.slug.split('-')
-      if (kind.family !== 'pdf' && (names.has(first) || tool.slug.startsWith(`${kind.ext}-to-`))) score += 5
+      if (kind.family !== 'pdf' && (names.has(first) || tool.slug.startsWith(`${kind.ext}-to-`))) {
+        score += 5 + (TARGET[kind.family]?.[tool.slug.split('-to-')[1] ?? ''] ?? 0)
+      }
     }
     if (HOME[kind.family]?.includes(tool.category.id)) score += 1.5
     if (tool.rank > 0) score += 3 + 3 * (1 - Math.min(tool.rank, 100) / 100)

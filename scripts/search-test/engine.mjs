@@ -139,7 +139,7 @@ export const cases = [
   { q: 'excel to pdf', top: 'excel-to-pdf' },
   { q: 'avif to jpg', top: 'avif-to-jpg' },
   { q: 'png to avif', top: 'image-to-avif' },
-  { q: 'bmp to jpg', top: 'image-converter' },
+  { q: 'bmp to jpg', top: 'bmp-to-jpg' },
   { q: 'add text to pdf', top: 'add-text-to-pdf' },
   { q: 'pdf word counter', top: 'pdf-word-counter' },
   { q: 'add page numbers to pdf', top: 'add-page-numbers-to-pdf' },
