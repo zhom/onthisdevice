@@ -20,6 +20,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
+import { hydrated } from './hydrated.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '../..')
@@ -109,7 +110,7 @@ async function open(context, slug, query = '') {
   const problems = watch(page)
   await page.goto(`${BASE}/${slug}${query}`, { waitUntil: 'load', timeout: 90_000 })
   await page
-    .waitForFunction(() => document.querySelectorAll('astro-island[ssr]').length === 0, null, { timeout: 45_000 })
+    .waitForFunction(hydrated, null, { timeout: 45_000 })
     .catch(() => problems.push('island did not hydrate'))
   await page.waitForTimeout(250)
   return { page, problems }
@@ -210,7 +211,7 @@ check('mortgage-calculator', '300k at 6% for 30 years', async (h, t) => {
   await h.set('Down payment', 20)
   await h.set('Interest rate', 6)
   await h.set('Loan term', 30)
-  await h.set('Annual property tax rate', 0)
+  await h.set('Property tax', 0)
   await h.set('Home insurance', 0)
   await h.set('PMI rate', 0)
   const M = payment(300000, 6, 360)

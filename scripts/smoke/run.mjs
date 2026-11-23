@@ -26,6 +26,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
+import { hydrated } from './hydrated.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(HERE, '../..')
@@ -212,7 +213,7 @@ function isMediaTool(t) {
 
 async function settleHydration(page) {
   await page
-    .waitForFunction(() => document.querySelectorAll('astro-island[ssr]').length === 0, null, { timeout: 20_000 })
+    .waitForFunction(hydrated, null, { timeout: 20_000 })
     .catch(() => {})
 }
 
