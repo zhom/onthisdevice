@@ -193,7 +193,80 @@ export default function ImagePair({ from, to, fromLabel, toLabel, accept }: Imag
 
   return (
     <div className="space-y-6">
-      <ToolPanel title="Settings" description={`Files convert as soon as you add them. ${fromLabel} files are decoded and ${toLabel} files are written on this device.`}>
+      {files.length === 0 ? (
+        <FileDropzone accept={accept} multiple onFiles={onFiles} maxSizeMb={300} title={`Drop ${fromLabel} files here`} hint="or click to browse. You can add several at once." />
+      ) : null}
+
+      {to === 'ico' && opts.icoSizes.length === 0 ? <ErrorNote title="No sizes" message="Pick at least one icon size." /> : null}
+
+      <div role="status" aria-live="polite" className="space-y-4">
+        {progress ? (
+          <ProgressPanel
+            label={`Converting ${progress.index + 1} of ${progress.total}`}
+            sublabel={progress.name}
+            value={(progress.index / progress.total) * 100}
+          />
+        ) : null}
+
+        {failed.map((f) => (
+          <ErrorNote key={f.input} title={`${f.input} was not converted`} message={f.error} />
+        ))}
+
+        {done.length > 0 ? (
+          <ToolPanel
+            title={done.length === 1 ? 'Your file' : `${done.length} files`}
+            description={
+              totalIn > 0 && !progress
+                ? `${formatBytes(totalIn)} in, ${formatBytes(totalOut)} out${done[0]?.note ? `. ${done[0].note}` : '.'}`
+                : undefined
+            }
+            footer={
+              <>
+                {zip ? <DownloadButton blob={zip} filename={`${to}-files.zip`} label="Download all (ZIP)" /> : null}
+                {stale ? (
+                  <Button type="button" onClick={() => void convert(files)}>
+                    Convert again with these settings
+                  </Button>
+                ) : null}
+                <Button type="button" variant="ghost" onClick={reset}>
+                  <RotateCcw className="size-4" aria-hidden="true" />
+                  Convert other files
+                </Button>
+              </>
+            }
+          >
+            <ul className="space-y-3">
+              {done.map((d) => (
+                <li key={d.id} className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-4 gap-y-3 rounded-lg bg-background p-3 sm:grid-cols-[4rem_minmax(0,1fr)_auto]">
+                  <div className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
+                    {PREVIEWABLE.has(to) ? (
+                      <ImagePreview file={d.blob} alt={`Preview of ${d.name}`} className="max-h-16 rounded-none bg-transparent" />
+                    ) : (
+                      <FileImage className="size-6 text-muted-foreground" aria-hidden="true" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-[600]">{d.name}</p>
+                    <p className="num text-sm text-muted-foreground">
+                      {formatBytes(d.inputSize)} → {formatBytes(d.blob.size)}
+                      {d.width > 0 ? ` · ${d.width} × ${d.height}` : ''}
+                    </p>
+                  </div>
+                  <DownloadButton
+                    blob={d.blob}
+                    filename={d.name}
+                    label="Download"
+                    variant={done.length > 1 ? 'secondary' : 'default'}
+                    className="col-span-2 sm:col-span-1"
+                  />
+                </li>
+              ))}
+            </ul>
+          </ToolPanel>
+        ) : null}
+      </div>
+
+      <ToolPanel title="Settings" description={files.length === 0 ? 'Used for each file you add.' : undefined}>
         <div className="grid gap-5 sm:grid-cols-2">
           {lossy && !(to === 'webp' && opts.lossless) ? (
             <div className="space-y-2">
@@ -324,79 +397,6 @@ export default function ImagePair({ from, to, fromLabel, toLabel, accept }: Imag
           </fieldset>
         ) : null}
       </ToolPanel>
-
-      {files.length === 0 ? (
-        <FileDropzone accept={accept} multiple onFiles={onFiles} maxSizeMb={300} title={`Drop ${fromLabel} files here`} hint="or click to browse. You can add several at once." />
-      ) : null}
-
-      {to === 'ico' && opts.icoSizes.length === 0 ? <ErrorNote title="No sizes" message="Pick at least one icon size." /> : null}
-
-      <div role="status" aria-live="polite" className="space-y-4">
-        {progress ? (
-          <ProgressPanel
-            label={`Converting ${progress.index + 1} of ${progress.total}`}
-            sublabel={progress.name}
-            value={(progress.index / progress.total) * 100}
-          />
-        ) : null}
-
-        {failed.map((f) => (
-          <ErrorNote key={f.input} title={`${f.input} was not converted`} message={f.error} />
-        ))}
-
-        {done.length > 0 ? (
-          <ToolPanel
-            title={done.length === 1 ? 'Your file' : `${done.length} files`}
-            description={
-              totalIn > 0 && !progress
-                ? `${formatBytes(totalIn)} in, ${formatBytes(totalOut)} out${done[0]?.note ? `. ${done[0].note}` : '.'}`
-                : undefined
-            }
-            footer={
-              <>
-                {zip ? <DownloadButton blob={zip} filename={`${to}-files.zip`} label="Download all (ZIP)" /> : null}
-                {stale ? (
-                  <Button type="button" onClick={() => void convert(files)}>
-                    Convert again with these settings
-                  </Button>
-                ) : null}
-                <Button type="button" variant="ghost" onClick={reset}>
-                  <RotateCcw className="size-4" aria-hidden="true" />
-                  Convert other files
-                </Button>
-              </>
-            }
-          >
-            <ul className="space-y-3">
-              {done.map((d) => (
-                <li key={d.id} className="grid grid-cols-[4rem_minmax(0,1fr)] items-center gap-x-4 gap-y-3 rounded-lg bg-background p-3 sm:grid-cols-[4rem_minmax(0,1fr)_auto]">
-                  <div className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
-                    {PREVIEWABLE.has(to) ? (
-                      <ImagePreview file={d.blob} alt={`Preview of ${d.name}`} className="max-h-16 rounded-none bg-transparent" />
-                    ) : (
-                      <FileImage className="size-6 text-muted-foreground" aria-hidden="true" />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate font-[600]">{d.name}</p>
-                    <p className="num text-sm text-muted-foreground">
-                      {formatBytes(d.inputSize)} → {formatBytes(d.blob.size)}
-                      {d.width > 0 ? ` · ${d.width} × ${d.height}` : ''}
-                    </p>
-                  </div>
-                  <DownloadButton
-                    blob={d.blob}
-                    filename={d.name}
-                    label="Download"
-                    variant={done.length > 1 ? 'secondary' : 'default'}
-                    className="col-span-2 sm:col-span-1"
-                  />
-                </li>
-              ))}
-            </ul>
-          </ToolPanel>
-        ) : null}
-      </div>
     </div>
   )
 }

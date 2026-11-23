@@ -134,21 +134,22 @@ const inner = width === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
           </a>
         )
       }
-      <header class="mt-6 min-w-0 sm:mt-8">
-        <span class="vt-tool-icon inline-block text-foreground">
-          <Icon name={tool.icon} className="size-8 sm:size-9" strokeWidth={1.5} />
+      <header class="mt-4 min-w-0 sm:mt-8">
+        {/* Phones skip the icon: the tool starts higher. */}
+        <span class="vt-tool-icon hidden text-foreground sm:inline-block">
+          <Icon name={tool.icon} className="size-9" strokeWidth={1.5} />
         </span>
-        <h1 class="t-title mt-4 text-foreground">
+        <h1 class="t-title text-foreground sm:mt-4">
           <span class="vt-tool-title inline-block">{heading}</span>
         </h1>
-        <p class="t-lead mt-4 max-w-2xl">{description}</p>
+        <p class="t-lead mt-3 max-w-2xl sm:mt-4">{description}</p>
         <p class="mt-4 inline-flex items-center gap-2 text-[0.875rem] font-[560] text-foreground" data-og-line={promise}>
           <Icon name="CloudOff" className="size-4 shrink-0" />
           {promise}
         </p>
       </header>
 
-      <div class="mt-8 min-w-0 sm:mt-12" id="tool">
+      <div class="mt-7 min-w-0 sm:mt-12" id="tool">
         <slot />
       </div>
 
@@ -158,7 +159,7 @@ const inner = width === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
 
       {/* Space only when the suggestions render. */}
       <div class="[&_section]:mt-12">
-        <NextTools slug={tool.slug} client:visible />
+        <NextTools slug={tool.slug} client:visible={{ rootMargin: '600px' }} />
       </div>
     </div>
   </Container>

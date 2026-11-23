@@ -14,7 +14,7 @@ const COUNT = 3
 
 /**
  * Three tools to use next: the ones this visitor opened after this tool before (counted in this
- * browser only), then the tool's related tools, then popular tools of its category. Renders
+ * browser only), then the tool's related tools, then popular tools of its category. Shows
  * nothing until the list is known.
  */
 export default function NextTools({ slug }: Props) {
@@ -58,11 +58,12 @@ export default function NextTools({ slug }: Props) {
     )
   }, [tools])
 
-  if (!tools?.length) return null
+  // An empty div, not null: client:visible hydrates when a child of the island comes into view.
+  if (!tools?.length) return <div />
   return (
     <section aria-labelledby="next-tools">
       <h2 id="next-tools" className="t-h3">
-        Next
+        Next steps
       </h2>
       <ul ref={listRef} className="mt-3 grid gap-1 sm:grid-cols-3">
         {tools.map((t) => (

@@ -59,6 +59,9 @@ One family, Archivo, at normal width. Classes `t-display`, `t-title`, `t-h2`, `t
   is text that gets the fill on hover. Height 40 px (36 px small). Press: scale 0.97.
 - Fields: paper background, 1 px hairline, 8 px corners; focus is a 2 px ink ring.
 - Tool panel: fill block, 12 px corners, no border.
+- Tool page: the file drop zone or the input comes first, settings after it. On phones the
+  title has no icon above it. The drop zone shrinks to one row ("Add more files") after it takes
+  files, so the result moves up.
 - Lists of tools: rows with a line icon, a title and one line of grey text, in a borderless grid.
   Hover gives the row the fill.
 - Category glyphs: a 9 x 9 grid of square pixels per category (`src/lib/glyphs.ts`). A scan moves

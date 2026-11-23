@@ -116,7 +116,7 @@ export default function CsvToExcel() {
     <div className="space-y-4">
       <ToolPanel
         title="Workbook options"
-        description="Your browser generates the .xlsx file. The data stays on this device."
+        description="Your browser makes the .xlsx file."
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <Field id="c2x-delimiter" label="Input delimiter">

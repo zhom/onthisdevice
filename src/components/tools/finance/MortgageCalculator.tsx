@@ -221,13 +221,37 @@ export default function MortgageCalculator() {
     return series
   }, [calc])
 
+  // Each switch picks the unit of its field.
+  const downSwitch = (
+    <Segmented
+      label="Down payment entry mode"
+      value={downMode}
+      onChange={setDownMode}
+      options={[
+        { value: 'percent', label: '%' },
+        { value: 'amount', label: money.symbol },
+      ]}
+    />
+  )
+  const taxSwitch = (
+    <Segmented
+      label="Property tax entry mode"
+      value={taxMode}
+      onChange={setTaxMode}
+      options={[
+        { value: 'percent', label: '%' },
+        { value: 'amount', label: money.symbol },
+      ]}
+    />
+  )
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-6">
           <ToolPanel
             title="Home and loan"
-            description="Every figure updates as you type. Nothing is sent anywhere."
+            description="Every figure updates as you type."
           >
             <div className="space-y-5">
               <FieldGroup columns={2}>
@@ -242,46 +266,32 @@ export default function MortgageCalculator() {
                 <CurrencySelect value={currency} onChange={setCurrency} id="mtg-currency" />
               </FieldGroup>
 
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    Down payment
-                  </span>
-                  <Segmented
-                    label="Down payment entry mode"
-                    value={downMode}
-                    onChange={setDownMode}
-                    options={[
-                      { value: 'percent', label: '%' },
-                      { value: 'amount', label: money.symbol },
-                    ]}
-                  />
-                </div>
-                {downMode === 'percent' ? (
-                  <Field
-                    id="mtg-down-pct"
-                    label="Down payment"
-                    value={downPercent}
-                    onChange={setDownPercent}
-                    suffix="%"
-                    hint={money.exact(calc.down)}
-                    slider={{ min: 0, max: 50, step: 0.5 }}
-                    invalid={downInvalid}
-                  />
-                ) : (
-                  <Field
-                    id="mtg-down-amt"
-                    label="Down payment"
-                    value={downAmount}
-                    onChange={setDownAmount}
-                    prefix={money.symbol}
-                    hint={
-                      calc.priceN > 0 ? `${((calc.down / calc.priceN) * 100).toFixed(1)}% of price` : undefined
-                    }
-                    invalid={downInvalid}
-                  />
-                )}
-              </div>
+              {downMode === 'percent' ? (
+                <Field
+                  aside={downSwitch}
+                  id="mtg-down-pct"
+                  label="Down payment"
+                  value={downPercent}
+                  onChange={setDownPercent}
+                  suffix="%"
+                  hint={money.exact(calc.down)}
+                  slider={{ min: 0, max: 50, step: 0.5 }}
+                  invalid={downInvalid}
+                />
+              ) : (
+                <Field
+                  aside={downSwitch}
+                  id="mtg-down-amt"
+                  label="Down payment"
+                  value={downAmount}
+                  onChange={setDownAmount}
+                  prefix={money.symbol}
+                  hint={
+                    calc.priceN > 0 ? `${((calc.down / calc.priceN) * 100).toFixed(1)}% of price` : undefined
+                  }
+                  invalid={downInvalid}
+                />
+              )}
 
               <FieldGroup columns={2}>
                 <Field
@@ -323,42 +333,29 @@ export default function MortgageCalculator() {
             description="Escrow items are not part of the loan, but they are part of the cheque you write."
           >
             <div className="space-y-5">
-              <div className="space-y-3">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-muted-foreground">
-                    Property tax
-                  </span>
-                  <Segmented
-                    label="Property tax entry mode"
-                    value={taxMode}
-                    onChange={setTaxMode}
-                    options={[
-                      { value: 'percent', label: '% / yr' },
-                      { value: 'amount', label: `${money.symbol} / yr` },
-                    ]}
-                  />
-                </div>
-                {taxMode === 'percent' ? (
-                  <Field
-                    id="mtg-tax-pct"
-                    label="Annual property tax rate"
-                    value={taxPercent}
-                    onChange={setTaxPercent}
-                    suffix="%"
-                    hint={`${money.exact(calc.annualTax)} / yr`}
-                    slider={{ min: 0, max: 4, step: 0.05 }}
-                  />
-                ) : (
-                  <Field
-                    id="mtg-tax-amt"
-                    label="Annual property tax"
-                    value={taxAnnual}
-                    onChange={setTaxAnnual}
-                    prefix={money.symbol}
-                    hint={`${money.exact(calc.monthlyTax)} / mo`}
-                  />
-                )}
-              </div>
+              {taxMode === 'percent' ? (
+                <Field
+                  aside={taxSwitch}
+                  id="mtg-tax-pct"
+                  label="Property tax"
+                  value={taxPercent}
+                  onChange={setTaxPercent}
+                  suffix="% / yr"
+                  hint={`${money.exact(calc.annualTax)} / yr`}
+                  slider={{ min: 0, max: 4, step: 0.05 }}
+                />
+              ) : (
+                <Field
+                  aside={taxSwitch}
+                  id="mtg-tax-amt"
+                  label="Property tax"
+                  value={taxAnnual}
+                  onChange={setTaxAnnual}
+                  prefix={money.symbol}
+                  suffix="/ yr"
+                  hint={`${money.exact(calc.monthlyTax)} / mo`}
+                />
+              )}
 
               <FieldGroup columns={2}>
                 <Field

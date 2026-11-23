@@ -45,13 +45,26 @@ function matchesAccept(file: File, tokens: string[]): boolean {
   })
 }
 
-/** Human-readable list of what the dropzone takes, for error copy. */
-function describeAccept(tokens: string[]): string {
-  const exts = tokens
-    .filter((t) => t.startsWith('.'))
-    .map((t) => t.slice(1).toUpperCase())
-  if (exts.length > 0) return exts.join(', ')
-  return tokens.join(', ')
+/** Extensions that name the same format as another one in the list. */
+const SAME_AS: Record<string, string> = { JPEG: 'JPG', JFIF: 'JPG', PJPEG: 'JPG', TIF: 'TIFF', HTM: 'HTML', YML: 'YAML', MARKDOWN: 'MD', MDOWN: 'MD', HEIF: 'HEIC', M4V: 'MP4' }
+const KINDS: Record<string, string> = { image: 'Images', video: 'Videos', audio: 'Audio', text: 'Text files' }
+
+/** What the drop zone takes, in words: "PDF", "JPG, PNG, WEBP and 3 more", "Images". */
+function describeAccept(tokens: string[], max = Infinity): string {
+  const exts = [...new Set(tokens.filter((t) => t.startsWith('.')).map((t) => t.slice(1).toUpperCase()))]
+  const names = exts.filter((e) => !SAME_AS[e] || !exts.includes(SAME_AS[e]))
+  if (names.length === 0) {
+    const kinds = [...new Set(tokens.map((t) => KINDS[t.split('/')[0]] ?? (t === '*' || t === '*/*' ? 'Any file' : null)).filter(Boolean))]
+    return kinds.length ? kinds.join(', ') : 'Any file'
+  }
+  if (names.length <= max) return names.join(', ')
+  return `${names.slice(0, max - 1).join(', ')} and ${names.length - max + 1} more`
+}
+
+/** True when the hint already names one of the formats. */
+function namesFormat(hint: string, tokens: string[]): boolean {
+  const words = new Set(hint.toUpperCase().match(/[A-Z0-9]+/g) ?? [])
+  return tokens.some((t) => t.startsWith('.') && words.has(t.slice(1).toUpperCase()))
 }
 
 /* The pixel icon: a file (idle), an arrow into the device (drag-over), a tick (taken). */
@@ -70,9 +83,9 @@ const ICON_CELLS = (() => {
   return cells
 })()
 
-function PixelIcon() {
+function PixelIcon({ small = false }: { small?: boolean }) {
   return (
-    <svg viewBox="0 0 7 7" className="dz-icon size-10 fill-current sm:size-11" aria-hidden="true" focusable="false">
+    <svg viewBox="0 0 7 7" className={cn('dz-icon shrink-0 fill-current', small ? 'size-6' : 'size-10 sm:size-11')} aria-hidden="true" focusable="false">
       {ICON_CELLS.map((c) => (
         <rect key={`${c.x}.${c.y}`} x={c.x + 0.08} y={c.y + 0.08} width="0.84" height="0.84" rx="0.1" className={c.cls} style={{ '--x': c.x, '--y': c.y } as CSSProperties} />
       ))}
@@ -98,6 +111,8 @@ export function FileDropzone({
   const [isDragging, setIsDragging] = useState(false)
   const [dragCount, setDragCount] = useState(0)
   const [fed, setFed] = useState(false)
+  // After the first files the zone shrinks to one row, so the tool's result moves up.
+  const [compact, setCompact] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const feedTimer = useRef(0)
   const [origin, setOrigin] = useState({ x: '50%', y: '50%' })
@@ -122,9 +137,9 @@ export function FileDropzone({
     const sentence = rest.charAt(0).toUpperCase() + rest.slice(1)
     return /[.!?]$/.test(sentence) ? sentence : `${sentence}.`
   }
-  const subtitle = isDragging
-    ? 'It stays in this tab. Nothing is uploaded.'
-    : ((hint && tidy(hint)) ?? 'Your file is read here, in this tab. It is never uploaded.')
+  const subtitle = isDragging ? 'It stays in this tab. Nothing is uploaded.' : hint && !compact ? tidy(hint) : null
+  // Phones cannot drop: "Drop photos here" reads "Add photos" there.
+  const touchHeading = isDragging ? heading : heading.replace(/^Drop /, 'Add ').replace(/ here\.?$/, '')
 
   useEffect(() => () => window.clearTimeout(feedTimer.current), [])
 
@@ -137,7 +152,7 @@ export function FileDropzone({
 
       for (const file of incoming) {
         if (!matchesAccept(file, tokens)) {
-          rejected.push({ name: file.name, reason: `not ${describeAccept(tokens)}` })
+          rejected.push({ name: file.name, reason: `this tool takes ${describeAccept(tokens, 6)}` })
           continue
         }
         if (maxBytes !== null && file.size > maxBytes) {
@@ -178,6 +193,7 @@ export function FileDropzone({
 
       if (kept.length > 0) {
         setFed(true)
+        setCompact(true)
         window.clearTimeout(feedTimer.current)
         feedTimer.current = window.setTimeout(() => setFed(false), 1400)
         onFiles(kept)
@@ -269,40 +285,72 @@ export function FileDropzone({
     return () => window.removeEventListener('paste', onPaste)
   }, [disabled, handleFiles])
 
-  const accepts = accept ? describeAccept(parseAccept(accept)) : 'Any file'
+  const tokens = parseAccept(accept)
+  const accepts = describeAccept(tokens)
+  // The line under the button: formats (unless the hint names them), size limit, paste.
+  const limits = [hint && namesFormat(hint, tokens) ? null : describeAccept(tokens, 6), typeof maxSizeMb === 'number' ? `up to ${maxSizeMb} MB${multiple ? ' each' : ''}` : null]
+    .filter(Boolean)
+    .join(', ')
   const state = isDragging && !disabled ? 'over' : fed ? 'fed' : 'idle'
 
   // The content is drawn twice: ink on the fill, and paper on the ink flood that
   // grows from the pointer on drag-over. The flood copy is hidden from readers.
-  const face = (inverse: boolean): ReactNode => (
-    <div className={cn('flex flex-col items-center gap-4 px-5 py-9 text-center sm:py-11', inverse ? 'text-background' : 'text-foreground')}>
-      <PixelIcon />
-      <div className="min-w-0">
-        <span className="block text-[1.125rem] font-[680]" aria-live={inverse ? undefined : 'polite'}>
-          {heading}
+  const face = (inverse: boolean): ReactNode =>
+    compact ? (
+      <div className={cn('flex items-center gap-3.5 px-4 py-3 sm:px-5', inverse ? 'text-background' : 'text-foreground')}>
+        <PixelIcon small />
+        <span className="min-w-0 flex-1">
+          <span className="block text-[0.9375rem] font-[650]" aria-live={inverse ? undefined : 'polite'}>
+            {isDragging ? heading : multiple ? 'Add more files' : 'Use another file'}
+          </span>
+          {limits ? <span className={cn('block truncate text-[0.8125rem]', inverse ? 'text-background' : 'text-muted-foreground')}>{limits}</span> : null}
         </span>
-        <span id={inverse ? undefined : `${inputId}-hint`} className={cn('mx-auto mt-1 block max-w-md text-[0.9375rem] text-pretty', inverse ? 'text-background' : 'text-muted-foreground')}>
-          {subtitle}
-        </span>
-      </div>
-      <span className="flex flex-col items-center gap-2.5">
         <span
-          className={cn(
-            'dz-key inline-flex h-10 items-center rounded-md px-4 text-[0.875rem] font-[620]',
-            inverse ? 'bg-background text-foreground' : 'bg-primary text-primary-foreground',
-          )}
+          className="dz-key inline-flex h-9 shrink-0 items-center rounded-md bg-background px-3.5 text-[0.875rem] font-[620] text-foreground"
           aria-hidden="true"
         >
           {multiple ? 'Choose files' : 'Choose a file'}
         </span>
-        <span className={cn('text-[0.8125rem]', inverse ? 'text-background' : 'text-muted-foreground')}>
-          {accepts}
-          {typeof maxSizeMb === 'number' ? `, up to ${maxSizeMb} MB each` : ''}
-          <span className="hidden sm:inline">. You can also paste.</span>
+      </div>
+    ) : (
+      <div className={cn('flex flex-col items-center gap-4 px-5 py-9 text-center sm:py-11', inverse ? 'text-background' : 'text-foreground')}>
+        <PixelIcon />
+        <div className="min-w-0">
+          <span className="block text-[1.125rem] font-[680]" aria-live={inverse ? undefined : 'polite'}>
+            {touchHeading === heading ? (
+              heading
+            ) : (
+              <>
+                <span className="pointer-coarse:hidden">{heading}</span>
+                <span className="hidden pointer-coarse:inline">{touchHeading}</span>
+              </>
+            )}
+          </span>
+          {subtitle ? (
+            <span id={inverse ? undefined : `${inputId}-hint`} className={cn('mx-auto mt-1 block max-w-md text-[0.9375rem] text-pretty', inverse ? 'text-background' : 'text-muted-foreground')}>
+              {subtitle}
+            </span>
+          ) : null}
+        </div>
+        <span className="flex flex-col items-center gap-2.5">
+          <span
+            className={cn(
+              'dz-key inline-flex h-10 items-center rounded-md px-4 text-[0.875rem] font-[620]',
+              inverse ? 'bg-background text-foreground' : 'bg-primary text-primary-foreground',
+            )}
+            aria-hidden="true"
+          >
+            {multiple ? 'Choose files' : 'Choose a file'}
+          </span>
+          {limits ? (
+            <span className={cn('text-[0.8125rem] text-pretty', inverse ? 'text-background' : 'text-muted-foreground')}>
+              {limits}
+              <span className="hidden pointer-fine:inline">. You can also paste.</span>
+            </span>
+          ) : null}
         </span>
-      </span>
-    </div>
-  )
+      </div>
+    )
 
   return (
     <div className={cn('w-full', className)}>
@@ -311,7 +359,7 @@ export function FileDropzone({
         role="button"
         tabIndex={disabled ? -1 : 0}
         aria-label={multiple ? `Choose files: ${accepts}` : `Choose a file: ${accepts}`}
-        aria-describedby={error ? `${errorId} ${inputId}-hint` : `${inputId}-hint`}
+        aria-describedby={[error ? errorId : null, subtitle ? `${inputId}-hint` : null].filter(Boolean).join(' ') || undefined}
         aria-disabled={disabled || undefined}
         onClick={openPicker}
         onKeyDown={onKeyDown}

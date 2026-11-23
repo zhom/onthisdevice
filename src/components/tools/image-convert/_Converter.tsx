@@ -392,6 +392,159 @@ export default function ImageConverter({
         </div>
       )}
 
+      {busy && (
+        <ProgressPanel
+          label={
+            currentName
+              ? `Converting ${currentName} to ${targetMeta.label} (${done} of ${files.length} done)`
+              : `Converting to ${targetMeta.label}…`
+          }
+          value={progress}
+        />
+      )}
+
+      {stale && !busy && (
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-muted p-3"
+          role="status"
+          aria-live="polite"
+        >
+          <p className="text-sm text-muted-foreground">
+            The settings changed since these results were produced.
+          </p>
+          <Button size="sm" onClick={() => void convert(files)}>
+            <ArrowLeftRight aria-hidden="true" />
+            Convert again
+          </Button>
+        </div>
+      )}
+
+      {fatal && <ErrorNote message={fatal} onRetry={() => void convert(files)} />}
+
+      {failures.length > 0 && (
+        <div className="rounded-lg bg-muted p-4">
+          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
+            <ImageOff className="size-4" aria-hidden="true" />
+            {failures.length} file{failures.length === 1 ? '' : 's'} could not be converted
+          </h3>
+          <ul className="mt-2 grid gap-1.5 text-sm text-muted-foreground">
+            {failures.map((failure) => (
+              <li key={failure.id}>
+                <span className="font-medium text-foreground">{failure.inputName}</span>: {failure.error}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <ToolPanel
+          title={`${results.length} ${targetMeta.label} file${results.length === 1 ? '' : 's'} ready`}
+          footer={
+            results.length > 1 ? (
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => void downloadZip()} disabled={zipping}>
+                  <Package aria-hidden="true" />
+                  {zipping ? 'Building ZIP…' : `Download all ${results.length} as ZIP`}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    for (const item of results) downloadBlob(item.blob, item.outputName)
+                  }}
+                >
+                  <FileDown aria-hidden="true" />
+                  Save each file
+                </Button>
+              </div>
+            ) : (
+              <DownloadButton
+                blob={results[0].blob}
+                filename={results[0].outputName}
+                label={`Download ${targetMeta.label}`}
+              />
+            )
+          }
+        >
+          <div className="grid gap-4">
+            <div className="grid gap-3 sm:grid-cols-3">
+              <ResultStat label="Before" value={formatBytes(totals.before)} hint="total input size" />
+              <ResultStat label="After" value={formatBytes(totals.after)} hint={`total ${targetMeta.label} size`} emphasis />
+              <ResultStat
+                label="Difference"
+                value={totals.text}
+                hint={
+                  totals.tone === 'good'
+                    ? `${formatBytes(Math.max(0, totals.before - totals.after))} saved`
+                    : totals.tone === 'bad'
+                      ? `${formatBytes(Math.max(0, totals.after - totals.before))} added`
+                      : 'no meaningful change'
+                }
+              />
+            </div>
+
+            <ul className="grid gap-2">
+              {results.map((item) => {
+                const delta = deltaLabel(item.inputSize, item.outputSize)
+                const broken = brokenThumbs.includes(item.id)
+                return (
+                  <li
+                    key={item.id}
+                    className="flex flex-wrap items-center gap-3 rounded-lg bg-card p-3"
+                  >
+                    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+                      {broken ? (
+                        <span className="text-[10px] font-medium text-muted-foreground">
+                          {FORMATS[item.format].label}
+                        </span>
+                      ) : (
+                        <img
+                          src={item.url}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                          className="size-full object-contain"
+                          onError={() => setBrokenThumbs((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]))}
+                        />
+                      )}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium" title={item.outputName}>
+                        {item.outputName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.width} × {item.height} px · {formatBytes(item.inputSize)} →{' '}
+                        {formatBytes(item.outputSize)}{' '}
+                        <span
+                          className={cn(
+                            'font-medium',
+                            delta.tone === 'good' && 'text-success',
+                            delta.tone === 'bad' && 'text-warning',
+                          )}
+                        >
+                          ({delta.text})
+                        </span>
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => downloadBlob(item.blob, item.outputName)}
+                      aria-label={`Download ${item.outputName}`}
+                    >
+                      <Download aria-hidden="true" />
+                      Save
+                    </Button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </ToolPanel>
+      )}
+
       <ToolPanel
         title="Output settings"
         description={
@@ -659,160 +812,6 @@ export default function ImageConverter({
           )}
         </div>
       </ToolPanel>
-
-      {busy && (
-        <ProgressPanel
-          label={
-            currentName
-              ? `Converting ${currentName} to ${targetMeta.label} (${done} of ${files.length} done)`
-              : `Converting to ${targetMeta.label}…`
-          }
-          value={progress}
-        />
-      )}
-
-      {stale && !busy && (
-        <div
-          className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-muted p-3"
-          role="status"
-          aria-live="polite"
-        >
-          <p className="text-sm text-muted-foreground">
-            The settings changed since these results were produced.
-          </p>
-          <Button size="sm" onClick={() => void convert(files)}>
-            <ArrowLeftRight aria-hidden="true" />
-            Convert again
-          </Button>
-        </div>
-      )}
-
-      {fatal && <ErrorNote message={fatal} onRetry={() => void convert(files)} />}
-
-      {failures.length > 0 && (
-        <div className="rounded-lg bg-muted p-4">
-          <h3 className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <ImageOff className="size-4" aria-hidden="true" />
-            {failures.length} file{failures.length === 1 ? '' : 's'} could not be converted
-          </h3>
-          <ul className="mt-2 grid gap-1.5 text-sm text-muted-foreground">
-            {failures.map((failure) => (
-              <li key={failure.id}>
-                <span className="font-medium text-foreground">{failure.inputName}</span>: {failure.error}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {results.length > 0 && (
-        <ToolPanel
-          title={`${results.length} ${targetMeta.label} file${results.length === 1 ? '' : 's'} ready`}
-          description="Your own CPU made each file below."
-          footer={
-            results.length > 1 ? (
-              <div className="flex flex-wrap gap-2">
-                <Button onClick={() => void downloadZip()} disabled={zipping}>
-                  <Package aria-hidden="true" />
-                  {zipping ? 'Building ZIP…' : `Download all ${results.length} as ZIP`}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    for (const item of results) downloadBlob(item.blob, item.outputName)
-                  }}
-                >
-                  <FileDown aria-hidden="true" />
-                  Save each file
-                </Button>
-              </div>
-            ) : (
-              <DownloadButton
-                blob={results[0].blob}
-                filename={results[0].outputName}
-                label={`Download ${targetMeta.label}`}
-              />
-            )
-          }
-        >
-          <div className="grid gap-4">
-            <div className="grid gap-3 sm:grid-cols-3">
-              <ResultStat label="Before" value={formatBytes(totals.before)} hint="total input size" />
-              <ResultStat label="After" value={formatBytes(totals.after)} hint={`total ${targetMeta.label} size`} emphasis />
-              <ResultStat
-                label="Difference"
-                value={totals.text}
-                hint={
-                  totals.tone === 'good'
-                    ? `${formatBytes(Math.max(0, totals.before - totals.after))} saved`
-                    : totals.tone === 'bad'
-                      ? `${formatBytes(Math.max(0, totals.after - totals.before))} added`
-                      : 'no meaningful change'
-                }
-              />
-            </div>
-
-            <ul className="grid gap-2">
-              {results.map((item) => {
-                const delta = deltaLabel(item.inputSize, item.outputSize)
-                const broken = brokenThumbs.includes(item.id)
-                return (
-                  <li
-                    key={item.id}
-                    className="flex flex-wrap items-center gap-3 rounded-lg bg-card p-3"
-                  >
-                    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
-                      {broken ? (
-                        <span className="text-[10px] font-medium text-muted-foreground">
-                          {FORMATS[item.format].label}
-                        </span>
-                      ) : (
-                        <img
-                          src={item.url}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                          className="size-full object-contain"
-                          onError={() => setBrokenThumbs((prev) => (prev.includes(item.id) ? prev : [...prev, item.id]))}
-                        />
-                      )}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium" title={item.outputName}>
-                        {item.outputName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.width} × {item.height} px · {formatBytes(item.inputSize)} →{' '}
-                        {formatBytes(item.outputSize)}{' '}
-                        <span
-                          className={cn(
-                            'font-medium',
-                            delta.tone === 'good' && 'text-success',
-                            delta.tone === 'bad' && 'text-warning',
-                          )}
-                        >
-                          ({delta.text})
-                        </span>
-                      </p>
-                    </div>
-
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => downloadBlob(item.blob, item.outputName)}
-                      aria-label={`Download ${item.outputName}`}
-                    >
-                      <Download aria-hidden="true" />
-                      Save
-                    </Button>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        </ToolPanel>
-      )}
 
       <div className="grid gap-3 rounded-lg bg-muted p-4 text-sm text-muted-foreground sm:grid-cols-2">
         <p className="flex gap-2">

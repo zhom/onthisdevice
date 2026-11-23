@@ -319,7 +319,7 @@ export default function JsonFormatter() {
     <div className="flex flex-col gap-4">
       <ToolPanel
         title="JSON input"
-        description="Paste JSON, or load a .json file. Your browser parses it, and nothing is uploaded."
+        description="Paste JSON, or load a .json file."
       >
         <CodePane
           label="JSON"

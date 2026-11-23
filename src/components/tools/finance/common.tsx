@@ -75,6 +75,8 @@ export interface FieldProps {
   disabled?: boolean
   invalid?: string
   autoFocus?: boolean
+  /** A control at the end of the label row, such as a unit switch. */
+  aside?: ReactNode
 }
 
 /**
@@ -95,16 +97,18 @@ export function Field({
   disabled,
   invalid,
   autoFocus,
+  aside,
 }: FieldProps) {
   const padLeft = prefix ? (prefix.length > 2 ? 'pl-12' : prefix.length > 1 ? 'pl-10' : 'pl-7') : ''
   const padRight = suffix ? (suffix.length > 3 ? 'pr-16' : suffix.length > 1 ? 'pr-12' : 'pr-7') : ''
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between gap-2">
+      <div className={cn('flex justify-between gap-2', aside ? 'items-center' : 'items-baseline')}>
         <Label htmlFor={id} className="text-sm">
           {label}
         </Label>
-        {hint ? <span className="text-xs text-muted-foreground">{hint}</span> : null}
+        {hint ? <span className={cn('text-xs text-muted-foreground', aside && 'mr-auto')}>{hint}</span> : null}
+        {aside}
       </div>
       <div className="relative">
         {prefix ? (

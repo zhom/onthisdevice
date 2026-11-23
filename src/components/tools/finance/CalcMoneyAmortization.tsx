@@ -249,7 +249,7 @@ export default function CalcMoneyAmortization() {
         <div className="space-y-6">
           <ToolPanel
             title="Loan"
-            description="Everything recalculates as you type. Nothing is sent anywhere."
+            description="Everything recalculates as you type."
           >
             <CmFieldGrid columns={2}>
               <CmField
