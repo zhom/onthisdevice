@@ -44,9 +44,6 @@ logs/
 Thumbs.db
 desktop.ini
 
-# Claude Code session-recovery state
-HANDOFF.md
-
 # Local scratch for review screenshots
 scripts/.tmp/
 
