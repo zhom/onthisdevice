@@ -134,7 +134,7 @@ details.faq[open] > p {
   }
 }
 .enter {
-  animation: rise 520ms var(--ease-out) both;
+  animation: rise 520ms var(--ease-out) backwards;
   animation-delay: calc(var(--i, 0) * 60ms);
 }
 /* Result reveal: wipes down from the top edge. */
@@ -151,7 +151,7 @@ details.faq[open] > p {
   }
 }
 .reveal {
-  animation: reveal 420ms var(--ease-out) both;
+  animation: reveal 420ms var(--ease-out) backwards;
 }
 
 /* ── Category glyphs (src/lib/glyphs.ts) ─────────────────────── */
