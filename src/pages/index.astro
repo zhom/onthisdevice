@@ -15,16 +15,13 @@ const pick = (slugs: string[]) => slugs.map((s) => getTool(s)).filter((t): t is 
 const quick = pick(QUICK)
 const paid = PAID.flatMap((p) => pick([p.slug]).map((tool) => ({ tool, gives: p.gives })))
 
-let glyphIndex = 0
-const catalogue = GROUPS.map((g) => ({
-  group: g,
-  categories: CATEGORIES.filter((c) => c.group === g.id).map((c) => ({
-    category: c,
-    count: toolsByCategory(c.id).filter(hasPage).length,
-    // Glyphs in the list change one after another, not all at once.
-    offset: (glyphIndex++ * 0.42) % 7.2,
-  })).filter((c) => c.count > 0),
-})).filter((g) => g.categories.length > 0)
+// One list in group order: most groups have one to three categories, so group headings
+// would mostly repeat the category name.
+const catalogue = GROUPS.flatMap((g) => CATEGORIES.filter((c) => c.group === g.id))
+  .map((category) => ({ category, count: toolsByCategory(category.id).filter(hasPage).length }))
+  .filter((c) => c.count > 0)
+  // Glyphs in the list change one after another, not all at once.
+  .map((c, i) => ({ ...c, offset: (i * 0.42) % 7.2 }))
 
 const title = `onthisdevice: ${TOOL_COUNT_TEXT} free tools that never upload your files`
 const description = `Remove backgrounds, transcribe audio, upscale photos and edit PDFs for free. ${TOOL_COUNT_TEXT} tools, AI models included, run in your browser. Nothing is uploaded.`
@@ -82,7 +79,7 @@ const jsonLd = [
           {TOOL_COUNT_TEXT} free tools for PDFs, photos, video, audio and calculations. They work in your browser, so your files stay with you. No sign-up, no watermark.
         </p>
 
-        <div class="enter mt-9 flex max-w-[36rem] flex-col gap-3 sm:flex-row" style="--i:2">
+        <div class="enter relative z-20 mt-9 flex max-w-[36rem] flex-col gap-3 sm:flex-row" style="--i:2">
           <div class="relative z-10 min-w-0 flex-1">
             <HeroSearch client:load />
           </div>
@@ -137,28 +134,19 @@ const jsonLd = [
       <h2 class="t-h2 text-foreground">Everything else</h2>
       <a href="/all-tools" class="link text-[0.9375rem] font-[600]">All {TOOL_COUNT_TEXT} tools</a>
     </div>
-    <div class="mt-8 space-y-12">
+    <div class="mt-8 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
       {
-        catalogue.map(({ group, categories }) => (
-          <section aria-labelledby={`g-${group.id}`}>
-            <h3 id={`g-${group.id}`} class="text-[0.9375rem] font-[600] text-muted-foreground">
-              {group.title}
-            </h3>
-            <div class="mt-3 grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
-              {categories.map(({ category, count, offset }) => (
-                <a href={categoryHref(category)} class="row-link group items-center">
-                  <Glyph id={category.id} offset={offset} class="size-10 text-foreground" />
-                  <span class="min-w-0">
-                    <span class="flex items-baseline gap-2">
-                      <span class="text-[1.0625rem] font-[680] text-foreground">{category.title}</span>
-                      <span class="num text-[0.875rem] text-muted-foreground">{count}</span>
-                    </span>
-                    <span class="mt-0.5 block truncate text-[0.875rem] text-muted-foreground">{category.tagline}</span>
-                  </span>
-                </a>
-              ))}
-            </div>
-          </section>
+        catalogue.map(({ category, count, offset }) => (
+          <a href={categoryHref(category)} class="row-link group items-center">
+            <Glyph id={category.id} offset={offset} class="size-10 text-foreground" />
+            <span class="min-w-0">
+              <span class="flex items-baseline gap-2">
+                <span class="text-[1.0625rem] font-[680] text-foreground">{category.title}</span>
+                <span class="num text-[0.875rem] text-muted-foreground">{count}</span>
+              </span>
+              <span class="mt-0.5 block truncate text-[0.875rem] text-muted-foreground">{category.tagline}</span>
+            </span>
+          </a>
         ))
       }
     </div>

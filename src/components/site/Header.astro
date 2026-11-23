@@ -178,6 +178,10 @@ const cols = (n: number) => (n <= 1 ? 'grid-cols-1' : n === 2 ? 'grid-cols-2' : 
     top: 100%;
     inset-inline: 0;
     z-index: 50;
+    /* The header is sticky: a taller panel would hang below the screen out of reach. */
+    max-height: calc(100dvh - 4rem - env(safe-area-inset-top));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--popover);
     box-shadow: var(--elev-pop);
     clip-path: inset(0 0 -64px 0);

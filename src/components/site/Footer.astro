@@ -27,10 +27,11 @@ const columns = GROUPS.map((group) => ({
         </p>
       </div>
 
-      <div class="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 xl:grid-cols-6">
+      {/* Columns flow the groups, so a group never sits alone on a second row. */}
+      <div class="columns-2 gap-x-6 sm:columns-3 xl:columns-4">
         {
           columns.map((group) => (
-            <nav aria-label={group.title}>
+            <nav aria-label={group.title} class="mb-10 break-inside-avoid">
               <h2 class="text-[0.8125rem] font-[650] text-foreground">{group.title}</h2>
               <ul class="mt-3 space-y-2">
                 {group.categories.map((cat) => (
@@ -47,7 +48,7 @@ const columns = GROUPS.map((group) => ({
       </div>
     </div>
 
-    <div class="mt-16 flex flex-col-reverse gap-4 text-[0.8125rem] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+    <div class="mt-6 flex flex-col-reverse gap-4 text-[0.8125rem] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} onthisdevice.com</p>
       <nav aria-label="Site" class="flex flex-wrap items-center gap-x-6 gap-y-2">
         {

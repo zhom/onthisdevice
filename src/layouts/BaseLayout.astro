@@ -51,8 +51,9 @@ const depth = depthProp ?? (path === '' || path === '/' ? 0 : 1)
 const NAV_TOOL_LIMIT = 8
 const navGroups: NavGroup[] = GROUPS.map((group) => {
   const members = CATEGORIES.filter((c) => c.group === group.id)
-  // A group with one category shows more of its tools, in columns.
-  const limit = members.length === 1 ? NAV_TOOL_LIMIT * 2 : NAV_TOOL_LIMIT
+  // A group with one category shows more of its tools, in columns; a group with many shows fewer,
+  // so its menu fits on a laptop screen.
+  const limit = members.length === 1 ? NAV_TOOL_LIMIT * 2 : members.length > 3 ? 5 : NAV_TOOL_LIMIT
   const categories: NavCategory[] = members.map((c) => {
     const tools = toolsByCategory(c.id).filter(hasPage)
     const popular = tools.filter((t) => t.popular)
