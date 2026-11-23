@@ -72,6 +72,13 @@ export const cases = [
   { q: 'rotat image', top: 'rotate-image' },
   { q: 'timestmp', top: 'unix-timestamp-converter' },
   { q: 'farenheit to celsius', top: 'fahrenheit-to-celsius' },
+  // A dropped first letter
+  { q: 'df', in: ['merge-pdf'], dym: 'pdf' },
+  { q: 'df ', in: ['merge-pdf'], dym: 'pdf' },
+  { q: 'eic', top: ['heic-to-jpg', 'heic-to-pdf', 'heic-to-png', 'heic-to-webp'] },
+  { q: 'ebp', top: ['webp-to-png', 'webp-to-jpg', 'webp-to-gif'] },
+  { q: 'ortgage', top: 'mortgage-calculator' },
+  { q: 'df to jpg', top: 'pdf-to-jpg', dym: 'pdf to jpg' },
 
   // Synonyms
   { q: 'combine pdf', top: 'merge-pdf' },

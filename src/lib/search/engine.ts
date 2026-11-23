@@ -69,7 +69,8 @@ export interface Searcher extends Catalog {
   popular(limit: number): ToolDoc[]
 }
 
-type MatchKind = 'exact' | 'stem' | 'syn' | 'prefix' | 'fuzzy'
+/** `drop`: the query word lacks a first letter ("df" for pdf). A typo that still counts as a title match. */
+type MatchKind = 'exact' | 'stem' | 'syn' | 'prefix' | 'fuzzy' | 'drop'
 
 interface Candidate {
   q: number
@@ -247,6 +248,14 @@ export function createSearcher(index: SearchIndex): Searcher {
     }
 
     let correction: string | undefined
+    // A dropped first letter: "df" for pdf, "pg" for jpg, "eic" for heic.
+    if (terms.size === 0 && token.length >= 2 && /[a-z]/.test(token)) {
+      for (const v of byLength[token.length + 1] ?? []) {
+        if (!v.endsWith(token) || !postings.has(v)) continue
+        put(v, 0.7, 'drop')
+        if (!correction || docFreq(v) > docFreq(correction)) correction = v
+      }
+    }
     if (terms.size === 0 && token.length >= 3 && /[a-z]/.test(token)) {
       const max = token.length >= 6 ? 2 : 1
       let bestD = max + 1
@@ -470,7 +479,9 @@ export function createSearcher(index: SearchIndex): Searcher {
     result.categories = categoriesFor(expansions, highlight)
     const fixed = correctionOf(all, fixes)
     // "mrege pd" -> "merge pdf": finish the corrected words the way the completion would.
-    const titled = fixed && typing ? result.tools.slice(0, 3).find((h) => text[h.tool.index].title.startsWith(fixed)) : undefined
+    // Only the top hit: "df" -> "pdf", not the title of the third hit.
+    const top1 = result.tools[0]
+    const titled = fixed && typing && top1 && text[top1.tool.index].title.startsWith(fixed) ? top1 : undefined
     result.didYouMean = titled ? text[titled.tool.index].title : fixed
     result.completion = completionFor(rawQuery, result.tools)
     return result
@@ -501,7 +512,7 @@ export function createSearcher(index: SearchIndex): Searcher {
         let bestQ = 0
         for (const w of ws) {
           const c = exp.terms.get(w)
-          if (c && c.kind !== 'fuzzy' && c.q > bestQ) bestQ = c.q
+          if (c && c.kind !== 'fuzzy' && c.kind !== 'drop' && c.q > bestQ) bestQ = c.q
         }
         if (bestQ < 0.6) {
           all = false
@@ -523,7 +534,7 @@ export function createSearcher(index: SearchIndex): Searcher {
     const fixes = new Map<string, string>()
     tokens.forEach((t, i) => {
       const exp = expansions[i]
-      const onlyTypos = [...exp.terms.values()].every((c) => c.kind === 'fuzzy')
+      const onlyTypos = [...exp.terms.values()].every((c) => c.kind === 'fuzzy' || c.kind === 'drop')
       if (exp.correction && onlyTypos && exp.correction !== t) fixes.set(t, exp.correction)
     })
     return fixes
